@@ -5,14 +5,16 @@ go 1.19
 require (
 	github.com/IBM/fluent-forward-go v0.2.1
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/khulnasoft/tracker/api v0.0.0-20231013014739-b32a168ee6a8
-	github.com/khulnasoft/tracker/types v0.0.0-20231128135314-cfe4d6426ccc
 	github.com/containerd/containerd v1.7.0
 	github.com/docker/docker v24.0.7+incompatible
 	github.com/golang/protobuf v1.5.3
 	github.com/google/gopacket v1.1.19
 	github.com/hashicorp/golang-lru v0.5.4
 	github.com/hashicorp/golang-lru/v2 v2.0.2
+	github.com/khulnasoft-lab/libbpfgo v1.0.0
+	github.com/khulnasoft-lab/libbpfgo/helpers v0.0.0-20231130211317-43c2546a4d5b
+	github.com/khulnasoft/tracker/api v0.0.0-20231130220846-acf7ce2531da
+	github.com/khulnasoft/tracker/types v0.0.0-20231130220846-acf7ce2531da
 	github.com/kubernetes/cri-api v0.27.1
 	github.com/mennanov/fmutils v0.2.0
 	github.com/mitchellh/mapstructure v1.5.0
@@ -26,7 +28,7 @@ require (
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/goleak v1.2.1
 	go.uber.org/zap v1.25.0
-	golang.org/x/sys v0.14.0
+	golang.org/x/sys v0.15.0
 	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -42,6 +44,7 @@ require (
 require (
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230106234847-43070de90fa1 // indirect
 	github.com/AdamKorcz/go-118-fuzz-build v0.0.0-20230306123547-8075edf89bb0 // indirect
+	github.com/aquasecurity/libbpfgo v0.3.0-libbpf-0.8.0 // indirect
 	github.com/containerd/typeurl/v2 v2.1.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
