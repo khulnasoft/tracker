@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://khulnasoft-lab.github.io/tracker/dev/docs/install/kubernetes/">
+        <link rel="canonical" href="https://khulnasoft.github.io/tracker/dev/docs/install/kubernetes/">
       
       
         <link rel="prev" href="../docker/">
@@ -13905,7 +13905,7 @@ kube-system   storage-provisioner                1/1     Running   0          15
 
 <h2 id="install-tracker">Install Tracker<a class="headerlink" href="#install-tracker" title="Permanent link">&para;</a></h2>
 <p>The provided Helm chart will install Tracker as a DaemonSet so that it's tracing all the nodes in the cluster.</p>
-<div class="highlight"><pre><span></span><code><span class="go">helm repo add khulnasoft https://khulnasoft-lab.github.io/helm-charts/</span>
+<div class="highlight"><pre><span></span><code><span class="go">helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/</span>
 <span class="go">helm repo update</span>
 <span class="go">helm install tracker khulnasoft/tracker --namespace tracker --create-namespace</span>
 </code></pre></div>

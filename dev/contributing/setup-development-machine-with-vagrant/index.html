@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://khulnasoft-lab.github.io/tracker/dev/contributing/setup-development-machine-with-vagrant/">
+        <link rel="canonical" href="https://khulnasoft.github.io/tracker/dev/contributing/setup-development-machine-with-vagrant/">
       
       
         <link rel="prev" href="../guidelines/">
@@ -14014,8 +14014,8 @@ ubuntu-jammy   Ready    &lt;none&gt;   40m   v1.26.1   10.0.2.15     &lt;none&gt
 <p>Create Postee Persistent Volumes and StatefulSet in the <code>tracker-system</code>
 namespace:</p>
 <div class="highlight"><pre><span></span><code><span class="go">kubectl apply -n tracker-system \</span>
-<span class="go">  -f https://raw.githubusercontent.com/khulnasoft-lab/postee/v2.2.0/deploy/kubernetes/hostPath/postee-pv.yaml \</span>
-<span class="go">  -f https://raw.githubusercontent.com/khulnasoft-lab/postee/v2.2.0/deploy/kubernetes/postee.yaml</span>
+<span class="go">  -f https://raw.githubusercontent.com/khulnasoft/postee/v2.2.0/deploy/kubernetes/hostPath/postee-pv.yaml \</span>
+<span class="go">  -f https://raw.githubusercontent.com/khulnasoft/postee/v2.2.0/deploy/kubernetes/postee.yaml</span>
 </code></pre></div>
 <p>Create Tracker DaemonSet in the <code>tracker-system</code>, configuring it to send 
 detections to the standard output and send them over to Postee webhook on
