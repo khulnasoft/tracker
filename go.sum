@@ -672,11 +672,9 @@ github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
 github.com/khulnasoft-lab/libbpfgo v1.0.0 h1:McXno6OZbm4xBRT8mWCasZmfeAfmP1vILYlfJJLruNs=
 github.com/khulnasoft-lab/libbpfgo v1.0.0/go.mod h1:fuLBO2/PqDPKPbKihvqYZE0BegTEq4MtC3W7qAWtZSQ=
-github.com/khulnasoft/tracker/api v0.0.0-20240702213325-b0c44050044b h1:zyI2+II/Xt27QSrCz7x22urURZSl22eL6iu3UMvrjPU=
-github.com/khulnasoft/tracker/api v0.0.0-20240702213325-b0c44050044b/go.mod h1:OlKRe1Ua17R/pfIPIy6d04fhFk7xYRgYdNcXxto6Q0M=
-github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240702213325-b0c44050044b h1:9UL1dvVEFjHfiuZjOZ1bC4FbC6fS/b+58tyfNf9uonQ=
-github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240702213325-b0c44050044b/go.mod h1:LQD/WhfiKwBqJmrwmHbJFE1DB4wq+AFqO3G1YvmfDYc=
-github.com/khulnasoft/tracker/types v0.0.0-20240702213325-b0c44050044b h1:luj+LdElch92clRdNhLEQ/FKmRFAtHs2xcsLCe9l0+s=
+github.com/khulnasoft/tracker/api v0.0.0-20240702213325-b0c44050044b h1:
+github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240702213325-b0c44050044b h1:
+github.com/khulnasoft/tracker/types v0.0.0-20240702213325-b0c44050044b h1:
 github.com/khulnasoft/tracker/types v0.0.0-20240702213325-b0c44050044b/go.mod h1:xtg656EldZ/kJN4r3pOxOe7bEo9/7aJyi3QveUVOox8=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
