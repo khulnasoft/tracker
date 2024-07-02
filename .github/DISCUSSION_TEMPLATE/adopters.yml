@@ -15,7 +15,7 @@ body:
       required: false
   - type: checkboxes
     attributes:
-      label: "[Optional] What type of events are you monitoring (see https://khulnasoft-lab.github.io/tracker/latest/docs/events/)?"
+      label: "[Optional] What type of events are you monitoring (see https://khulnasoft.github.io/tracker/latest/docs/events/)?"
       options:
         - label: "security"
         - label: "network"

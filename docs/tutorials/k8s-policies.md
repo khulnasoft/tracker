@@ -16,7 +16,7 @@ To install Tracker using Helm, follow these steps:
 Add the Khulnasoft Security Helm repository:
 
 ```console
-helm repo add khulnasoft https://khulnasoft-lab.github.io/helm-charts/
+helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
 ```
 
 Install Tracker with the default settings:

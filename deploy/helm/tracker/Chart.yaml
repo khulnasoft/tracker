@@ -1,7 +1,7 @@
 apiVersion: v2
 name: tracker
 description: Linux Runtime Security and Forensics using eBPF
-home: https://khulnasoft-lab.github.io/tracker/v0.21.0/
+home: https://khulnasoft.github.io/tracker/v0.21.0/
 sources:
   - https://github.com/khulnasoft/tracker
 
