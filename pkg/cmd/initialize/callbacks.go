@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/khulnasoft-lab/libbpfgo"
+	"github.com/aquasecurity/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/logger"
 )

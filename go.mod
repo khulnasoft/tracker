@@ -2,11 +2,12 @@ module github.com/khulnasoft/tracker
 
 go 1.22.0
 
-toolchain go1.22.4
+toolchain go1.22.3
 
 require (
 	github.com/IBM/fluent-forward-go v0.2.2
 	github.com/Masterminds/sprig/v3 v3.2.3
+	github.com/aquasecurity/libbpfgo v0.1.1
 	github.com/containerd/containerd v1.7.17
 	github.com/docker/docker v26.1.3+incompatible
 	github.com/golang/protobuf v1.5.4
@@ -14,7 +15,6 @@ require (
 	github.com/grafana/pyroscope-go v1.1.1
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hashicorp/golang-lru/v2 v2.0.7
-	github.com/khulnasoft-lab/libbpfgo v1.0.0
 	github.com/khulnasoft/tracker/api v0.0.0-20240702213325-b0c44050044b
 	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240702213325-b0c44050044b
 	github.com/khulnasoft/tracker/types v0.0.0-20240702213325-b0c44050044b
@@ -30,9 +30,9 @@ require (
 	github.com/urfave/cli/v2 v2.27.2
 	go.uber.org/goleak v1.3.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/sys v0.20.0
+	golang.org/x/sys v0.21.0
 	google.golang.org/grpc v1.64.0
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.34.1
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools v2.2.0+incompatible
 	k8s.io/api v0.30.1

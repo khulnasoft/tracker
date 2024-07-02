@@ -13,7 +13,7 @@ import (
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/bucketscache"
 	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
