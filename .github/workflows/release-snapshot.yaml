@@ -1,0 +1,142 @@
+#
+# On cron schedule or on demand: Release snapshot
+#
+# This workflow ensures that the main branch is ready for release and that all
+# build configuration files are valid. Also scans tracker container images for
+# vulnerabilities, and publishes to DockerHub as khulnasoft/tracker:dev.
+#
+name: Release Snapshot
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Daily at 05:00
+    - cron: "0 5 * * *"
+jobs:
+  release-snapshot-x86_64:
+    name: Release Snapshot (x86_64)
+    runs-on: 
+      - graas_ami-0f4881c8d69684001_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
+      - EXECUTION_TYPE=LONG
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          submodules: true
+          fetch-depth: 0
+      # - name: Install Cosign
+      #   uses: sigstore/cosign-installer@main
+      #   with:
+      #     cosign-release: 'v2.2.4'
+      - name: Login to docker.io registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build
+        run: |
+          make -f builder/Makefile.release SNAPSHOT=1
+      - name: Scan Docker Image for Vulnerabilities
+        uses: khulnasoft-lab/trivy-action@master
+        with:
+          image-ref: "tracker:dev"
+          severity: "CRITICAL"
+          exit-code: "1"
+      - name: Publish to docker.io registry
+        run: |
+          docker image tag tracker:dev khulnasoft/tracker:x86_64-dev
+          docker image push khulnasoft/tracker:x86_64-dev
+        shell: bash
+      # Disabled to avoid generating too many sigstore cosign signatures
+      # - name: Sign Docker image
+      #   run: |
+      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:x86_64-dev)
+      #   shell: bash
+  release-snapshot-aarch64:
+    name: Release Snapshot (aarch64)
+    runs-on: 
+      - graas_ami-03217ce7c37572c4d_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
+      - EXECUTION_TYPE=LONG
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          submodules: true
+          fetch-depth: 0
+      # - name: Install Cosign
+      #   uses: sigstore/cosign-installer@main
+      #   with:
+      #     cosign-release: 'v2.2.4'
+      - name: Login to docker.io registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build
+        run: |
+          make -f builder/Makefile.release SNAPSHOT=1
+      - name: Scan Docker Image for Vulnerabilities
+        uses: khulnasoft-lab/trivy-action@master
+        with:
+          image-ref: "tracker:dev"
+          severity: "CRITICAL"
+          exit-code: "1"
+      - name: Publish to docker.io registry
+        run: |
+          docker image tag tracker:dev khulnasoft/tracker:aarch64-dev
+          docker image push khulnasoft/tracker:aarch64-dev
+        shell: bash
+      # Disabled to avoid generating too many sigstore cosign signatures
+      # - name: Sign Docker image
+      #   run: |
+      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:aarch64-dev)
+      #   shell: bash
+  release-snapshot:
+    name: Release Snapshot
+    needs: [release-snapshot-x86_64, release-snapshot-aarch64]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          submodules: true
+          fetch-depth: 0
+      # - name: Install Cosign
+      #   uses: sigstore/cosign-installer@main
+      #   with:
+      #     cosign-release: 'v2.2.4'
+      - name: Login to docker.io registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish to docker.io registry
+        run: |
+          export DOCKER_CLI_EXPERIMENTAL=enabled
+          docker manifest create khulnasoft/tracker:dev \
+            khulnasoft/tracker:x86_64-dev \
+            khulnasoft/tracker:aarch64-dev
+          docker manifest push khulnasoft/tracker:dev
+
+          timestamp=$(date +%Y%m%d-%H%M%S%Z)
+          docker manifest create khulnasoft/tracker:dev-$timestamp \
+            khulnasoft/tracker:x86_64-dev \
+            khulnasoft/tracker:aarch64-dev
+          docker manifest push khulnasoft/tracker:dev-$timestamp
+        shell: bash
+      # Disabled to avoid generating too many sigstore cosign signatures
+      # - name: Sign Docker image
+      #   run: |
+      #     cosign sign -y khulnasoft/tracker:dev
+      #   shell: bash
