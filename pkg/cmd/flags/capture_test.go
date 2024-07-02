@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft-lab/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/config"
 )
 
 func TestPrepareCapture(t *testing.T) {

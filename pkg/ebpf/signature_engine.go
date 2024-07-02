@@ -3,15 +3,15 @@ package ebpf
 import (
 	"context"
 
-	"github.com/khulnasoft-lab/tracker/pkg/containers"
-	"github.com/khulnasoft-lab/tracker/pkg/dnscache"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/proctree"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft-lab/tracker/types/detect"
-	"github.com/khulnasoft-lab/tracker/types/protocol"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/containers"
+	"github.com/khulnasoft/tracker/pkg/dnscache"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // engineEvents stage in the pipeline allows signatures detection to be executed in the pipeline

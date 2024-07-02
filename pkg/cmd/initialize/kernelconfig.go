@@ -1,8 +1,8 @@
 package initialize
 
 import (
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
 func KernelConfig() (*environment.KernelConfig, error) {

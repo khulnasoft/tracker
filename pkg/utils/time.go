@@ -14,7 +14,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 var configHZOnce, clockTickOnce, bootTimeOnce sync.Once

@@ -1,11 +1,11 @@
 package derive
 
 import (
-	"github.com/khulnasoft-lab/tracker/pkg/containers"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/events/parse"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/containers"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/parse"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // ContainerRemove receives a containers.Containers object as a closure argument to track it's containers.

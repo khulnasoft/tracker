@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/khulnasoft-lab/tracker/pkg/bucketscache"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/bucketscache"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // ContainerPathResolver generates an accessible absolute path from the root

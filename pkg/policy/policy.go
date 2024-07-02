@@ -3,9 +3,9 @@ package policy
 import (
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/filters"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/filters"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 type Policy struct {

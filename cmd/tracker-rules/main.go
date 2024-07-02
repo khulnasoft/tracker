@@ -15,12 +15,12 @@ import (
 	"github.com/urfave/cli/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft-lab/tracker/pkg/capabilities"
-	"github.com/khulnasoft-lab/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft-lab/tracker/types/detect"
+	"github.com/khulnasoft/tracker/pkg/capabilities"
+	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/pkg/signatures/signature"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 const (

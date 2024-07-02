@@ -1,10 +1,10 @@
 package controlplane
 
 import (
-	"github.com/khulnasoft-lab/tracker/pkg/events/parse"
-	"github.com/khulnasoft-lab/tracker/pkg/proctree"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events/parse"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 //

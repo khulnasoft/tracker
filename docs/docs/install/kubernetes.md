@@ -97,7 +97,7 @@ Familiarize with the different events, filters, and configuration options in the
 
 Read other [tutorials](../../tutorials/overview.md).
 
-For help and support, feel free to use [GitHub Discussions](https://github.com/khulnasoft-lab/tracker/discussions).
+For help and support, feel free to use [GitHub Discussions](https://github.com/khulnasoft/tracker/discussions).
 
 
 ## Video Content

@@ -10,10 +10,10 @@ import (
 	"encoding/binary"
 	"errors"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 type EbpfDecoder struct {

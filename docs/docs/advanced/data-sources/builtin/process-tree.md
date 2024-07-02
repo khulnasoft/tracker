@@ -159,7 +159,7 @@ Where the `check()` method will either be:
 - checkThread()
 - checkLineage()
 
-> You can check related data structures directly in the [source code](https://github.com/khulnasoft-lab/tracker/blob/7b095a8d9a11cbd11ac61d3eec4b0a0f77f66dd9/pkg/proctree/datasource.go#L59) for more information. Below you will find easy to understand examples.
+> You can check related data structures directly in the [source code](https://github.com/khulnasoft/tracker/blob/7b095a8d9a11cbd11ac61d3eec4b0a0f77f66dd9/pkg/proctree/datasource.go#L59) for more information. Below you will find easy to understand examples.
 
 ### Processes Information Retrieval
 

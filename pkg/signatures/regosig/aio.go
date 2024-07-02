@@ -11,9 +11,9 @@ import (
 	"github.com/open-policy-agent/opa/compile"
 	"github.com/open-policy-agent/opa/rego"
 
-	"github.com/khulnasoft-lab/tracker/types/detect"
-	"github.com/khulnasoft-lab/tracker/types/protocol"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 var (

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft-lab/tracker/pkg/changelog"
+	"github.com/khulnasoft/tracker/pkg/changelog"
 )
 
 func TestChangelog(t *testing.T) {

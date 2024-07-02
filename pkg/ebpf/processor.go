@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/proctree"
-	"github.com/khulnasoft-lab/tracker/pkg/utils/environment"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 var (

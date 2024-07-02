@@ -4,7 +4,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 type comparable interface {

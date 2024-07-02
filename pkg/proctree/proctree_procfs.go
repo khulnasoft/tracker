@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
-	"github.com/khulnasoft-lab/tracker/pkg/utils/proc"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/utils/proc"
 )
 
 const debugMsgs = false // debug messages can be too verbose, so they are disabled by default

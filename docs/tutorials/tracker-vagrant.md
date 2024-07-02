@@ -10,7 +10,7 @@ Prerequisites:
 First, clone the Tracker Git repository and move into the root directory:
 
 ```console
-git clone git@github.com:khulnasoft-lab/tracker.git
+git clone git@github.com:khulnasoft/tracker.git
 
 cd tracker
 ```
@@ -21,7 +21,7 @@ Next, use Vagrant to start a Parallels VM:
 vagrant up
 ```
 
-This will use the [Vagrantfile](https://github.com/khulnasoft-lab/tracker/blob/main/Vagrantfile) in the root of the Tracker directory.
+This will use the [Vagrantfile](https://github.com/khulnasoft/tracker/blob/main/Vagrantfile) in the root of the Tracker directory.
 
 Lastly, ssh into the created VM:
 

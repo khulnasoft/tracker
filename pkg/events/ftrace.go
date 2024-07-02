@@ -11,11 +11,11 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft-lab/tracker/pkg/capabilities"
-	"github.com/khulnasoft-lab/tracker/pkg/counter"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/capabilities"
+	"github.com/khulnasoft/tracker/pkg/counter"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 const (

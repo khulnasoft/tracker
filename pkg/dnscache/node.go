@@ -3,8 +3,8 @@ package dnscache
 import (
 	"time"
 
-	"github.com/khulnasoft-lab/tracker/pkg/utils/set"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/utils/set"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 type nodeType int

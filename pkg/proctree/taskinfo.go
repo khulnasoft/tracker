@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	ch "github.com/khulnasoft-lab/tracker/pkg/changelog"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
+	ch "github.com/khulnasoft/tracker/pkg/changelog"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // TaskInfoFeed allows external packages to set/get multiple values of a task at once.

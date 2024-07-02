@@ -13,8 +13,8 @@ import (
 	gogpt "github.com/sashabaranov/go-gpt3"
 	"gopkg.in/yaml.v2"
 
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 const (

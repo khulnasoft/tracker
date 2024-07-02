@@ -6,13 +6,13 @@ import (
 	"github.com/hashicorp/golang-lru/simplelru"
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/filters"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/policy"
-	"github.com/khulnasoft-lab/tracker/pkg/utils/sharedobjs"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/filters"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/policy"
+	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 //

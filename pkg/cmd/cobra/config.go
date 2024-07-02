@@ -7,7 +7,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 type cliFlagger interface {

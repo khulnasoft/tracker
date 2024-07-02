@@ -10,7 +10,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/khulnasoft-lab/tracker/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
 type SystemFunctionArgument interface {

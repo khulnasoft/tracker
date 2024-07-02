@@ -3,7 +3,7 @@ name: tracker
 description: Linux Runtime Security and Forensics using eBPF
 home: https://khulnasoft-lab.github.io/tracker/v0.21.0/
 sources:
-  - https://github.com/khulnasoft-lab/tracker
+  - https://github.com/khulnasoft/tracker
 
 # A chart can be either an 'application' or a 'library' chart.
 #

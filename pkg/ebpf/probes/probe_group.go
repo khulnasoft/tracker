@@ -5,8 +5,8 @@ import (
 
 	bpf "github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 //
@@ -162,11 +162,11 @@ func NewDefaultProbeGroup(module *bpf.Module, netEnabled bool) (*ProbeGroup, err
 		LoadElfPhdrs:               NewTraceProbe(KProbe, "load_elf_phdrs", "trace_load_elf_phdrs"),
 		Filldir64:                  NewTraceProbe(KProbe, "filldir64", "trace_filldir64"),
 		TaskRename:                 NewTraceProbe(RawTracepoint, "task:task_rename", "tracepoint__task__task_rename"),
-		SyscallTableCheck:          NewUprobe("syscall_table_check", "uprobe_syscall_table_check", binaryPath, "github.com/khulnasoft-lab/tracker/pkg/ebpf.(*Tracker).triggerSyscallTableIntegrityCheckCall"),
-		HiddenKernelModuleSeeker:   NewUprobe("hidden_kernel_module", "uprobe_lkm_seeker", binaryPath, "github.com/khulnasoft-lab/tracker/pkg/ebpf.(*Tracker).triggerKernelModuleSeeker"),
-		HiddenKernelModuleVerifier: NewUprobe("hidden_kernel_module", "uprobe_lkm_seeker_submitter", binaryPath, "github.com/khulnasoft-lab/tracker/pkg/ebpf.(*Tracker).triggerKernelModuleSubmitter"),
-		PrintNetSeqOps:             NewUprobe("print_net_seq_ops", "uprobe_seq_ops_trigger", binaryPath, "github.com/khulnasoft-lab/tracker/pkg/ebpf.(*Tracker).triggerSeqOpsIntegrityCheckCall"),
-		PrintMemDump:               NewUprobe("print_mem_dump", "uprobe_mem_dump_trigger", binaryPath, "github.com/khulnasoft-lab/tracker/pkg/ebpf.(*Tracker).triggerMemDumpCall"),
+		SyscallTableCheck:          NewUprobe("syscall_table_check", "uprobe_syscall_table_check", binaryPath, "github.com/khulnasoft/tracker/pkg/ebpf.(*Tracker).triggerSyscallTableIntegrityCheckCall"),
+		HiddenKernelModuleSeeker:   NewUprobe("hidden_kernel_module", "uprobe_lkm_seeker", binaryPath, "github.com/khulnasoft/tracker/pkg/ebpf.(*Tracker).triggerKernelModuleSeeker"),
+		HiddenKernelModuleVerifier: NewUprobe("hidden_kernel_module", "uprobe_lkm_seeker_submitter", binaryPath, "github.com/khulnasoft/tracker/pkg/ebpf.(*Tracker).triggerKernelModuleSubmitter"),
+		PrintNetSeqOps:             NewUprobe("print_net_seq_ops", "uprobe_seq_ops_trigger", binaryPath, "github.com/khulnasoft/tracker/pkg/ebpf.(*Tracker).triggerSeqOpsIntegrityCheckCall"),
+		PrintMemDump:               NewUprobe("print_mem_dump", "uprobe_mem_dump_trigger", binaryPath, "github.com/khulnasoft/tracker/pkg/ebpf.(*Tracker).triggerMemDumpCall"),
 		SecurityInodeRename:        NewTraceProbe(KProbe, "security_inode_rename", "trace_security_inode_rename"),
 		DoSigaction:                NewTraceProbe(KProbe, "do_sigaction", "trace_do_sigaction"),
 		SecurityBpfProg:            NewTraceProbe(KProbe, "security_bpf_prog", "trace_security_bpf_prog"),

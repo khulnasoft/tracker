@@ -1,4 +1,4 @@
-module github.com/khulnasoft-lab/tracker/api
+module github.com/khulnasoft/tracker/api
 
 go 1.22.0
 

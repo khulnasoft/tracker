@@ -10,13 +10,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	pb "github.com/khulnasoft-lab/tracker/api/v1beta1"
-	tracker "github.com/khulnasoft-lab/tracker/pkg/ebpf"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/streams"
-	"github.com/khulnasoft-lab/tracker/pkg/version"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	pb "github.com/khulnasoft/tracker/api/v1beta1"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/streams"
+	"github.com/khulnasoft/tracker/pkg/version"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // EventTranslationTable translates internal to external protobuf Event Id

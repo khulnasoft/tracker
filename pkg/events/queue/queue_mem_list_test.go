@@ -6,7 +6,7 @@ import (
 
 	"gotest.tools/assert"
 
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func TestEnqueueDequeue(t *testing.T) {

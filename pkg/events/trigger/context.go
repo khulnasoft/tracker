@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/khulnasoft-lab/tracker/pkg/counter"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events/parse"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/counter"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events/parse"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 const ContextArgName = "caller_context_id"

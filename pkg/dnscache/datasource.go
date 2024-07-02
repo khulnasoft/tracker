@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/khulnasoft-lab/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 type DNSDatasource struct {

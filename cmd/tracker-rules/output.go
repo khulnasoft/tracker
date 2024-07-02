@@ -10,10 +10,10 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/types/detect"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 const DefaultDetectionOutputTemplate string = `

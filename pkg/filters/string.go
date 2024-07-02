@@ -5,9 +5,9 @@ import (
 
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/filters/sets"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/filters/sets"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // ValueHandler is a function that can be passed to StringFilter to handle values when they are parsed

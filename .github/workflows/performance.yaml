@@ -78,7 +78,7 @@ jobs:
           # Workflow will fail when an alert happens
           fail-on-alert: false
           # Tag user when alerted
-          alert-comment-cc-users: '@khulnasoft-lab/tracker'
+          alert-comment-cc-users: '@khulnasoft/tracker'
           # Percentage threshold to trigger an alert. For example, if our last result was 1.4, 
           # if the next result exceeds X% of 1.4, there will be an alert.
           alert-threshold: '10%'

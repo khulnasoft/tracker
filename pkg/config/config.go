@@ -3,14 +3,14 @@ package config
 import (
 	"io"
 
-	"github.com/khulnasoft-lab/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft-lab/tracker/pkg/dnscache"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events/queue"
-	"github.com/khulnasoft-lab/tracker/pkg/policy"
-	"github.com/khulnasoft-lab/tracker/pkg/proctree"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft-lab/tracker/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/pkg/containers/runtime"
+	"github.com/khulnasoft/tracker/pkg/dnscache"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events/queue"
+	"github.com/khulnasoft/tracker/pkg/policy"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
 // Config is a struct containing user defined configuration of tracker

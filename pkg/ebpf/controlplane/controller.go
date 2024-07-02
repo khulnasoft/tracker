@@ -7,10 +7,10 @@ import (
 
 	"github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/containers"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/containers"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/proctree"
 )
 
 // TODO: With the introduction of signal events, the control plane can now have a generic argument

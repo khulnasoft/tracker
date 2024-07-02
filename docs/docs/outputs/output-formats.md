@@ -109,11 +109,11 @@ Note: the `files: key` must also be defined, even if it's just for stdout. This 
 
 ### GOTEMPLATE
 
-When authoring a Go template the data source is Tracker's `trace.Event` struct, which is defined in `https://github.com/khulnasoft-lab/tracker/blob/main/types/trace/trace.go#L15`.
+When authoring a Go template the data source is Tracker's `trace.Event` struct, which is defined in `https://github.com/khulnasoft/tracker/blob/main/types/trace/trace.go#L15`.
 
 Go template can utilize helper functions from [Sprig](http://masterminds.github.io/sprig/).
 
-For example templates, see [tracker/cmd/tracker-rules/templates](https://github.com/khulnasoft-lab/tracker/tree/main/cmd/tracker-rules/templates).
+For example templates, see [tracker/cmd/tracker-rules/templates](https://github.com/khulnasoft/tracker/tree/main/cmd/tracker-rules/templates).
 
 The following sections can be specified as part of go templates:
 

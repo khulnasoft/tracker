@@ -15,11 +15,11 @@ import (
 
 	bpf "github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/capabilities"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/events/parse"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/capabilities"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/parse"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 var (

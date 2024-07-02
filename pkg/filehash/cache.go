@@ -7,9 +7,9 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft-lab/tracker/pkg/capabilities"
-	"github.com/khulnasoft-lab/tracker/pkg/config"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/capabilities"
+	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 var onceHashCapsAdd sync.Once // capabilities for exec hash enabled only once

@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // Stream is a stream of events

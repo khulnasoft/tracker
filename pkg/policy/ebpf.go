@@ -10,13 +10,13 @@ import (
 
 	bpf "github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft-lab/tracker/pkg/containers"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/filters"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/utils/proc"
+	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
+	"github.com/khulnasoft/tracker/pkg/containers"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/filters"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils/proc"
 )
 
 const (

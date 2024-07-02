@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	pb "github.com/khulnasoft-lab/tracker/api/v1beta1"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	pb "github.com/khulnasoft/tracker/api/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func Test_getEventData(t *testing.T) {

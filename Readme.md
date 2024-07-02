@@ -50,8 +50,8 @@ For a complete walkthrough please see the [Kubernetes getting started guide][kub
 
 ## Contributing
   
-Join the community, and talk to us about any matter in the [GitHub Discussions](https://github.com/khulnasoft-lab/tracker/discussions) or [Slack](https://slack.khulnasoft.com).  
-If you run into any trouble using Tracker or you would like to give use user feedback, please [create an issue.](https://github.com/khulnasoft-lab/tracker/issues)
+Join the community, and talk to us about any matter in the [GitHub Discussions](https://github.com/khulnasoft/tracker/discussions) or [Slack](https://slack.khulnasoft.com).  
+If you run into any trouble using Tracker or you would like to give use user feedback, please [create an issue.](https://github.com/khulnasoft/tracker/issues)
 
 Find more information on [contribution documentation](https://khulnasoft-lab.github.io/tracker/latest/contributing/overview/).
 

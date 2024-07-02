@@ -7,9 +7,9 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcapgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // Check pcaps.go for package description.

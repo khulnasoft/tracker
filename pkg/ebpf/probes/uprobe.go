@@ -3,8 +3,8 @@ package probes
 import (
 	bpf "github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // NOTE: thread-safety guaranteed by the ProbeGroup big lock.

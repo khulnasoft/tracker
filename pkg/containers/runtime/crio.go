@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	cri "k8s.io/cri-api/pkg/apis/runtime/v1"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 type crioEnricher struct {

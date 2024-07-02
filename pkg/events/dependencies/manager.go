@@ -5,9 +5,9 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/khulnasoft-lab/tracker/pkg/ebpf/probes"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/ebpf/probes"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 type NodeType string

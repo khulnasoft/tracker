@@ -17,11 +17,11 @@ import (
 
 	"github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/cgroup"
-	cruntime "github.com/khulnasoft-lab/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/k8s"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/cgroup"
+	cruntime "github.com/khulnasoft/tracker/pkg/containers/runtime"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/k8s"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // Containers contains information about running containers in the host.

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft-lab/tracker/signatures/helpers"
-	"github.com/khulnasoft-lab/tracker/types/detect"
-	"github.com/khulnasoft-lab/tracker/types/protocol"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/signatures/helpers"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 type e2eSecurityPathNotify struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/khulnasoft-lab/tracker/pkg/version"
+	"github.com/khulnasoft/tracker/pkg/version"
 )
 
 func init() {

@@ -4,8 +4,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // TODO: add states to the EventGroup struct (to keep states of events from that group)

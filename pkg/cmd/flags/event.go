@@ -3,7 +3,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 // PolicyEventMap maps policy id to its pre-parsed event flag fields

@@ -1,8 +1,8 @@
 package policy
 
 import (
-	"github.com/khulnasoft-lab/tracker/pkg/filters"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/filters"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // compute recalculates values, updates flags, fills the reduced userland map,

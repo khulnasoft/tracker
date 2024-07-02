@@ -12,15 +12,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/goleak"
 
-	"github.com/khulnasoft-lab/tracker/pkg/config"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/events/dependencies"
-	k8s "github.com/khulnasoft-lab/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft-lab/tracker/pkg/policy/v1beta1"
-	"github.com/khulnasoft-lab/tracker/pkg/utils"
-	"github.com/khulnasoft-lab/tracker/signatures/helpers"
-	"github.com/khulnasoft-lab/tracker/tests/testutils"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/dependencies"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/signatures/helpers"
+	"github.com/khulnasoft/tracker/tests/testutils"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // Test_EventFilters tests a variety of trace event filters

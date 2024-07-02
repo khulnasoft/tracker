@@ -3,7 +3,7 @@ package runtime
 import (
 	"os"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 // Sockets represent existing container runtime connections

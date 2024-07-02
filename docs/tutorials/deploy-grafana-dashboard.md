@@ -28,7 +28,7 @@ There are two options for accessing Tracker metrics:
 These metrics exports are enabled by default in all docker images and can be
 enabled using the `--metrics` flag.
 
-[tracker]: https://github.com/khulnasoft-lab/tracker/tree/{{ git.tag }}/cmd/tracker
+[tracker]: https://github.com/khulnasoft/tracker/tree/{{ git.tag }}/cmd/tracker
 
 ### Prerequisites
 
@@ -37,7 +37,7 @@ through docker or installed/built on your machine. Note that you need to be on a
 Alternative, on a MacBook it is possible to use Vagrant with Parallels as detailed in the following tutorial:
 [Running Tracker on Mac with Parallels and Vagrant](./tracker-vagrant.md)
 
-- [Tracker](https://github.com/khulnasoft-lab/tracker/)
+- [Tracker](https://github.com/khulnasoft/tracker/)
 - [Prometheus](https://prometheus.io/download/)
 - [Grafana](https://grafana.com/docs/grafana/latest/getting-started/getting-started)
 
@@ -140,7 +140,7 @@ You may now either create your own Dashboard or import our default dashboard.
 
 First download our Grafana Dashboard's json [here].
 
-[here]: https://github.com/khulnasoft-lab/tracker/tree/main/deploy/grafana/tracker.json
+[here]: https://github.com/khulnasoft/tracker/tree/main/deploy/grafana/tracker.json
 
 After adding the data source hover on the plus icon in the sidebar and select
 "Import". Press "Upload JSON File" at the top of the page and select the

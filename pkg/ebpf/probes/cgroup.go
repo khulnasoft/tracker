@@ -3,9 +3,9 @@ package probes
 import (
 	bpf "github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/capabilities"
-	"github.com/khulnasoft-lab/tracker/pkg/cgroup"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/capabilities"
+	"github.com/khulnasoft/tracker/pkg/cgroup"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 // NOTE: thread-safety guaranteed by the ProbeGroup big lock.

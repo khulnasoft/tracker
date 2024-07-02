@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // GetProcNS returns the namespace ID of a given namespace and process.

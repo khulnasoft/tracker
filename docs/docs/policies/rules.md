@@ -259,7 +259,7 @@ spec:
 		- data.pathname=/tmp*
 ```
 
-Data fields can be found on the respective event definition, in this case [security_file_open](https://github.com/khulnasoft-lab/tracker/blob/656eb976fbb66aba54c5f306019258e436d4814a/pkg/events/core.go#L11502-L11533) - be aware of possible changes to the definition linked above, so always check the main branch.
+Data fields can be found on the respective event definition, in this case [security_file_open](https://github.com/khulnasoft/tracker/blob/656eb976fbb66aba54c5f306019258e436d4814a/pkg/events/core.go#L11502-L11533) - be aware of possible changes to the definition linked above, so always check the main branch.
 
  Or the user can test the event output in CLI before defining a policy, e.g:
 

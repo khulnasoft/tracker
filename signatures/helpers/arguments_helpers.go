@@ -4,7 +4,7 @@ import (
 	b64 "encoding/base64"
 	"fmt"
 
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func ArgVal[T any](args []trace.Argument, argName string) (T, error) {

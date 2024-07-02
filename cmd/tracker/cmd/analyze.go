@@ -12,16 +12,16 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/khulnasoft-lab/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft-lab/tracker/pkg/cmd/initialize"
-	tracker "github.com/khulnasoft-lab/tracker/pkg/ebpf"
-	"github.com/khulnasoft-lab/tracker/pkg/events"
-	"github.com/khulnasoft-lab/tracker/pkg/logger"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft-lab/tracker/types/detect"
-	"github.com/khulnasoft-lab/tracker/types/protocol"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/cmd/flags"
+	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/pkg/signatures/signature"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func init() {

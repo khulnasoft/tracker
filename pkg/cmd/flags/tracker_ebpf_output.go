@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/khulnasoft-lab/tracker/pkg/config"
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 func outputHelp() string {

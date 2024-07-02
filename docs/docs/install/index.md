@@ -1,6 +1,6 @@
 # Installing Tracker
 
-1. Tracker executable binary is available in under [releases](https://github.com/khulnasoft-lab/tracker/releases).
+1. Tracker executable binary is available in under [releases](https://github.com/khulnasoft/tracker/releases).
 2. Tracker container image is available in Docker Hub as [khulnasoft/tracker](https://hub.docker.com/r/khulnasoft/tracker).
 3. Tracker Helm chart is available in Khulnasoft Security's registry: `https://khulnasoft-lab.github.io/helm-charts/` as `tracker`.
 

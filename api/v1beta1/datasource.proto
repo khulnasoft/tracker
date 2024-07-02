@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.co/khulnasoft-lab/tracker/api/v1beta1";
+option go_package = "github.co/khulnasoft/tracker/api/v1beta1";
 
 package tracker.v1beta1;
 import "google/protobuf/struct.proto";

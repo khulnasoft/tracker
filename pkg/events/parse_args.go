@@ -8,9 +8,9 @@ import (
 
 	bpf "github.com/khulnasoft-lab/libbpfgo"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/events/parsers"
-	"github.com/khulnasoft-lab/tracker/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func ParseArgs(event *trace.Event) error {

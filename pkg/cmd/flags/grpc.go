@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/khulnasoft-lab/tracker/pkg/errfmt"
-	"github.com/khulnasoft-lab/tracker/pkg/server/grpc"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/server/grpc"
 )
 
 func PrepareGRPCServer(listenAddr string) (*grpc.Server, error) {

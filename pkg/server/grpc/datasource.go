@@ -8,9 +8,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/khulnasoft-lab/tracker/api/v1beta1"
-	"github.com/khulnasoft-lab/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft-lab/tracker/types/detect"
+	pb "github.com/khulnasoft/tracker/api/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 type DataSourceService struct {

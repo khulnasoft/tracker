@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 
-	"github.com/khulnasoft-lab/tracker/tests/testutils"
+	"github.com/khulnasoft/tracker/tests/testutils"
 )
 
 func Test_TrackerCapture(t *testing.T) {

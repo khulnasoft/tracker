@@ -21,7 +21,7 @@ machine or [Parallels] on an arm64 M1 (Darwin) machine.
 Clone and change directory to Tracker Git repository:
 
 ```console
-git clone --branch {{ git.tag }} https://github.com/khulnasoft-lab/tracker.git
+git clone --branch {{ git.tag }} https://github.com/khulnasoft/tracker.git
 cd tracker
 ```
 
@@ -315,7 +315,7 @@ documentation pages.
 
 [Vagrant]: https://www.vagrantup.com/docs/installation
 [HashiCorp Vagrant]: https://www.vagrantup.com
-[Vagrantfile]: https://github.com/khulnasoft-lab/tracker/blob/{{ git.tag }}/Vagrantfile
+[Vagrantfile]: https://github.com/khulnasoft/tracker/blob/{{ git.tag }}/Vagrantfile
 [Hypervisor]: https://www.vagrantup.com/docs/providers
 [VirtualBox]: https://www.virtualbox.org
 [Parallels]: https://www.parallels.com

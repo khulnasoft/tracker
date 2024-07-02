@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/khulnasoft-lab/tracker/pkg/filehash"
+	"github.com/khulnasoft/tracker/pkg/filehash"
 )
 
 func BenchmarkComputeFileHashOld(b *testing.B) {

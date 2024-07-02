@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	"github.com/khulnasoft-lab/tracker/api/v1beta1"
+	"github.com/khulnasoft/tracker/api/v1beta1"
 )
 
 func printAndExit(msg string, args ...any) {
