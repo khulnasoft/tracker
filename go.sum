@@ -404,8 +404,6 @@ github.com/OneOfOne/xxhash v1.2.8/go.mod h1:eZbhyaAYD41SGSSsnmcpxVoRiQ/MPUTjUdII
 github.com/agnivade/levenshtein v1.1.1 h1:QY8M92nrzkmr798gCo3kmMyqXFzdQVpxLlGPRBij0P8=
 github.com/agnivade/levenshtein v1.1.1/go.mod h1:veldBMzWxcCG2ZvUTKD2kJNRdCk5hVbJomOvKkmgYbo=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
-github.com/aquasecurity/libbpfgo v0.1.1 h1:j/ipxI/l20lu5Tosn0o9JYj7bD3Cwzi18jIEEu3rMvQ=
-github.com/aquasecurity/libbpfgo v0.1.1/go.mod h1:/+clceXE103FaXvVTIY2HAkQjxNtkra4DRWvZYr2SKw=
 github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0 h1:jfIu9sQUG6Ig+0+Ap1h4unLjW6YQJpKZVmUzxsD4E/Q=
 github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0/go.mod h1:t2tdKJDJF9BV14lnkjHmOQgcvEKgtqs5a1N3LNdJhGE=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
@@ -672,6 +670,10 @@ github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnr
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
+github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.0 h1:5T5XKKN+0rQI2ktcCiIWm9Zcu/eeDVlQ1XAeFlB1Wtk=
+github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.0/go.mod h1:bwvLyaI+tkZhpFeXC/3P9kHos0fAusdDLEakyUj1zsU=
+github.com/khulnasoft-lab/libbpfgo/helpers v0.0.0-20240611152355-f6b0954e7163 h1:0g/78KbVDFOjE5zSVRrW3fzZQhWW8J4aut7DFG1s6Tw=
+github.com/khulnasoft-lab/libbpfgo/helpers v0.0.0-20240611152355-f6b0954e7163/go.mod h1:3uYYHRN/n+EbPln310FA+r/FGargcipF4kUzUXDFHnI=
 github.com/khulnasoft/tracker/api v0.0.0-20240702213325-b0c44050044b h1:zyI2+II/Xt27QSrCz7x22urURZSl22eL6iu3UMvrjPU=
 github.com/khulnasoft/tracker/api v0.0.0-20240702213325-b0c44050044b/go.mod h1:OlKRe1Ua17R/pfIPIy6d04fhFk7xYRgYdNcXxto6Q0M=
 github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240702213325-b0c44050044b h1:9UL1dvVEFjHfiuZjOZ1bC4FbC6fS/b+58tyfNf9uonQ=
