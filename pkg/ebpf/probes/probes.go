@@ -1,7 +1,7 @@
 package probes
 
 import (
-	bpf "github.com/aquasecurity/libbpfgo"
+	bpf "github.com/khulnasoft-lab/libbpfgo"
 )
 
 //
