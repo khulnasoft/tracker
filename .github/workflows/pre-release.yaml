@@ -1,5 +1,5 @@
 ---
-# Release Tracee when a tag starting with v is pushed to the repository.
+# Release Tracker when a tag starting with v is pushed to the repository.
 name: Release
 
 on:
