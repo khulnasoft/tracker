@@ -13,9 +13,7 @@ jobs:
     name: Release (x86_64)
     env:
       GH_TOKEN: ${{ github.token }}
-    runs-on: 
-      - graas_ami-0f4881c8d69684001_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
-      - EXECUTION_TYPE=LONG
+    runs-on: [self-hosted, perf, EXECUTION_TYPE=LONG]
     permissions:
       contents: write
       packages: write
