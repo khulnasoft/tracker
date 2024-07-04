@@ -13,7 +13,7 @@ jobs:
     name: Release (x86_64)
     env:
       GH_TOKEN: ${{ github.token }}
-    runs-on: [self-hosted, perf, EXECUTION_TYPE=LONG]
+    runs-on: [self-hosted, perf]
     permissions:
       contents: write
       packages: write
