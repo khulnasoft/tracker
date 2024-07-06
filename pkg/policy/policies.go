@@ -3,7 +3,7 @@ package policy
 import (
 	"sync/atomic"
 
-	bpf "github.com/khulnasoft/libbpfgo"
+	bpf "github.com/khulnasoft-lab/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/filters"

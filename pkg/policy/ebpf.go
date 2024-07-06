@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"unsafe"
 
-	bpf "github.com/khulnasoft/libbpfgo"
+	bpf "github.com/khulnasoft-lab/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
 	"github.com/khulnasoft/tracker/pkg/containers"

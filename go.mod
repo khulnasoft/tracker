@@ -7,10 +7,6 @@ toolchain go1.22.4
 require (
 	github.com/IBM/fluent-forward-go v0.2.2
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/khulnasoft/libbpfgo v0.7.0-libbpf-1.4
-	github.com/khulnasoft/tracker/api v0.0.0-20240613134034-89d2d4fc7689
-	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240607205742-90c301111aee
-	github.com/khulnasoft/tracker/types v0.0.0-20240607205742-90c301111aee
 	github.com/containerd/containerd v1.7.17
 	github.com/docker/docker v26.1.3+incompatible
 	github.com/golang/protobuf v1.5.4
@@ -18,6 +14,10 @@ require (
 	github.com/grafana/pyroscope-go v1.1.1
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hashicorp/golang-lru/v2 v2.0.7
+	github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.4
+	github.com/khulnasoft/tracker/api v0.0.0-20240704203619-52ea0680d94e
+	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240704203619-52ea0680d94e
+	github.com/khulnasoft/tracker/types v0.0.0-20240704203619-52ea0680d94e
 	github.com/mennanov/fmutils v0.3.0
 	github.com/minio/sha256-simd v1.0.1
 	github.com/mitchellh/mapstructure v1.5.0
