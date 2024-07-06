@@ -1,5 +1,3 @@
-![Tracker Logo](docs/images/tracker.png)
-
 <!-- links that differ between docs and readme -->
 [installation]:https://khulnasoft.github.io/tracker/latest/docs/install/
 [docker-guide]:https://khulnasoft.github.io/tracker/latest/docs/install/docker/
