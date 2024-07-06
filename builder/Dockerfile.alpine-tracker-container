@@ -17,14 +17,14 @@ ARG OPA_VERSION=v0.63.0
 # After solved we can rollback to the commented installation lines below.
 #
 # Stage 1: Set the base image to get the OPA binary
-FROM openpolicyagent/opa:0.66.0-dev-static as opa-extractor
+FROM openpolicyagent/opa:0.66.0-dev-static AS opa-extractor
 
 #
 # tracker-base
 #
 
-FROM alpine:3.19 as tracker-base
-LABEL AS=tracker-base
+FROM alpine:3.19 AS tracker-base
+LABEL as=tracker-base
 USER root
 
 # install base environment
@@ -49,8 +49,8 @@ COPY --from=opa-extractor /opa /usr/bin/opa
 # tracker-make-base
 #
 
-FROM tracker-base as tracker-make-base
-LABEL AS=tracker-make-base
+FROM tracker-base AS tracker-make-base
+LABEL as=tracker-make-base
 USER root
 
 # install needed environment
@@ -122,8 +122,8 @@ RUN cd /tmp && \
 # tracker-make
 #
 
-FROM tracker-make-base as tracker-make
-LABEL AS=tracker-make
+FROM tracker-make-base AS tracker-make
+LABEL as=tracker-make
 ARG BTFHUB
 USER root
 ENV HOME /tracker
@@ -145,8 +145,8 @@ RUN source /etc/profile && \
 # tracker-core (tracker-base as base)
 #
 
-FROM tracker-base as tracker-core
-LABEL AS=tracker-core
+FROM tracker-base AS tracker-core
+LABEL as=tracker-core
 USER root
 ENV HOME /tracker
 WORKDIR /tracker
