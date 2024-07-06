@@ -1081,9 +1081,9 @@ statfunc bool kern_ver_below_min_lkm(struct pt_regs *ctx)
     goto below_threshold; // For compiler - avoid "unused label" warning
 below_threshold:
     tracker_log(ctx,
-                BPF_LOG_LVL_ERROR,
-                BPF_LOG_ID_UNSPEC,
-                -1); // notify the user that the event logic isn't loaded even though it's requested
+               BPF_LOG_LVL_ERROR,
+               BPF_LOG_ID_UNSPEC,
+               -1); // notify the user that the event logic isn't loaded even though it's requested
     return true;
 }
 
@@ -1130,8 +1130,8 @@ int uprobe_lkm_seeker_submitter(struct pt_regs *ctx)
 // There are 2 types of scans:
 // - Scan of modules that were loaded prior tracker started: this is only done once at the start of
 // tracker
-// - Scan of modules that were loaded after tracker started: runs periodically and on each new
-// module insertion
+// - Scan of modules that were loaded after tracker started: runs periodically and on each new module
+// insertion
 SEC("uprobe/lkm_seeker")
 int uprobe_lkm_seeker(struct pt_regs *ctx)
 {

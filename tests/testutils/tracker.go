@@ -14,8 +14,8 @@ import (
 //
 
 const (
-	readinessPollTime            = 200 * time.Millisecond
-	httpRequestTimeout           = 1 * time.Second
+	readinessPollTime           = 200 * time.Millisecond
+	httpRequestTimeout          = 1 * time.Second
 	TrackerDefaultStartupTimeout = 5 * time.Second
 )
 

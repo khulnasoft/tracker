@@ -5,7 +5,6 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
 	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
@@ -27,7 +26,7 @@ func (t *Tracker) UpdateKallsyms() error {
 
 	// Wrap long method names.
 	evtDefSymDeps := func(id events.ID) []events.KSymbol {
-		depsNode, _ := dependencies.GetManagerInstance().GetEvent(id)
+		depsNode, _ := t.eventsDependencies.GetEvent(id)
 		deps := depsNode.GetDependencies()
 		return deps.GetKSymbols()
 	}

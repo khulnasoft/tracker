@@ -14,7 +14,6 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/config"
 	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
 	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/utils"
@@ -1715,7 +1714,7 @@ func Test_EventFilters(t *testing.T) {
 					BypassCaps: true,
 				},
 			}
-			config.Policies = testutils.NewPolicies(tc.policyFiles)
+			config.InitialPolicies = testutils.NewPolicies(tc.policyFiles)
 
 			ctx, cancel := context.WithCancel(context.Background())
 
@@ -1732,10 +1731,6 @@ func Test_EventFilters(t *testing.T) {
 				cancel()
 				t.Fatal(err)
 			}
-			defer func() {
-				dependencies.ResetManagerFromTests()
-				t.Logf("  --- reset dependencies ---")
-			}()
 
 			stream := trc.SubscribeAll()
 			defer trc.Unsubscribe(stream)

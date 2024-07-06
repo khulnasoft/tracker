@@ -1,7 +1,7 @@
 package probes
 
 import (
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 )

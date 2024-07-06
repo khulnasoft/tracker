@@ -3,7 +3,7 @@ package ebpf
 import (
 	"unsafe"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/policy"
@@ -18,7 +18,7 @@ const (
 // Order of fields is important, as it is used as a value for
 // the ConfigMap BPF map.
 type Config struct {
-	TrackerPid      uint32
+	TrackerPid       uint32
 	Options         uint32
 	CgroupV1Hid     uint32
 	_               uint16 // padding free for further use

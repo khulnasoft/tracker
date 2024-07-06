@@ -26,6 +26,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/containers"
 	"github.com/khulnasoft/tracker/pkg/containers/runtime"
 	"github.com/khulnasoft/tracker/pkg/logger"
+	trackerversion "github.com/khulnasoft/tracker/pkg/version"
 	"github.com/khulnasoft/tracker/types/trace"
 )
 
@@ -47,6 +48,28 @@ func InitNamespacesEvent() trace.Event {
 	}
 
 	return initNamespacesEvent
+}
+
+// TrackerInfoEvent exports data related to Tracker's initialization
+func TrackerInfoEvent(bootTime uint64, startTime uint64) trace.Event {
+	def := Core.GetDefinitionByID(TrackerInfo)
+	params := def.GetParams()
+	args := []trace.Argument{
+		{ArgMeta: params[0], Value: bootTime},
+		{ArgMeta: params[1], Value: startTime},
+		{ArgMeta: params[2], Value: trackerversion.GetVersion()},
+	}
+
+	trackerInfoEvent := trace.Event{
+		Timestamp:   int(time.Now().UnixNano()),
+		ProcessName: "tracker",
+		EventID:     int(def.GetID()),
+		EventName:   def.GetName(),
+		ArgsNum:     len(args),
+		Args:        args,
+	}
+
+	return trackerInfoEvent
 }
 
 // getInitNamespaceArguments fetches the namespaces of the init process and

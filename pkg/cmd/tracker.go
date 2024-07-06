@@ -18,10 +18,10 @@ import (
 
 type Runner struct {
 	TrackerConfig config.Config
-	Printer       printer.EventPrinter
-	InstallPath   string
-	HTTPServer    *http.Server
-	GRPCServer    *grpc.Server
+	Printer      printer.EventPrinter
+	InstallPath  string
+	HTTPServer   *http.Server
+	GRPCServer   *grpc.Server
 }
 
 func (r Runner) Run(ctx context.Context) error {

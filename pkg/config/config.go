@@ -13,9 +13,12 @@ import (
 	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
-// Config is a struct containing user defined configuration of tracker
+// Config is a struct containing user defined configuration to initialize Tracker
+//
+// NOTE: In the future, Tracker config will be changed at run time and will require
+// proper management.
 type Config struct {
-	Policies           *policy.Policies
+	InitialPolicies    []*policy.Policy
 	Capture            *CaptureConfig
 	Capabilities       *CapabilitiesConfig
 	Output             *OutputConfig

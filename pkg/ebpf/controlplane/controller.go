@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/khulnasoft-lab/libbpfgo"
+	"github.com/khulnasoft/libbpfgo"
 
 	"github.com/khulnasoft/tracker/pkg/containers"
 	"github.com/khulnasoft/tracker/pkg/events"
