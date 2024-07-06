@@ -5,8 +5,6 @@
 [prereqs]:https://khulnasoft.github.io/tracker/latest/docs/install/prerequisites/
 [macfaq]:https://khulnasoft.github.io/tracker/latest/docs/advanced/mac/
 
-Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
-
 ## About Tracker
 
 Tracker is a runtime security and observability tool that helps you understand how your system and applications behave.  
