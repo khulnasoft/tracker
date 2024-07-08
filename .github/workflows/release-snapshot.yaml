@@ -55,9 +55,7 @@ jobs:
       #   shell: bash
   release-snapshot-aarch64:
     name: Release Snapshot (aarch64)
-    runs-on: 
-      - ubuntu-latest
-      - EXECUTION_TYPE=LONG
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
