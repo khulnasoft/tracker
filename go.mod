@@ -15,6 +15,7 @@ require (
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/khulnasoft-lab/libbpfgo v1.0.0
+	github.com/khulnasoft/tracker/api v0.0.0-20240708064137-633bc5d3812e
 	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240708064137-633bc5d3812e
 	github.com/khulnasoft/tracker/types v0.0.0-20240708064137-633bc5d3812e
 	github.com/mennanov/fmutils v0.3.0
@@ -70,7 +71,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/khulnasoft-lab/libbpfgo/helpers v0.0.0-20240611152355-f6b0954e7163 // indirect
-	github.com/khulnasoft/tracker/api v0.0.0-20240708064137-633bc5d3812e // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
