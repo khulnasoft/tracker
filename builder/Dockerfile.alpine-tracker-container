@@ -1,9 +1,9 @@
 #
-# Creates the official tracee containers.
+# Creates the official tracker containers.
 #
 
 ARG BTFHUB=0
-ARG FLAVOR=tracee-ebpf-core
+ARG FLAVOR=tracker-ebpf-core
 
 #
 # Version
@@ -20,11 +20,11 @@ ARG OPA_VERSION=v0.63.0
 FROM openpolicyagent/opa:0.66.0-dev-static AS opa-extractor
 
 #
-# tracee-base
+# tracker-base
 #
 
-FROM alpine:3.19 AS tracee-base
-LABEL AS=tracee-base
+FROM alpine:3.19 AS tracker-base
+LABEL AS=tracker-base
 USER root
 
 # install base environment
@@ -45,11 +45,11 @@ RUN apk --no-cache update && \
 COPY --from=opa-extractor /opa /usr/bin/opa
 
 #
-# tracee-make-base
+# tracker-make-base
 #
 
-FROM tracee-base AS tracee-make-base
-LABEL AS=tracee-make-base
+FROM tracker-base AS tracker-make-base
+LABEL AS=tracker-make-base
 USER root
 
 # install needed environment
@@ -118,56 +118,56 @@ RUN cd /tmp && \
     ./3rdparty/bpftool.sh
 
 #
-# tracee-make
+# tracker-make
 #
 
-FROM tracee-make-base AS tracee-make
-LABEL AS=tracee-make
+FROM tracker-make-base AS tracker-make
+LABEL AS=tracker-make
 ARG BTFHUB
 USER root
-ENV HOME=/tracee
-WORKDIR /tracee
+ENV HOME=/tracker
+WORKDIR /tracker
 
-COPY . /tracee
+COPY . /tracker
 
 RUN source /etc/profile && \
     make clean && \
-    BTFHUB=$BTFHUB make tracee && \
-    BTFHUB=$BTFHUB make tracee-ebpf && \
-    make tracee-rules && \
-    make tracee-operator && \
+    BTFHUB=$BTFHUB make tracker && \
+    BTFHUB=$BTFHUB make tracker-ebpf && \
+    make tracker-rules && \
+    make tracker-operator && \
     make signatures && \
     rm -rf ./3rdparty/btfhub/ && \
     rm -rf ./3rdparty/btfhub-archive/
 
 #
-# tracee-core (tracee-base as base)
+# tracker-core (tracker-base as base)
 #
 
-FROM tracee-base AS tracee-core
-LABEL AS=tracee-core
+FROM tracker-base AS tracker-core
+LABEL AS=tracker-core
 USER root
-ENV HOME=/tracee
-WORKDIR /tracee
+ENV HOME=/tracker
+WORKDIR /tracker
 
 RUN apk --no-cache add mandoc
 
-COPY --from=tracee-make /tracee/dist/tracee /tracee
-COPY --from=tracee-make /tracee/dist/tracee-ebpf /tracee
-COPY --from=tracee-make /tracee/dist/tracee-rules /tracee
-COPY --from=tracee-make /tracee/dist/tracee-operator /tracee
-COPY --from=tracee-make /tracee/dist/signatures/ /tracee/signatures/
-COPY --from=tracee-make /tracee/docs/man/ /tracee/docs/man/
-COPY --from=tracee-make /tracee/builder/entrypoint.sh /tracee/entrypoint.sh
-COPY --from=tracee-make /tracee/cmd/tracee-rules/templates/ /tracee/templates/
+COPY --from=tracker-make /tracker/dist/tracker /tracker
+COPY --from=tracker-make /tracker/dist/tracker-ebpf /tracker
+COPY --from=tracker-make /tracker/dist/tracker-rules /tracker
+COPY --from=tracker-make /tracker/dist/tracker-operator /tracker
+COPY --from=tracker-make /tracker/dist/signatures/ /tracker/signatures/
+COPY --from=tracker-make /tracker/docs/man/ /tracker/docs/man/
+COPY --from=tracker-make /tracker/builder/entrypoint.sh /tracker/entrypoint.sh
+COPY --from=tracker-make /tracker/cmd/tracker-rules/templates/ /tracker/templates/
 
-ENTRYPOINT ["/tracee/entrypoint.sh"]
+ENTRYPOINT ["/tracker/entrypoint.sh"]
 
 #
-# tracee
+# tracker
 #
 
 FROM $FLAVOR
 USER root
-ENV HOME=/tracee
-WORKDIR /tracee
+ENV HOME=/tracker
+WORKDIR /tracker

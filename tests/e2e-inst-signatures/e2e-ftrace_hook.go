@@ -33,7 +33,7 @@ func (sig *e2eFtraceHook) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eFtraceHook) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "ftrace_hook"},
+		{Source: "tracker", Name: "ftrace_hook"},
 	}, nil
 }
 

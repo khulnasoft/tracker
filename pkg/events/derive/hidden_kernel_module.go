@@ -84,12 +84,12 @@ func deriveHiddenKernelModulesArgs() multiDeriveArgsFunction {
 			}
 			return nil, nil
 		} else if flags&kset != 0 || flags&modTree != 0 {
-			// These types of scan only happens once on tracee's startup.
+			// These types of scan only happens once on tracker's startup.
 			// Cache results and only send them out when receiving that the history scan finished successfully
 			eventsFromHistoryScan.Add(&event, struct{}{})
 			return nil, nil
 		} else if flags&historyScanFinished != 0 {
-			// Happens only once on tracee's startup when the scan finished (successfully/unsuccessfully)
+			// Happens only once on tracker's startup when the scan finished (successfully/unsuccessfully)
 			return handleHistoryScanFinished(address)
 		}
 
@@ -185,7 +185,7 @@ func extractFromEvent(args []trace.Argument, address uint64) []interface{} {
 	return []interface{}{addrHex, name, srcversion}
 }
 
-// newModsCheckForHidden monitors only new added modules (added while tracee is
+// newModsCheckForHidden monitors only new added modules (added while tracker is
 // running), and reports if they are hidden
 func newModsCheckForHidden(startScanTime uint64, flags uint32) error {
 	// Since in old kernels it is not possible to iterate on a hashmap, the job

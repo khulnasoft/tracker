@@ -9,13 +9,13 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/logger"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/pkg/utils/proc"
 )
 
 const debugMsgs = false                         // debug messages can be too verbose, so they are disabled by default
-const ProcfsClockId = traceetime.CLOCK_BOOTTIME // Procfs uses jiffies, which are based on boottime
+const ProcfsClockId = trackertime.CLOCK_BOOTTIME // Procfs uses jiffies, which are based on boottime
 
 const (
 	AllPIDs = 0
@@ -109,7 +109,7 @@ func getProcessByPID(pt *ProcessTree, givenPid int) (*Process, error) {
 		return nil, errfmt.Errorf("%v", err)
 	}
 
-	startTimeNs := traceetime.ClockTicksToNsSinceBootTime(stat.StartTime)
+	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(stat.StartTime)
 	hash := utils.HashTaskID(uint32(status.GetPid()), startTimeNs) // status pid == tid
 
 	return pt.GetOrCreateProcessByHash(hash), nil
@@ -151,7 +151,7 @@ func dealWithProc(pt *ProcessTree, givenPid int) error {
 	}
 
 	// process hash
-	startTimeNs := traceetime.ClockTicksToNsSinceBootTime(start)
+	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(start)
 	hash := utils.HashTaskID(uint32(pid), startTimeNs)
 
 	// update tree for the given process
@@ -182,7 +182,7 @@ func dealWithProc(pt *ProcessTree, givenPid int) error {
 			Gid:         -1,     // do not change the parent gid
 			StartTimeNS: procfsTimeStamp,
 		},
-		traceetime.NsSinceEpochToTime(procfsTimeStamp), // try to be the first changelog entry
+		trackertime.NsSinceEpochToTime(procfsTimeStamp), // try to be the first changelog entry
 	)
 
 	// TODO: Update executable with information from /proc/<pid>/exe
@@ -226,7 +226,7 @@ func dealWithThread(pt *ProcessTree, givenPid int, givenTid int) error {
 	}
 
 	// thread hash
-	startTimeNs := traceetime.ClockTicksToNsSinceBootTime(start)
+	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(start)
 	hash := utils.HashTaskID(uint32(pid), startTimeNs)
 
 	// update tree for the given thread
@@ -253,7 +253,7 @@ func dealWithThread(pt *ProcessTree, givenPid int, givenTid int) error {
 			Gid:         -1,     // do not change the parent gid
 			StartTimeNS: procfsTimeStamp,
 		},
-		traceetime.NsSinceEpochToTime(procfsTimeStamp), // try to be the first changelog entry
+		trackertime.NsSinceEpochToTime(procfsTimeStamp), // try to be the first changelog entry
 	)
 
 	// thread group leader (leader tid is the same as the thread's pid, so we can find it)

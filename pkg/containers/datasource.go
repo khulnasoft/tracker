@@ -66,7 +66,7 @@ func (ctx SignaturesDataSource) Version() uint {
 }
 
 func (ctx SignaturesDataSource) Namespace() string {
-	return "tracee"
+	return "tracker"
 }
 
 func (ctx SignaturesDataSource) ID() string {

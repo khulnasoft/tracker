@@ -58,7 +58,7 @@ func (sig *e2eProcessTreeDataSource) GetSelectedEvents() (
 	[]detect.SignatureEventSelector, error,
 ) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "sched_process_exec", Origin: "*"},
+		{Source: "tracker", Name: "sched_process_exec", Origin: "*"},
 	}, nil
 }
 
@@ -72,7 +72,7 @@ func (sig *e2eProcessTreeDataSource) OnEvent(event protocol.Event) error {
 	switch eventObj.EventName {
 	case "sched_process_exec":
 		// ATTENTION: In order to have all the information in the data source, this signature needs
-		// that tracee is running with the following flags:
+		// that tracker is running with the following flags:
 		//
 		// * --output option:sort-events
 		// * --proctree source=both

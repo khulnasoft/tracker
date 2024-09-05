@@ -216,7 +216,7 @@ enum context_flags_e
 enum container_state_e
 {
     CONTAINER_UNKNOWN = 0, // mark that container state is unknown
-    CONTAINER_EXISTED,     // container existed before tracee was started
+    CONTAINER_EXISTED,     // container existed before tracker was started
     CONTAINER_CREATED,     // new cgroup path created
     CONTAINER_STARTED      // a process in the cgroup executed a new binary
 };
@@ -254,7 +254,7 @@ typedef struct io_data {
 } io_data_t;
 
 typedef struct proc_info {
-    bool new_proc;        // set if this process was started after tracee. Used with new_pid filter
+    bool new_proc;        // set if this process was started after tracker. Used with new_pid filter
     u64 follow_in_scopes; // set if this process was traced before. Used with the follow filter
     struct binary binary;
     u32 binary_no_mnt; // used in binary lookup when we don't care about mount ns. always 0.
@@ -338,7 +338,7 @@ typedef struct policies_config {
 } policies_config_t;
 
 typedef struct config_entry {
-    u32 tracee_pid;
+    u32 tracker_pid;
     u32 options;
     u32 cgroup_v1_hid;
     u16 padding; // free for further use
@@ -408,7 +408,7 @@ enum bpf_log_id
 {
     BPF_LOG_ID_UNSPEC = 0U, // enforce enum to u32
 
-    // tracee functions
+    // tracker functions
     BPF_LOG_ID_INIT_CONTEXT,
 
     // bpf helpers functions

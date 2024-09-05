@@ -34,7 +34,7 @@ Kprobe + Kretprobe
 To trace all invocation of `io_pgetevents_time32` and get the context of each invocation.
 
 ## Example Use Case
-This system call can be used to test the responsiveness of a tracee. For example, when checking if a given process is unresponsive or hangs.
+This system call can be used to test the responsiveness of a tracker. For example, when checking if a given process is unresponsive or hangs.
 
 ## Issues
 This system call is vulnerable to Time Of Check/Time Of Use (TOCTOU) race conditions. 

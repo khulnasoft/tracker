@@ -7,13 +7,13 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-capture** - Capture artifacts that were written, executed, or found to be suspicious
+tracker **\-\-capture** - Capture artifacts that were written, executed, or found to be suspicious
 
 ## SYNOPSIS
 
-tracee **\-\-capture** <[artifact:]capture-option[=value]\> ...
+tracker **\-\-capture** <[artifact:]capture-option[=value]\> ...
 
-tracee **\-\-capture** <network\> [**\-\-capture** [pcap:option1(,option2...)|pcap-options:option|pcap-snaplen:size]] ...
+tracker **\-\-capture** <network\> [**\-\-capture** [pcap:option1(,option2...)|pcap-options:option|pcap-snaplen:size]] ...
 
 ## DESCRIPTION
 

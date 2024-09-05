@@ -42,7 +42,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/proctree"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
 	"github.com/khulnasoft/tracker/pkg/streams"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/pkg/utils/environment"
 	"github.com/khulnasoft/tracker/pkg/utils/proc"
@@ -51,7 +51,7 @@ import (
 )
 
 const (
-	pkgName          = "tracee"
+	pkgName          = "tracker"
 	maxMemDumpLength = 127
 )
 
@@ -125,11 +125,11 @@ type Tracker struct {
 	// The dependencies of events used by Tracker
 	eventsDependencies *dependencies.Manager
 	// Ksymbols needed to be kept alive in table.
-	// This does not mean they are required for tracee to function.
+	// This does not mean they are required for tracker to function.
 	// TODO: remove this in favor of dependency manager nodes
 	requiredKsyms []string
 	// Time for normalization
-	timeNormalizer traceetime.TimeNormalizer
+	timeNormalizer trackertime.TimeNormalizer
 }
 
 func (t *Tracker) Stats() *metrics.Stats {
@@ -202,7 +202,7 @@ func (t *Tracker) selectEvent(eventID events.ID, chosenState events.EventState) 
 	t.addDependenciesToStateRecursive(eventNode)
 }
 
-// addDependencyEventToState adds to tracee's state an event that is a dependency of other events.
+// addDependencyEventToState adds to tracker's state an event that is a dependency of other events.
 // The difference from chosen events is that it doesn't affect its eviction.
 func (t *Tracker) addDependencyEventToState(evtID events.ID, dependentEvts []events.ID) {
 	newState := events.EventState{}
@@ -415,7 +415,7 @@ func New(cfg config.Config) (*Tracker, error) {
 	return t, nil
 }
 
-// Init initialize tracee instance and it's various subsystems, potentially
+// Init initialize tracker instance and it's various subsystems, potentially
 // performing external system operations to initialize them.
 // NOTE: any initialization logic, especially one that causes side effects
 // should go here and not New().
@@ -542,7 +542,7 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 
 	// Checking the kernel symbol needs to happen after obtaining the capability;
 	// otherwise, we get a warning.
-	usedClockID := traceetime.CLOCK_BOOTTIME
+	usedClockID := trackertime.CLOCK_BOOTTIME
 	err = capabilities.GetInstance().EBPF(
 		func() error {
 			supported, innerErr := bpf.BPFHelperIsSupported(bpf.BPFProgTypeKprobe, bpf.BPFFuncKtimeGetBootNs)
@@ -554,7 +554,7 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 
 			// If BPFFuncKtimeGetBootNs is not available, eBPF will generate events based on monotonic time.
 			if !supported {
-				usedClockID = traceetime.CLOCK_MONOTONIC
+				usedClockID = trackertime.CLOCK_MONOTONIC
 			}
 			return nil
 		})
@@ -563,11 +563,11 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 	}
 
 	// elapsed time in nanoseconds since system start
-	t.startTime = uint64(traceetime.GetStartTimeNS(int32(usedClockID)))
+	t.startTime = uint64(trackertime.GetStartTimeNS(int32(usedClockID)))
 	// time in nanoseconds when the system was booted
-	t.bootTime = uint64(traceetime.GetBootTimeNS(int32(usedClockID)))
+	t.bootTime = uint64(trackertime.GetBootTimeNS(int32(usedClockID)))
 
-	t.timeNormalizer = traceetime.CreateTimeNormalizerByConfig(t.config.Output.RelativeTime, t.startTime, t.bootTime)
+	t.timeNormalizer = trackertime.CreateTimeNormalizerByConfig(t.config.Output.RelativeTime, t.startTime, t.bootTime)
 
 	// Initialize Process Tree (if enabled)
 
@@ -575,7 +575,7 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		// As procfs use boot time to calculate process start time, we can use the procfs
 		// only if the times we get from the eBPF programs are based on the boot time (instead of monotonic).
 		proctreeConfig := t.config.ProcTree
-		if usedClockID == traceetime.CLOCK_MONOTONIC {
+		if usedClockID == trackertime.CLOCK_MONOTONIC {
 			proctreeConfig.ProcfsInitialization = false
 			proctreeConfig.ProcfsQuerying = false
 		}
@@ -702,7 +702,7 @@ func (t *Tracker) initTailCall(tailCall events.TailCall) error {
 	return nil
 }
 
-// initDerivationTable initializes tracee's events.DerivationTable. For each
+// initDerivationTable initializes tracker's events.DerivationTable. For each
 // event, represented through its ID, we declare to which other events it can be
 // derived and the corresponding function to derive into that Event.
 func (t *Tracker) initDerivationTable() error {
@@ -1610,20 +1610,20 @@ func updateCaptureMapFile(fileDir *os.File, filePath string, capturedFiles map[s
 
 // Close cleans up created resources
 func (t *Tracker) Close() {
-	// clean up (unsubscribe) all streams connected if tracee is done
+	// clean up (unsubscribe) all streams connected if tracker is done
 	if t.streamsManager != nil {
 		t.streamsManager.Close()
 	}
 	if t.controlPlane != nil {
 		err := t.controlPlane.Stop()
 		if err != nil {
-			logger.Errorw("failed to stop control plane when closing tracee", "err", err)
+			logger.Errorw("failed to stop control plane when closing tracker", "err", err)
 		}
 	}
 	if t.probes != nil {
 		err := t.probes.DetachAll()
 		if err != nil {
-			logger.Errorw("failed to detach probes when closing tracee", "err", err)
+			logger.Errorw("failed to detach probes when closing tracker", "err", err)
 		}
 	}
 	if t.bpfModule != nil {
@@ -1632,7 +1632,7 @@ func (t *Tracker) Close() {
 	if t.containers != nil {
 		err := t.containers.Close()
 		if err != nil {
-			logger.Errorw("failed to clean containers module when closing tracee", "err", err)
+			logger.Errorw("failed to clean containers module when closing tracker", "err", err)
 		}
 	}
 	if err := t.cgroups.Destroy(); err != nil {
@@ -1644,7 +1644,7 @@ func (t *Tracker) Close() {
 	close(t.done)
 }
 
-// Running returns true if the tracee is running
+// Running returns true if the tracker is running
 func (t *Tracker) Running() bool {
 	return t.running.Load()
 }
@@ -1662,7 +1662,7 @@ func (t *Tracker) computeOutFileHash(fileName string) (string, error) {
 	return filehash.ComputeFileHash(f)
 }
 
-// getSelfLoadedPrograms returns a map of all programs loaded by tracee.
+// getSelfLoadedPrograms returns a map of all programs loaded by tracker.
 func (t *Tracker) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
 	selfLoadedPrograms := map[string]int{} // map k: symbol name, v: number of hooks
 
@@ -1765,9 +1765,9 @@ func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
 
 	matchedPolicies = policiesMatch(t.eventsState[events.TrackerInfo])
 	if matchedPolicies > 0 {
-		traceeDataEvent := events.TrackerInfoEvent(t.bootTime, t.startTime)
-		setMatchedPolicies(&traceeDataEvent, matchedPolicies, t.policyManager)
-		out <- &traceeDataEvent
+		trackerDataEvent := events.TrackerInfoEvent(t.bootTime, t.startTime)
+		setMatchedPolicies(&trackerDataEvent, matchedPolicies, t.policyManager)
+		out <- &trackerDataEvent
 		_ = t.stats.EventCount.Increment()
 	}
 
@@ -1801,7 +1801,7 @@ func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
 		logger.Debugw("started ftraceHook goroutine")
 
 		// TODO: Ideally, this should be inside the goroutine and be computed before each run,
-		// as in the future tracee events may be changed in run time.
+		// as in the future tracker events may be changed in run time.
 		// Currently, moving it inside the goroutine leads to a circular importing due to
 		// eventsState (which is used inside the goroutine).
 		// eventsState is planned to be removed, and this call should move inside the routine
@@ -1975,14 +1975,14 @@ func (t *Tracker) triggerMemDump(event trace.Event) []error {
 	return errs
 }
 
-// AddReadyCallback sets a callback function to be called when the tracee started all its probes
+// AddReadyCallback sets a callback function to be called when the tracker started all its probes
 // and is ready to receive events
 func (t *Tracker) AddReadyCallback(f func(ctx gocontext.Context)) {
 	t.readyCallback = f
 }
 
 // ready executes the ready callback if it was set.
-// doesn't block the execution of the tracee
+// doesn't block the execution of the tracker
 func (t *Tracker) ready(ctx gocontext.Context) {
 	if t.readyCallback != nil {
 		go t.readyCallback(ctx)

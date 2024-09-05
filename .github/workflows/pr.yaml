@@ -195,11 +195,11 @@ jobs:
       - name: Build Tracker Benchmark Tool
         run: |
           make clean
-          make tracee-bench
+          make tracker-bench
       - name: Build Tracker GPT Docs Tool
         run: |
           make clean
-          make tracee-gptdocs
+          make tracker-gptdocs
       - name: Build E2E Network Signatures
         run: |
           make clean

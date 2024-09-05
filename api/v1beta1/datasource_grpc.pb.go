@@ -36,7 +36,7 @@ func NewDataSourceServiceClient(cc grpc.ClientConnInterface) DataSourceServiceCl
 
 func (c *dataSourceServiceClient) Write(ctx context.Context, in *WriteDataSourceRequest, opts ...grpc.CallOption) (*WriteDataSourceResponse, error) {
 	out := new(WriteDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/tracee.v1beta1.DataSourceService/Write", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracker.v1beta1.DataSourceService/Write", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (c *dataSourceServiceClient) Write(ctx context.Context, in *WriteDataSource
 }
 
 func (c *dataSourceServiceClient) WriteStream(ctx context.Context, opts ...grpc.CallOption) (DataSourceService_WriteStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &DataSourceService_ServiceDesc.Streams[0], "/tracee.v1beta1.DataSourceService/WriteStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &DataSourceService_ServiceDesc.Streams[0], "/tracker.v1beta1.DataSourceService/WriteStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func _DataSourceService_Write_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracee.v1beta1.DataSourceService/Write",
+		FullMethod: "/tracker.v1beta1.DataSourceService/Write",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DataSourceServiceServer).Write(ctx, req.(*WriteDataSourceRequest))
@@ -157,7 +157,7 @@ func (x *dataSourceServiceWriteStreamServer) Recv() (*WriteDataSourceRequest, er
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DataSourceService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tracee.v1beta1.DataSourceService",
+	ServiceName: "tracker.v1beta1.DataSourceService",
 	HandlerType: (*DataSourceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

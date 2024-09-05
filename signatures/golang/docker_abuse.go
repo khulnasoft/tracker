@@ -43,8 +43,8 @@ func (sig *DockerAbuse) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *DockerAbuse) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "container"},
-		{Source: "tracee", Name: "security_socket_connect", Origin: "container"},
+		{Source: "tracker", Name: "security_file_open", Origin: "container"},
+		{Source: "tracker", Name: "security_socket_connect", Origin: "container"},
 	}, nil
 }
 

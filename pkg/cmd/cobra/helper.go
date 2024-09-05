@@ -2,7 +2,7 @@ package cobra
 
 import (
 	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/policy"
 	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
 )

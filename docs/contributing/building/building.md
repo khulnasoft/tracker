@@ -3,7 +3,7 @@
 !!! Note
     Consider also visiting the following instructions:  
     1. docker container as [building environment](./environment.md)  
-    2. building tracee [container images](./containers.md)  
+    2. building tracker [container images](./containers.md)  
 
 1. Supported **Architectures**
 
@@ -30,14 +30,14 @@
     >
     > Those are very good examples for you to replicate a working environment.
 
-3. **Clone** [tracee repository](https://github.com/khulnasoft/tracker/)
+3. **Clone** [tracker repository](https://github.com/khulnasoft/tracker/)
 
     ```console
     git clone git@github.com:khulnasoft/tracker
     ```
 
     ```text
-    Cloning into 'tracee'...
+    Cloning into 'tracker'...
     remote: Enumerating objects: 13251, done.
     remote: Counting objects: 100% (555/555), done.
     remote: Compressing objects: 100% (240/240), done.
@@ -59,32 +59,32 @@
 
     # build
 
-        $ make all                      # build tracee-ebpf, tracee-rules & signatures
-        $ make bpf                      # build ./dist/tracee.bpf.o
-        $ make tracee-ebpf              # build ./dist/tracee-ebpf
-        $ make tracee-rules             # build ./dist/tracee-rules
-        $ make tracee-bench             # build ./dist/tracee-bench
+        $ make all                      # build tracker-ebpf, tracker-rules & signatures
+        $ make bpf                      # build ./dist/tracker.bpf.o
+        $ make tracker-ebpf              # build ./dist/tracker-ebpf
+        $ make tracker-rules             # build ./dist/tracker-rules
+        $ make tracker-bench             # build ./dist/tracker-bench
         $ make signatures               # build ./dist/signatures
         $ make e2e-net-signatures       # build ./dist/e2e-net-signatures
         $ make e2e-inst-signatures      # build ./dist/e2e-inst-signatures
-        $ make tracee                   # build ./dist/tracee
+        $ make tracker                   # build ./dist/tracker
 
     # clean
 
         $ make clean                    # wipe ./dist/
-        $ make clean-bpf                # wipe ./dist/tracee.bpf.o
-        $ make clean-tracee-ebpf        # wipe ./dist/tracee-ebpf
-        $ make clean-tracee-rules       # wipe ./dist/tracee-rules
-        $ make clean-tracee-bench       # wipe ./dist/tracee-bench
+        $ make clean-bpf                # wipe ./dist/tracker.bpf.o
+        $ make clean-tracker-ebpf        # wipe ./dist/tracker-ebpf
+        $ make clean-tracker-rules       # wipe ./dist/tracker-rules
+        $ make clean-tracker-bench       # wipe ./dist/tracker-bench
         $ make clean-signatures         # wipe ./dist/signatures
-        $ make clean-tracee             # wipe ./dist/tracee
+        $ make clean-tracker             # wipe ./dist/tracker
 
     # test
 
         $ make test-unit                # run unit tests
         $ make test-types               # run unit tests for types module
         $ make test-integration         # run integration tests
-        $ make test-signatures          # opa test (tracee-rules)
+        $ make test-signatures          # opa test (tracker-rules)
 
     # flags
 
@@ -101,7 +101,7 @@
 
     ```text
     Submodule 'libbpf' (https://github.com/libbpf/libbpf.git) registered for path '3rdparty/libbpf'
-    Cloning into '/home/rafaeldtinoco/tracee/3rdparty/libbpf'...
+    Cloning into '/home/rafaeldtinoco/tracker/3rdparty/libbpf'...
     mkdir -p dist/signatures
     GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS= CGO_LDFLAGS= go build \
         --buildmode=plugin \
@@ -122,8 +122,8 @@
         make \
         -C ./3rdparty/libbpf/src \
         BUILD_STATIC_ONLY=1 \
-        DESTDIR=/home/rafaeldtinoco/tracee/dist/libbpf \
-        OBJDIR=/home/rafaeldtinoco/tracee/dist/libbpf/obj \
+        DESTDIR=/home/rafaeldtinoco/tracker/dist/libbpf \
+        OBJDIR=/home/rafaeldtinoco/tracker/dist/libbpf/obj \
         INCLUDEDIR= LIBDIR= UAPIDIR= prefix= libdir= \
         install install_uapi_headers
     ...
@@ -136,14 +136,14 @@
     ```
 
     ```text
-    Cloning into '/home/rafaeldtinoco/tracee/3rdparty/btfhub'...
+    Cloning into '/home/rafaeldtinoco/tracker/3rdparty/btfhub'...
     remote: Enumerating objects: 205, done.
     remote: Counting objects: 100% (16/16), done.
     remote: Compressing objects: 100% (12/12), done.
     remote: Total 205 (delta 4), reused 10 (delta 3), pack-reused 189
     Receiving objects: 100% (205/205), 10.59 MiB | 7.56 MiB/s, done.
     Resolving deltas: 100% (73/73), done.
-    Cloning into '/home/rafaeldtinoco/tracee/3rdparty/btfhub-archive'...
+    Cloning into '/home/rafaeldtinoco/tracker/3rdparty/btfhub-archive'...
     remote: Enumerating objects: 1993, done.
     remote: Counting objects: 100% (28/28), done.
     remote: Compressing objects: 100% (23/23), done.
@@ -152,16 +152,16 @@
 
     !!! Note
         BTFHUB support will embed several very small files (BTF files) into your
-        final binary. Those files will allow **tracee** binary to be executed
+        final binary. Those files will allow **tracker** binary to be executed
         in kernels that doesn't have embedded BTF information (the ones described
         at the BTFHUB repository)
 
     !!! Attention
-        compiling `tracee-rules` with STATIC=1 won't allow you to use golang based
+        compiling `tracker-rules` with STATIC=1 won't allow you to use golang based
         signatures as plugins, only as built-ins:
         >```text
-        >2021/12/13 13:27:21 error opening plugin /tracee/dist/signatures/builtin.so:
-        >plugin.Open("/tracee/dist/signatures/builtin.so"): Dynamic loading not supported
+        >2021/12/13 13:27:21 error opening plugin /tracker/dist/signatures/builtin.so:
+        >plugin.Open("/tracker/dist/signatures/builtin.so"): Dynamic loading not supported
         >```
 
 8. Build a **debugable binary** with DWARF generation by setting `DEBUG=1`
@@ -171,12 +171,12 @@
     ```
     
     ```text
-    GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS="-I/home/gg/code/tracee/dist/libbpf" CGO_LDFLAGS="-lelf  -lz  /home/gg/code/tracee/dist/libbpf/libbpf.a" go build \
+    GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS="-I/home/gg/code/tracker/dist/libbpf" CGO_LDFLAGS="-lelf  -lz  /home/gg/code/tracker/dist/libbpf/libbpf.a" go build \
         -tags core,ebpf \
         -ldflags=" \
              -extldflags \"\" \
              -X main.version=\"v0.8.0-107-g121efeb\" \
             " \
-        -v -o dist/tracee \
-       ./cmd/tracee
+        -v -o dist/tracker \
+       ./cmd/tracker
     ```

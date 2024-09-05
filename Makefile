@@ -1,5 +1,5 @@
 .PHONY: all | env
-all: tracee-ebpf tracee-rules signatures tracee
+all: tracker-ebpf tracker-rules signatures tracker
 
 #
 # make
@@ -286,35 +286,35 @@ help:
 	@echo ""
 	@echo "# build"
 	@echo ""
-	@echo "    $$ make all                      # build tracee-ebpf, tracee-rules & signatures"
-	@echo "    $$ make bpf                      # build ./dist/tracee.bpf.o"
-	@echo "    $$ make tracee-ebpf              # build ./dist/tracee-ebpf"
-	@echo "    $$ make tracee-rules             # build ./dist/tracee-rules"
-	@echo "    $$ make tracee-bench             # build ./dist/tracee-bench"
-	@echo "    $$ make tracee-gptdocs           # build ./dist/tracee-gptdocs"
+	@echo "    $$ make all                      # build tracker-ebpf, tracker-rules & signatures"
+	@echo "    $$ make bpf                      # build ./dist/tracker.bpf.o"
+	@echo "    $$ make tracker-ebpf              # build ./dist/tracker-ebpf"
+	@echo "    $$ make tracker-rules             # build ./dist/tracker-rules"
+	@echo "    $$ make tracker-bench             # build ./dist/tracker-bench"
+	@echo "    $$ make tracker-gptdocs           # build ./dist/tracker-gptdocs"
 	@echo "    $$ make signatures               # build ./dist/signatures"
 	@echo "    $$ make e2e-net-signatures       # build ./dist/e2e-net-signatures"
 	@echo "    $$ make e2e-inst-signatures      # build ./dist/e2e-inst-signatures"
-	@echo "    $$ make tracee                   # build ./dist/tracee"
-	@echo "    $$ make tracee-operator          # build ./dist/tracee-operator"
+	@echo "    $$ make tracker                   # build ./dist/tracker"
+	@echo "    $$ make tracker-operator          # build ./dist/tracker-operator"
 	@echo ""
 	@echo "# clean"
 	@echo ""
 	@echo "    $$ make clean                    # wipe ./dist/"
-	@echo "    $$ make clean-bpf                # wipe ./dist/tracee.bpf.o"
-	@echo "    $$ make clean-tracee-ebpf        # wipe ./dist/tracee-ebpf"
-	@echo "    $$ make clean-tracee-rules       # wipe ./dist/tracee-rules"
-	@echo "    $$ make clean-tracee-bench       # wipe ./dist/tracee-bench"
+	@echo "    $$ make clean-bpf                # wipe ./dist/tracker.bpf.o"
+	@echo "    $$ make clean-tracker-ebpf        # wipe ./dist/tracker-ebpf"
+	@echo "    $$ make clean-tracker-rules       # wipe ./dist/tracker-rules"
+	@echo "    $$ make clean-tracker-bench       # wipe ./dist/tracker-bench"
 	@echo "    $$ make clean-signatures         # wipe ./dist/signatures"
-	@echo "    $$ make clean-tracee             # wipe ./dist/tracee"
-	@echo "    $$ make clean-tracee-operator    # wipe ./dist/tracee-operator"
+	@echo "    $$ make clean-tracker             # wipe ./dist/tracker"
+	@echo "    $$ make clean-tracker-operator    # wipe ./dist/tracker-operator"
 	@echo ""
 	@echo "# test"
 	@echo ""
 	@echo "    $$ make test-unit                # run unit tests"
 	@echo "    $$ make test-types               # run unit tests for types module"
 	@echo "    $$ make test-integration         # run integration tests"
-	@echo "    $$ make test-signatures          # opa test (tracee-rules)"
+	@echo "    $$ make test-signatures          # opa test (tracker-rules)"
 	@echo ""
 	@echo "# flags"
 	@echo ""
@@ -411,13 +411,13 @@ endif
 # ebpf object
 #
 
-TRACKER_EBPF_OBJ_SRC = ./pkg/ebpf/c/tracee.bpf.c
+TRACKER_EBPF_OBJ_SRC = ./pkg/ebpf/c/tracker.bpf.c
 TRACKER_EBPF_OBJ_HEADERS = $(shell find pkg/ebpf/c -name *.h)
 
 .PHONY: bpf
-bpf: $(OUTPUT_DIR)/tracee.bpf.o
+bpf: $(OUTPUT_DIR)/tracker.bpf.o
 
-$(OUTPUT_DIR)/tracee.bpf.o: \
+$(OUTPUT_DIR)/tracker.bpf.o: \
 	$(LIBBPF_OBJ) \
 	$(TRACKER_EBPF_OBJ_SRC) \
 	$(TRACKER_EBPF_OBJ_HEADERS)
@@ -438,7 +438,7 @@ $(OUTPUT_DIR)/tracee.bpf.o: \
 .PHONY: clean-bpf
 clean-bpf:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee.bpf.o
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker.bpf.o
 
 #
 # common variables
@@ -463,7 +463,7 @@ SH_BTFHUB = ./3rdparty/btfhub.sh
 
 .PHONY: btfhub
 btfhub: \
-	$(OUTPUT_DIR)/tracee.bpf.o \
+	$(OUTPUT_DIR)/tracker.bpf.o \
 	| .check_$(CMD_MD5)
 #
 ifeq ($(BTFHUB), 1)
@@ -479,14 +479,14 @@ ifeq ($(BTFHUB), 1)
 endif
 
 #
-# tracee (single binary)
+# tracker (single binary)
 #
 
-.PHONY: tracee
-tracee: $(OUTPUT_DIR)/tracee
+.PHONY: tracker
+tracker: $(OUTPUT_DIR)/tracker
 
-$(OUTPUT_DIR)/tracee: \
-	$(OUTPUT_DIR)/tracee.bpf.o \
+$(OUTPUT_DIR)/tracker: \
+	$(OUTPUT_DIR)/tracker.bpf.o \
 	$(TRACKER_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
@@ -503,23 +503,23 @@ $(OUTPUT_DIR)/tracee: \
 			-X github.com/khulnasoft/tracker/pkg/version.version=$(VERSION) \
 			" \
 		-v -o $@ \
-		./cmd/tracee
+		./cmd/tracker
 
-.PHONY: clean-tracee
-clean-tracee:
+.PHONY: clean-tracker
+clean-tracker:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker
 	$(CMD_RM) -rf .*.md5
 
 #
-# tracee-ebpf (deprecated)
+# tracker-ebpf (deprecated)
 #
 
-.PHONY: tracee-ebpf
-tracee-ebpf: $(OUTPUT_DIR)/tracee-ebpf
+.PHONY: tracker-ebpf
+tracker-ebpf: $(OUTPUT_DIR)/tracker-ebpf
 
-$(OUTPUT_DIR)/tracee-ebpf: \
-	$(OUTPUT_DIR)/tracee.bpf.o \
+$(OUTPUT_DIR)/tracker-ebpf: \
+	$(OUTPUT_DIR)/tracker.bpf.o \
 	$(TRACKER_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
@@ -535,25 +535,25 @@ $(OUTPUT_DIR)/tracee-ebpf: \
 			-X main.version=\"$(VERSION)\" \
 			" \
 		-v -o $@ \
-		./cmd/tracee-ebpf
+		./cmd/tracker-ebpf
 
-.PHONY: clean-tracee-ebpf
-clean-tracee-ebpf:
+.PHONY: clean-tracker-ebpf
+clean-tracker-ebpf:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-ebpf
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-ebpf
 	$(CMD_RM) -rf .*.md5
 
 #
-# tracee-rules (deprecated)
+# tracker-rules (deprecated)
 #
 
-TRACKER_RULES_SRC_DIRS = ./cmd/tracee-rules/ ./pkg/signatures/
+TRACKER_RULES_SRC_DIRS = ./cmd/tracker-rules/ ./pkg/signatures/
 TRACKER_RULES_SRC=$(shell find $(TRACKER_RULES_SRC_DIRS) -type f -name '*.go')
 
-.PHONY: tracee-rules
-tracee-rules: $(OUTPUT_DIR)/tracee-rules
+.PHONY: tracker-rules
+tracker-rules: $(OUTPUT_DIR)/tracker-rules
 
-$(OUTPUT_DIR)/tracee-rules: \
+$(OUTPUT_DIR)/tracker-rules: \
 	$(TRACKER_RULES_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
@@ -566,12 +566,12 @@ $(OUTPUT_DIR)/tracee-rules: \
 			-extldflags \"$(CGO_EXT_LDFLAGS_RULES)\" \
 			" \
 		-v -o $@ \
-		./cmd/tracee-rules
+		./cmd/tracker-rules
 
-.PHONY: clean-tracee-rules
-clean-tracee-rules:
+.PHONY: clean-tracker-rules
+clean-tracker-rules:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-rules
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-rules
 
 #
 # signatures
@@ -621,45 +621,45 @@ clean-signatures:
 # other commands
 #
 
-# tracee-bench
+# tracker-bench
 
-TRACKER_BENCH_SRC_DIRS = ./cmd/tracee-bench/
+TRACKER_BENCH_SRC_DIRS = ./cmd/tracker-bench/
 TRACKER_BENCH_SRC = $(shell find $(TRACKER_BENCH_SRC_DIRS) \
 			-type f \
 			-name '*.go' \
 			! -name '*_test.go' \
 			)
 
-.PHONY: tracee-bench
-tracee-bench: $(OUTPUT_DIR)/tracee-bench
+.PHONY: tracker-bench
+tracker-bench: $(OUTPUT_DIR)/tracker-bench
 
-$(OUTPUT_DIR)/tracee-bench: \
+$(OUTPUT_DIR)/tracker-bench: \
 	$(TRACKER_BENCH_SRC) \
 	| .checkver_$(CMD_GO) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_GO) build \
 		-v -o $@ \
-		./cmd/tracee-bench
+		./cmd/tracker-bench
 
-.PHONY: clean-tracee-bench
-clean-tracee-bench:
+.PHONY: clean-tracker-bench
+clean-tracker-bench:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-bench
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-bench
 
-# tracee-gptdocs
+# tracker-gptdocs
 
-TRACKER_GPTDOCS_SRC_DIRS = ./cmd/tracee-gptdocs/ ./pkg/cmd/
+TRACKER_GPTDOCS_SRC_DIRS = ./cmd/tracker-gptdocs/ ./pkg/cmd/
 TRACKER_GPTDOCS_SRC = $(shell find $(TRACKER_GPTDOCS_SRC_DIRS) \
 			-type f \
 			-name '*.go' \
 			! -name '*_test.go' \
 			)
 
-.PHONY: tracee-gptdocs
-tracee-gptdocs: $(OUTPUT_DIR)/tracee-gptdocs
+.PHONY: tracker-gptdocs
+tracker-gptdocs: $(OUTPUT_DIR)/tracker-gptdocs
 
-$(OUTPUT_DIR)/tracee-gptdocs: \
+$(OUTPUT_DIR)/tracker-gptdocs: \
 	$(TRACKER_GPTDOCS_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
@@ -675,12 +675,12 @@ $(OUTPUT_DIR)/tracee-gptdocs: \
 			-X main.version=\"$(VERSION)\" \
 			" \
 		-v -o $@ \
-		./cmd/tracee-gptdocs
+		./cmd/tracker-gptdocs
 
-.PHONY: clean-tracee-gptdocs
-clean-tracee-gptdocs:
+.PHONY: clean-tracker-gptdocs
+clean-tracker-gptdocs:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-gptdocs
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-gptdocs
 
 #
 # functional tests (using test signatures)
@@ -754,7 +754,7 @@ clean-e2e-inst-signatures:
 
 .PHONY: test-unit
 test-unit: \
-	tracee-ebpf \
+	tracker-ebpf \
 	test-types \
 	| .eval_goenv \
 	.checkver_$(CMD_GO)
@@ -799,7 +799,7 @@ $(OUTPUT_DIR)/syscaller: \
 .PHONY: test-integration
 test-integration: \
 	$(OUTPUT_DIR)/syscaller \
-	tracee \
+	tracker \
 	| .eval_goenv \
 	.checkver_$(CMD_GO)
 #
@@ -836,7 +836,7 @@ test-upstream-libbpfgo: \
 
 .PHONY: test-performance
 test-performance: \
-	tracee \
+	tracker \
 	| .eval_goenv \
 	.checkver_$(CMD_GO)
 #
@@ -875,14 +875,14 @@ check-lint::
 
 .PHONY: check-code
 check-code:: \
-	tracee-ebpf
+	tracker-ebpf
 #
 	@$(MAKE) -f builder/Makefile.checkers code-check
 
 
 .PHONY: check-vet
 check-vet: \
-	tracee-ebpf \
+	tracker-ebpf \
 	| .eval_goenv \
 	.checkver_$(CMD_GO)
 #
@@ -893,7 +893,7 @@ check-vet: \
 
 .PHONY: check-staticcheck
 check-staticcheck: \
-	tracee-ebpf \
+	tracker-ebpf \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
 	.check_$(CMD_STATICCHECK)
@@ -905,7 +905,7 @@ check-staticcheck: \
 
 .PHONY: check-err
 check-err: \
-	tracee-ebpf \
+	tracker-ebpf \
 	| .checkver_$(CMD_GO) \
 	.check_$(CMD_ERRCHECK)
 #
@@ -965,7 +965,7 @@ check-pr: \
 	format-pr
 
 #
-# tracee.proto
+# tracker.proto
 #
 
 .PHONY: protoc
@@ -1036,29 +1036,29 @@ clean:
 	$(CMD_RM) -f .eval_*
 	$(CMD_RM) -f .*-pkgs*
 
-# tracee-operator
+# tracker-operator
 
-.PHONY: tracee-operator
-tracee-operator: $(OUTPUT_DIR)/tracee-operator
+.PHONY: tracker-operator
+tracker-operator: $(OUTPUT_DIR)/tracker-operator
 
-$(OUTPUT_DIR)/tracee-operator: \
+$(OUTPUT_DIR)/tracker-operator: \
 	| .checkver_$(CMD_GO) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_GO) build \
 		-v -o $@ \
-		./cmd/tracee-operator
+		./cmd/tracker-operator
 
-.PHONY: clean-tracee-operator
-clean-tracee-operator:
+.PHONY: clean-tracker-operator
+clean-tracker-operator:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-operator
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-operator
 
 # kubernetes operator
 
 .PHONY: k8s-manifests
 k8s-manifests: ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CMD_CONTROLLER_GEN) rbac:roleName=tracee crd webhook paths="./pkg/k8s/..." output:crd:artifacts:config=deploy/helm/tracee/crds output:rbac:artifacts:config=deploy/helm/tracee/templates/
+	$(CMD_CONTROLLER_GEN) rbac:roleName=tracker crd webhook paths="./pkg/k8s/..." output:crd:artifacts:config=deploy/helm/tracker/crds output:rbac:artifacts:config=deploy/helm/tracker/templates/
 
 .PHONY: k8s-generate
 k8s-generate: ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.

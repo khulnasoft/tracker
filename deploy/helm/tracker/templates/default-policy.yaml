@@ -1,6 +1,6 @@
 {{- if .Values.defaultPolicy -}}
 ---
-apiVersion: tracee.khulnasoft.com/v1beta1
+apiVersion: tracker.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
   name: default-policy

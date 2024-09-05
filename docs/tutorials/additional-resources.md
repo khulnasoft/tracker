@@ -4,7 +4,7 @@ This page links to external resources, created by Aqua Security and the communit
 
 ## Blog Post
 * [The Story of Tracker: The Path to Runtime Security Tool](https://blog.khulnasoft.com/open-source-container-runtime-security)
-* [Detecting eBPF Malware with Tracker](https://blog.khulnasoft.com/detecting-ebpf-malware-with-tracee)
+* [Detecting eBPF Malware with Tracker](https://blog.khulnasoft.com/detecting-ebpf-malware-with-tracker)
 
 ## Useful Videos
 

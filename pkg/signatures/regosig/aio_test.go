@@ -54,11 +54,11 @@ func TestAio_GetSelectedEvents(t *testing.T) {
 
 	assert.Equal(t, map[detect.SignatureEventSelector]bool{
 		{
-			Source: "tracee",
+			Source: "tracker",
 			Name:   "ptrace",
 		}: true,
 		{
-			Source: "tracee",
+			Source: "tracker",
 			Name:   "execve",
 		}: true,
 	}, eventsSet)

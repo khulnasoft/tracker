@@ -43,7 +43,7 @@ func (sig *DiskMount) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *DiskMount) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_sb_mount", Origin: "container"},
+		{Source: "tracker", Name: "security_sb_mount", Origin: "container"},
 	}, nil
 }
 

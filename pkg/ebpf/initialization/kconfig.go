@@ -7,7 +7,7 @@ import (
 )
 
 // Custom KernelConfigOption's to extend kernel_config helper support
-// Add here all kconfig variables used within tracee.bpf.c
+// Add here all kconfig variables used within tracker.bpf.c
 const (
 	CONFIG_ARCH_HAS_SYSCALL_WRAPPER environment.KernelConfigOption = iota + environment.CUSTOM_OPTION_START
 )
@@ -16,7 +16,7 @@ var kconfigUsed = map[environment.KernelConfigOption]string{
 	CONFIG_ARCH_HAS_SYSCALL_WRAPPER: "CONFIG_ARCH_HAS_SYSCALL_WRAPPER",
 }
 
-// LoadKconfigValues load all kconfig variables used within tracee.bpf.c
+// LoadKconfigValues load all kconfig variables used within tracker.bpf.c
 func LoadKconfigValues(kc *environment.KernelConfig) (map[environment.KernelConfigOption]environment.KernelConfigOptionValue, error) {
 	values := make(map[environment.KernelConfigOption]environment.KernelConfigOptionValue)
 	var err error

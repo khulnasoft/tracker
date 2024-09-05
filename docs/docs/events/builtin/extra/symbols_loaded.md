@@ -33,14 +33,14 @@ The event of shared object loading triggers this event, and supplies the informa
 shared object necessary to examine its shared objects.
 
 ### sched_process_exec
-Used by tracee to maintain mount NS cache, used in this event to get to processes file system
+Used by tracker to maintain mount NS cache, used in this event to get to processes file system
 
 ## Example Use Case
 To catch SO which tries to override the `fopen` function of `libc`, we can use the event in
 the following way:
 
 ```console
-./dist/tracee -e symbols_loaded.data.symbols=fopen -e symbols_loaded.data.library_path!=libc
+./dist/tracker -e symbols_loaded.data.symbols=fopen -e symbols_loaded.data.library_path!=libc
 ```
 
 ## Issues

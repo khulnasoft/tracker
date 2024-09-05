@@ -33,7 +33,7 @@ func (sig *e2eTCP) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eTCP) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "net_packet_tcp"},
+		{Source: "tracker", Name: "net_packet_tcp"},
 	}, nil
 }
 

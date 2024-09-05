@@ -41,8 +41,8 @@ func (sig *K8sApiConnection) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *K8sApiConnection) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "sched_process_exec", Origin: "container"},
-		{Source: "tracee", Name: "security_socket_connect", Origin: "container"},
+		{Source: "tracker", Name: "sched_process_exec", Origin: "container"},
+		{Source: "tracker", Name: "security_socket_connect", Origin: "container"},
 	}, nil
 }
 

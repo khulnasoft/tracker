@@ -64,11 +64,11 @@ func main() {
 	}
 
 	conn, err := grpc.NewClient(
-		"unix:///tmp/tracee.sock",
+		"unix:///tmp/tracker.sock",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		printAndExit("failed to dial tracee grpc server: %v\n", err)
+		printAndExit("failed to dial tracker grpc server: %v\n", err)
 	}
 	client := v1beta1.NewDataSourceServiceClient(conn)
 	err = contaminate(client)

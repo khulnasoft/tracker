@@ -9,7 +9,7 @@ on:
     - cron: "0 3 * * *"
   workflow_call:
 jobs:
-  compile-tracee:
+  compile-tracker:
     name: Test Latest libbpfgo
     runs-on: ubuntu-latest
     steps:

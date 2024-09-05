@@ -414,7 +414,7 @@ func getLayer7FromPacket(packet gopacket.Packet) (gopacket.ApplicationLayer, err
 }
 
 //
-// Proto Types (tracee/types/trace)
+// Proto Types (tracker/types/trace)
 //
 
 // getProtoIPv4 returns the ProtoIPv4 from the IPv4.

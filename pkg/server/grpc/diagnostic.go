@@ -5,17 +5,17 @@ import (
 	"runtime"
 
 	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
 	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 type DiagnosticService struct {
 	pb.UnimplementedDiagnosticServiceServer
-	tracee *tracee.Tracker
+	tracker *tracker.Tracker
 }
 
 func (s *DiagnosticService) GetMetrics(ctx context.Context, in *pb.GetMetricsRequest) (*pb.GetMetricsResponse, error) {
-	stats := s.tracee.Stats()
+	stats := s.tracker.Stats()
 	metrics := &pb.GetMetricsResponse{
 		EventCount:       stats.EventCount.Get(),
 		EventsFiltered:   stats.EventsFiltered.Get(),

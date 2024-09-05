@@ -18,7 +18,7 @@ type BPFLogType uint32
 const (
 	BPFLogIDUnspec BPFLogType = iota // BPF_LOG_ID_UNSPEC
 
-	// tracee functions
+	// tracker functions
 	BPFLogIDInitContext // BPF_LOG_ID_INIT_CONTEXT
 
 	// bpf helpers functions
@@ -36,7 +36,7 @@ const (
 var stringMap = map[BPFLogType]string{
 	BPFLogIDUnspec: "BPF_LOG_ID_UNSPEC",
 
-	// tracee functions
+	// tracker functions
 	BPFLogIDInitContext: "BPF_LOG_ID_INIT_CONTEXT",
 
 	// bpf helpers functions
@@ -54,7 +54,7 @@ var stringMap = map[BPFLogType]string{
 var errorMap = map[BPFLogType]string{
 	BPFLogIDUnspec: "Unspecifed BPF log",
 
-	// tracee functions
+	// tracker functions
 	BPFLogIDInitContext: "Failed to init context",
 
 	// bpf helpers functions

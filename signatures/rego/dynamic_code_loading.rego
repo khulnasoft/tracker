@@ -1,6 +1,6 @@
-package tracee.TRC_4
+package tracker.TRC_4
 
-import data.tracee.helpers
+import data.tracker.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-4",
@@ -16,16 +16,16 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracee",
+	"source": "tracker",
 	"name": "mem_prot_alert",
 }]
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracee_match {
+tracker_match {
 	input.eventName == "mem_prot_alert"
-	message := helpers.get_tracee_argument("alert")
+	message := helpers.get_tracker_argument("alert")
 	message == "Protection changed from W to E!"
 }

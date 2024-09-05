@@ -986,11 +986,11 @@ type Credentials struct {
 	Fsgid          *wrapperspb.UInt32Value `protobuf:"bytes,8,opt,name=fsgid,proto3" json:"fsgid,omitempty"`
 	UserNamespace  *wrapperspb.UInt32Value `protobuf:"bytes,9,opt,name=user_namespace,json=userNamespace,proto3" json:"user_namespace,omitempty"`
 	SecureBits     *wrapperspb.UInt32Value `protobuf:"bytes,10,opt,name=secure_bits,json=secureBits,proto3" json:"secure_bits,omitempty"`
-	CapInheritable []Capability            `protobuf:"varint,11,rep,packed,name=cap_inheritable,json=capInheritable,proto3,enum=tracee.v1beta1.Capability" json:"cap_inheritable,omitempty"`
-	CapPermitted   []Capability            `protobuf:"varint,12,rep,packed,name=cap_permitted,json=capPermitted,proto3,enum=tracee.v1beta1.Capability" json:"cap_permitted,omitempty"`
-	CapEffective   []Capability            `protobuf:"varint,13,rep,packed,name=cap_effective,json=capEffective,proto3,enum=tracee.v1beta1.Capability" json:"cap_effective,omitempty"`
-	CapBounding    []Capability            `protobuf:"varint,14,rep,packed,name=cap_bounding,json=capBounding,proto3,enum=tracee.v1beta1.Capability" json:"cap_bounding,omitempty"`
-	CapAmbient     []Capability            `protobuf:"varint,15,rep,packed,name=cap_ambient,json=capAmbient,proto3,enum=tracee.v1beta1.Capability" json:"cap_ambient,omitempty"`
+	CapInheritable []Capability            `protobuf:"varint,11,rep,packed,name=cap_inheritable,json=capInheritable,proto3,enum=tracker.v1beta1.Capability" json:"cap_inheritable,omitempty"`
+	CapPermitted   []Capability            `protobuf:"varint,12,rep,packed,name=cap_permitted,json=capPermitted,proto3,enum=tracker.v1beta1.Capability" json:"cap_permitted,omitempty"`
+	CapEffective   []Capability            `protobuf:"varint,13,rep,packed,name=cap_effective,json=capEffective,proto3,enum=tracker.v1beta1.Capability" json:"cap_effective,omitempty"`
+	CapBounding    []Capability            `protobuf:"varint,14,rep,packed,name=cap_bounding,json=capBounding,proto3,enum=tracker.v1beta1.Capability" json:"cap_bounding,omitempty"`
+	CapAmbient     []Capability            `protobuf:"varint,15,rep,packed,name=cap_ambient,json=capAmbient,proto3,enum=tracker.v1beta1.Capability" json:"cap_ambient,omitempty"`
 }
 
 func (x *Credentials) Reset() {
@@ -1182,7 +1182,7 @@ type SockAddr struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SaFamily     SaFamilyT `protobuf:"varint,1,opt,name=sa_family,json=saFamily,proto3,enum=tracee.v1beta1.SaFamilyT" json:"sa_family,omitempty"`
+	SaFamily     SaFamilyT `protobuf:"varint,1,opt,name=sa_family,json=saFamily,proto3,enum=tracker.v1beta1.SaFamilyT" json:"sa_family,omitempty"`
 	SunPath      string    `protobuf:"bytes,2,opt,name=sun_path,json=sunPath,proto3" json:"sun_path,omitempty"`
 	SinAddr      string    `protobuf:"bytes,3,opt,name=sin_addr,json=sinAddr,proto3" json:"sin_addr,omitempty"`
 	SinPort      uint32    `protobuf:"varint,4,opt,name=sin_port,json=sinPort,proto3" json:"sin_port,omitempty"`
@@ -3205,7 +3205,7 @@ type PacketMetadata struct {
 	Protocol  uint32          `protobuf:"varint,5,opt,name=protocol,proto3" json:"protocol,omitempty"`
 	PacketLen uint32          `protobuf:"varint,6,opt,name=packet_len,json=packetLen,proto3" json:"packet_len,omitempty"`
 	Iface     string          `protobuf:"bytes,7,opt,name=iface,proto3" json:"iface,omitempty"`
-	Direction PacketDirection `protobuf:"varint,8,opt,name=direction,proto3,enum=tracee.v1beta1.PacketDirection" json:"direction,omitempty"`
+	Direction PacketDirection `protobuf:"varint,8,opt,name=direction,proto3,enum=tracker.v1beta1.PacketDirection" json:"direction,omitempty"`
 }
 
 func (x *PacketMetadata) Reset() {
@@ -4054,117 +4054,117 @@ func file_api_v1beta1_event_data_proto_rawDescGZIP() []byte {
 var file_api_v1beta1_event_data_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_api_v1beta1_event_data_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
 var file_api_v1beta1_event_data_proto_goTypes = []interface{}{
-	(SaFamilyT)(0),                 // 0: tracee.v1beta1.sa_family_t
-	(Capability)(0),                // 1: tracee.v1beta1.Capability
-	(PacketDirection)(0),           // 2: tracee.v1beta1.PacketDirection
-	(*EventValue)(nil),             // 3: tracee.v1beta1.EventValue
-	(*TriggeredBy)(nil),            // 4: tracee.v1beta1.TriggeredBy
-	(*StringArray)(nil),            // 5: tracee.v1beta1.StringArray
-	(*Int32Array)(nil),             // 6: tracee.v1beta1.Int32Array
-	(*UInt64Array)(nil),            // 7: tracee.v1beta1.UInt64Array
-	(*Credentials)(nil),            // 8: tracee.v1beta1.Credentials
-	(*Timespec)(nil),               // 9: tracee.v1beta1.Timespec
-	(*SockAddr)(nil),               // 10: tracee.v1beta1.SockAddr
-	(*HookedSyscalls)(nil),         // 11: tracee.v1beta1.HookedSyscalls
-	(*HookedSymbolData)(nil),       // 12: tracee.v1beta1.HookedSymbolData
-	(*HookedSeqOps)(nil),           // 13: tracee.v1beta1.HookedSeqOps
-	(*IPv4)(nil),                   // 14: tracee.v1beta1.IPv4
-	(*IPv6)(nil),                   // 15: tracee.v1beta1.IPv6
-	(*TCP)(nil),                    // 16: tracee.v1beta1.TCP
-	(*UDP)(nil),                    // 17: tracee.v1beta1.UDP
-	(*ICMP)(nil),                   // 18: tracee.v1beta1.ICMP
-	(*ICMPv6)(nil),                 // 19: tracee.v1beta1.ICMPv6
-	(*DnsQuestions)(nil),           // 20: tracee.v1beta1.DnsQuestions
-	(*DnsResponses)(nil),           // 21: tracee.v1beta1.DnsResponses
-	(*DNS)(nil),                    // 22: tracee.v1beta1.DNS
-	(*DNSQuestion)(nil),            // 23: tracee.v1beta1.DNSQuestion
-	(*DNSResourceRecord)(nil),      // 24: tracee.v1beta1.DNSResourceRecord
-	(*DNSSOA)(nil),                 // 25: tracee.v1beta1.DNSSOA
-	(*DNSSRV)(nil),                 // 26: tracee.v1beta1.DNSSRV
-	(*DNSMX)(nil),                  // 27: tracee.v1beta1.DNSMX
-	(*DNSURI)(nil),                 // 28: tracee.v1beta1.DNSURI
-	(*DNSOPT)(nil),                 // 29: tracee.v1beta1.DNSOPT
-	(*HTTP)(nil),                   // 30: tracee.v1beta1.HTTP
-	(*HTTPRequest)(nil),            // 31: tracee.v1beta1.HTTPRequest
-	(*HTTPResponse)(nil),           // 32: tracee.v1beta1.HTTPResponse
-	(*HttpHeader)(nil),             // 33: tracee.v1beta1.HttpHeader
-	(*PacketMetadata)(nil),         // 34: tracee.v1beta1.PacketMetadata
-	(*DnsQueryData)(nil),           // 35: tracee.v1beta1.DnsQueryData
-	(*DnsAnswer)(nil),              // 36: tracee.v1beta1.DnsAnswer
-	(*DnsResponseData)(nil),        // 37: tracee.v1beta1.DnsResponseData
-	nil,                            // 38: tracee.v1beta1.HookedSeqOps.ValueEntry
-	nil,                            // 39: tracee.v1beta1.HTTP.HeadersEntry
-	nil,                            // 40: tracee.v1beta1.HTTPRequest.HeadersEntry
-	nil,                            // 41: tracee.v1beta1.HTTPResponse.HeadersEntry
+	(SaFamilyT)(0),                 // 0: tracker.v1beta1.sa_family_t
+	(Capability)(0),                // 1: tracker.v1beta1.Capability
+	(PacketDirection)(0),           // 2: tracker.v1beta1.PacketDirection
+	(*EventValue)(nil),             // 3: tracker.v1beta1.EventValue
+	(*TriggeredBy)(nil),            // 4: tracker.v1beta1.TriggeredBy
+	(*StringArray)(nil),            // 5: tracker.v1beta1.StringArray
+	(*Int32Array)(nil),             // 6: tracker.v1beta1.Int32Array
+	(*UInt64Array)(nil),            // 7: tracker.v1beta1.UInt64Array
+	(*Credentials)(nil),            // 8: tracker.v1beta1.Credentials
+	(*Timespec)(nil),               // 9: tracker.v1beta1.Timespec
+	(*SockAddr)(nil),               // 10: tracker.v1beta1.SockAddr
+	(*HookedSyscalls)(nil),         // 11: tracker.v1beta1.HookedSyscalls
+	(*HookedSymbolData)(nil),       // 12: tracker.v1beta1.HookedSymbolData
+	(*HookedSeqOps)(nil),           // 13: tracker.v1beta1.HookedSeqOps
+	(*IPv4)(nil),                   // 14: tracker.v1beta1.IPv4
+	(*IPv6)(nil),                   // 15: tracker.v1beta1.IPv6
+	(*TCP)(nil),                    // 16: tracker.v1beta1.TCP
+	(*UDP)(nil),                    // 17: tracker.v1beta1.UDP
+	(*ICMP)(nil),                   // 18: tracker.v1beta1.ICMP
+	(*ICMPv6)(nil),                 // 19: tracker.v1beta1.ICMPv6
+	(*DnsQuestions)(nil),           // 20: tracker.v1beta1.DnsQuestions
+	(*DnsResponses)(nil),           // 21: tracker.v1beta1.DnsResponses
+	(*DNS)(nil),                    // 22: tracker.v1beta1.DNS
+	(*DNSQuestion)(nil),            // 23: tracker.v1beta1.DNSQuestion
+	(*DNSResourceRecord)(nil),      // 24: tracker.v1beta1.DNSResourceRecord
+	(*DNSSOA)(nil),                 // 25: tracker.v1beta1.DNSSOA
+	(*DNSSRV)(nil),                 // 26: tracker.v1beta1.DNSSRV
+	(*DNSMX)(nil),                  // 27: tracker.v1beta1.DNSMX
+	(*DNSURI)(nil),                 // 28: tracker.v1beta1.DNSURI
+	(*DNSOPT)(nil),                 // 29: tracker.v1beta1.DNSOPT
+	(*HTTP)(nil),                   // 30: tracker.v1beta1.HTTP
+	(*HTTPRequest)(nil),            // 31: tracker.v1beta1.HTTPRequest
+	(*HTTPResponse)(nil),           // 32: tracker.v1beta1.HTTPResponse
+	(*HttpHeader)(nil),             // 33: tracker.v1beta1.HttpHeader
+	(*PacketMetadata)(nil),         // 34: tracker.v1beta1.PacketMetadata
+	(*DnsQueryData)(nil),           // 35: tracker.v1beta1.DnsQueryData
+	(*DnsAnswer)(nil),              // 36: tracker.v1beta1.DnsAnswer
+	(*DnsResponseData)(nil),        // 37: tracker.v1beta1.DnsResponseData
+	nil,                            // 38: tracker.v1beta1.HookedSeqOps.ValueEntry
+	nil,                            // 39: tracker.v1beta1.HTTP.HeadersEntry
+	nil,                            // 40: tracker.v1beta1.HTTPRequest.HeadersEntry
+	nil,                            // 41: tracker.v1beta1.HTTPResponse.HeadersEntry
 	(*structpb.Struct)(nil),        // 42: google.protobuf.Struct
 	(*wrapperspb.UInt32Value)(nil), // 43: google.protobuf.UInt32Value
 	(*wrapperspb.DoubleValue)(nil), // 44: google.protobuf.DoubleValue
 }
 var file_api_v1beta1_event_data_proto_depIdxs = []int32{
-	5,  // 0: tracee.v1beta1.EventValue.str_array:type_name -> tracee.v1beta1.StringArray
-	6,  // 1: tracee.v1beta1.EventValue.int32_array:type_name -> tracee.v1beta1.Int32Array
-	7,  // 2: tracee.v1beta1.EventValue.u_int64_array:type_name -> tracee.v1beta1.UInt64Array
-	10, // 3: tracee.v1beta1.EventValue.sockaddr:type_name -> tracee.v1beta1.SockAddr
-	8,  // 4: tracee.v1beta1.EventValue.credentials:type_name -> tracee.v1beta1.Credentials
-	9,  // 5: tracee.v1beta1.EventValue.timespec:type_name -> tracee.v1beta1.Timespec
-	4,  // 6: tracee.v1beta1.EventValue.triggered_by:type_name -> tracee.v1beta1.TriggeredBy
-	11, // 7: tracee.v1beta1.EventValue.hooked_syscalls:type_name -> tracee.v1beta1.HookedSyscalls
-	13, // 8: tracee.v1beta1.EventValue.hooked_seq_ops:type_name -> tracee.v1beta1.HookedSeqOps
-	14, // 9: tracee.v1beta1.EventValue.ipv4:type_name -> tracee.v1beta1.IPv4
-	15, // 10: tracee.v1beta1.EventValue.ipv6:type_name -> tracee.v1beta1.IPv6
-	16, // 11: tracee.v1beta1.EventValue.tcp:type_name -> tracee.v1beta1.TCP
-	17, // 12: tracee.v1beta1.EventValue.udp:type_name -> tracee.v1beta1.UDP
-	18, // 13: tracee.v1beta1.EventValue.icmp:type_name -> tracee.v1beta1.ICMP
-	19, // 14: tracee.v1beta1.EventValue.icmpv6:type_name -> tracee.v1beta1.ICMPv6
-	22, // 15: tracee.v1beta1.EventValue.dns:type_name -> tracee.v1beta1.DNS
-	20, // 16: tracee.v1beta1.EventValue.dns_questions:type_name -> tracee.v1beta1.DnsQuestions
-	21, // 17: tracee.v1beta1.EventValue.dns_responses:type_name -> tracee.v1beta1.DnsResponses
-	34, // 18: tracee.v1beta1.EventValue.packet_metadata:type_name -> tracee.v1beta1.PacketMetadata
-	30, // 19: tracee.v1beta1.EventValue.http:type_name -> tracee.v1beta1.HTTP
-	31, // 20: tracee.v1beta1.EventValue.http_request:type_name -> tracee.v1beta1.HTTPRequest
-	32, // 21: tracee.v1beta1.EventValue.http_response:type_name -> tracee.v1beta1.HTTPResponse
-	42, // 22: tracee.v1beta1.EventValue.struct:type_name -> google.protobuf.Struct
-	3,  // 23: tracee.v1beta1.TriggeredBy.data:type_name -> tracee.v1beta1.EventValue
-	43, // 24: tracee.v1beta1.Credentials.uid:type_name -> google.protobuf.UInt32Value
-	43, // 25: tracee.v1beta1.Credentials.gid:type_name -> google.protobuf.UInt32Value
-	43, // 26: tracee.v1beta1.Credentials.suid:type_name -> google.protobuf.UInt32Value
-	43, // 27: tracee.v1beta1.Credentials.sgid:type_name -> google.protobuf.UInt32Value
-	43, // 28: tracee.v1beta1.Credentials.euid:type_name -> google.protobuf.UInt32Value
-	43, // 29: tracee.v1beta1.Credentials.egid:type_name -> google.protobuf.UInt32Value
-	43, // 30: tracee.v1beta1.Credentials.fsuid:type_name -> google.protobuf.UInt32Value
-	43, // 31: tracee.v1beta1.Credentials.fsgid:type_name -> google.protobuf.UInt32Value
-	43, // 32: tracee.v1beta1.Credentials.user_namespace:type_name -> google.protobuf.UInt32Value
-	43, // 33: tracee.v1beta1.Credentials.secure_bits:type_name -> google.protobuf.UInt32Value
-	1,  // 34: tracee.v1beta1.Credentials.cap_inheritable:type_name -> tracee.v1beta1.Capability
-	1,  // 35: tracee.v1beta1.Credentials.cap_permitted:type_name -> tracee.v1beta1.Capability
-	1,  // 36: tracee.v1beta1.Credentials.cap_effective:type_name -> tracee.v1beta1.Capability
-	1,  // 37: tracee.v1beta1.Credentials.cap_bounding:type_name -> tracee.v1beta1.Capability
-	1,  // 38: tracee.v1beta1.Credentials.cap_ambient:type_name -> tracee.v1beta1.Capability
-	44, // 39: tracee.v1beta1.Timespec.value:type_name -> google.protobuf.DoubleValue
-	0,  // 40: tracee.v1beta1.SockAddr.sa_family:type_name -> tracee.v1beta1.sa_family_t
-	12, // 41: tracee.v1beta1.HookedSyscalls.value:type_name -> tracee.v1beta1.HookedSymbolData
-	38, // 42: tracee.v1beta1.HookedSeqOps.value:type_name -> tracee.v1beta1.HookedSeqOps.ValueEntry
-	35, // 43: tracee.v1beta1.DnsQuestions.questions:type_name -> tracee.v1beta1.DnsQueryData
-	37, // 44: tracee.v1beta1.DnsResponses.responses:type_name -> tracee.v1beta1.DnsResponseData
-	23, // 45: tracee.v1beta1.DNS.questions:type_name -> tracee.v1beta1.DNSQuestion
-	24, // 46: tracee.v1beta1.DNS.answers:type_name -> tracee.v1beta1.DNSResourceRecord
-	24, // 47: tracee.v1beta1.DNS.authorities:type_name -> tracee.v1beta1.DNSResourceRecord
-	24, // 48: tracee.v1beta1.DNS.additionals:type_name -> tracee.v1beta1.DNSResourceRecord
-	25, // 49: tracee.v1beta1.DNSResourceRecord.soa:type_name -> tracee.v1beta1.DNSSOA
-	26, // 50: tracee.v1beta1.DNSResourceRecord.srv:type_name -> tracee.v1beta1.DNSSRV
-	27, // 51: tracee.v1beta1.DNSResourceRecord.mx:type_name -> tracee.v1beta1.DNSMX
-	29, // 52: tracee.v1beta1.DNSResourceRecord.opt:type_name -> tracee.v1beta1.DNSOPT
-	28, // 53: tracee.v1beta1.DNSResourceRecord.uri:type_name -> tracee.v1beta1.DNSURI
-	39, // 54: tracee.v1beta1.HTTP.headers:type_name -> tracee.v1beta1.HTTP.HeadersEntry
-	40, // 55: tracee.v1beta1.HTTPRequest.headers:type_name -> tracee.v1beta1.HTTPRequest.HeadersEntry
-	41, // 56: tracee.v1beta1.HTTPResponse.headers:type_name -> tracee.v1beta1.HTTPResponse.HeadersEntry
-	2,  // 57: tracee.v1beta1.PacketMetadata.direction:type_name -> tracee.v1beta1.PacketDirection
-	35, // 58: tracee.v1beta1.DnsResponseData.dns_query_data:type_name -> tracee.v1beta1.DnsQueryData
-	36, // 59: tracee.v1beta1.DnsResponseData.dns_answer:type_name -> tracee.v1beta1.DnsAnswer
-	12, // 60: tracee.v1beta1.HookedSeqOps.ValueEntry.value:type_name -> tracee.v1beta1.HookedSymbolData
-	33, // 61: tracee.v1beta1.HTTP.HeadersEntry.value:type_name -> tracee.v1beta1.HttpHeader
-	33, // 62: tracee.v1beta1.HTTPRequest.HeadersEntry.value:type_name -> tracee.v1beta1.HttpHeader
-	33, // 63: tracee.v1beta1.HTTPResponse.HeadersEntry.value:type_name -> tracee.v1beta1.HttpHeader
+	5,  // 0: tracker.v1beta1.EventValue.str_array:type_name -> tracker.v1beta1.StringArray
+	6,  // 1: tracker.v1beta1.EventValue.int32_array:type_name -> tracker.v1beta1.Int32Array
+	7,  // 2: tracker.v1beta1.EventValue.u_int64_array:type_name -> tracker.v1beta1.UInt64Array
+	10, // 3: tracker.v1beta1.EventValue.sockaddr:type_name -> tracker.v1beta1.SockAddr
+	8,  // 4: tracker.v1beta1.EventValue.credentials:type_name -> tracker.v1beta1.Credentials
+	9,  // 5: tracker.v1beta1.EventValue.timespec:type_name -> tracker.v1beta1.Timespec
+	4,  // 6: tracker.v1beta1.EventValue.triggered_by:type_name -> tracker.v1beta1.TriggeredBy
+	11, // 7: tracker.v1beta1.EventValue.hooked_syscalls:type_name -> tracker.v1beta1.HookedSyscalls
+	13, // 8: tracker.v1beta1.EventValue.hooked_seq_ops:type_name -> tracker.v1beta1.HookedSeqOps
+	14, // 9: tracker.v1beta1.EventValue.ipv4:type_name -> tracker.v1beta1.IPv4
+	15, // 10: tracker.v1beta1.EventValue.ipv6:type_name -> tracker.v1beta1.IPv6
+	16, // 11: tracker.v1beta1.EventValue.tcp:type_name -> tracker.v1beta1.TCP
+	17, // 12: tracker.v1beta1.EventValue.udp:type_name -> tracker.v1beta1.UDP
+	18, // 13: tracker.v1beta1.EventValue.icmp:type_name -> tracker.v1beta1.ICMP
+	19, // 14: tracker.v1beta1.EventValue.icmpv6:type_name -> tracker.v1beta1.ICMPv6
+	22, // 15: tracker.v1beta1.EventValue.dns:type_name -> tracker.v1beta1.DNS
+	20, // 16: tracker.v1beta1.EventValue.dns_questions:type_name -> tracker.v1beta1.DnsQuestions
+	21, // 17: tracker.v1beta1.EventValue.dns_responses:type_name -> tracker.v1beta1.DnsResponses
+	34, // 18: tracker.v1beta1.EventValue.packet_metadata:type_name -> tracker.v1beta1.PacketMetadata
+	30, // 19: tracker.v1beta1.EventValue.http:type_name -> tracker.v1beta1.HTTP
+	31, // 20: tracker.v1beta1.EventValue.http_request:type_name -> tracker.v1beta1.HTTPRequest
+	32, // 21: tracker.v1beta1.EventValue.http_response:type_name -> tracker.v1beta1.HTTPResponse
+	42, // 22: tracker.v1beta1.EventValue.struct:type_name -> google.protobuf.Struct
+	3,  // 23: tracker.v1beta1.TriggeredBy.data:type_name -> tracker.v1beta1.EventValue
+	43, // 24: tracker.v1beta1.Credentials.uid:type_name -> google.protobuf.UInt32Value
+	43, // 25: tracker.v1beta1.Credentials.gid:type_name -> google.protobuf.UInt32Value
+	43, // 26: tracker.v1beta1.Credentials.suid:type_name -> google.protobuf.UInt32Value
+	43, // 27: tracker.v1beta1.Credentials.sgid:type_name -> google.protobuf.UInt32Value
+	43, // 28: tracker.v1beta1.Credentials.euid:type_name -> google.protobuf.UInt32Value
+	43, // 29: tracker.v1beta1.Credentials.egid:type_name -> google.protobuf.UInt32Value
+	43, // 30: tracker.v1beta1.Credentials.fsuid:type_name -> google.protobuf.UInt32Value
+	43, // 31: tracker.v1beta1.Credentials.fsgid:type_name -> google.protobuf.UInt32Value
+	43, // 32: tracker.v1beta1.Credentials.user_namespace:type_name -> google.protobuf.UInt32Value
+	43, // 33: tracker.v1beta1.Credentials.secure_bits:type_name -> google.protobuf.UInt32Value
+	1,  // 34: tracker.v1beta1.Credentials.cap_inheritable:type_name -> tracker.v1beta1.Capability
+	1,  // 35: tracker.v1beta1.Credentials.cap_permitted:type_name -> tracker.v1beta1.Capability
+	1,  // 36: tracker.v1beta1.Credentials.cap_effective:type_name -> tracker.v1beta1.Capability
+	1,  // 37: tracker.v1beta1.Credentials.cap_bounding:type_name -> tracker.v1beta1.Capability
+	1,  // 38: tracker.v1beta1.Credentials.cap_ambient:type_name -> tracker.v1beta1.Capability
+	44, // 39: tracker.v1beta1.Timespec.value:type_name -> google.protobuf.DoubleValue
+	0,  // 40: tracker.v1beta1.SockAddr.sa_family:type_name -> tracker.v1beta1.sa_family_t
+	12, // 41: tracker.v1beta1.HookedSyscalls.value:type_name -> tracker.v1beta1.HookedSymbolData
+	38, // 42: tracker.v1beta1.HookedSeqOps.value:type_name -> tracker.v1beta1.HookedSeqOps.ValueEntry
+	35, // 43: tracker.v1beta1.DnsQuestions.questions:type_name -> tracker.v1beta1.DnsQueryData
+	37, // 44: tracker.v1beta1.DnsResponses.responses:type_name -> tracker.v1beta1.DnsResponseData
+	23, // 45: tracker.v1beta1.DNS.questions:type_name -> tracker.v1beta1.DNSQuestion
+	24, // 46: tracker.v1beta1.DNS.answers:type_name -> tracker.v1beta1.DNSResourceRecord
+	24, // 47: tracker.v1beta1.DNS.authorities:type_name -> tracker.v1beta1.DNSResourceRecord
+	24, // 48: tracker.v1beta1.DNS.additionals:type_name -> tracker.v1beta1.DNSResourceRecord
+	25, // 49: tracker.v1beta1.DNSResourceRecord.soa:type_name -> tracker.v1beta1.DNSSOA
+	26, // 50: tracker.v1beta1.DNSResourceRecord.srv:type_name -> tracker.v1beta1.DNSSRV
+	27, // 51: tracker.v1beta1.DNSResourceRecord.mx:type_name -> tracker.v1beta1.DNSMX
+	29, // 52: tracker.v1beta1.DNSResourceRecord.opt:type_name -> tracker.v1beta1.DNSOPT
+	28, // 53: tracker.v1beta1.DNSResourceRecord.uri:type_name -> tracker.v1beta1.DNSURI
+	39, // 54: tracker.v1beta1.HTTP.headers:type_name -> tracker.v1beta1.HTTP.HeadersEntry
+	40, // 55: tracker.v1beta1.HTTPRequest.headers:type_name -> tracker.v1beta1.HTTPRequest.HeadersEntry
+	41, // 56: tracker.v1beta1.HTTPResponse.headers:type_name -> tracker.v1beta1.HTTPResponse.HeadersEntry
+	2,  // 57: tracker.v1beta1.PacketMetadata.direction:type_name -> tracker.v1beta1.PacketDirection
+	35, // 58: tracker.v1beta1.DnsResponseData.dns_query_data:type_name -> tracker.v1beta1.DnsQueryData
+	36, // 59: tracker.v1beta1.DnsResponseData.dns_answer:type_name -> tracker.v1beta1.DnsAnswer
+	12, // 60: tracker.v1beta1.HookedSeqOps.ValueEntry.value:type_name -> tracker.v1beta1.HookedSymbolData
+	33, // 61: tracker.v1beta1.HTTP.HeadersEntry.value:type_name -> tracker.v1beta1.HttpHeader
+	33, // 62: tracker.v1beta1.HTTPRequest.HeadersEntry.value:type_name -> tracker.v1beta1.HttpHeader
+	33, // 63: tracker.v1beta1.HTTPResponse.HeadersEntry.value:type_name -> tracker.v1beta1.HttpHeader
 	64, // [64:64] is the sub-list for method output_type
 	64, // [64:64] is the sub-list for method input_type
 	64, // [64:64] is the sub-list for extension type_name

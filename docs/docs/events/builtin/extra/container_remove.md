@@ -31,7 +31,7 @@ The genesis of the `container_remove` event is from the `cgroup_rmdir` event.
 Initially, it assesses whether the cgroup event pertains to the root directory
 of a terminating container. Subsequently, utilizing the `cgroup_id` -
 originating from the cgroup directory inode - it garners container-centric
-information, a capability augmented by tracee interactions with runtime daemons.
+information, a capability augmented by tracker interactions with runtime daemons.
 
 ## Example Use Case
 

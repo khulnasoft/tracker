@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	TrackerBinary   = "../../dist/tracee"
+	TrackerBinary   = "../../dist/tracker"
 	TrackerHostname = "localhost"
 	TrackerPort     = 3366
 )
@@ -34,7 +34,7 @@ const (
 	TrackerAlreadyRunning
 )
 
-// RunningTracker is a wrapper for a running tracee process as a regular process.
+// RunningTracker is a wrapper for a running tracker process as a regular process.
 type RunningTracker struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
@@ -62,7 +62,7 @@ func NewRunningTracker(givenCtx context.Context, cmdLine string) *RunningTracker
 	}
 }
 
-// Start starts the tracee process.
+// Start starts the tracker process.
 func (r *RunningTracker) Start(timeout time.Duration) (<-chan TrackerStatus, error) {
 	var err error
 
@@ -75,7 +75,7 @@ func (r *RunningTracker) Start(timeout time.Duration) (<-chan TrackerStatus, err
 	r.isReady = make(chan TrackerStatus)
 	now := time.Now()
 
-	if isTrackerAlreadyRunning() { // check if tracee is already running
+	if isTrackerAlreadyRunning() { // check if tracker is already running
 		imReady(TrackerAlreadyRunning) // ready: already running
 		goto exit
 	}
@@ -102,7 +102,7 @@ exit:
 	return r.isReady, err
 }
 
-// Stop stops the tracee process.
+// Stop stops the tracker process.
 func (r *RunningTracker) Stop() []error {
 	if r.pid == 0 {
 		return nil // cmd was never started
@@ -116,7 +116,7 @@ func (r *RunningTracker) Stop() []error {
 	return errs
 }
 
-// IsReady checks if the tracee process is ready.
+// IsReady checks if the tracker process is ready.
 func (r *RunningTracker) IsReady() bool {
 	ctx, cancel := context.WithTimeout(context.Background(), httpRequestTimeout)
 	defer cancel()
@@ -145,9 +145,9 @@ func (r *RunningTracker) IsReady() bool {
 	return resp.StatusCode == 200
 }
 
-// isTrackerAlreadyRunning checks if tracee is already running.
+// isTrackerAlreadyRunning checks if tracker is already running.
 func isTrackerAlreadyRunning() bool {
-	cmd := exec.Command("pgrep", "tracee")
+	cmd := exec.Command("pgrep", "tracker")
 	cmd.Stderr = nil
 	cmd.Stdout = nil
 

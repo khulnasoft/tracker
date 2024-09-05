@@ -17,7 +17,7 @@ import (
 func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	var runner cmd.Runner
 
-	// Initialize a tracee config structure
+	// Initialize a tracker config structure
 	cfg := config.Config{
 		PerfBufferSize:      c.Int("perf-buffer-size"),
 		BlobPerfBufferSize:  c.Int("blob-perf-buffer-size"),
@@ -176,8 +176,8 @@ func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 
 	// Decide BTF & BPF files to use (based in the kconfig, release & environment info)
 
-	traceeInstallPath := c.String("install-path")
-	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, traceeInstallPath, version)
+	trackerInstallPath := c.String("install-path")
+	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, trackerInstallPath, version)
 	if err != nil {
 		return runner, errfmt.Errorf("failed preparing BPF object: %v", err)
 	}
@@ -197,7 +197,7 @@ func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	runner.HTTPServer = httpServer
 	runner.TrackerConfig = cfg
 	runner.Printer = broadcast
-	runner.InstallPath = traceeInstallPath
+	runner.InstallPath = trackerInstallPath
 
 	return runner, nil
 }

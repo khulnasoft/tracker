@@ -100,7 +100,7 @@ func (p *CgroupProbe) detach(args ...interface{}) error {
 
 	// Legacy attachments (for now cgroupv2 prog attachments under older
 	// kernels) might not be done using BpfLink logic. Without a file
-	// descriptor for the link, tracee needs to raise its capabilities
+	// descriptor for the link, tracker needs to raise its capabilities
 	// in order to call bpf() syscall for the legacy detachment.
 	err = capabilities.GetInstance().EBPF(
 		func() error {

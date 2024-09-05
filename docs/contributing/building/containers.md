@@ -1,8 +1,8 @@
 # Creating Tracker Container Images
 
-> These instructions are meant to describe how to build the official tracee
+> These instructions are meant to describe how to build the official tracker
 > container image, instead of just downloading it from the
-> [Docker Hub](https://hub.docker.com/r/aquasec/tracee).
+> [Docker Hub](https://hub.docker.com/r/aquasec/tracker).
 >
 > If you would like to have a local building and execution environment,
 > [read this](./environment.md) instead.
@@ -20,34 +20,34 @@ release):
      latest daily built container images (based on the version currently being
      developed).
 
-     - **aquasec/tracee:dev**
+     - **aquasec/tracker:dev**
 
 2. **RELEASE (official versions) container images:**
 
      Preferable alias for latest released image:
 
-     - **aquasec/tracee:latest**
+     - **aquasec/tracker:latest**
 
      And the container images for each released version of Tracker:
 
-     - **aquasec/tracee:VERSION**
+     - **aquasec/tracker:VERSION**
 
 ## Generating Tracker Container Images
 
-1. **tracee:latest**
+1. **tracker:latest**
 
     Contains an executable binary with an embedded and CO-RE enabled eBPF object
     that makes it portable against multiple Linux and kernel versions.
 
     ```console
-    make -f builder/Makefile.tracee-container build-tracee
+    make -f builder/Makefile.tracker-container build-tracker
     ```
 
     !!! Note
         `BTFHUB=1` adds support to some [older kernels](https://github.com/aquasecurity/btfhub/blob/main/docs/supported-distros.md).
 
         ```console
-        BTFHUB=1 make -f builder/Makefile.tracee-container build-tracee
+        BTFHUB=1 make -f builder/Makefile.tracker-container build-tracker
         ```
 
 ## Running Generated Tracker Container Image
@@ -57,17 +57,17 @@ from the official built images. Nevertheless, during the image building process,
 it may be useful to execute the recently generated container image with correct
 arguments, mostly to see if the image is working.
 
-User may execute built containers through `Makefile.tracee-container` file with
+User may execute built containers through `Makefile.tracker-container` file with
 the "run" targets:
 
-1. To run recently generated **tracee:latest** container:
+1. To run recently generated **tracker:latest** container:
 
     ```console
-    make -f builder/Makefile.tracee-container run-tracee
+    make -f builder/Makefile.tracker-container run-tracker
     ```
 
     !!! note
         Tracker arguments are passed through the `ARG` variable:
         ```console
-        make -f builder/Makefile.tracee-container run-tracee ARG="--help"
+        make -f builder/Makefile.tracker-container run-tracker ARG="--help"
         ```

@@ -15,14 +15,14 @@ import (
 )
 
 var metrics = []string{
-	"tracee_ebpf_bpf_logs_total",
-	"tracee_ebpf_errors_total",
-	"tracee_ebpf_events_filtered",
-	"tracee_ebpf_events_total",
-	"tracee_ebpf_lostevents_total",
-	"tracee_ebpf_network_capture_events_total",
-	"tracee_ebpf_network_capture_lostevents_total",
-	"tracee_ebpf_write_lostevents_total",
+	"tracker_ebpf_bpf_logs_total",
+	"tracker_ebpf_errors_total",
+	"tracker_ebpf_events_filtered",
+	"tracker_ebpf_events_total",
+	"tracker_ebpf_lostevents_total",
+	"tracker_ebpf_network_capture_events_total",
+	"tracker_ebpf_network_capture_lostevents_total",
+	"tracker_ebpf_write_lostevents_total",
 }
 
 // checkIfMetricsExist checks if all metrics exist in the metrics endpoint.
@@ -109,18 +109,18 @@ func TestMetricsandPprofExist(t *testing.T) {
 	cmd := "--output none --events=syslog --metrics --pprof"
 	running := testutils.NewRunningTracker(context.Background(), cmd)
 
-	// start tracee
+	// start tracker
 	ready, runErr := running.Start(testutils.TrackerDefaultStartupTimeout)
 	require.NoError(t, runErr)
 
-	r := <-ready // block until tracee is ready (or not)
+	r := <-ready // block until tracker is ready (or not)
 	switch r {
 	case testutils.TrackerFailed:
-		t.Fatal("tracee failed to start")
+		t.Fatal("tracker failed to start")
 	case testutils.TrackerTimedout:
-		t.Fatal("tracee timedout to start")
+		t.Fatal("tracker timedout to start")
 	case testutils.TrackerAlreadyRunning:
-		t.Fatal("tracee is already running")
+		t.Fatal("tracker is already running")
 	}
 
 	// do the test
@@ -131,6 +131,6 @@ func TestMetricsandPprofExist(t *testing.T) {
 	require.NoError(t, metricsErr)
 	require.NoError(t, pprofErr)
 
-	cmdErrs := running.Stop() // stop tracee
+	cmdErrs := running.Stop() // stop tracker
 	require.Empty(t, cmdErrs)
 }

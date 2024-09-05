@@ -32,7 +32,7 @@ func (sig *e2eSignatureDerivation) GetMetadata() (detect.SignatureMetadata, erro
 
 func (sig *e2eSignatureDerivation) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "FILE_MODIFICATION"},
+		{Source: "tracker", Name: "FILE_MODIFICATION"},
 	}, nil
 }
 

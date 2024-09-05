@@ -40,7 +40,7 @@ func (sig *DroppedExecutable) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *DroppedExecutable) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "magic_write", Origin: "container"},
+		{Source: "tracker", Name: "magic_write", Origin: "container"},
 	}, nil
 }
 

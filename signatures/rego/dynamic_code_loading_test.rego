@@ -1,7 +1,7 @@
-package tracee.TRC_4
+package tracker.TRC_4
 
 test_match_1 {
-	tracee_match with input as {
+	tracker_match with input as {
 		"eventName": "mem_prot_alert",
 		"argsNum": 1,
 		"args": [{
@@ -12,7 +12,7 @@ test_match_1 {
 }
 
 test_match_wrong_message {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"eventName": "mem_prot_alert",
 		"argsNum": 1,
 		"args": [{
@@ -23,7 +23,7 @@ test_match_wrong_message {
 }
 
 test_match_wrong_event {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"eventName": "ptrace",
 		"argsNum": 1,
 		"args": [{

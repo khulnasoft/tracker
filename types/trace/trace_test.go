@@ -215,7 +215,7 @@ func TestEvent_ToProtocol(t *testing.T) {
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
 						Origin: string(HostOrigin),
-						Source: "tracee",
+						Source: "tracker",
 						Name:   "execve",
 					},
 				},
@@ -238,7 +238,7 @@ func TestEvent_ToProtocol(t *testing.T) {
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
 						Origin: string(ContainerOrigin),
-						Source: "tracee",
+						Source: "tracker",
 						Name:   "execve",
 					},
 				},
@@ -260,7 +260,7 @@ func TestEvent_ToProtocol(t *testing.T) {
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
 						Origin: string(ContainerInitOrigin),
-						Source: "tracee",
+						Source: "tracker",
 						Name:   "open",
 					},
 				},

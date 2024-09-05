@@ -77,7 +77,7 @@ func main() {
 				Name:    "capabilities",
 				Aliases: []string{"caps"},
 				Value:   nil,
-				Usage:   "define capabilities for tracee to run with. run '--capabilities help' for more info.",
+				Usage:   "define capabilities for tracker to run with. run '--capabilities help' for more info.",
 			},
 			&cli.StringSliceFlag{
 				Name:    "output",
@@ -125,8 +125,8 @@ func main() {
 			},
 			&cli.StringFlag{
 				Name:  "install-path",
-				Value: "/tmp/tracee",
-				Usage: "path where tracee will install or lookup it's resources",
+				Value: "/tmp/tracker",
+				Usage: "path where tracker will install or lookup it's resources",
 			},
 			&cli.BoolFlag{
 				Name:  server.MetricsEndpointFlag,

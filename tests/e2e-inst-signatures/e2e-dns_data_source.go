@@ -24,7 +24,7 @@ var e2eDnsDataSourceMetadata = detect.SignatureMetadata{
 
 func (sig *e2eDnsDataSource) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	dnsData, ok := ctx.GetDataSource("tracee", "dns")
+	dnsData, ok := ctx.GetDataSource("tracker", "dns")
 	if !ok {
 		return fmt.Errorf("dns data source not registered")
 	}
@@ -41,7 +41,7 @@ func (sig *e2eDnsDataSource) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eDnsDataSource) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "sched_process_exit"},
+		{Source: "tracker", Name: "sched_process_exit"},
 	}, nil
 }
 

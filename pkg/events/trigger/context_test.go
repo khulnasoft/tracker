@@ -24,7 +24,7 @@ func NewFakeTriggerEvent() trace.Event {
 		HostParentProcessID: 1,
 		UserID:              1000,
 		ProcessName:         "cat",
-		HostName:            "tracee",
+		HostName:            "tracker",
 		EventID:             2,
 		EventName:           "open",
 		ArgsNum:             3,
@@ -128,7 +128,7 @@ func TestContext_Apply(t *testing.T) {
 				ProcessID:   0,
 				ArgsNum:     3,
 				Container:   trace.Container{ID: ""},
-				ProcessName: "tracee-ebpf",
+				ProcessName: "tracker-ebpf",
 				Args: []trace.Argument{
 					{
 						ArgMeta: trace.ArgMeta{

@@ -8,11 +8,11 @@ ptrace - process trace system call for controlling and observing another process
 ## Description
 
 The `ptrace()` system call is a means by which one process, termed the "tracer",
-can observe and control the execution of another process, known as the "tracee".
+can observe and control the execution of another process, known as the "tracker".
 
-Through `ptrace()`, a tracer can examine and alter the tracee's memory and
+Through `ptrace()`, a tracer can examine and alter the tracker's memory and
 registers, essentially gaining a mechanism to inspect and manipulate the
-internal state of the tracee. The primary use case for `ptrace()` is in the
+internal state of the tracker. The primary use case for `ptrace()` is in the
 implementation of debugging tools and other code-analysis utilities, which serve
 as aids in software development.
 
@@ -23,9 +23,9 @@ arbitrary code into i.
 ## Arguments
 
 * `request`:`int`[K] - The specific operation to be performed, determined by constant values defined in the system headers.
-* `pid`:`pid_t`[K] - Process ID of the tracee.
-* `addr`:`void *`[K] - Address in the tracee's memory or a request-dependent value.
-* `data`:`void *`[K] - Data to be written to the tracee's memory or a request-dependent value.
+* `pid`:`pid_t`[K] - Process ID of the tracker.
+* `addr`:`void *`[K] - Address in the tracker's memory or a request-dependent value.
+* `data`:`void *`[K] - Data to be written to the tracker's memory or a request-dependent value.
 
 ### Available Tags
 

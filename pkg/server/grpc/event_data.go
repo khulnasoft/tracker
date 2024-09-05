@@ -82,7 +82,7 @@ func getEventValue(arg trace.Argument) (*pb.EventValue, error) {
 	return eventValue, nil
 }
 
-// parseArgument converts tracee argument to protobuf EventValue
+// parseArgument converts tracker argument to protobuf EventValue
 // based on the value type
 func parseArgument(arg trace.Argument) (*pb.EventValue, error) {
 	switch v := arg.Value.(type) {

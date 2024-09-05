@@ -22,10 +22,10 @@ type Config struct {
 	Enabled          bool             // Enables the signatures engine to run in the events pipeline
 	SigNameToEventID map[string]int32 // Cache of loaded signature event names to event ids, used to filter in dispatching
 
-	// Callback from tracee to determine if event should be dispatched to signature.
+	// Callback from tracker to determine if event should be dispatched to signature.
 	// This is done as a callback becaues importing the events package breaks compilation for the
-	// tracee-rules binary.
-	// When tracee-rules is removed, and the policy coordinator is implemented (PR #3305)
+	// tracker-rules binary.
+	// When tracker-rules is removed, and the policy coordinator is implemented (PR #3305)
 	// this solution should be abandoned in favor of using it alongside the engine.
 	ShouldDispatchEvent func(eventIdInt32 int32) bool
 
@@ -149,7 +149,7 @@ func (engine *Engine) matchHandler(res *detect.Finding) {
 }
 
 // checkCompletion is a function that runs at the end of each input source
-// closing tracee-rules if no more pending input sources exists
+// closing tracker-rules if no more pending input sources exists
 func (engine *Engine) checkCompletion() bool {
 	if engine.inputs.Tracker == nil {
 		engine.unloadAllSignatures()
@@ -223,8 +223,8 @@ func (engine *Engine) consumeSources(ctx context.Context) {
 						continue
 					}
 					for _, sel := range se {
-						if sel.Source == "tracee" {
-							_ = sig.OnSignal(detect.SignalSourceComplete("tracee"))
+						if sel.Source == "tracker" {
+							_ = sig.OnSignal(detect.SignalSourceComplete("tracker"))
 							break
 						}
 					}

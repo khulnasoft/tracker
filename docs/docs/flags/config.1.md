@@ -7,15 +7,15 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-config** - Define global configuration options for tracee
+tracker **\-\-config** - Define global configuration options for tracker
 
 ## SYNOPSIS
 
-tracee **\-\-config** <file\>
+tracker **\-\-config** <file\>
 
 ## DESCRIPTION
 
-The **\-\-config** flag allows you to define global configuration options (flags) for tracee. It expects a file in YAML or JSON format, among others (see [documentation](../install/config/kubernetes.md)).
+The **\-\-config** flag allows you to define global configuration options (flags) for tracker. It expects a file in YAML or JSON format, among others (see [documentation](../install/config/kubernetes.md)).
 
 All flags can be set in the config file, except for the following, which are reserved only for the CLI:
 

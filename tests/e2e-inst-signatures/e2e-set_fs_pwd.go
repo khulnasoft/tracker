@@ -50,7 +50,7 @@ func (sig *e2eSetFsPwd) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eSetFsPwd) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "set_fs_pwd"},
+		{Source: "tracker", Name: "set_fs_pwd"},
 	}, nil
 }
 

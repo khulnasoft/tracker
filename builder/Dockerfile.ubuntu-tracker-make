@@ -55,21 +55,21 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 RUN echo "Defaults env_keep += \"LANG LC_* HOME EDITOR PAGER GIT_PAGER MAN_PAGER\"" > /etc/sudoers && \
     echo "Defaults env_keep += \"LIBBPFGO* TRACKER*\"" >> /etc/sudoers && \
     echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    echo "tracee ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    echo "tracker ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     chmod 0440 /etc/sudoers
 
-# prepare tracee user to be $UID:$GID host equivalent
+# prepare tracker user to be $UID:$GID host equivalent
 
 RUN export uid=$uid gid=$gid && \
-    mkdir -p /home/tracee && \
-    echo "tracee:x:${uid}:${gid}:Tracker,,,:/home/tracee:/bin/bash" >> /etc/passwd && \
-    echo "tracee:x:${gid}:" >> /etc/group && \
-    echo "tracee::99999:0:99999:7:::" >> /etc/shadow && \
-    chown ${uid}:${gid} -R /home/tracee && \
-    echo "export PS1=\"\u@\h[\w]$ \"" > /home/tracee/.bashrc && \
-    echo "alias ls=\"ls --color\"" >> /home/tracee/.bashrc && \
-    echo "set -o vi" >> /home/tracee/.bashrc && \
-    ln -s /home/tracee/.bashrc /home/tracee/.profile
+    mkdir -p /home/tracker && \
+    echo "tracker:x:${uid}:${gid}:Tracker,,,:/home/tracker:/bin/bash" >> /etc/passwd && \
+    echo "tracker:x:${gid}:" >> /etc/group && \
+    echo "tracker::99999:0:99999:7:::" >> /etc/shadow && \
+    chown ${uid}:${gid} -R /home/tracker && \
+    echo "export PS1=\"\u@\h[\w]$ \"" > /home/tracker/.bashrc && \
+    echo "alias ls=\"ls --color\"" >> /home/tracker/.bashrc && \
+    echo "set -o vi" >> /home/tracker/.bashrc && \
+    ln -s /home/tracker/.bashrc /home/tracker/.profile
 
 # install extra packages (if needed)
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -104,6 +104,6 @@ RUN GOROOT=/usr/local/go GOPATH=$HOME/go \
     go install github.com/kisielk/errcheck@v1.7.0 && \
     cp $HOME/go/bin/errcheck /usr/bin/
 
-USER tracee
-ENV HOME=/home/tracee
-WORKDIR /tracee
+USER tracker
+ENV HOME=/home/tracker
+WORKDIR /tracker

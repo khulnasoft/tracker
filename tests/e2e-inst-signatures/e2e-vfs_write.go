@@ -34,7 +34,7 @@ func (sig *e2eVfsWrite) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eVfsWrite) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "vfs_write"},
+		{Source: "tracker", Name: "vfs_write"},
 	}, nil
 }
 

@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/golang-lru/v2/expirable"
 
 	"github.com/khulnasoft/tracker/pkg/logger"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 //
@@ -82,11 +82,11 @@ type ProcessTree struct {
 	procfsOnce     *sync.Once                       // busy loop debug message throttling
 	ctx            context.Context                  // context for the process tree
 	procfsQuery    bool
-	timeNormalizer traceetime.TimeNormalizer
+	timeNormalizer trackertime.TimeNormalizer
 }
 
 // NewProcessTree creates a new process tree.
-func NewProcessTree(ctx context.Context, config ProcTreeConfig, timeNormalizer traceetime.TimeNormalizer) (*ProcessTree, error) {
+func NewProcessTree(ctx context.Context, config ProcTreeConfig, timeNormalizer trackertime.TimeNormalizer) (*ProcessTree, error) {
 	procEvited := 0
 	thrEvicted := 0
 

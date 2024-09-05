@@ -15,7 +15,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/k8s"
-	"github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/policy"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
@@ -69,7 +69,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	sigNameToEventId := initialize.CreateEventsFromSignatures(events.StartSignatureID, sigs)
 
-	// Initialize a tracee config structure
+	// Initialize a tracker config structure
 
 	cfg := config.Config{
 		PerfBufferSize:      viper.GetInt("perf-buffer-size"),
@@ -297,8 +297,8 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	// Decide BTF & BPF files to use (based in the kconfig, release & environment info)
 
-	traceeInstallPath := viper.GetString("install-path")
-	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, traceeInstallPath, version)
+	trackerInstallPath := viper.GetString("install-path")
+	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, trackerInstallPath, version)
 	if err != nil {
 		return runner, errfmt.Errorf("failed preparing BPF object: %v", err)
 	}
@@ -325,7 +325,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	runner.GRPCServer = grpcServer
 	runner.TrackerConfig = cfg
 	runner.Printer = p
-	runner.InstallPath = traceeInstallPath
+	runner.InstallPath = trackerInstallPath
 
 	// parse arguments must be enabled if the rule engine is part of the pipeline
 	runner.TrackerConfig.Output.ParseArguments = true

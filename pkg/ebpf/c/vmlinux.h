@@ -1130,7 +1130,7 @@ const int TRACE_EVENT_FL_TRACEPOINT = (1 << TRACE_EVENT_FL_TRACEPOINT_BIT);
 //
 // COMPLETE NETWORK TYPES
 //
-// NOTE: It is not required that types are complete in this file, as tracee uses
+// NOTE: It is not required that types are complete in this file, as tracker uses
 //       CO-RE for calculating struct field offsets. The thing is: for protocol
 //       headers, sometimes, the type is an exact copy of the header that will
 //       receive a payload copy. This makes it impossible not to have the full

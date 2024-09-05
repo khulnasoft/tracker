@@ -63,12 +63,12 @@ func Test_listEvents(t *testing.T) {
 			FakeGetSelectedEvents: func() ([]detect.SignatureEventSelector, error) {
 				return []detect.SignatureEventSelector{
 					{
-						Source: "tracee",
+						Source: "tracker",
 						Name:   "execve",
 						Origin: "foobar",
 					},
 					{
-						Source: "tracee",
+						Source: "tracker",
 						Name:   "ptrace",
 						Origin: "bazfoo",
 					},

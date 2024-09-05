@@ -235,7 +235,7 @@ type ChangeLogLevelRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Level LogLevel `protobuf:"varint,1,opt,name=level,proto3,enum=tracee.v1beta1.LogLevel" json:"level,omitempty"`
+	Level LogLevel `protobuf:"varint,1,opt,name=level,proto3,enum=tracker.v1beta1.LogLevel" json:"level,omitempty"`
 }
 
 func (x *ChangeLogLevelRequest) Reset() {
@@ -485,22 +485,22 @@ func file_api_v1beta1_diagnostic_proto_rawDescGZIP() []byte {
 var file_api_v1beta1_diagnostic_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_v1beta1_diagnostic_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_v1beta1_diagnostic_proto_goTypes = []interface{}{
-	(LogLevel)(0),                  // 0: tracee.v1beta1.LogLevel
-	(*GetMetricsRequest)(nil),      // 1: tracee.v1beta1.GetMetricsRequest
-	(*GetMetricsResponse)(nil),     // 2: tracee.v1beta1.GetMetricsResponse
-	(*ChangeLogLevelRequest)(nil),  // 3: tracee.v1beta1.ChangeLogLevelRequest
-	(*ChangeLogLevelResponse)(nil), // 4: tracee.v1beta1.ChangeLogLevelResponse
-	(*GetStacktraceRequest)(nil),   // 5: tracee.v1beta1.GetStacktraceRequest
-	(*GetStacktraceResponse)(nil),  // 6: tracee.v1beta1.GetStacktraceResponse
+	(LogLevel)(0),                  // 0: tracker.v1beta1.LogLevel
+	(*GetMetricsRequest)(nil),      // 1: tracker.v1beta1.GetMetricsRequest
+	(*GetMetricsResponse)(nil),     // 2: tracker.v1beta1.GetMetricsResponse
+	(*ChangeLogLevelRequest)(nil),  // 3: tracker.v1beta1.ChangeLogLevelRequest
+	(*ChangeLogLevelResponse)(nil), // 4: tracker.v1beta1.ChangeLogLevelResponse
+	(*GetStacktraceRequest)(nil),   // 5: tracker.v1beta1.GetStacktraceRequest
+	(*GetStacktraceResponse)(nil),  // 6: tracker.v1beta1.GetStacktraceResponse
 }
 var file_api_v1beta1_diagnostic_proto_depIdxs = []int32{
-	0, // 0: tracee.v1beta1.ChangeLogLevelRequest.level:type_name -> tracee.v1beta1.LogLevel
-	1, // 1: tracee.v1beta1.DiagnosticService.GetMetrics:input_type -> tracee.v1beta1.GetMetricsRequest
-	3, // 2: tracee.v1beta1.DiagnosticService.ChangeLogLevel:input_type -> tracee.v1beta1.ChangeLogLevelRequest
-	5, // 3: tracee.v1beta1.DiagnosticService.GetStacktrace:input_type -> tracee.v1beta1.GetStacktraceRequest
-	2, // 4: tracee.v1beta1.DiagnosticService.GetMetrics:output_type -> tracee.v1beta1.GetMetricsResponse
-	4, // 5: tracee.v1beta1.DiagnosticService.ChangeLogLevel:output_type -> tracee.v1beta1.ChangeLogLevelResponse
-	6, // 6: tracee.v1beta1.DiagnosticService.GetStacktrace:output_type -> tracee.v1beta1.GetStacktraceResponse
+	0, // 0: tracker.v1beta1.ChangeLogLevelRequest.level:type_name -> tracker.v1beta1.LogLevel
+	1, // 1: tracker.v1beta1.DiagnosticService.GetMetrics:input_type -> tracker.v1beta1.GetMetricsRequest
+	3, // 2: tracker.v1beta1.DiagnosticService.ChangeLogLevel:input_type -> tracker.v1beta1.ChangeLogLevelRequest
+	5, // 3: tracker.v1beta1.DiagnosticService.GetStacktrace:input_type -> tracker.v1beta1.GetStacktraceRequest
+	2, // 4: tracker.v1beta1.DiagnosticService.GetMetrics:output_type -> tracker.v1beta1.GetMetricsResponse
+	4, // 5: tracker.v1beta1.DiagnosticService.ChangeLogLevel:output_type -> tracker.v1beta1.ChangeLogLevelResponse
+	6, // 6: tracker.v1beta1.DiagnosticService.GetStacktrace:output_type -> tracker.v1beta1.GetStacktraceResponse
 	4, // [4:7] is the sub-list for method output_type
 	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

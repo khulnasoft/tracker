@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tracee-config
+  name: tracker-config
   labels:
-    {{- include "tracee.labels" . | nindent 4 }}
+    {{- include "tracker.labels" . | nindent 4 }}
 data:
   {{- if .Values.configFile }}
   config.yaml:

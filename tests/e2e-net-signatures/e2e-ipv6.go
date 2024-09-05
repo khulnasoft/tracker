@@ -33,7 +33,7 @@ func (sig *e2eIPv6) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eIPv6) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "net_packet_ipv6"},
+		{Source: "tracker", Name: "net_packet_ipv6"},
 	}, nil
 }
 

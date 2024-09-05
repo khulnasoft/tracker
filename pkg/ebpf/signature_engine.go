@@ -136,7 +136,7 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 	return out, errc
 }
 
-// PrepareBuiltinDataSources returns a list of all data sources tracee makes available built-in
+// PrepareBuiltinDataSources returns a list of all data sources tracker makes available built-in
 func (t *Tracker) PrepareBuiltinDataSources() []detect.DataSource {
 	datasources := []detect.DataSource{}
 

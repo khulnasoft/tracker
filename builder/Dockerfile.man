@@ -12,4 +12,4 @@ ARG PANDOC_DEB="pandoc-${PANDOC_VERSION}-1-amd64.deb"
 RUN wget -q https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/${PANDOC_DEB} && \
     dpkg -i ${PANDOC_DEB}
 
-WORKDIR /tracee
+WORKDIR /tracker

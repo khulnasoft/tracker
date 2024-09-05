@@ -43,7 +43,7 @@ func (sig *ProcKcoreRead) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *ProcKcoreRead) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "container"},
+		{Source: "tracker", Name: "security_file_open", Origin: "container"},
 	}, nil
 }
 

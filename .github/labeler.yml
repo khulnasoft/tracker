@@ -78,7 +78,7 @@ kind/documentation:
   - mkdocs.yml
   - NOTICE
   - LICENSE
-  - cmd/tracee-gptdocs/*
+  - cmd/tracker-gptdocs/*
 # kind/bug:
 # kind/chore:
 # kind/feature:

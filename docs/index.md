@@ -2,7 +2,7 @@
 hide:
 - toc
 ---
-![Tracker Logo >](images/tracee.png)
+![Tracker Logo >](images/tracker.png)
 
 👋 Welcome to Tracker Documentation! To help you get around, please notice the different sections at the top global menu:
 
@@ -27,7 +27,7 @@ Tracker is a runtime security and observability tool that helps you understand h
 It is using [eBPF technology](https://ebpf.io/what-is-ebpf/) to tap into your system and expose that information as events that you can consume.  
 Events range from factual system activity events to sophisticated security events that detect suspicious behavioral patterns.
 
-To learn more about Tracker, check out the [documentation](https://aquasecurity.github.io/tracee/). 
+To learn more about Tracker, check out the [documentation](https://aquasecurity.github.io/tracker/). 
 
 ## Quickstart
 
@@ -37,11 +37,11 @@ Tracker should run on most common Linux distributions and kernels. For compatibi
 ### Using Docker
 
 ```shell
-docker run --name tracee -it --rm \
+docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
-  aquasec/tracee:latest
+  aquasec/tracker:latest
 ```
 
 For a complete walkthrough please see the [Docker getting started guide][docker-guide].
@@ -51,11 +51,11 @@ For a complete walkthrough please see the [Docker getting started guide][docker-
 ```shell
 helm repo add aqua https://aquasecurity.github.io/helm-charts/
 helm repo update
-helm install tracee aqua/tracee --namespace tracee --create-namespace
+helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```
 
 ```shell
-kubectl logs --follow --namespace tracee daemonset/tracee
+kubectl logs --follow --namespace tracker daemonset/tracker
 ```
 
 For a complete walkthrough please see the [Kubernetes getting started guide][kubernetes-guide].

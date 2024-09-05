@@ -22,7 +22,7 @@ Self-triggered hook.
 ## Example Use Case
 
 ```console
-./tracee -e ftrace_hook
+./tracker -e ftrace_hook
 ```
 
 ## Issues

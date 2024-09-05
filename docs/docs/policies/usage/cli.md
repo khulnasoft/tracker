@@ -7,7 +7,7 @@ This section details how to use the flags in the Tracker CLI.
 A [policy file](../index.md) can be applied in the Tracker command using the `--policy` flag and providing a path to the location of the policy file.
 
 ```console
-tracee --policy ./policy.yml
+tracker --policy ./policy.yml
 ```
 
 ## Using multiple policies
@@ -17,25 +17,25 @@ To specify multiple policies, users can either specify the directory, which cont
 Through a directory:
 
 ```console
-tracee --policy ./policy-directory
+tracker --policy ./policy-directory
 ```
 
 By specifying individual policies:
 
 ```console
-tracee --policy ./policy-one.yaml --policy ./policy-two.yaml 
+tracker --policy ./policy-one.yaml --policy ./policy-two.yaml 
 ```
 
 ## EXAMPLE
 
 ```console
-tracee --config ./config.yaml --policy ./policy.yaml && cat /tmp/debug.json
+tracker --config ./config.yaml --policy ./policy.yaml && cat /tmp/debug.json
 ```
 
 ### config.yaml (example)
 
 ```yaml
-install-path: /tmp/tracee
+install-path: /tmp/tracker
 
 # debugging
 
@@ -109,7 +109,7 @@ output:
 ### policy.yaml
 
 ```yaml
-apiVersion: tracee.khulnasoft.com/v1beta1
+apiVersion: tracker.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
   name: signatures
@@ -150,7 +150,7 @@ spec:
     - event: proc_fops_hooking
     - event: syscall_hooking
     - event: dropped_executable
-    # tracee open by cat in /tmp/* files
+    # tracker open by cat in /tmp/* files
     - event: openat
       filters:
         - comm=cat

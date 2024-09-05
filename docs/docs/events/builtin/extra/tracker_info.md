@@ -1,8 +1,8 @@
-# tracee_info
+# tracker_info
 
 ## Intro
 
-tracee_info - An event that exports some relevant data of Tracker upon startup.
+tracker_info - An event that exports some relevant data of Tracker upon startup.
 
 ## Description
 

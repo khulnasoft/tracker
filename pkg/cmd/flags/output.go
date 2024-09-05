@@ -19,7 +19,7 @@ type PrepareOutputResult struct {
 
 func PrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, error) {
 	outConfig := PrepareOutputResult{}
-	traceeConfig := &config.OutputConfig{}
+	trackerConfig := &config.OutputConfig{}
 
 	// outpath:format
 	printerMap := make(map[string]string)
@@ -65,7 +65,7 @@ func PrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, e
 
 			printerMap[outputParts[1]] = "webhook"
 		case "option":
-			err := parseOption(outputParts, traceeConfig, newBinary)
+			err := parseOption(outputParts, trackerConfig, newBinary)
 			if err != nil {
 				return outConfig, err
 			}
@@ -83,12 +83,12 @@ func PrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, e
 		printerMap["stdout"] = "table"
 	}
 
-	printerConfigs, err := getPrinterConfigs(printerMap, traceeConfig, newBinary)
+	printerConfigs, err := getPrinterConfigs(printerMap, trackerConfig, newBinary)
 	if err != nil {
 		return outConfig, err
 	}
 
-	outConfig.TrackerConfig = traceeConfig
+	outConfig.TrackerConfig = trackerConfig
 	outConfig.PrinterConfigs = printerConfigs
 
 	return outConfig, nil
@@ -154,12 +154,12 @@ func setOption(cfg *config.OutputConfig, option string, newBinary bool) error {
 }
 
 // getPrinterConfigs returns a slice of printer.Configs based on the given printerMap
-func getPrinterConfigs(printerMap map[string]string, traceeConfig *config.OutputConfig, newBinary bool) ([]config.PrinterConfig, error) {
+func getPrinterConfigs(printerMap map[string]string, trackerConfig *config.OutputConfig, newBinary bool) ([]config.PrinterConfig, error) {
 	printerConfigs := make([]config.PrinterConfig, 0, len(printerMap))
 
 	for outPath, printerKind := range printerMap {
 		if printerKind == "table" {
-			if err := setOption(traceeConfig, "parse-arguments", newBinary); err != nil {
+			if err := setOption(trackerConfig, "parse-arguments", newBinary); err != nil {
 				return nil, err
 			}
 		}
@@ -178,7 +178,7 @@ func getPrinterConfigs(printerMap map[string]string, traceeConfig *config.Output
 			Kind:       printerKind,
 			OutPath:    outPath,
 			OutFile:    outFile,
-			RelativeTS: traceeConfig.RelativeTime,
+			RelativeTS: trackerConfig.RelativeTime,
 		})
 	}
 
@@ -215,7 +215,7 @@ func parseFormat(outputParts []string, printerMap map[string]string, newBinary b
 }
 
 // parseOption parses the given option and sets it in the given config
-func parseOption(outputParts []string, traceeConfig *config.OutputConfig, newBinary bool) error {
+func parseOption(outputParts []string, trackerConfig *config.OutputConfig, newBinary bool) error {
 	if len(outputParts) == 1 || outputParts[1] == "" {
 		if newBinary {
 			return errfmt.Errorf("option flag can't be empty, run 'man output' for more info")
@@ -225,7 +225,7 @@ func parseOption(outputParts []string, traceeConfig *config.OutputConfig, newBin
 	}
 
 	for _, option := range strings.Split(outputParts[1], ",") {
-		err := setOption(traceeConfig, option, newBinary)
+		err := setOption(trackerConfig, option, newBinary)
 		if err != nil {
 			return err
 		}

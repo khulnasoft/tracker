@@ -46,7 +46,7 @@ func (sig *ProcMemAccess) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *ProcMemAccess) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "*"},
+		{Source: "tracker", Name: "security_file_open", Origin: "*"},
 	}, nil
 }
 

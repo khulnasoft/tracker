@@ -20,7 +20,7 @@ import (
 const (
 	procMounts      = "/proc/self/mountinfo"
 	procFilesystems = "/proc/filesystems"
-	tmpPathPrefix   = "tracee"
+	tmpPathPrefix   = "tracker"
 )
 
 //

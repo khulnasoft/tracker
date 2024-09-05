@@ -2,9 +2,9 @@
 
 1. Secure tracing
 
-    When **tracee** reads information from user programs, it is subject to a
+    When **tracker** reads information from user programs, it is subject to a
     **race condition** where the user program might be able to change the arguments
-    after **tracee** read them.
+    after **tracker** read them.
 
     For example, a program invoked:
 

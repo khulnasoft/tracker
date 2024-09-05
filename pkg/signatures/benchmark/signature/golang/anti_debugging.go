@@ -39,7 +39,7 @@ func (sig *antiDebugging) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *antiDebugging) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "ptrace"},
+		{Source: "tracker", Name: "ptrace"},
 	}, nil
 }
 

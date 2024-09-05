@@ -7,7 +7,7 @@ The `Process Tree` feature offers a structured view of processes and threads act
 To switch on the `Process Tree` feature, run the command:
 
 ```bash
-sudo tracee --output option:sort-events --output json --output option:parse-arguments --proctree source=both --events <event_type>
+sudo tracker --output option:sort-events --output json --output option:parse-arguments --proctree source=both --events <event_type>
 ```
 
 The underlying structure is populated using the core `sched_process_fork`, `sched_process_exec`, and `sched_process_exit` events and their data. There's also an option to bootstrap the process tree through a secondary route using internal signal events.
@@ -26,7 +26,7 @@ The process tree query the procfs upon initialization and during runtime to fill
 ## Command Line Option
 
 ```bash
-$ tracee --proctree help
+$ tracker --proctree help
 Example:
   --proctree source=[none|events|signals|both]
       none         | process tree is disabled (default).
@@ -89,7 +89,7 @@ This enhancement aims to offer developers and sysadmins a more detailed and gran
 
 ## Using the Process Tree
 
-The process tree is only available internally, to tracee's components, but, through the [datasource](../overview.md) mechanism, signatures are able to query the tree data using the data source process tree API.
+The process tree is only available internally, to tracker's components, but, through the [datasource](../overview.md) mechanism, signatures are able to query the tree data using the data source process tree API.
 
 ### Accessing the Process Tree Data Source
 
@@ -107,9 +107,9 @@ type e2eProcessTreeDataSource struct {
 func (sig *e2eProcessTreeDataSource) Init(ctx detect.SignatureContext) error {
     sig.cb = ctx.Callback
 
-    processTreeDataSource, ok := ctx.GetDataSource("tracee", "process_tree")
+    processTreeDataSource, ok := ctx.GetDataSource("tracker", "process_tree")
     if !ok {
-        return fmt.Errorf("data source tracee/process_tree is not registered")
+        return fmt.Errorf("data source tracker/process_tree is not registered")
     }
 
     sig.processTreeDS = processTreeDataSource

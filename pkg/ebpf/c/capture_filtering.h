@@ -53,7 +53,7 @@ statfunc bool filter_file_path(void *ctx, void *filter_map, struct file *file)
         path_filter_t *filter_p = bpf_map_lookup_elem(filter_map, &idx);
         // Filter should be always initialized
         if (unlikely(filter_p == NULL)) {
-            tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+            tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
             return false;
         }
 
@@ -86,7 +86,7 @@ statfunc bool filter_file_type(void *ctx,
     file_type_t *ftype = bpf_map_lookup_elem(filter_map, &map_idx);
     // Filter should be always initialized
     if (unlikely(ftype == NULL)) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
         return false;
     }
 
@@ -153,7 +153,7 @@ statfunc bool filter_file_fd(void *ctx, void *filter_map, size_t map_idx, struct
     file_type_t *fds_filter = bpf_map_lookup_elem(filter_map, &map_idx);
     // Filter should be always initialized
     if (unlikely(fds_filter == NULL)) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
         return false;
     }
 

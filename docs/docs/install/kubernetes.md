@@ -34,18 +34,18 @@ The provided Helm chart will install Tracker as a DaemonSet so that it's tracing
 ```console
 helm repo add aqua https://aquasecurity.github.io/helm-charts/
 helm repo update
-helm install tracee aqua/tracee --namespace tracee --create-namespace
+helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```
 
 <details>
   <summary>Verify step</summary>
 ```console
-kubectl get pods -n tracee
+kubectl get pods -n tracker
 ```
 
 ```text
 NAME           READY   STATUS    RESTARTS   AGE 
-tracee-fcjmp   1/1     Running   0          4m11s
+tracker-fcjmp   1/1     Running   0          4m11s
 ```
 </details>
 
@@ -56,7 +56,7 @@ Once installed, Tracker immediately starts producing events. Since Tracker is de
 The easiest way to tap into the log stream of all Tracker Pods is with the `kubectl logs` command:
 
 ```console
-kubectl logs -f daemonset/tracee -n tracee
+kubectl logs -f daemonset/tracker -n tracker
 ```
 
 !!! Note
@@ -75,20 +75,20 @@ When you are ready to apply a policy, it's as easy as `kubectl apply -f your-pol
 
 In some cases you will need to configure Tracker to your preferences. For example, to change the output event format, or to set a different log level. To learn more about available configuration options please see the [configuration](../install/config/index.md) section.
 
-Tracker's configuration is accessible as a ConfigMap in Kubernetes. Since we installed Tracker with Helm, you can also configure Tracker with it, for example: `helm upgrade tracee --set config.cache.size=1024`. More details [here](../install/config/kubernetes.md).
+Tracker's configuration is accessible as a ConfigMap in Kubernetes. Since we installed Tracker with Helm, you can also configure Tracker with it, for example: `helm upgrade tracker --set config.cache.size=1024`. More details [here](../install/config/kubernetes.md).
 
 ## Optional: Exercising a security event
 
-To see Tracker in action, let's simulate a security event. We'll do a "file-less" execution, which is a common evasion technique used by some malware, and is flagged by Tracker as suspicious activity. To simulate this, we'll use the [tracee-tester](https://registry.hub.docker.com/r/aquasec/tracee-tester) example image it will simulate the suspicious activity without harming your environment.
+To see Tracker in action, let's simulate a security event. We'll do a "file-less" execution, which is a common evasion technique used by some malware, and is flagged by Tracker as suspicious activity. To simulate this, we'll use the [tracker-tester](https://registry.hub.docker.com/r/aquasec/tracker-tester) example image it will simulate the suspicious activity without harming your environment.
 
 ```console
-kubectl run tracee-tester --image=aquasec/tracee-tester -- TRC-105
+kubectl run tracker-tester --image=aquasec/tracker-tester -- TRC-105
 ```
 
 You can see the event in the logs:
 
 ```console
-kubectl logs -f ds/tracee -n tracee | grep fileless_execution 
+kubectl logs -f ds/tracker -n tracker | grep fileless_execution 
 ```
 
 ## Next steps
@@ -106,4 +106,4 @@ If you prefer a video version of the Kubernetes installation guide, have a look 
 
 Getting started with eBPF in Kubernetes - Tracker Installation Guide 
 
-[![Watch the video](../../images/ebpftraceehelminstall.png)](https://youtu.be/YQdEvf2IS9k?si=LhQM0CI8_QKvOCeK)
+[![Watch the video](../../images/ebpftrackerhelminstall.png)](https://youtu.be/YQdEvf2IS9k?si=LhQM0CI8_QKvOCeK)

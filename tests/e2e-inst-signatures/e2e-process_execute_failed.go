@@ -43,8 +43,8 @@ func (sig *e2eProcessExecuteFailed) GetMetadata() (detect.SignatureMetadata, err
 
 func (sig *e2eProcessExecuteFailed) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "process_execute_failed"},
-		{Source: "tracee", Name: "init_namespaces"},
+		{Source: "tracker", Name: "process_execute_failed"},
+		{Source: "tracker", Name: "init_namespaces"},
 	}, nil
 }
 

@@ -23,7 +23,7 @@ The LSM hook of setting the resource limit on a task. This hook triggers the eve
 ## Example Use Case
 
 ```console
-./tracee -e security_task_setrlimit
+./tracker -e security_task_setrlimit
 ```
 
 ## Issues

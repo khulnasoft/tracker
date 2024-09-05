@@ -45,15 +45,15 @@ helm repo update
 Install the Tracker Helm Chart inside your Kubernetes cluster:
 
 ```console
-helm install tracee aqua/tracee \
-        --namespace tracee-system --create-namespace \
+helm install tracker aqua/tracker \
+        --namespace tracker-system --create-namespace \
         --set hostPID=true
 ```
 
-Now, ensure that Tracker is running inside the `tracee-system` namespace:
+Now, ensure that Tracker is running inside the `tracker-system` namespace:
 
 ```console
-kubectl get all -n tracee-system
+kubectl get all -n tracker-system
 ```
 
 Similar to Promtail, also for Tracker one pod should run on each node of the Kubernetes cluster.
@@ -63,7 +63,7 @@ Similar to Promtail, also for Tracker one pod should run on each node of the Kub
 Generally, it is possible to access logs from the Tracker pods directly through kubectl:
 
 ```console
-kubectl logs -f daemonset/tracee -n tracee-system
+kubectl logs -f daemonset/tracker -n tracker-system
 ```
 
 Next, open the Grafana Dashboard, on the left, go to "Explore". There, you should be able to select Loki as a Datasource.

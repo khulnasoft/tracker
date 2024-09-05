@@ -1,6 +1,6 @@
-package tracee.TRC_6
+package tracker.TRC_6
 
-import data.tracee.helpers
+import data.tracker.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-6",
@@ -17,29 +17,29 @@ __rego_metadoc__ := {
 
 eventSelectors := [
 	{
-		"source": "tracee",
+		"source": "tracker",
 		"name": "init_module",
 	},
 	{
-		"source": "tracee",
+		"source": "tracker",
 		"name": "security_kernel_read_file",
 	},
 ]
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracee_match {
+tracker_match {
 	input.eventName == "init_module"
 }
 
-tracee_match = res {
+tracker_match = res {
 	input.eventName == "security_kernel_read_file"
 
-	load_type = helpers.get_tracee_argument("type")
+	load_type = helpers.get_tracker_argument("type")
 
 	load_type == "kernel-module"
 
-	res := {"pathname": helpers.get_tracee_argument("pathname")}
+	res := {"pathname": helpers.get_tracker_argument("pathname")}
 }

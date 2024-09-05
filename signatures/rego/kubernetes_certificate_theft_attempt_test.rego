@@ -1,7 +1,7 @@
-package tracee.TRC_10
+package tracker.TRC_10
 
 test_match_1 {
-	tracee_match with input as {
+	tracker_match with input as {
 		"eventName": "security_file_open",
 		"processName": "malware",
 		"args": [
@@ -18,7 +18,7 @@ test_match_1 {
 }
 
 test_match_wrong_request {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"eventName": "security_file_open",
 		"processName": "kubelet",
 		"args": [

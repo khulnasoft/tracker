@@ -10,7 +10,7 @@ import (
 
 func containersHelp() string {
 	return `Select which container runtimes to connect to for container events enrichment.
-By default, if no flag is passed, tracee will automatically detect installed runtimes by going through known runtime socket paths.
+By default, if no flag is passed, tracker will automatically detect installed runtimes by going through known runtime socket paths.
 
 Tracker will look for the following paths:
 1. Docker:     /var/run/docker.sock

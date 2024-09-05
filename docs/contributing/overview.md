@@ -23,9 +23,9 @@ If you have a suggestion, question, or a general comment - please use Discussion
 1. Every issue needs to be actionable and assignable. Consider the scope of the issue if assigned to one person, and break down if necessary.
 1. Be clear and definitive when composing issues. For bug reports, include detailed error messages and environment description. For features, include a clear scope and acceptance criteria.
 1. Since we have different projects under the same monorepo, use labels to denote areas that the issue relates to:
-    1. `tracee`
-    1. `tracee-ebpf`
-    1. `tracee-rules`
+    1. `tracker`
+    1. `tracker-ebpf`
+    1. `tracker-rules`
     1. `signatures`
     1.  If non of the labels is relevant don't add any (usually for top-level issues)
 1. We use the following labels to describe the type of issue:

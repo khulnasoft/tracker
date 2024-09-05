@@ -5,7 +5,7 @@ import (
 	"time"
 
 	ch "github.com/khulnasoft/tracker/pkg/changelog"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 // TaskInfoFeed allows external packages to set/get multiple values of a task at once.
@@ -372,7 +372,7 @@ func (ti *TaskInfo) GetStartTime() time.Time {
 	ti.mutex.RLock()
 	defer ti.mutex.RUnlock()
 
-	return traceetime.NsSinceEpochToTime(ti.startTimeNS)
+	return trackertime.NsSinceEpochToTime(ti.startTimeNS)
 }
 
 // GetExitTimeNS returns the exitTime of the task in nanoseconds since epoch
@@ -386,7 +386,7 @@ func (ti *TaskInfo) GetExitTimeNS() uint64 {
 func (ti *TaskInfo) GetExitTime() time.Time {
 	ti.mutex.RLock()
 	defer ti.mutex.RUnlock()
-	return traceetime.NsSinceEpochToTime(ti.exitTimeNS)
+	return trackertime.NsSinceEpochToTime(ti.exitTimeNS)
 }
 
 // IsAlive returns true if the task has exited.
@@ -402,13 +402,13 @@ func (ti *TaskInfo) IsAliveAt(targetTime time.Time) bool {
 	ti.mutex.RLock()
 	defer ti.mutex.RUnlock()
 	if ti.exitTimeNS != 0 {
-		if targetTime.After(traceetime.NsSinceEpochToTime(ti.exitTimeNS)) {
+		if targetTime.After(trackertime.NsSinceEpochToTime(ti.exitTimeNS)) {
 			return false
 		}
 	}
 	// If start time is not initialized it will count as 0 ns, meaning it will be before any
 	// query time given.
-	if targetTime.Before(traceetime.NsSinceEpochToTime(ti.startTimeNS)) {
+	if targetTime.Before(trackertime.NsSinceEpochToTime(ti.startTimeNS)) {
 		return false
 	}
 	return true

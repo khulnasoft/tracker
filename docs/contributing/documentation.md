@@ -33,7 +33,7 @@ Serve the container image:
 make -f ./builder/Makefile.mkdocs mkdocs-serve
 ```
 
-Open `localhost:8000/tracee`
+Open `localhost:8000/tracker`
 
 Now you should see the documentation.
 

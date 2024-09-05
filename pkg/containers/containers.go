@@ -317,7 +317,7 @@ func getContainerIdFromCgroup(cgroupPath string) (string, cruntime.RuntimeId, bo
 		}
 
 		// Special case: Garden. Garden doesn't have a container enricher implemented,
-		// but, still, tracee needs to identify garden containers ids in the events.
+		// but, still, tracker needs to identify garden containers ids in the events.
 		if matched := gardenContainerIdFromCgroupRegex.MatchString(id); matched {
 			runtime = cruntime.Garden
 			return id, runtime, i == len(cgroupParts)-1

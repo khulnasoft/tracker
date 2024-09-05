@@ -12,7 +12,7 @@ scrape_configs:
     static_configs:
     - targets: ["localhost:9100"]
 
-  - job_name: "tracee"
+  - job_name: "tracker"
     scrape_interval: 5s
     static_configs:
     - targets: ["localhost:3366"]

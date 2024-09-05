@@ -23,7 +23,7 @@ const maxStackDepth int = 20
 // Matches 'NO_SYSCALL' in eBPF code
 const noSyscall int32 = -1
 
-// handleEvents is the main pipeline of tracee. It receives events from the perf buffer
+// handleEvents is the main pipeline of tracker. It receives events from the perf buffer
 // and passes them through a series of stages, each stage is a goroutine that performs a
 // specific task on the event. The pipeline is started in a separate goroutine.
 func (t *Tracker) handleEvents(ctx context.Context, initialized chan<- struct{}) {
@@ -89,8 +89,8 @@ func (t *Tracker) handleEvents(ctx context.Context, initialized chan<- struct{})
 	}
 }
 
-// Under some circumstances, tracee-rules might be slower to consume events than
-// tracee-ebpf is capable of generating them. This requires tracee-ebpf to deal with this
+// Under some circumstances, tracker-rules might be slower to consume events than
+// tracker-ebpf is capable of generating them. This requires tracker-ebpf to deal with this
 // possible lag, but, at the same, perf-buffer consumption can't be left behind (or
 // important events coming from the kernel might be loss, causing detection misses).
 //
@@ -106,7 +106,7 @@ func (t *Tracker) handleEvents(ctx context.Context, initialized chan<- struct{})
 // golang channel, causes event losses as well. It means this is not enough to relief the
 // pressure from kernel events into perf-buffer.
 //
-// 3) create an internal, to tracee-ebpf, buffer based on the node size.
+// 3) create an internal, to tracker-ebpf, buffer based on the node size.
 
 // queueEvents is the cache pipeline stage. For each received event, it goes through a
 // caching function that will enqueue the event into a queue. The queue is then de-queued
@@ -262,7 +262,7 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 			evt.ProcessEntityId = utils.HashTaskID(eCtx.HostPid, eCtx.LeaderStartTime)
 			evt.ParentEntityId = utils.HashTaskID(eCtx.HostPpid, eCtx.ParentStartTime)
 
-			// If there aren't any policies that need filtering in userland, tracee **may** skip
+			// If there aren't any policies that need filtering in userland, tracker **may** skip
 			// this event, as long as there aren't any derivatives or signatures that depend on it.
 			// Some base events (derivative and signatures) might not have set related policy bit,
 			// thus the need to continue with those within the pipeline.
@@ -545,7 +545,7 @@ func (t *Tracker) deriveEvents(ctx context.Context, in <-chan *trace.Event) (
 					// (when there are more than one).
 					//
 					// Nadav: Likely related to https://github.com/golang/go/issues/57969 (GOEXPERIMENT=loopvar).
-					//        Let's keep an eye on that moving from experimental for these and similar cases in tracee.
+					//        Let's keep an eye on that moving from experimental for these and similar cases in tracker.
 					event := &derivatives[i]
 
 					// Skip events that dont work with filtering due to missing types
@@ -715,9 +715,9 @@ func (t *Tracker) handleError(err error) {
 }
 
 // parseArguments parses the arguments of the event. It must happen before the signatures
-// are evaluated. For the new experience (cmd/tracee), it needs to happen in the the
-// "events_engine" stage of the pipeline. For the old experience (cmd/tracee-ebpf &&
-// cmd/tracee-rules), it happens on the "sink" stage of the pipeline (close to the
+// are evaluated. For the new experience (cmd/tracker), it needs to happen in the the
+// "events_engine" stage of the pipeline. For the old experience (cmd/tracker-ebpf &&
+// cmd/tracker-rules), it happens on the "sink" stage of the pipeline (close to the
 // printers).
 func (t *Tracker) parseArguments(e *trace.Event) error {
 	if t.config.Output.ParseArguments {

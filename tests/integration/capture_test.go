@@ -49,28 +49,28 @@ func Test_TrackerCapture(t *testing.T) {
 		{
 			name:           "capture write/read",
 			coolDown:       0 * time.Second,
-			directory:      "/tmp/tracee/1",
+			directory:      "/tmp/tracker/1",
 			captureFilters: []string{outputWriteFilter, outputReadFilter},
 			test:           readWriteCaptureTest,
 		},
 		{
 			name:           "capture write/readv",
 			coolDown:       2 * time.Second,
-			directory:      "/tmp/tracee/2",
+			directory:      "/tmp/tracker/2",
 			captureFilters: []string{outputWriteFilter, outputReadFilter},
 			test:           readWritevCaptureTest,
 		},
 		{
 			name:           "capture pipe write/read",
 			coolDown:       2 * time.Second,
-			directory:      "/tmp/tracee/3",
+			directory:      "/tmp/tracker/3",
 			captureFilters: []string{pipeWriteFilter, pipeReadFilter},
 			test:           readWritePipe,
 		},
 		{
 			name:           "capture packet context",
 			coolDown:       0 * time.Second,
-			directory:      "/tmp/tracee/4",
+			directory:      "/tmp/tracker/4",
 			captureFilters: []string{"network", "pcap:single,command,container,process"},
 			test:           packetContext,
 		},
@@ -86,20 +86,20 @@ func Test_TrackerCapture(t *testing.T) {
 			}
 			running := testutils.NewRunningTracker(context.Background(), cmd)
 
-			// start tracee
+			// start tracker
 			ready, runErr := running.Start(20 * time.Second)
 			require.NoError(t, runErr)
 
-			r := <-ready // block until tracee is ready (or not)
+			r := <-ready // block until tracker is ready (or not)
 			switch r {
 			case testutils.TrackerStarted:
-				t.Logf("  --- started tracee ---")
+				t.Logf("  --- started tracker ---")
 			case testutils.TrackerFailed:
-				t.Fatal("tracee failed to start")
+				t.Fatal("tracker failed to start")
 			case testutils.TrackerTimedout:
-				t.Fatal("tracee timedout to start")
+				t.Fatal("tracker timedout to start")
 			case testutils.TrackerAlreadyRunning:
-				t.Fatal("tracee is already running")
+				t.Fatal("tracker is already running")
 			}
 
 			var failed bool
@@ -118,12 +118,12 @@ func Test_TrackerCapture(t *testing.T) {
 				}
 			}()
 
-			cmdErrs := running.Stop() // stop tracee
+			cmdErrs := running.Stop() // stop tracker
 			if len(cmdErrs) > 0 {
 				failed = true
-				t.Logf("failed to stop tracee: %v", cmdErrs)
+				t.Logf("failed to stop tracker: %v", cmdErrs)
 			} else {
-				t.Logf("  --- stopped tracee ---")
+				t.Logf("  --- stopped tracker ---")
 			}
 
 			if failed {

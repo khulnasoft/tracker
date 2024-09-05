@@ -13,7 +13,7 @@ import (
 //
 // This is a big Pcaps struct holding caches for different types of Pcap files
 // to be managed (pcap files per process, per containers and per commands). It
-// would be hard to keep all possible pcap files open forever (as tracee might
+// would be hard to keep all possible pcap files open forever (as tracker might
 // trace tons of processes, containers or commands).
 //
 // That is what the PcapCache struct is for. It keeps Pcap files and maintain

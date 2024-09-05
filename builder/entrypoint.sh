@@ -1,14 +1,14 @@
 #!/bin/sh
 
 #
-# Entrypoint for the official tracee container images
+# Entrypoint for the official tracker container images
 #
 
 # variables
 
-TRACKER_TMP="/tmp/tracee"
+TRACKER_TMP="/tmp/tracker"
 TRACKER_OUT="${TRACKER_TMP}/out"
-TRACKER_EXE=${TRACKER_EXE:="/tracee/tracee"}
+TRACKER_EXE=${TRACKER_EXE:="/tracker/tracker"}
 
 LIBBPFGO_OSRELEASE_FILE=${LIBBPFGO_OSRELEASE_FILE:="/etc/os-release-host"}
 
@@ -18,7 +18,7 @@ CAPABILITIES_DROP=${CAPABILITIES_DROP:=""}
 
 # functions
 
-run_tracee() {
+run_tracker() {
     mkdir -p $TRACKER_OUT
 
     if [ $# -ne 0 ]; then
@@ -39,7 +39,7 @@ run_tracee() {
         --events signatures,container_create,container_remove
     fi
 
-    tracee_ret=$?
+    tracker_ret=$?
 }
 
 # startup
@@ -52,7 +52,7 @@ fi
 if [ "$LIBBPFGO_OSRELEASE_FILE" == "" ]; then
     echo "ERROR:"
     echo "ERROR: You have to set LIBBPFGO_OSRELEASE_FILE env variable."
-    echo "ERROR: It allows tracee to detect host environment features."
+    echo "ERROR: It allows tracker to detect host environment features."
     echo "ERROR: "
     echo "ERROR: Run docker with :"
     echo "ERROR:     -v /etc/os-release:/etc/os-release-host:ro"
@@ -79,9 +79,9 @@ fi
 # main
 #
 
-run_tracee $@
+run_tracker $@
 
-if [ $tracee_ret -eq 2 ]; then
+if [ $tracker_ret -eq 2 ]; then
     echo "INFO:"
     echo "INFO: It seems that your environment isn't supported by Tracker."
     echo "INFO: If you think this is an error, please open an issue at:"
@@ -90,4 +90,4 @@ if [ $tracee_ret -eq 2 ]; then
     echo "INFO:"
 fi
 
-exit $tracee_ret
+exit $tracker_ret

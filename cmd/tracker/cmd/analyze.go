@@ -14,7 +14,7 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/cmd/flags"
 	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
@@ -69,8 +69,8 @@ var analyze = &cobra.Command{
 Tracker can be used to collect events and store it in a file. This file can be used as input to analyze.
 
 eg:
-tracee --events ptrace --output=json:events.json
-tracee analyze --events anti_debugging events.json`,
+tracker --events ptrace --output=json:events.json
+tracker analyze --events anti_debugging events.json`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		bindViperFlag(cmd, "events")
 		bindViperFlag(cmd, "log")
@@ -212,7 +212,7 @@ func produce(ctx context.Context, inputFile *os.File, engineInput chan protocol.
 }
 
 func process(finding *detect.Finding) {
-	event, err := tracee.FindingToEvent(finding)
+	event, err := tracker.FindingToEvent(finding)
 	if err != nil {
 		logger.Fatalw("Failed to convert finding to event", "err", err)
 	}

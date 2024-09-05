@@ -41,7 +41,7 @@ func (sig *e2eHTTP) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eHTTP) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "net_packet_http"},
+		{Source: "tracker", Name: "net_packet_http"},
 	}, nil
 }
 

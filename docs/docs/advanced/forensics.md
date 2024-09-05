@@ -4,18 +4,18 @@ Tracker has a unique feature that lets you capture interesting artifacts from
 running applications, using the `--capture` flag.
 
 ```console
-./dist/tracee man capture
+./dist/tracker man capture
 ```
 
 ```console
-sudo ./dist/tracee --capture xxx
+sudo ./dist/tracker --capture xxx
 ```
 
 !!! Tip
     All captured artifacts are saved in Tracker's "output directory", which can
     be configured using `--capture dir:/path/to/dir`. You may also use
     `--capture clear-dir` if you want contents of the destination directory
-    to be cleared every time you execute tracee.
+    to be cleared every time you execute tracker.
 
 ## Artifacts Types
 
@@ -32,12 +32,12 @@ Tracker can capture the following types of artifacts:
 
     ***write example***
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
        --output json \
        --scope comm=bash \
        --scope follow \
        --output option:parse-arguments \
-       --capture dir:/tmp/tracee/ \
+       --capture dir:/tmp/tracker/ \
        --capture write='/tmp/*'
     ```
    
@@ -55,9 +55,9 @@ Tracker can capture the following types of artifacts:
     ```
 
     !!! Note
-        You can read captured files written at `/tmp/tracee/out`:
+        You can read captured files written at `/tmp/tracker/out`:
         ```console
-        sudo cat /tmp/tracee/out/host/write.dev-271581185.inode-1966101
+        sudo cat /tmp/tracker/out/host/write.dev-271581185.inode-1966101
         ```
 
         ```text
@@ -67,12 +67,12 @@ Tracker can capture the following types of artifacts:
     ***read example***
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
        --output json \
        --scope comm=bash \
        --scope follow \
        --output option:parse-arguments \
-       --capture dir:/tmp/tracee/ \
+       --capture dir:/tmp/tracker/ \
        --capture read:type=pipe \
        --capture read:fd=stdin'
     ```
@@ -87,9 +87,9 @@ Tracker can capture the following types of artifacts:
     ```
 
    !!! Note
-       You can read captured files read at `/tmp/tracee/out`:
+       You can read captured files read at `/tmp/tracker/out`:
        ```console
-       sudo cat /tmp/tracee/out/host/read.dev-12.inode-176203
+       sudo cat /tmp/tracker/out/host/read.dev-12.inode-176203
        ```
 
         ```text
@@ -102,12 +102,12 @@ Tracker can capture the following types of artifacts:
     same binary is executed multiple times, it will be captured just once.
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
        --output json \
        --scope comm=bash \
        --scope follow \
        --output option:parse-arguments \
-       --capture dir:/tmp/tracee/ \
+       --capture dir:/tmp/tracker/ \
        --capture exec
     ```
 
@@ -121,7 +121,7 @@ Tracker can capture the following types of artifacts:
     ```
 
     !!! Note
-        You will have a copy of each executed file written at `/tmp/tracee/out`:
+        You will have a copy of each executed file written at `/tmp/tracker/out`:
         ```console
         ldd /bin/ls
         ```
@@ -135,7 +135,7 @@ Tracker can capture the following types of artifacts:
         ```
 
         ```console
-        ldd /tmp/tracee/out/host/exec.1657322052835478987.ls
+        ldd /tmp/tracker/out/host/exec.1657322052835478987.ls
         ```
 
         ```text
@@ -146,8 +146,8 @@ Tracker can capture the following types of artifacts:
         /lib64/ld-linux-x86-64.so.2 (0x00007feeb2006000)
 
         ```console
-        sudo chmod +x /tmp/tracee/out/host/exec.1657322052835478987.ls
-        /tmp/tracee/out/host/exec.1657322052835478987.ls
+        sudo chmod +x /tmp/tracker/out/host/exec.1657322052835478987.ls
+        /tmp/tracker/out/host/exec.1657322052835478987.ls
         ```
 
 1. **Memory Files**
@@ -157,21 +157,21 @@ Tracker can capture the following types of artifacts:
     **Write+Execute** to **Write**.
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
        --output none \
        --scope comm=bash \
        --scope follow \
-       --capture dir:/tmp/tracee/ \
+       --capture dir:/tmp/tracker/ \
        --capture mem
     ```
 
     !!! Note
-        You may opt not to have any output from **tracee** with `--output none`
-        command flag is given. This makes tracee to work in capture mode only.
+        You may opt not to have any output from **tracker** with `--output none`
+        command flag is given. This makes tracker to work in capture mode only.
 
 1. **Network PCAP Files**
 
-    Anytime a **network packet** is delivered to a process, traced by tracee,
+    Anytime a **network packet** is delivered to a process, traced by tracker,
     this packet might be captured into one or multiple pcap files.
 
     !!! Attention
@@ -186,7 +186,7 @@ Tracker can capture the following types of artifacts:
     A good way to test this behavior is to execute:
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
         --events net_packet_ipv4 \
         --capture network \
         --capture pcap-options:filtered
@@ -195,41 +195,41 @@ Tracker can capture the following types of artifacts:
     and observe a single **pcap file** for all ipv4 packets created:
 
     ```console
-    find /tmp/tracee/out/pcap/
+    find /tmp/tracker/out/pcap/
     ```
 
     ```text
-    /tmp/tracee/out/pcap/
-    /tmp/tracee/out/pcap/single.pcap
+    /tmp/tracker/out/pcap/
+    /tmp/tracker/out/pcap/single.pcap
     ```
 
     You can select only dns packets, for example:
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
         --events net_packet_dns \
         --capture network \
         --capture pcap-options:filtered
     ```
 
-    and the file `/tmp/tracee/out/pcap/single.pcap` would only contain DNS
+    and the file `/tmp/tracker/out/pcap/single.pcap` would only contain DNS
     related packets:
 
     ```console
-    find /tmp/tracee/out/pcap/
+    find /tmp/tracker/out/pcap/
     ```
 
     ```text
-    /tmp/tracee/out/pcap/
-    /tmp/tracee/out/pcap/single.pcap
+    /tmp/tracker/out/pcap/
+    /tmp/tracker/out/pcap/single.pcap
     ```
 
     ```console
-    sudo tcpdump -n -r /tmp/tracee/out/pcap/single.pcap | head -2
+    sudo tcpdump -n -r /tmp/tracker/out/pcap/single.pcap | head -2
     ```
 
     ```text
-    reading from file /tmp/tracee/out/pcap/single.pcap, link-type NULL (BSD loopback), snapshot length 262144
+    reading from file /tmp/tracker/out/pcap/single.pcap, link-type NULL (BSD loopback), snapshot length 262144
     16:53:48.870629 IP 127.0.0.1.55569 > 127.0.0.53.53: 33361+ [1au] A? www.uol.com.br. (43)
     16:53:48.870690 IP 127.0.0.1.55569 > 127.0.0.53.53: 25943+ [1au] AAAA? www.uol.com.br. (43)
     ```
@@ -248,7 +248,7 @@ Tracker can capture the following types of artifacts:
     inside `containers/container_id.pcap`.
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
         --events net_packet_icmp \
         --capture network \
         --capture pcap-options:filtered \
@@ -256,7 +256,7 @@ Tracker can capture the following types of artifacts:
     ```
 
     ```console
-    cd /tmp/tracee/out
+    cd /tmp/tracker/out
     find pcap
     ```
 
@@ -347,7 +347,7 @@ Tracker can capture the following types of artifacts:
     In order to capture a specific payload size you may specify:
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
         --events net_packet_tcp \
         --capture network \
         --capture pcap-options:filtered \
@@ -371,7 +371,7 @@ Tracker can capture the following types of artifacts:
     If the same binary is loaded multiple times, it will be captured just once.
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
         --output none \
         --scope comm=bash \
         --scope follow \
@@ -379,11 +379,11 @@ Tracker can capture the following types of artifacts:
         --capture module
     ```
 
-    Captured module will be found in tracee destination directory, just like
+    Captured module will be found in tracker destination directory, just like
     any other captured file would be:
 
     ```console
-    sudo ls /tmp/tracee/out/host
+    sudo ls /tmp/tracker/out/host
     ```
 
     ```text
@@ -394,7 +394,7 @@ Tracker can capture the following types of artifacts:
 
     ```console
     sudo rmmod lkm_example
-    sudo insmod /tmp/tracee/out/host/module.dev-271581185.inode-4071826.pid-3668786.c8b62228208f4bdbf21df09c01046b73dd44733841675bf3c0ff969fbedab616
+    sudo insmod /tmp/tracker/out/host/module.dev-271581185.inode-4071826.pid-3668786.c8b62228208f4bdbf21df09c01046b73dd44733841675bf3c0ff969fbedab616
     ```
 
     ```console
@@ -424,7 +424,7 @@ Tracker can capture the following types of artifacts:
     `objdump -D -b binary -m bpf <path>`
 
      ```text
-     $ sudo ./dist/tracee-ebpf \
+     $ sudo ./dist/tracker-ebpf \
         --output none \
         --scope comm=bash \
         --scope follow \
@@ -432,11 +432,11 @@ Tracker can capture the following types of artifacts:
         --capture bpf
      ```
 
-    Captured bpf bytecode will be found in tracee destination directory, just like
+    Captured bpf bytecode will be found in tracker destination directory, just like
     any other captured file would be:
 
      ```text
-     $ sudo ls /tmp/tracee/out/host
+     $ sudo ls /tmp/tracker/out/host
        bpf.name-test_prog.pid-3668786.c8b62228208f4bdbf21df09c01046b73dd44733841675bf3c0ff969fbedab616
      ```
    The hex value after the last "." is the hash of the bpf bytecode.

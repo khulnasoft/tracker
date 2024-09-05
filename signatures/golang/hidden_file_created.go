@@ -43,7 +43,7 @@ func (sig *HiddenFileCreated) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *HiddenFileCreated) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "magic_write", Origin: "*"},
+		{Source: "tracker", Name: "magic_write", Origin: "*"},
 	}, nil
 }
 

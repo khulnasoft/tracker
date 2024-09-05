@@ -56,10 +56,10 @@ func getCallerInfo(skip int) *callerInfo {
 			line = frame.Line
 			file = frame.File
 			// set file as relative path
-			pat := "tracee/"
-			traceeIndex := strings.Index(file, pat)
-			if traceeIndex != -1 {
-				file = file[traceeIndex+len(pat):]
+			pat := "tracker/"
+			trackerIndex := strings.Index(file, pat)
+			if trackerIndex != -1 {
+				file = file[trackerIndex+len(pat):]
 			}
 			pkg = fn[:pkgEnd]
 

@@ -11849,7 +11849,7 @@ var CoreEvents = map[ID]Definition{
 	TrackerInfo: {
 		id:           TrackerInfo,
 		id32Bit:      Sys32Undefined,
-		name:         "tracee_info",
+		name:         "tracker_info",
 		version:      NewVersion(1, 0, 0),
 		sets:         []string{},
 		dependencies: Dependencies{},
@@ -12692,7 +12692,7 @@ var CoreEvents = map[ID]Definition{
 			},
 			kSymbols: []KSymbol{
 				// Special case for this event: Single symbol, common to all kernel versions. Placed
-				// here so the ksymbols engine is always enabled, during tracee startup. The symbols
+				// here so the ksymbols engine is always enabled, during tracker startup. The symbols
 				// are resolved dynamically, during runtime depending on the arguments passed to
 				// the event.
 				{symbol: "_stext", required: true},

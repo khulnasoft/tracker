@@ -8,7 +8,7 @@ TRACKER_STARTUP_TIMEOUT=60
 TRACKER_SHUTDOWN_TIMEOUT=60
 TRACKER_RUN_TIMEOUT=60
 SCRIPT_TMP_DIR=/tmp
-TRACKER_TMP_DIR=/tmp/tracee
+TRACKER_TMP_DIR=/tmp/tracker
 
 info_exit() {
     echo -n "INFO: "
@@ -32,7 +32,7 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 if [[ ! -d ./signatures ]]; then
-    error_exit "need to be in tracee root directory"
+    error_exit "need to be in tracker root directory"
 fi
 
 KERNEL=$(uname -r)
@@ -71,8 +71,8 @@ set -e
 make -j$(nproc) all
 make e2e-net-signatures
 set +e
-if [[ ! -x ./dist/tracee ]]; then
-    error_exit "could not find tracee executable"
+if [[ ! -x ./dist/tracker ]]; then
+    error_exit "could not find tracker executable"
 fi
 
 # if any test has failed
@@ -87,7 +87,7 @@ for TEST in $TESTS; do
 
     rm -f $SCRIPT_TMP_DIR/build-$$
 
-    ./dist/tracee \
+    ./dist/tracker \
         --install-path $TRACKER_TMP_DIR \
         --cache cache-type=mem \
         --cache mem-cache-size=512 \
@@ -96,13 +96,13 @@ for TEST in $TESTS; do
         --signatures-dir ./dist/e2e-net-signatures/ 2>&1 \
         | tee "$SCRIPT_TMP_DIR/build-$$" &
 
-    # wait tracee to be started (30 sec most)
+    # wait tracker to be started (30 sec most)
     times=0
     timedout=0
     while true; do
         times=$(($times + 1))
         sleep 1
-        if [[ -f $TRACKER_TMP_DIR/tracee.pid ]]; then
+        if [[ -f $TRACKER_TMP_DIR/tracker.pid ]]; then
             info
             info "UP AND RUNNING"
             info
@@ -115,7 +115,7 @@ for TEST in $TESTS; do
         fi
     done
 
-    # tracee could not start for some reason, check stderr
+    # tracker could not start for some reason, check stderr
     if [[ $timedout -eq 1 ]]; then
         info
         info "$TEST: FAILED. ERRORS:"
@@ -126,7 +126,7 @@ for TEST in $TESTS; do
         continue
     fi
 
-    # give some time for tracee to settle
+    # give some time for tracker to settle
     sleep 3
 
     # run test scripts
@@ -145,7 +145,7 @@ for TEST in $TESTS; do
         info "$TEST: SUCCESS"
     else
         anyerror="${anyerror}$TEST,"
-        info "$TEST: FAILED, stderr from tracee:"
+        info "$TEST: FAILED, stderr from tracker:"
         cat $SCRIPT_TMP_DIR/build-$$
         info
     fi
@@ -155,14 +155,14 @@ for TEST in $TESTS; do
 
     # make sure we exit both to start them again
 
-    pid_tracee=$(pidof tracee)
+    pid_tracker=$(pidof tracker)
 
-    kill -SIGINT $pid_tracee
+    kill -SIGINT $pid_tracker
 
     sleep $TRACKER_SHUTDOWN_TIMEOUT
 
-    # make sure tracee is exited with SIGKILL
-    kill -SIGKILL $pid_tracee >/dev/null 2>&1
+    # make sure tracker is exited with SIGKILL
+    kill -SIGKILL $pid_tracker >/dev/null 2>&1
 
     # give a little break for OS noise to reduce
     sleep 3

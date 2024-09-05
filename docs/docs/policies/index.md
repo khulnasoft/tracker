@@ -7,7 +7,7 @@ It is possible to load up to 64 policies into Tracker.
 Here is an example policy:
 
 ```yaml
-apiVersion: tracee.khulnasoft.com/v1beta1
+apiVersion: tracker.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: overview-policy

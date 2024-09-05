@@ -45,8 +45,8 @@ func (sig *KubernetesCertificateTheftAttempt) GetMetadata() (detect.SignatureMet
 
 func (sig *KubernetesCertificateTheftAttempt) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "*"},
-		{Source: "tracee", Name: "security_inode_rename", Origin: "*"},
+		{Source: "tracker", Name: "security_file_open", Origin: "*"},
+		{Source: "tracker", Name: "security_inode_rename", Origin: "*"},
 	}, nil
 }
 

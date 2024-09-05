@@ -9,7 +9,7 @@
     "capabilities": [],
     "cri": [],
     "healthz": false,
-    "install-path": "/tmp/tracee",
+    "install-path": "/tmp/tracker",
     "listen-addr": ":3366",
     "log": [
         "info"

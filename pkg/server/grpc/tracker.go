@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/streams"
@@ -589,7 +589,7 @@ var EventTranslationTable = [events.MaxBuiltinID]pb.EventId{
 
 type TrackerService struct {
 	pb.UnimplementedTrackerServiceServer
-	tracee *tracee.Tracker
+	tracker *tracker.Tracker
 }
 
 func (s *TrackerService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.TrackerService_StreamEventsServer) error {
@@ -597,20 +597,20 @@ func (s *TrackerService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.
 	var err error
 
 	if len(in.Policies) == 0 {
-		stream = s.tracee.SubscribeAll()
+		stream = s.tracker.SubscribeAll()
 	} else {
-		stream, err = s.tracee.Subscribe(in.Policies)
+		stream, err = s.tracker.Subscribe(in.Policies)
 		if err != nil {
 			return err
 		}
 	}
-	defer s.tracee.Unsubscribe(stream)
+	defer s.tracker.Unsubscribe(stream)
 
 	mask := fmutils.NestedMaskFromPaths(in.GetMask().GetPaths())
 
 	for e := range stream.ReceiveEvents() {
 		// TODO: this conversion is temporary, we will use the new event structure
-		// on tracee internals, so the event received by the stream will already be a proto
+		// on tracker internals, so the event received by the stream will already be a proto
 		eventProto, err := convertTrackerEventToProto(e)
 		if err != nil {
 			logger.Errorw("error can't create event proto: " + err.Error())
@@ -629,7 +629,7 @@ func (s *TrackerService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.
 }
 
 func (s *TrackerService) EnableEvent(ctx context.Context, in *pb.EnableEventRequest) (*pb.EnableEventResponse, error) {
-	err := s.tracee.EnableEvent(in.Name)
+	err := s.tracker.EnableEvent(in.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -638,7 +638,7 @@ func (s *TrackerService) EnableEvent(ctx context.Context, in *pb.EnableEventRequ
 }
 
 func (s *TrackerService) DisableEvent(ctx context.Context, in *pb.DisableEventRequest) (*pb.DisableEventResponse, error) {
-	err := s.tracee.DisableEvent(in.Name)
+	err := s.tracker.DisableEvent(in.Name)
 	if err != nil {
 		return nil, err
 	}

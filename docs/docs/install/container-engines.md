@@ -12,11 +12,11 @@ When running Tracker in a container, the runtime sockets must be mounted to be a
 For example, if running Tracker using Docker, and ContainerD runtime:
 
 ```shell
-docker run --name tracee -it --rm \
+docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run/containerd:/var/run/containerd:ro \
-  aquasec/tracee:latest
+  aquasec/tracker:latest
 ```
 
 Most container runtimes have their sockets installed by default in `/var/run`, so mounting this path can also be a good option.

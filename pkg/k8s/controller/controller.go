@@ -10,7 +10,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 )
 
 // PolicyReconciler is the main controller for the Tracker Policy CRD. It is responsible
@@ -23,7 +23,7 @@ type PolicyReconciler struct {
 	TrackerName      string
 }
 
-// +kubebuilder:rbac:groups=tracee.khulnasoft.com,resources=policies,verbs=get;list;watch;
+// +kubebuilder:rbac:groups=tracker.khulnasoft.com,resources=policies,verbs=get;list;watch;
 // +kubebuilder:rbac:groups=apps,resources=daemonsets,verbs=get;list;watch;patch;update;
 
 // Reconcile is where the reconciliation logic resides. Every time a change is detected in
@@ -52,7 +52,7 @@ func (r *PolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	// we use the same strategy done by kubect rollout restart,
 	// adding a timestamp annotation to the pod template,
 	// so that the daemonset controller will rollout a new daemonset
-	ds.Spec.Template.Annotations["tracee-operator-restarted"] = time.Now().String()
+	ds.Spec.Template.Annotations["tracker-operator-restarted"] = time.Now().String()
 
 	if err := r.Update(ctx, &ds); err != nil {
 		logger.Error(err, "unable to update daemonset")

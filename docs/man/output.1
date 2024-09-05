@@ -2,9 +2,9 @@
 .\"
 .TH "TRACKER\-OUTPUT" "1" "2024/06" "" "Tracker Output Flag Manual"
 .SS NAME
-tracee \f[B]\-\-output\f[R] \- Control how and where output is printed
+tracker \f[B]\-\-output\f[R] \- Control how and where output is printed
 .SS SYNOPSIS
-tracee \f[B]\-\-output\f[R] <format[:file,\&...]> |
+tracker \f[B]\-\-output\f[R] <format[:file,\&...]> |
 gotemplate=template[:file,\&...]
 | forward:url | webhook:url |
 option:{stack\-addresses,exec\-env,relative\-time,exec\-hash[={inode,dev\-inode,digest\-inode}],parse\-arguments,parse\-arguments\-fds,sort\-events}
@@ -156,12 +156,12 @@ flag:
 .RE
 .IP \[bu] 2
 To output events via the Forward protocol to \f[CR]127.0.0.1\f[R] on
-port \f[CR]24224\f[R] with the tag `tracee' using TCP, use the following
+port \f[CR]24224\f[R] with the tag `tracker' using TCP, use the following
 flag:
 .RS 2
 .IP
 .EX
-\-\-output forward:tcp://user:pass\[at]127.0.0.1:24224?tag=tracee
+\-\-output forward:tcp://user:pass\[at]127.0.0.1:24224?tag=tracker
 .EE
 .RE
 .IP \[bu] 2

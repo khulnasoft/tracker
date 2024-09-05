@@ -11,31 +11,31 @@ The tutorial can easily adapted to Kubernetes workloads with the configuration p
 Grafana is a visualization tools for exported metrics and logs, most commonly
 used alongside Prometheus.
 
-Since version 0.7.0, tracee exports useful runtime metrics to Prometheus.
+Since version 0.7.0, tracker exports useful runtime metrics to Prometheus.
 
-By using Grafana and the new metrics from tracee, we can deploy a simple
-dashboard which tracks the tracee instance performance and outputs.
+By using Grafana and the new metrics from tracker, we can deploy a simple
+dashboard which tracks the tracker instance performance and outputs.
 
 There are two options for accessing Tracker metrics:
 
 * Running the Tracker Docker Container Image -- Shown in this tutorial
 * Running the Tracker Helm Chart -- Detailed as part of the [Promtail-Tracker](./promtail.md) tutorial
 
-![Dashboard Image](../images/tracee-grafana-dashboard.png)
+![Dashboard Image](../images/tracker-grafana-dashboard.png)
 
 ## Tracker Docker Container Image
 
 These metrics exports are enabled by default in all docker images and can be
 enabled using the `--metrics` flag.
 
-[tracee]: https://github.com/khulnasoft/tracker/tree/{{ git.tag }}/cmd/tracee
+[tracker]: https://github.com/khulnasoft/tracker/tree/{{ git.tag }}/cmd/tracker
 
 ### Prerequisites
 
 The following tools must be available for use, they can all be installed either
 through docker or installed/built on your machine. Note that you need to be on a Linux machine to follow the Docker tutorial.
 Alternative, on a MacBook it is possible to use Vagrant with Parallels as detailed in the following tutorial:
-[Running Tracker on Mac with Parallels and Vagrant](./tracee-vagrant.md)
+[Running Tracker on Mac with Parallels and Vagrant](./tracker-vagrant.md)
 
 - [Tracker](https://github.com/khulnasoft/tracker/)
 - [Prometheus](https://prometheus.io/download/)
@@ -47,12 +47,12 @@ Tracker can be most easily deployed with metrics enabled by default and port
 forwarded through the following commands:
 
 ```shell
-docker run --name tracee -it --rm \
+docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
   -p 3366:3366 \
-  aquasec/tracee:latest \
+  aquasec/tracker:latest \
   --metrics 
 ```
 
@@ -72,13 +72,13 @@ configuration file, call it `prometheus.yml` to scrape Tracker:
 # Here it's Tracker.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'tracee'
+  - job_name: 'tracker'
 
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     metrics_path: /metrics
 
-    #Scrape tracee's default metrics hosts.
+    #Scrape tracker's default metrics hosts.
     #If forwarding different ports make sure to change these addresses.
     static_configs:
       - targets: ['localhost:3366']
@@ -140,7 +140,7 @@ You may now either create your own Dashboard or import our default dashboard.
 
 First download our Grafana Dashboard's json [here].
 
-[here]: https://github.com/khulnasoft/tracker/tree/main/deploy/grafana/tracee.json
+[here]: https://github.com/khulnasoft/tracker/tree/main/deploy/grafana/tracker.json
 
 After adding the data source hover on the plus icon in the sidebar and select
 "Import". Press "Upload JSON File" at the top of the page and select the

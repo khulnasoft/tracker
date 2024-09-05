@@ -1,6 +1,6 @@
 # DNS Cache Data Source
 
-The `DNS Cache` feature allows to tracee build an accurate image of dns and ip relations.
+The `DNS Cache` feature allows to tracker build an accurate image of dns and ip relations.
 These relations can be queried in signatures through a data source.
 
 ## Enabling the Feature
@@ -8,7 +8,7 @@ These relations can be queried in signatures through a data source.
 To switch on the `DNS Cache` feature, run the command:
 
 ```bash
-sudo tracee --output option:sort-events --output json --output option:parse-arguments --dnscache enable --events <event_type>
+sudo tracker --output option:sort-events --output json --output option:parse-arguments --dnscache enable --events <event_type>
 ```
 
 The underlying structure is populated using the core [net_packet_dns](../../../events/builtin/network/net_packet_dns.md) event and its payload.
@@ -16,7 +16,7 @@ The underlying structure is populated using the core [net_packet_dns](../../../e
 ## Command Line Option
 
 ```bash
-$ tracee --dnscache help
+$ tracker --dnscache help
 Select different options for the DNS cache.
 
 Example:
@@ -62,7 +62,7 @@ type e2eDnsDataSource struct {
 
 func (sig *e2eDnsDataSource) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	dnsData, ok := ctx.GetDataSource("tracee", "dns")
+	dnsData, ok := ctx.GetDataSource("tracker", "dns")
 	if !ok {
 		return fmt.Errorf("dns data source not registered")
 	}

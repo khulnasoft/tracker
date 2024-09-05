@@ -176,7 +176,7 @@ func (t *Tracker) processNetCapEvent(event *trace.Event) {
 		//
 		// Tcpdump, when reading the generated pcap files, will complain about
 		// missing packet payload if the IP header says one length and the
-		// actual data in the payload is smaller (what happens when tracee
+		// actual data in the payload is smaller (what happens when tracker
 		// pcap-snaplen option is not set to max). The code bellow changes IP
 		// length field to the length of the captured data.
 		//

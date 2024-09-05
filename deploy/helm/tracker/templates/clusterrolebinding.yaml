@@ -2,27 +2,27 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tracee
+  name: tracker
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tracee
+  name: tracker
 subjects:
   - kind: ServiceAccount
-    name: tracee
+    name: tracker
     namespace: {{ .Release.Namespace }}
 {{- if .Values.operator.create }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tracee-operator
+  name: tracker-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tracee
+  name: tracker
 subjects:
   - kind: ServiceAccount
-    name: tracee-operator
+    name: tracker-operator
     namespace: {{ .Release.Namespace }}
 {{- end }}

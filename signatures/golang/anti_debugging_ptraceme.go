@@ -42,7 +42,7 @@ func (sig *AntiDebuggingPtraceme) GetMetadata() (detect.SignatureMetadata, error
 
 func (sig *AntiDebuggingPtraceme) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "ptrace", Origin: "*"},
+		{Source: "tracker", Name: "ptrace", Origin: "*"},
 	}, nil
 }
 

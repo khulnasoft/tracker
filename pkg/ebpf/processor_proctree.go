@@ -6,7 +6,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/events/parse"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/proctree"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/types/trace"
 )
@@ -237,7 +237,7 @@ func (t *Tracker) procTreeAddBinInfo(event *trace.Event) error {
 	}
 
 	// Event timestamp is changed to relative (or not) at the end of all processors only.
-	eventTimestamp := traceetime.NsSinceEpochToTime(uint64(t.timeNormalizer.NormalizeTime(event.Timestamp)))
+	eventTimestamp := trackertime.NsSinceEpochToTime(uint64(t.timeNormalizer.NormalizeTime(event.Timestamp)))
 
 	executable := currentProcess.GetExecutable()
 

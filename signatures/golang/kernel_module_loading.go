@@ -40,8 +40,8 @@ func (sig *KernelModuleLoading) GetMetadata() (detect.SignatureMetadata, error) 
 
 func (sig *KernelModuleLoading) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "init_module", Origin: "*"},
-		{Source: "tracee", Name: "security_kernel_read_file", Origin: "*"},
+		{Source: "tracker", Name: "init_module", Origin: "*"},
+		{Source: "tracker", Name: "security_kernel_read_file", Origin: "*"},
 	}, nil
 }
 

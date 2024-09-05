@@ -1,7 +1,7 @@
-package tracee.TRC_11
+package tracker.TRC_11
 
 test_match_1 {
-	tracee_match with input as {
+	tracker_match with input as {
 		"processName": "mal",
 		"threadId": 8,
 		"eventName": "security_sb_mount",
@@ -15,7 +15,7 @@ test_match_1 {
 }
 
 test_match_2 {
-	tracee_match with input as {
+	tracker_match with input as {
 		"processName": "runc:[init]",
 		"threadId": 8,
 		"eventName": "security_sb_mount",
@@ -29,7 +29,7 @@ test_match_2 {
 }
 
 test_match_wrong_device {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"processName": "proc",
 		"threadId": 8,
 		"eventName": "security_sb_mount",
@@ -43,7 +43,7 @@ test_match_wrong_device {
 }
 
 test_match_wrong_proc {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"processName": "runc:[init]",
 		"threadId": 1,
 		"eventName": "security_sb_mount",

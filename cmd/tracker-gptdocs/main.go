@@ -22,8 +22,8 @@ const (
 
 func main() {
 	app := cli.App{
-		Name:  "tracee-gptdocs",
-		Usage: "Automated event documentation for tracee",
+		Name:  "tracker-gptdocs",
+		Usage: "Automated event documentation for tracker",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  openAIKey,

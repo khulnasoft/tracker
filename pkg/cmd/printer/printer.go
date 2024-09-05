@@ -428,7 +428,7 @@ type forwardEventPrinter struct {
 	url     *url.URL
 	client  *forward.Client
 	// These parameters can be set up from the URL
-	tag string `default:"tracee"`
+	tag string `default:"tracker"`
 }
 
 func getParameterValue(parameters url.Values, key string, defaultValue string) string {
@@ -452,7 +452,7 @@ func (p *forwardEventPrinter) Init() error {
 	parameters, _ := url.ParseQuery(p.url.RawQuery)
 
 	// Check if we have a tag set or default it
-	p.tag = getParameterValue(parameters, "tag", "tracee")
+	p.tag = getParameterValue(parameters, "tag", "tracker")
 
 	// Do we want to enable requireAck?
 	requireAckString := getParameterValue(parameters, "requireAck", "false")

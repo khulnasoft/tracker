@@ -34,7 +34,7 @@ func (sig *e2eSecurityInodeRename) GetMetadata() (detect.SignatureMetadata, erro
 
 func (sig *e2eSecurityInodeRename) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_inode_rename"},
+		{Source: "tracker", Name: "security_inode_rename"},
 	}, nil
 }
 

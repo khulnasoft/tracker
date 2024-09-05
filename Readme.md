@@ -1,11 +1,11 @@
-![Tracker Logo](docs/images/tracee.png)
+![Tracker Logo](docs/images/tracker.png)
 
 <!-- links that differ between docs and readme -->
-[installation]:https://aquasecurity.github.io/tracee/latest/docs/install/
-[docker-guide]:https://aquasecurity.github.io/tracee/latest/docs/install/docker/
-[kubernetes-guide]:https://aquasecurity.github.io/tracee/latest/docs/install/kubernetes/
-[prereqs]:https://aquasecurity.github.io/tracee/latest/docs/install/prerequisites/
-[macfaq]:https://aquasecurity.github.io/tracee/latest/docs/advanced/mac/
+[installation]:https://aquasecurity.github.io/tracker/latest/docs/install/
+[docker-guide]:https://aquasecurity.github.io/tracker/latest/docs/install/docker/
+[kubernetes-guide]:https://aquasecurity.github.io/tracker/latest/docs/install/kubernetes/
+[prereqs]:https://aquasecurity.github.io/tracker/latest/docs/install/prerequisites/
+[macfaq]:https://aquasecurity.github.io/tracker/latest/docs/advanced/mac/
 
 Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
 
@@ -15,7 +15,7 @@ Tracker is a runtime security and observability tool that helps you understand h
 It is using [eBPF technology](https://ebpf.io/what-is-ebpf/) to tap into your system and expose that information as events that you can consume.  
 Events range from factual system activity events to sophisticated security events that detect suspicious behavioral patterns.
 
-To learn more about Tracker, check out the [documentation](https://aquasecurity.github.io/tracee/).
+To learn more about Tracker, check out the [documentation](https://aquasecurity.github.io/tracker/).
 
 ## Quickstart
 
@@ -25,11 +25,11 @@ Tracker should run on most common Linux distributions and kernels. For compatibi
 ### Using Docker
 
 ```shell
-docker run --name tracee -it --rm \
+docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
-  aquasec/tracee:latest
+  aquasec/tracker:latest
 ```
 
 For a complete walkthrough please see the [Docker getting started guide][docker-guide].
@@ -39,11 +39,11 @@ For a complete walkthrough please see the [Docker getting started guide][docker-
 ```shell
 helm repo add aqua https://aquasecurity.github.io/helm-charts/
 helm repo update
-helm install tracee aqua/tracee --namespace tracee --create-namespace
+helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```
 
 ```shell
-kubectl logs --follow --namespace tracee daemonset/tracee
+kubectl logs --follow --namespace tracker daemonset/tracker
 ```
 
 For a complete walkthrough please see the [Kubernetes getting started guide][kubernetes-guide].
@@ -53,7 +53,7 @@ For a complete walkthrough please see the [Kubernetes getting started guide][kub
 Join the community, and talk to us about any matter in the [GitHub Discussions](https://github.com/khulnasoft/tracker/discussions) or [Slack](https://slack.khulnasoft.com).  
 If you run into any trouble using Tracker or you would like to give use user feedback, please [create an issue.](https://github.com/khulnasoft/tracker/issues)
 
-Find more information on [contribution documentation](https://aquasecurity.github.io/tracee/latest/contributing/overview/).
+Find more information on [contribution documentation](https://aquasecurity.github.io/tracker/latest/contributing/overview/).
 
 ## More about Aqua Security
 

@@ -2,4 +2,4 @@ FROM golang:1.22.3
 
 RUN go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.13.0
 
-WORKDIR /tracee
+WORKDIR /tracker

@@ -38,7 +38,7 @@ containers are set up and run within the system.
 The `container_create` event is derived from the `cgroup_mkdir` event. First, it
 checks if the cgroup event belongs to a container root directory being created.
 It then uses the `cgroup_id`, from the cgroup directory inode, to retrieve
-container-specific information (enriched by tracee when talking to runtime
+container-specific information (enriched by tracker when talking to runtime
 daemons).
 
 ## Example Use Case

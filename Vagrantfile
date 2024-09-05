@@ -21,7 +21,7 @@ else
   abort
 end
 
-vm_name = "tracee-#{arch}-vm"
+vm_name = "tracker-#{arch}-vm"
 
 Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 9090, host: 9090
@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
 
   config.ssh.extra_args = ["-t", "cd /vagrant; bash --login"]
 
-  # Forward MkDocs dev server to preview documentation on the host at http://localhost:8000/tracee
+  # Forward MkDocs dev server to preview documentation on the host at http://localhost:8000/tracker
   config.vm.network :forwarded_port, guest: 8000, host: 8000
 
   # Forward MicroK8s dashboard to access it on the host at https://localhost:10443
@@ -80,7 +80,7 @@ Vagrant.configure("2") do |config|
     apt-get update
 
     #
-    # build environment for tracee
+    # build environment for tracker
     #
 
     apt-get install --yes bsdutils

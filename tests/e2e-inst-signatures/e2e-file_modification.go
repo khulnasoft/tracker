@@ -34,7 +34,7 @@ func (sig *e2eFileModification) GetMetadata() (detect.SignatureMetadata, error) 
 
 func (sig *e2eFileModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "file_modification"},
+		{Source: "tracker", Name: "file_modification"},
 	}, nil
 }
 

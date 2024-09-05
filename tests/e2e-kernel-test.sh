@@ -8,7 +8,7 @@ TRACKER_STARTUP_TIMEOUT=60
 TRACKER_SHUTDOWN_TIMEOUT=60
 #TRACKER_RUN_TIMEOUT=60
 SCRIPT_TMP_DIR=/tmp
-TRACKER_TMP_DIR=/tmp/tracee
+TRACKER_TMP_DIR=/tmp/tracker
 
 info_exit() {
     echo -n "INFO: "
@@ -32,7 +32,7 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 if [[ ! -d ./signatures ]]; then
-    error_exit "need to be in tracee root directory"
+    error_exit "need to be in tracker root directory"
 fi
 
 DOCKER_IMAGE=ghcr.io/khulnasoft/tracker-tester:latest
@@ -61,8 +61,8 @@ info
 set -e
 make -j$(nproc) all
 set +e
-if [[ ! -x ./dist/tracee ]]; then
-    error_exit "could not find tracee executable"
+if [[ ! -x ./dist/tracker ]]; then
+    error_exit "could not find tracker executable"
 fi
 
 # if any test has failed
@@ -77,7 +77,7 @@ for TEST in $TESTS; do
 
     rm -f $SCRIPT_TMP_DIR/build-$$
 
-    ./dist/tracee \
+    ./dist/tracker \
         --install-path $TRACKER_TMP_DIR \
         --cache cache-type=mem \
         --cache mem-cache-size=512 \
@@ -85,13 +85,13 @@ for TEST in $TESTS; do
         --scope container=new 2>&1 \
         | tee "$SCRIPT_TMP_DIR/build-$$" &
 
-    # wait tracee to be started (30 sec most)
+    # wait tracker to be started (30 sec most)
     times=0
     timedout=0
     while true; do
         times=$(($times + 1))
         sleep 1
-        if [[ -f $TRACKER_TMP_DIR/tracee.pid ]]; then
+        if [[ -f $TRACKER_TMP_DIR/tracker.pid ]]; then
             info
             info "UP AND RUNNING"
             info
@@ -104,7 +104,7 @@ for TEST in $TESTS; do
         fi
     done
 
-    # tracee-ebpf could not start for some reason, check stderr
+    # tracker-ebpf could not start for some reason, check stderr
     if [[ $timedout -eq 1 ]]; then
         info
         info "$TEST: FAILED. ERRORS:"
@@ -126,10 +126,10 @@ for TEST in $TESTS; do
     *) ;;
     esac
 
-    # give some time for tracee to settle
+    # give some time for tracker to settle
     sleep 5
 
-    # run tracee-tester (triggering the signature)
+    # run tracker-tester (triggering the signature)
     docker run $docker_extra_arg --rm $DOCKER_IMAGE $TEST >/dev/null 2>&1
 
     # so event can be processed and detected
@@ -144,7 +144,7 @@ for TEST in $TESTS; do
         info "$TEST: SUCCESS"
     else
         anyerror="${anyerror}$TEST,"
-        info "$TEST: FAILED, stderr from tracee:"
+        info "$TEST: FAILED, stderr from tracker:"
         cat $SCRIPT_TMP_DIR/build-$$
         info
     fi
@@ -152,15 +152,15 @@ for TEST in $TESTS; do
 
     rm -f $SCRIPT_TMP_DIR/build-$$
 
-    tracee_pid=$(pidof tracee)
+    tracker_pid=$(pidof tracker)
 
-    # cleanup tracee with SIGINT
-    kill -SIGINT $tracee_pid
+    # cleanup tracker with SIGINT
+    kill -SIGINT $tracker_pid
 
     sleep $TRACKER_SHUTDOWN_TIMEOUT
 
-    # make sure tracee is exited with SIGKILL
-    kill -SIGKILL $tracee_pid >/dev/null 2>&1
+    # make sure tracker is exited with SIGKILL
+    kill -SIGKILL $tracker_pid >/dev/null 2>&1
 
     # give a little break for OS noise to reduce
     sleep 3

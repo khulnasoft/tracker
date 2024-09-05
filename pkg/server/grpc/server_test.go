@@ -16,13 +16,13 @@ import (
 func TestServer(t *testing.T) {
 	t.Parallel()
 
-	tempDir, err := os.MkdirTemp("", "tracee-tests")
+	tempDir, err := os.MkdirTemp("", "tracker-tests")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer os.RemoveAll(tempDir)
 
-	unixSock := tempDir + "/tracee.sock"
+	unixSock := tempDir + "/tracker.sock"
 	defer os.Remove(unixSock) // clean up
 
 	ctx, cancel := context.WithCancel(context.Background())

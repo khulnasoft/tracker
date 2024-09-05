@@ -37,7 +37,7 @@ Use this flag multiple times to choose multiple output options
 
 func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, error) {
 	outConfig := PrepareOutputResult{}
-	traceeConfig := &config.OutputConfig{}
+	trackerConfig := &config.OutputConfig{}
 
 	var outPath string
 
@@ -62,7 +62,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 		case "out-file":
 			outPath = outputParts[1]
 		case "option":
-			err := setOption(traceeConfig, outputParts[1], newBinary)
+			err := setOption(trackerConfig, outputParts[1], newBinary)
 			if err != nil {
 				return outConfig, err
 			}
@@ -74,7 +74,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 	printerConfigs := make([]config.PrinterConfig, 0)
 
 	if printerKind == "table" {
-		if err := setOption(traceeConfig, "parse-arguments", newBinary); err != nil {
+		if err := setOption(trackerConfig, "parse-arguments", newBinary); err != nil {
 			return outConfig, err
 		}
 	}
@@ -83,7 +83,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 		stdoutConfig := config.PrinterConfig{
 			Kind:       printerKind,
 			OutFile:    os.Stdout,
-			RelativeTS: traceeConfig.RelativeTime,
+			RelativeTS: trackerConfig.RelativeTime,
 		}
 
 		printerConfigs = append(printerConfigs, stdoutConfig)
@@ -97,13 +97,13 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 			Kind:       printerKind,
 			OutPath:    outPath,
 			OutFile:    file,
-			RelativeTS: traceeConfig.RelativeTime,
+			RelativeTS: trackerConfig.RelativeTime,
 		}
 
 		printerConfigs = append(printerConfigs, printerConfig)
 	}
 
-	outConfig.TrackerConfig = traceeConfig
+	outConfig.TrackerConfig = trackerConfig
 	outConfig.PrinterConfigs = printerConfigs
 
 	return outConfig, nil

@@ -12,7 +12,7 @@ First, clone the Tracker Git repository and move into the root directory:
 ```console
 git clone git@github.com:khulnasoft/tracker.git
 
-cd tracee
+cd tracker
 ```
 
 Next, use Vagrant to start a Parallels VM:
@@ -32,11 +32,11 @@ vagrant ssh
 Now, it is possible to run the Tracker Container image:
 
 ```shell
-docker run --name tracee -it --rm \
+docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
-  aquasec/tracee:latest
+  aquasec/tracker:latest
 ```
 
 To learn how to install Tracker in a production environment, [check out the Kubernetes guide](./kubernetes-quickstart).

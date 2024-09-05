@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v4.23.4
-// source: api/v1beta1/tracee.proto
+// source: api/v1beta1/tracker.proto
 
 package v1beta1
 
@@ -30,7 +30,7 @@ type GetVersionRequest struct {
 func (x *GetVersionRequest) Reset() {
 	*x = GetVersionRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[0]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -43,7 +43,7 @@ func (x *GetVersionRequest) String() string {
 func (*GetVersionRequest) ProtoMessage() {}
 
 func (x *GetVersionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[0]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *GetVersionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVersionRequest.ProtoReflect.Descriptor instead.
 func (*GetVersionRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{0}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{0}
 }
 
 type GetVersionResponse struct {
@@ -70,7 +70,7 @@ type GetVersionResponse struct {
 func (x *GetVersionResponse) Reset() {
 	*x = GetVersionResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[1]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -83,7 +83,7 @@ func (x *GetVersionResponse) String() string {
 func (*GetVersionResponse) ProtoMessage() {}
 
 func (x *GetVersionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[1]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -96,7 +96,7 @@ func (x *GetVersionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVersionResponse.ProtoReflect.Descriptor instead.
 func (*GetVersionResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{1}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetVersionResponse) GetVersion() string {
@@ -117,7 +117,7 @@ type GetEventDefinitionsRequest struct {
 func (x *GetEventDefinitionsRequest) Reset() {
 	*x = GetEventDefinitionsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[2]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -130,7 +130,7 @@ func (x *GetEventDefinitionsRequest) String() string {
 func (*GetEventDefinitionsRequest) ProtoMessage() {}
 
 func (x *GetEventDefinitionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[2]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +143,7 @@ func (x *GetEventDefinitionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEventDefinitionsRequest.ProtoReflect.Descriptor instead.
 func (*GetEventDefinitionsRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{2}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetEventDefinitionsRequest) GetEventNames() []string {
@@ -164,7 +164,7 @@ type GetEventDefinitionsResponse struct {
 func (x *GetEventDefinitionsResponse) Reset() {
 	*x = GetEventDefinitionsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[3]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -177,7 +177,7 @@ func (x *GetEventDefinitionsResponse) String() string {
 func (*GetEventDefinitionsResponse) ProtoMessage() {}
 
 func (x *GetEventDefinitionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[3]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -190,7 +190,7 @@ func (x *GetEventDefinitionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEventDefinitionsResponse.ProtoReflect.Descriptor instead.
 func (*GetEventDefinitionsResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{3}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetEventDefinitionsResponse) GetDefinitions() []*EventDefinition {
@@ -211,7 +211,7 @@ type EnableEventRequest struct {
 func (x *EnableEventRequest) Reset() {
 	*x = EnableEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[4]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -224,7 +224,7 @@ func (x *EnableEventRequest) String() string {
 func (*EnableEventRequest) ProtoMessage() {}
 
 func (x *EnableEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[4]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -237,7 +237,7 @@ func (x *EnableEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnableEventRequest.ProtoReflect.Descriptor instead.
 func (*EnableEventRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{4}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *EnableEventRequest) GetName() string {
@@ -256,7 +256,7 @@ type EnableEventResponse struct {
 func (x *EnableEventResponse) Reset() {
 	*x = EnableEventResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[5]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -269,7 +269,7 @@ func (x *EnableEventResponse) String() string {
 func (*EnableEventResponse) ProtoMessage() {}
 
 func (x *EnableEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[5]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -282,7 +282,7 @@ func (x *EnableEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnableEventResponse.ProtoReflect.Descriptor instead.
 func (*EnableEventResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{5}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{5}
 }
 
 type DisableEventRequest struct {
@@ -296,7 +296,7 @@ type DisableEventRequest struct {
 func (x *DisableEventRequest) Reset() {
 	*x = DisableEventRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[6]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -309,7 +309,7 @@ func (x *DisableEventRequest) String() string {
 func (*DisableEventRequest) ProtoMessage() {}
 
 func (x *DisableEventRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[6]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -322,7 +322,7 @@ func (x *DisableEventRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DisableEventRequest.ProtoReflect.Descriptor instead.
 func (*DisableEventRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{6}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DisableEventRequest) GetName() string {
@@ -341,7 +341,7 @@ type DisableEventResponse struct {
 func (x *DisableEventResponse) Reset() {
 	*x = DisableEventResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[7]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -354,7 +354,7 @@ func (x *DisableEventResponse) String() string {
 func (*DisableEventResponse) ProtoMessage() {}
 
 func (x *DisableEventResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[7]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -367,7 +367,7 @@ func (x *DisableEventResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DisableEventResponse.ProtoReflect.Descriptor instead.
 func (*DisableEventResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{7}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{7}
 }
 
 type StreamEventsRequest struct {
@@ -382,7 +382,7 @@ type StreamEventsRequest struct {
 func (x *StreamEventsRequest) Reset() {
 	*x = StreamEventsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[8]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -395,7 +395,7 @@ func (x *StreamEventsRequest) String() string {
 func (*StreamEventsRequest) ProtoMessage() {}
 
 func (x *StreamEventsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[8]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -408,7 +408,7 @@ func (x *StreamEventsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamEventsRequest.ProtoReflect.Descriptor instead.
 func (*StreamEventsRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{8}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *StreamEventsRequest) GetPolicies() []string {
@@ -436,7 +436,7 @@ type StreamEventsResponse struct {
 func (x *StreamEventsResponse) Reset() {
 	*x = StreamEventsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_v1beta1_tracee_proto_msgTypes[9]
+		mi := &file_api_v1beta1_tracker_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -449,7 +449,7 @@ func (x *StreamEventsResponse) String() string {
 func (*StreamEventsResponse) ProtoMessage() {}
 
 func (x *StreamEventsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1beta1_tracee_proto_msgTypes[9]
+	mi := &file_api_v1beta1_tracker_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -462,7 +462,7 @@ func (x *StreamEventsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamEventsResponse.ProtoReflect.Descriptor instead.
 func (*StreamEventsResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1beta1_tracee_proto_rawDescGZIP(), []int{9}
+	return file_api_v1beta1_tracker_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *StreamEventsResponse) GetEvent() *Event {
@@ -472,9 +472,9 @@ func (x *StreamEventsResponse) GetEvent() *Event {
 	return nil
 }
 
-var File_api_v1beta1_tracee_proto protoreflect.FileDescriptor
+var File_api_v1beta1_tracker_proto protoreflect.FileDescriptor
 
-var file_api_v1beta1_tracee_proto_rawDesc = []byte{
+var file_api_v1beta1_tracker_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x74, 0x72,
 	0x61, 0x63, 0x65, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0e, 0x74, 0x72, 0x61, 0x63,
 	0x65, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x1a, 0x20, 0x67, 0x6f, 0x6f, 0x67,
@@ -554,47 +554,47 @@ var file_api_v1beta1_tracee_proto_rawDesc = []byte{
 }
 
 var (
-	file_api_v1beta1_tracee_proto_rawDescOnce sync.Once
-	file_api_v1beta1_tracee_proto_rawDescData = file_api_v1beta1_tracee_proto_rawDesc
+	file_api_v1beta1_tracker_proto_rawDescOnce sync.Once
+	file_api_v1beta1_tracker_proto_rawDescData = file_api_v1beta1_tracker_proto_rawDesc
 )
 
-func file_api_v1beta1_tracee_proto_rawDescGZIP() []byte {
-	file_api_v1beta1_tracee_proto_rawDescOnce.Do(func() {
-		file_api_v1beta1_tracee_proto_rawDescData = protoimpl.X.CompressGZIP(file_api_v1beta1_tracee_proto_rawDescData)
+func file_api_v1beta1_tracker_proto_rawDescGZIP() []byte {
+	file_api_v1beta1_tracker_proto_rawDescOnce.Do(func() {
+		file_api_v1beta1_tracker_proto_rawDescData = protoimpl.X.CompressGZIP(file_api_v1beta1_tracker_proto_rawDescData)
 	})
-	return file_api_v1beta1_tracee_proto_rawDescData
+	return file_api_v1beta1_tracker_proto_rawDescData
 }
 
-var file_api_v1beta1_tracee_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-var file_api_v1beta1_tracee_proto_goTypes = []interface{}{
-	(*GetVersionRequest)(nil),           // 0: tracee.v1beta1.GetVersionRequest
-	(*GetVersionResponse)(nil),          // 1: tracee.v1beta1.GetVersionResponse
-	(*GetEventDefinitionsRequest)(nil),  // 2: tracee.v1beta1.GetEventDefinitionsRequest
-	(*GetEventDefinitionsResponse)(nil), // 3: tracee.v1beta1.GetEventDefinitionsResponse
-	(*EnableEventRequest)(nil),          // 4: tracee.v1beta1.EnableEventRequest
-	(*EnableEventResponse)(nil),         // 5: tracee.v1beta1.EnableEventResponse
-	(*DisableEventRequest)(nil),         // 6: tracee.v1beta1.DisableEventRequest
-	(*DisableEventResponse)(nil),        // 7: tracee.v1beta1.DisableEventResponse
-	(*StreamEventsRequest)(nil),         // 8: tracee.v1beta1.StreamEventsRequest
-	(*StreamEventsResponse)(nil),        // 9: tracee.v1beta1.StreamEventsResponse
-	(*EventDefinition)(nil),             // 10: tracee.v1beta1.EventDefinition
+var file_api_v1beta1_tracker_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_api_v1beta1_tracker_proto_goTypes = []interface{}{
+	(*GetVersionRequest)(nil),           // 0: tracker.v1beta1.GetVersionRequest
+	(*GetVersionResponse)(nil),          // 1: tracker.v1beta1.GetVersionResponse
+	(*GetEventDefinitionsRequest)(nil),  // 2: tracker.v1beta1.GetEventDefinitionsRequest
+	(*GetEventDefinitionsResponse)(nil), // 3: tracker.v1beta1.GetEventDefinitionsResponse
+	(*EnableEventRequest)(nil),          // 4: tracker.v1beta1.EnableEventRequest
+	(*EnableEventResponse)(nil),         // 5: tracker.v1beta1.EnableEventResponse
+	(*DisableEventRequest)(nil),         // 6: tracker.v1beta1.DisableEventRequest
+	(*DisableEventResponse)(nil),        // 7: tracker.v1beta1.DisableEventResponse
+	(*StreamEventsRequest)(nil),         // 8: tracker.v1beta1.StreamEventsRequest
+	(*StreamEventsResponse)(nil),        // 9: tracker.v1beta1.StreamEventsResponse
+	(*EventDefinition)(nil),             // 10: tracker.v1beta1.EventDefinition
 	(*fieldmaskpb.FieldMask)(nil),       // 11: google.protobuf.FieldMask
-	(*Event)(nil),                       // 12: tracee.v1beta1.Event
+	(*Event)(nil),                       // 12: tracker.v1beta1.Event
 }
-var file_api_v1beta1_tracee_proto_depIdxs = []int32{
-	10, // 0: tracee.v1beta1.GetEventDefinitionsResponse.definitions:type_name -> tracee.v1beta1.EventDefinition
-	11, // 1: tracee.v1beta1.StreamEventsRequest.mask:type_name -> google.protobuf.FieldMask
-	12, // 2: tracee.v1beta1.StreamEventsResponse.event:type_name -> tracee.v1beta1.Event
-	2,  // 3: tracee.v1beta1.TrackerService.GetEventDefinitions:input_type -> tracee.v1beta1.GetEventDefinitionsRequest
-	8,  // 4: tracee.v1beta1.TrackerService.StreamEvents:input_type -> tracee.v1beta1.StreamEventsRequest
-	4,  // 5: tracee.v1beta1.TrackerService.EnableEvent:input_type -> tracee.v1beta1.EnableEventRequest
-	6,  // 6: tracee.v1beta1.TrackerService.DisableEvent:input_type -> tracee.v1beta1.DisableEventRequest
-	0,  // 7: tracee.v1beta1.TrackerService.GetVersion:input_type -> tracee.v1beta1.GetVersionRequest
-	3,  // 8: tracee.v1beta1.TrackerService.GetEventDefinitions:output_type -> tracee.v1beta1.GetEventDefinitionsResponse
-	9,  // 9: tracee.v1beta1.TrackerService.StreamEvents:output_type -> tracee.v1beta1.StreamEventsResponse
-	5,  // 10: tracee.v1beta1.TrackerService.EnableEvent:output_type -> tracee.v1beta1.EnableEventResponse
-	7,  // 11: tracee.v1beta1.TrackerService.DisableEvent:output_type -> tracee.v1beta1.DisableEventResponse
-	1,  // 12: tracee.v1beta1.TrackerService.GetVersion:output_type -> tracee.v1beta1.GetVersionResponse
+var file_api_v1beta1_tracker_proto_depIdxs = []int32{
+	10, // 0: tracker.v1beta1.GetEventDefinitionsResponse.definitions:type_name -> tracker.v1beta1.EventDefinition
+	11, // 1: tracker.v1beta1.StreamEventsRequest.mask:type_name -> google.protobuf.FieldMask
+	12, // 2: tracker.v1beta1.StreamEventsResponse.event:type_name -> tracker.v1beta1.Event
+	2,  // 3: tracker.v1beta1.TrackerService.GetEventDefinitions:input_type -> tracker.v1beta1.GetEventDefinitionsRequest
+	8,  // 4: tracker.v1beta1.TrackerService.StreamEvents:input_type -> tracker.v1beta1.StreamEventsRequest
+	4,  // 5: tracker.v1beta1.TrackerService.EnableEvent:input_type -> tracker.v1beta1.EnableEventRequest
+	6,  // 6: tracker.v1beta1.TrackerService.DisableEvent:input_type -> tracker.v1beta1.DisableEventRequest
+	0,  // 7: tracker.v1beta1.TrackerService.GetVersion:input_type -> tracker.v1beta1.GetVersionRequest
+	3,  // 8: tracker.v1beta1.TrackerService.GetEventDefinitions:output_type -> tracker.v1beta1.GetEventDefinitionsResponse
+	9,  // 9: tracker.v1beta1.TrackerService.StreamEvents:output_type -> tracker.v1beta1.StreamEventsResponse
+	5,  // 10: tracker.v1beta1.TrackerService.EnableEvent:output_type -> tracker.v1beta1.EnableEventResponse
+	7,  // 11: tracker.v1beta1.TrackerService.DisableEvent:output_type -> tracker.v1beta1.DisableEventResponse
+	1,  // 12: tracker.v1beta1.TrackerService.GetVersion:output_type -> tracker.v1beta1.GetVersionResponse
 	8,  // [8:13] is the sub-list for method output_type
 	3,  // [3:8] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name
@@ -602,15 +602,15 @@ var file_api_v1beta1_tracee_proto_depIdxs = []int32{
 	0,  // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_api_v1beta1_tracee_proto_init() }
-func file_api_v1beta1_tracee_proto_init() {
-	if File_api_v1beta1_tracee_proto != nil {
+func init() { file_api_v1beta1_tracker_proto_init() }
+func file_api_v1beta1_tracker_proto_init() {
+	if File_api_v1beta1_tracker_proto != nil {
 		return
 	}
 	file_api_v1beta1_event_proto_init()
 	file_api_v1beta1_definition_proto_init()
 	if !protoimpl.UnsafeEnabled {
-		file_api_v1beta1_tracee_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetVersionRequest); i {
 			case 0:
 				return &v.state
@@ -622,7 +622,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetVersionResponse); i {
 			case 0:
 				return &v.state
@@ -634,7 +634,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetEventDefinitionsRequest); i {
 			case 0:
 				return &v.state
@@ -646,7 +646,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetEventDefinitionsResponse); i {
 			case 0:
 				return &v.state
@@ -658,7 +658,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EnableEventRequest); i {
 			case 0:
 				return &v.state
@@ -670,7 +670,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EnableEventResponse); i {
 			case 0:
 				return &v.state
@@ -682,7 +682,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DisableEventRequest); i {
 			case 0:
 				return &v.state
@@ -694,7 +694,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DisableEventResponse); i {
 			case 0:
 				return &v.state
@@ -706,7 +706,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StreamEventsRequest); i {
 			case 0:
 				return &v.state
@@ -718,7 +718,7 @@ func file_api_v1beta1_tracee_proto_init() {
 				return nil
 			}
 		}
-		file_api_v1beta1_tracee_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_api_v1beta1_tracker_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StreamEventsResponse); i {
 			case 0:
 				return &v.state
@@ -735,18 +735,18 @@ func file_api_v1beta1_tracee_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_api_v1beta1_tracee_proto_rawDesc,
+			RawDescriptor: file_api_v1beta1_tracker_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_v1beta1_tracee_proto_goTypes,
-		DependencyIndexes: file_api_v1beta1_tracee_proto_depIdxs,
-		MessageInfos:      file_api_v1beta1_tracee_proto_msgTypes,
+		GoTypes:           file_api_v1beta1_tracker_proto_goTypes,
+		DependencyIndexes: file_api_v1beta1_tracker_proto_depIdxs,
+		MessageInfos:      file_api_v1beta1_tracker_proto_msgTypes,
 	}.Build()
-	File_api_v1beta1_tracee_proto = out.File
-	file_api_v1beta1_tracee_proto_rawDesc = nil
-	file_api_v1beta1_tracee_proto_goTypes = nil
-	file_api_v1beta1_tracee_proto_depIdxs = nil
+	File_api_v1beta1_tracker_proto = out.File
+	file_api_v1beta1_tracker_proto_rawDesc = nil
+	file_api_v1beta1_tracker_proto_goTypes = nil
+	file_api_v1beta1_tracker_proto_depIdxs = nil
 }

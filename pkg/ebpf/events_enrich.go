@@ -253,7 +253,7 @@ func enrichEvent(evt *trace.Event, enrichData runtime.ContainerMetadata) {
 }
 
 // isCgroupEventInHid checks if cgroup event is relevant for deriving container event in its hierarchy id.
-// in tracee we only care about containers inside the cpuset controller, as such other hierarchy ids will lead
+// in tracker we only care about containers inside the cpuset controller, as such other hierarchy ids will lead
 // to a failed query.
 func isCgroupEventInHid(event *trace.Event, cts *containers.Containers) (bool, error) {
 	if cts.GetCgroupVersion() == cgroup.CgroupVersion2 {

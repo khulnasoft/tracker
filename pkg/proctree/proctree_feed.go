@@ -5,7 +5,7 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/logger"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 //
@@ -43,7 +43,7 @@ func (pt *ProcessTree) FeedFromFork(feed ForkFeed) error {
 		return errfmt.Errorf("invalid child task")
 	}
 
-	feedTimeStamp := traceetime.NsSinceEpochToTime(feed.TimeStamp)
+	feedTimeStamp := trackertime.NsSinceEpochToTime(feed.TimeStamp)
 	// Parent PID or TID might be 0 for init (and docker containers)
 	// if feed.ParentTid == 0 || feed.ParentPid == 0 {
 	// 	return errfmt.Errorf("invalid parent task")
@@ -226,7 +226,7 @@ func (pt *ProcessTree) FeedFromExec(feed ExecFeed) error {
 		process.SetParentHash(feed.ParentHash) // faster than checking if already set
 	}
 
-	execTimestamp := traceetime.NsSinceEpochToTime(feed.TimeStamp)
+	execTimestamp := trackertime.NsSinceEpochToTime(feed.TimeStamp)
 	basename := filepath.Base(feed.CmdPath)
 	comm := string([]byte(basename[:min(len(basename), COMM_LEN)]))
 	process.GetInfo().SetNameAt(

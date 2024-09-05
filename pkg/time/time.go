@@ -89,7 +89,7 @@ func GetStartTimeNS(clockID int32) int64 {
 	var ts unix.Timespec
 
 	// Tracker bpf code try to use boottime clock if available, otherwise uses monotonic clock.
-	// ClockGettime get time elapsed since start (boot) so tracee can calculate event timestamps
+	// ClockGettime get time elapsed since start (boot) so tracker can calculate event timestamps
 	// relative to it.
 	err := unix.ClockGettime(clockID, &ts)
 	if err != nil {

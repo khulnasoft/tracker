@@ -41,7 +41,7 @@ func (sig *e2eWritableDatasourceSig) GetMetadata() (detect.SignatureMetadata, er
 
 func (sig *e2eWritableDatasourceSig) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "sched_process_exit"},
+		{Source: "tracker", Name: "sched_process_exit"},
 	}, nil
 }
 

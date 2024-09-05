@@ -433,7 +433,7 @@ func populateProcInfoMap(bpfModule *bpf.Module, binEqualities map[filters.NSBina
 				followPolicies: 0,
 				mntNS:          bin.MntNS,
 				binaryBytes:    *binBytesCopy,
-				binNoMnt:       0, // always 0, see bin_no_mnt in tracee.bpf.c
+				binNoMnt:       0, // always 0, see bin_no_mnt in tracker.bpf.c
 			}
 			if err := procInfoMap.Update(unsafe.Pointer(&p), unsafe.Pointer(&procInfo)); err != nil {
 				return errfmt.WrapError(err)

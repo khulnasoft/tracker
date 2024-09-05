@@ -50,7 +50,7 @@ func init() {
 // GetFtraceBaseEvent creates an ftrace hook event with basic common fields
 func GetFtraceBaseEvent() *trace.Event {
 	ftraceHookBaseEvent := &trace.Event{
-		ProcessName: "tracee",
+		ProcessName: "tracker",
 		EventID:     int(FtraceHook),
 		EventName:   Core.GetDefinitionByID(FtraceHook).GetName(),
 	}
@@ -200,8 +200,8 @@ func checkFtraceHooks(eventsCounter counter.Counter, out chan *trace.Event, base
 	return nil
 }
 
-// isCausedBySelfLoadedProg checks if the hook is caused solely by tracee.
-// Returns the effective count taking into consideration the hooks by tracee and ftrace based k[ret]probes
+// isCausedBySelfLoadedProg checks if the hook is caused solely by tracker.
+// Returns the effective count taking into consideration the hooks by tracker and ftrace based k[ret]probes
 func isCausedBySelfLoadedProg(selfLoadedProgs map[string]int, symbol string, oldCount int) (bool, int, error) {
 	newCount := oldCount
 
@@ -213,13 +213,13 @@ func isCausedBySelfLoadedProg(selfLoadedProgs map[string]int, symbol string, old
 			return false, -1, err
 		}
 
-		if oldCount != 1 { // Someone else must be hooking using ftrace since tracee only causes 1 ftrace hook
-			newCount = oldCount - 1 + (numKprobes - numHooksFromTracker) // Reduce count caused by tracee and add the number of k[ret]probes (other than tracee's)
+		if oldCount != 1 { // Someone else must be hooking using ftrace since tracker only causes 1 ftrace hook
+			newCount = oldCount - 1 + (numKprobes - numHooksFromTracker) // Reduce count caused by tracker and add the number of k[ret]probes (other than tracker's)
 		} else {
 			if numKprobes == numHooksFromTracker { // count is 1 and all k[ret]probes are caused by us... there's nothing to report
 				return true, -1, nil
 			}
-			newCount = numKprobes - numHooksFromTracker // The amount of k[ret]probes other than tracee's
+			newCount = numKprobes - numHooksFromTracker // The amount of k[ret]probes other than tracker's
 		}
 	}
 

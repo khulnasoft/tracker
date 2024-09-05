@@ -194,7 +194,7 @@ statfunc u64 match_scope_filters(program_data_t *p)
     task_context_t *context = &p->event->context.task;
 
     // Don't monitor self
-    if (p->config->tracee_pid == context->host_pid)
+    if (p->config->tracker_pid == context->host_pid)
         return 0;
 
     proc_info_t *proc_info = p->proc_info;

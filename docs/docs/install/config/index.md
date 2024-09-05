@@ -37,7 +37,7 @@ cri:
         socket: /var/run/docker.sock
 
 healthz: false
-install-path: /tmp/tracee
+install-path: /tmp/tracker
 listen-addr: :3366
 log:
     level: info
@@ -103,14 +103,14 @@ output:
             password: pass
             host: 127.0.0.1
             port: 24224
-            tag: tracee1
+            tag: tracker1
         - forward2:
             protocol: udp
             user: user
             password: pass
             host: 127.0.0.1
             port: 24225
-            tag: tracee2
+            tag: tracker2
 
     webhook:
         - webhook1:

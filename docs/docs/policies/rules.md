@@ -69,7 +69,7 @@ spec:
 Further refinement of the policy's scope is achievable through the application of scope filters:
 
 ```yaml
-apiVersion: tracee.khulnasoft.com/v1beta1
+apiVersion: tracker.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: sample-scope-filter
@@ -244,7 +244,7 @@ filters:
 Events contain data that can be filtered.
 
 ```yaml
-apiVersion: tracee.khulnasoft.com/v1beta1
+apiVersion: tracker.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: sample-data-filter
@@ -264,7 +264,7 @@ Data fields can be found on the respective event definition, in this case [secur
  Or the user can test the event output in CLI before defining a policy, e.g:
 
 ```console
-tracee -e security_file_open --output json
+tracker -e security_file_open --output json
 ```
 
 ```json
@@ -276,7 +276,7 @@ tracee -e security_file_open --output json
 Return values can also be filtered.
 
 ```yaml
-apiVersion: tracee.khulnasoft.com/v1beta1
+apiVersion: tracker.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: sample-return-value

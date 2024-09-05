@@ -33,7 +33,7 @@ func (sig *e2eUDP) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eUDP) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "net_packet_udp"},
+		{Source: "tracker", Name: "net_packet_udp"},
 	}, nil
 }
 

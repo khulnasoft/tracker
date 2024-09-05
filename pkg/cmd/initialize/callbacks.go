@@ -73,7 +73,7 @@ func SetLibbpfgoCallbacks() {
 			logger.Log(lvl, false, msg)
 		},
 		LogFilters: []func(libLevel int, msg string) bool{
-			// Ignore libbpf outputs that are not relevant to tracee
+			// Ignore libbpf outputs that are not relevant to tracker
 			func(libLevel int, msg string) bool {
 				if libLevel != libbpfgo.LibbpfWarnLevel {
 					return true

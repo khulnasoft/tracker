@@ -33,7 +33,7 @@ func (sig *e2eICMPv6) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eICMPv6) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "net_packet_icmpv6"},
+		{Source: "tracker", Name: "net_packet_icmpv6"},
 	}, nil
 }
 

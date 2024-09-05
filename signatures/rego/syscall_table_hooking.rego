@@ -1,6 +1,6 @@
-package tracee.TRC_15
+package tracker.TRC_15
 
-import data.tracee.helpers
+import data.tracker.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-15",
@@ -16,14 +16,14 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracee",
+	"source": "tracker",
 	"name": "hooked_syscall",
 }]
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracee_match {
+tracker_match {
 	input.eventName == "hooked_syscall"
 }

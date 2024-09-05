@@ -67,7 +67,7 @@ func findGoSigs(dir string) ([]detect.Signature, []detect.DataSource, error) {
 	var datasources []detect.DataSource
 
 	if isBinaryStatic() {
-		logger.Warnw("The tracee static can't load golang signatures. Skipping ...")
+		logger.Warnw("The tracker static can't load golang signatures. Skipping ...")
 		return signatures, datasources, nil
 	}
 
@@ -218,13 +218,13 @@ func isHelper(name string) bool {
 func isBinaryStatic() bool {
 	exePath, err := os.Executable()
 	if err != nil {
-		logger.Errorw("Error getting tracee executable path", "error", err)
+		logger.Errorw("Error getting tracker executable path", "error", err)
 		return false
 	}
 
 	loadedObject, err := elf.Open(exePath)
 	if err != nil {
-		logger.Errorw("Error opening tracee executable", "error", err)
+		logger.Errorw("Error opening tracker executable", "error", err)
 		return false
 	}
 

@@ -18,7 +18,7 @@ Note that the other log level are `info`, `warn`, `error` and `panic`.
 ```console
 log:
     level: debug
-    file: "/tmp/tracee.log"
+    file: "/tmp/tracker.log"
 ```
 
 **Logs can be aggregated for a given interval (default: 3s) to delay its output:**

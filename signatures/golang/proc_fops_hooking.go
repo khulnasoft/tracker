@@ -40,7 +40,7 @@ func (sig *ProcFopsHooking) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *ProcFopsHooking) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "hooked_proc_fops", Origin: "host"},
+		{Source: "tracker", Name: "hooked_proc_fops", Origin: "host"},
 	}, nil
 }
 

@@ -8,9 +8,9 @@ Integrating with [Prometheus](https://prometheus.io)
 Tracker is enabled for prometheus scraping by default. Scraping can be done
 through the following URLs:
 
-**tracee** can be scraped through `:3366/metrics`
+**tracker** can be scraped through `:3366/metrics`
 
-> Metrics addresses can be changed through **tracee** command line
+> Metrics addresses can be changed through **tracker** command line
 > arguments `metrics` and `listen-addr`, check `--help` for more information.
 
 !!! Tip

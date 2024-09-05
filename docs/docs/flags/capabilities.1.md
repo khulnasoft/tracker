@@ -7,11 +7,11 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-capabilities** - Opt out from dropping capabilities by default or set specific ones
+tracker **\-\-capabilities** - Opt out from dropping capabilities by default or set specific ones
 
 ## SYNOPSIS
 
-tracee **\-\-capabilities** [<bypass=[true|false]\> | <add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ... [**\-\-capabilities** [<add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ...]
+tracker **\-\-capabilities** [<bypass=[true|false]\> | <add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ... [**\-\-capabilities** [<add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ...]
 
 ## DESCRIPTION
 

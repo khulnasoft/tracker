@@ -24,14 +24,14 @@ func InitProcessTreeDS(ds detect.DataSource) *ProcessTreeDS {
 // are initialized with.
 // This is the recommended way to initialize an instance, as it simpler to use.
 func GetProcessTreeDataSource(ctx detect.SignatureContext) (*ProcessTreeDS, error) {
-	processTreeDataSource, ok := ctx.GetDataSource("tracee", "process_tree")
+	processTreeDataSource, ok := ctx.GetDataSource("tracker", "process_tree")
 	if !ok {
-		return nil, fmt.Errorf("data source tracee/process_tree is not registered")
+		return nil, fmt.Errorf("data source tracker/process_tree is not registered")
 	}
 
 	if processTreeDataSource.Version() > 1 {
 		return nil, fmt.Errorf(
-			"data source tracee/process_tree version %d is not supported",
+			"data source tracker/process_tree version %d is not supported",
 			processTreeDataSource.Version(),
 		)
 	}

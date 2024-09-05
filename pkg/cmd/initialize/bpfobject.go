@@ -15,7 +15,7 @@ import (
 )
 
 // BpfObject sets up and configures a BPF object for tracing and monitoring
-// system events within the kernel. It takes pointers to tracee.Config,
+// system events within the kernel. It takes pointers to tracker.Config,
 // environment.KernelConfig, and environment.OSInfo structures, as well as an
 // installation path and a version string. The function unpacks the CO-RE eBPF
 // object binary, checks if BTF is enabled, unpacks the BTF file from BTF Hub if
@@ -39,7 +39,7 @@ func BpfObject(cfg *config.Config, kConfig *environment.KernelConfig, osInfo *en
 	// BTF unavailable: check embedded BTF files
 
 	if !environment.OSBTFEnabled() && btfFilePath == "" {
-		unpackBTFFile := filepath.Join(installPath, "/tracee.btf")
+		unpackBTFFile := filepath.Join(installPath, "/tracker.btf")
 		err = unpackBTFHub(unpackBTFFile, osInfo)
 		if err == nil {
 			logger.Debugw("BTF: btfhub embedded BTF file", "file", unpackBTFFile)
@@ -68,7 +68,7 @@ func checkEnvPath(env string) (string, error) {
 }
 
 func unpackCOREBinary() ([]byte, error) {
-	b, err := embed.BPFBundleInjected.ReadFile("dist/tracee.bpf.o")
+	b, err := embed.BPFBundleInjected.ReadFile("dist/tracker.bpf.o")
 	if err != nil {
 		return nil, err
 	}

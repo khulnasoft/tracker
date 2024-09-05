@@ -7,11 +7,11 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-rego** - Rego configurations
+tracker **\-\-rego** - Rego configurations
 
 ## SYNOPSIS
 
-tracee **\-\-rego** <config-option\>
+tracker **\-\-rego** <config-option\>
 
 ## DESCRIPTION
 

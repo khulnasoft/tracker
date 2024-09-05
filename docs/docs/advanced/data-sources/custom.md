@@ -16,9 +16,9 @@ Custom data sources are currently supported through the plugin mechanism.
     3. Any **dependency** you have in your plugin should be of the **same
         version** with the dependencies of Tracker.
 
-    4. Compiling tracee statically is sometimes useful to have a **complete
+    4. Compiling tracker statically is sometimes useful to have a **complete
         portable eBPF tracing/detection solution**. One good example when
-        statically compiling tracee is a good idea is to have a single
+        statically compiling tracker is a good idea is to have a single
         binary capable of running in GLIBC (most of them) and MUSL (Alpine)
         powered Linux distros.
 
@@ -29,7 +29,7 @@ Custom data sources are currently supported through the plugin mechanism.
 
 There are two main reasons to write your own data source:
 
-1. To provide a stable "tracee-native" querying API for some externally owned data you need in a signature (for example some DB access)
+1. To provide a stable "tracker-native" querying API for some externally owned data you need in a signature (for example some DB access)
 1. To provide an externally writable and internally readable data source in a data source (for example configuration)
 
 An example for an implementation of the latter is given [here](./write.md).

@@ -22,7 +22,7 @@ output:
 Note: the `files: key` must also be defined, even if it's just for stdout. This is mandatory for the parser.
 
 !!! Tip
-    A good tip is to pipe **tracee** json output to [jq](https://jqlang.github.io/jq/) tool, this way
+    A good tip is to pipe **tracker** json output to [jq](https://jqlang.github.io/jq/) tool, this way
     you can select fields, rename them, filter values, and much more!
 
 ### Webhook
@@ -67,14 +67,14 @@ output:
     #         password: pass
     #         host: 127.0.0.1
     #         port: 24224
-    #         tag: tracee1
+    #         tag: tracker1
     #     - forward2:
     #         protocol: udp
     #         user: user
     #         password: pass
     #         host: 127.0.0.1
     #         port: 24225
-    #         tag: tracee2
+    #         tag: tracker2
 ```
 
 Note: Please ensure that the respective fields will have to be uncommented.
@@ -113,7 +113,7 @@ When authoring a Go template the data source is Tracker's `trace.Event` struct, 
 
 Go template can utilize helper functions from [Sprig](http://masterminds.github.io/sprig/).
 
-For example templates, see [tracee/cmd/tracee-rules/templates](https://github.com/khulnasoft/tracker/tree/main/cmd/tracee-rules/templates).
+For example templates, see [tracker/cmd/tracker-rules/templates](https://github.com/khulnasoft/tracker/tree/main/cmd/tracker-rules/templates).
 
 The following sections can be specified as part of go templates:
 

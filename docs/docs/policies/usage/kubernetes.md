@@ -7,7 +7,7 @@ Tracker policies can be seamlessly integrated into Kubernetes using Custom Resou
 To view existing Tracker policies, use the following command:
 
 ```shell
-kubectl get policies.tracee.khulnasoft.com
+kubectl get policies.tracker.khulnasoft.com
 ```
 
 One can manage policies using standard kubectl commands. For example, to create, update, or delete a policy:
@@ -21,13 +21,13 @@ kubectl apply -f your-policy.yaml
 Update: Modify an existing policy using the kubectl edit command.
 
 ```shell
-kubectl edit policies.tracee.khulnasoft.com <policy-name>
+kubectl edit policies.tracker.khulnasoft.com <policy-name>
 ```
 
 Delete: Remove a policy using the kubectl delete command.
 
 ```shell
-kubectl delete policies.tracee.khulnasoft.com <policy-name>
+kubectl delete policies.tracker.khulnasoft.com <policy-name>
 ```
 
 ## Operator
@@ -38,4 +38,4 @@ The Tracker Kubernetes Operator is a custom controller designed to manage Tracke
 
  Tracking Kubernetes activity with eBPF and Tracker Policies 
 
- [![Watch the video](../../../images/traceepolicies.png)](https://youtu.be/VneWxs9Jpu0?si=eAnRDJVZShhg_td0)
+ [![Watch the video](../../../images/trackerpolicies.png)](https://youtu.be/VneWxs9Jpu0?si=eAnRDJVZShhg_td0)

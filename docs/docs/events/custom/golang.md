@@ -1,6 +1,6 @@
 # Golang Signatures
 
-There are 2 ways you can get your own golang signatures working with tracee.
+There are 2 ways you can get your own golang signatures working with tracker.
 
 1. **Built-In Golang signatures**
 
@@ -9,7 +9,7 @@ There are 2 ways you can get your own golang signatures working with tracee.
         into Tracker, as you will find in the next part of this page, but it
         needs a better end-user experience (being worked).
 
-    In order to get your golang signature compiled with tracee, you can create
+    In order to get your golang signature compiled with tracker, you can create
     a file called `signatures/golang/signature_example.go` and place the
     following code in it:
 
@@ -56,8 +56,8 @@ There are 2 ways you can get your own golang signatures working with tracee.
         ) {
 
             return []detect.SignatureEventSelector{
-                {Source: "tracee", Name: "openat"},
-                {Source: "tracee", Name: "execve"},
+                {Source: "tracker", Name: "openat"},
+                {Source: "tracker", Name: "execve"},
             }, nil
         }
 
@@ -115,7 +115,7 @@ There are 2 ways you can get your own golang signatures working with tracee.
     available to use. You may even select only the signatures you created:
 
     ```console
-    sudo ./dist/tracee \
+    sudo ./dist/tracker \
         --output json \
         --events mine
     ```
@@ -147,9 +147,9 @@ There are 2 ways you can get your own golang signatures working with tracee.
         3. Any **dependency** you have in your plugin should be of the **same
            version** with the dependencies of Tracker.
 
-        4. Compiling tracee statically is sometimes useful to have a **complete
+        4. Compiling tracker statically is sometimes useful to have a **complete
            portable eBPF tracing/detection solution**. One good example when
-           statically compiling tracee is a good idea is to have a single
+           statically compiling tracker is a good idea is to have a single
            binary capable of running in GLIBC (most of them) and MUSL (Alpine)
            powered Linux distros.
 

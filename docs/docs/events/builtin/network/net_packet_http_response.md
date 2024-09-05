@@ -72,7 +72,7 @@ contents and more related information.
 Example:
 
 ```console
-$ tracee --output json --events net_packet_http_response
+$ tracker --output json --events net_packet_http_response
 ```
 
 ```json

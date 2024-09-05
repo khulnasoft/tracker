@@ -37,7 +37,7 @@ func (sig *counter) GetMetadata() (detect.SignatureMetadata, error) {
 // GetSelectedEvents implements the Signature interface by declaring which events this signature subscribes to
 func (sig *counter) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{{
-		Source: "tracee",
+		Source: "tracker",
 		// Name:   "execve",
 	}}, nil
 }
@@ -71,7 +71,7 @@ func (sig *counter) OnEvent(event protocol.Event) error {
 // OnSignal implements the Signature interface by handling lifecycle events of the signature
 func (sig *counter) OnSignal(signal detect.Signal) error {
 	source, sigcomplete := signal.(detect.SignalSourceComplete)
-	if sigcomplete && source == "tracee" {
+	if sigcomplete && source == "tracker" {
 		sig.cb(&detect.Finding{
 			Data: map[string]interface{}{
 				"message": "done",

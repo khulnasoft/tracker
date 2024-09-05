@@ -17,7 +17,7 @@ Available options:
 2. **parse-arguments**
 
     In order to have a better experience with the output provided by
-    **tracee**, you may opt to parse event arguments to a **human
+    **tracker**, you may opt to parse event arguments to a **human
     *readable** format.
 
     ```

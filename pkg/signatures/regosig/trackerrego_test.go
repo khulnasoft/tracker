@@ -52,7 +52,7 @@ func TestRegoSignature_GetSelectedEvents(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []detect.SignatureEventSelector{
 		{
-			Source: "tracee",
+			Source: "tracker",
 			Name:   "execve",
 		},
 	}, events)
@@ -106,7 +106,7 @@ func OnEventSpec(t *testing.T, target string, partial bool) {
 		error   string
 	}{
 		{
-			name:     "Should trigger finding when tracee_match rule returns boolean and event matches",
+			name:     "Should trigger finding when tracker_match rule returns boolean and event matches",
 			regoCode: testRegoCodeBoolean,
 			event: trace.Event{
 				Args: []trace.Argument{
@@ -148,7 +148,7 @@ func OnEventSpec(t *testing.T, target string, partial bool) {
 			},
 		},
 		{
-			name:     "Should trigger finding when tracee_match rule returns boolean and parsed event matches",
+			name:     "Should trigger finding when tracker_match rule returns boolean and parsed event matches",
 			regoCode: testRegoCodeBoolean,
 			event: trace.Event{
 				Args: []trace.Argument{
@@ -190,7 +190,7 @@ func OnEventSpec(t *testing.T, target string, partial bool) {
 			},
 		},
 		{
-			name:     "Shouldn't trigger finding when tracee_match rule returns boolean but event doesn't match",
+			name:     "Shouldn't trigger finding when tracker_match rule returns boolean but event doesn't match",
 			regoCode: testRegoCodeBoolean,
 			event: trace.Event{
 				Args: []trace.Argument{
@@ -205,7 +205,7 @@ func OnEventSpec(t *testing.T, target string, partial bool) {
 			finding: nil,
 		},
 		{
-			name:     "Should trigger finding when tracee_match rule returns object and event matches",
+			name:     "Should trigger finding when tracker_match rule returns object and event matches",
 			regoCode: testRegoCodeObject,
 			event: trace.Event{
 				Args: []trace.Argument{
@@ -263,7 +263,7 @@ func OnEventSpec(t *testing.T, target string, partial bool) {
 			},
 		},
 		{
-			name:     "Should trigger finding when tracee_match rule returns object and parsed event matches",
+			name:     "Should trigger finding when tracker_match rule returns object and parsed event matches",
 			regoCode: testRegoCodeObject,
 			event: trace.Event{
 				Args: []trace.Argument{
@@ -321,7 +321,7 @@ func OnEventSpec(t *testing.T, target string, partial bool) {
 			},
 		},
 		{
-			name:     "Shouldn't trigger finding when tracee_match rule returns object but event doesn't match",
+			name:     "Shouldn't trigger finding when tracker_match rule returns object but event doesn't match",
 			regoCode: testRegoCodeObject,
 			event: trace.Event{
 				Args: []trace.Argument{

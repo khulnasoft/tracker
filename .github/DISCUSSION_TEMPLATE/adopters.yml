@@ -15,7 +15,7 @@ body:
       required: false
   - type: checkboxes
     attributes:
-      label: "[Optional] What type of events are you monitoring (see https://aquasecurity.github.io/tracee/latest/docs/events/)?"
+      label: "[Optional] What type of events are you monitoring (see https://aquasecurity.github.io/tracker/latest/docs/events/)?"
       options:
         - label: "security"
         - label: "network"

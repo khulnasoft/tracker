@@ -117,7 +117,7 @@ func (p *TraceProbe) attach(module *bpf.Module, args ...interface{}) error {
 		// After commit b022f0c7e404 ('tracing/kprobes: Return EADDRNOTAVAIL
 		// when func matches several symbols') it is better to attach kprobes
 		// using the address of the symbol instead of the name. This way in
-		// older kernels tracee can be sure that the attachment wasn't made just
+		// older kernels tracker can be sure that the attachment wasn't made just
 		// to the first address (if symbols has multiple addresses) and in newer
 		// kernels it won't fail when trying to attach to a symbol that has
 		// multiple addresses.

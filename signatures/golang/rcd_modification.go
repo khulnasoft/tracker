@@ -48,9 +48,9 @@ func (sig *RcdModification) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *RcdModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "*"},
-		{Source: "tracee", Name: "security_inode_rename", Origin: "*"},
-		{Source: "tracee", Name: "sched_process_exec", Origin: "*"},
+		{Source: "tracker", Name: "security_file_open", Origin: "*"},
+		{Source: "tracker", Name: "security_inode_rename", Origin: "*"},
+		{Source: "tracker", Name: "sched_process_exec", Origin: "*"},
 	}, nil
 }
 

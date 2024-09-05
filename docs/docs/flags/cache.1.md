@@ -7,11 +7,11 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-cache** - Select different cache types for the event pipeline queueing
+tracker **\-\-cache** - Select different cache types for the event pipeline queueing
 
 ## SYNOPSIS
 
-tracee **\-\-cache** [none|cache-type=<type\>] [**\-\-cache** mem-cache-size=<size\>]
+tracker **\-\-cache** [none|cache-type=<type\>] [**\-\-cache** mem-cache-size=<size\>]
 
 ## DESCRIPTION
 

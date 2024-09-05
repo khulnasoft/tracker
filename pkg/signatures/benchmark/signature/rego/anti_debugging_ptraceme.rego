@@ -1,4 +1,4 @@
-package tracee.TRC_2
+package tracker.TRC_2
 
 __rego_metadoc__ := {
     "id": "TRC-2",
@@ -12,14 +12,14 @@ __rego_metadoc__ := {
     }
 }
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := {
-		"source": "tracee",
+		"source": "tracker",
 		"name": "ptrace"
 	}
 }
 
-tracee_match {
+tracker_match {
     input.eventName == "ptrace"
     arg := input.args[_]
     arg.name == "request"

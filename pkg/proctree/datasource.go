@@ -40,7 +40,7 @@ func (ptds *DataSource) Version() uint {
 
 // Namespace returns the namespace of the DataSource.
 func (ptds *DataSource) Namespace() string {
-	return "tracee"
+	return "tracker"
 }
 
 // ID returns the ID of the DataSource.

@@ -13,7 +13,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	policyv1beta1 "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	policyv1beta1 "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/k8s/controller"
 )
 
@@ -98,8 +98,8 @@ func parseConfig() Config {
 
 	flag.StringVar(&cfg.MetricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&cfg.ProbeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
-	flag.StringVar(&cfg.TrackerNamespace, "tracee-namespace", "tracee-system", "The namespace where Tracker is installed.")
-	flag.StringVar(&cfg.TrackerName, "tracee-name", "tracee", "The name of the Tracker DaemonSet.")
+	flag.StringVar(&cfg.TrackerNamespace, "tracker-namespace", "tracker-system", "The namespace where Tracker is installed.")
+	flag.StringVar(&cfg.TrackerName, "tracker-name", "tracker", "The name of the Tracker DaemonSet.")
 	flag.BoolVar(&cfg.EnableLeaderElection, "leader-elect", false, "Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
 	cfg.LoggingOpts = zap.Options{
 		Development: true,

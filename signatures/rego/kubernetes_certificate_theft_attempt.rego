@@ -1,6 +1,6 @@
-package tracee.TRC_10
+package tracker.TRC_10
 
-import data.tracee.helpers
+import data.tracker.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-10",
@@ -16,22 +16,22 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracee",
+	"source": "tracker",
 	"name": "security_file_open",
 	"origin": "*",
 }]
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracee_match {
+tracker_match {
 	input.eventName == "security_file_open"
 
-	flags = helpers.get_tracee_argument("flags")
+	flags = helpers.get_tracker_argument("flags")
 	helpers.is_file_read(flags)
 
-	pathname = helpers.get_tracee_argument("pathname")
+	pathname = helpers.get_tracker_argument("pathname")
 	startswith(pathname, "/etc/kubernetes/pki/")
 
 	process_names_blocklist := {"kube-apiserver", "kubelet", "kube-controller", "etcd"}

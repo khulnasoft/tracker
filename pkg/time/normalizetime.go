@@ -1,6 +1,6 @@
 package time
 
-// TimeNormalizer normalizes the time to be relative to tracee start time or current time in nanoseconds.
+// TimeNormalizer normalizes the time to be relative to tracker start time or current time in nanoseconds.
 type TimeNormalizer interface {
 	NormalizeTime(timeNs int) int
 	GetOriginalTime(timeNs int) int

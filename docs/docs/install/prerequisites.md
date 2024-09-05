@@ -35,7 +35,7 @@ every section should roughly cover:
     - Minikube, Microk8s and other development environments
 
 > This list is based on capabilities those versions provide and not necessarily
-in tracee having all its features tested on each of them. Please provide
+in tracker having all its features tested on each of them. Please provide
 feedback if you face any issues in one of those environments.
 
 ## Kernel version
@@ -103,7 +103,7 @@ capabilities and justifications:
 - `CAP_SETPCAP` (if given - used to reduce bounding set capabilities)
 - `CAP_SYSLOG` (to access kernel symbols through /proc/kallsyms)
 - On some environments (e.g. Ubuntu) `CAP_IPC_LOCK` might be required as well.
-- On cgroup v1 environments, `CAP_SYS_ADMIN` is recommended if running from a container in order to allow tracee to mount the cpuset cgroup controller.
+- On cgroup v1 environments, `CAP_SYS_ADMIN` is recommended if running from a container in order to allow tracker to mount the cpuset cgroup controller.
 
 For more information and help about process capabilities, please see
 [here](../advanced/dropping-capabilities.md).

@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/khulnasoft/tracker/pkg/filters"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
 )
 
@@ -1667,7 +1667,7 @@ func TestPrepareFilterMapsFromPolicies(t *testing.T) {
 					Rules: []k8s.Rule{
 						{
 							Event:   "read",
-							Filters: []string{"containerImage=tracee:latest"},
+							Filters: []string{"containerImage=tracker:latest"},
 						},
 					},
 				},
@@ -1679,10 +1679,10 @@ func TestPrepareFilterMapsFromPolicies(t *testing.T) {
 					eventFlags: []eventFlag{
 						readEvtFlag,
 						{
-							full:              "read.scope.containerImage=tracee:latest",
+							full:              "read.scope.containerImage=tracker:latest",
 							eventName:         "read",
 							eventFilter:       "read.scope.containerImage",
-							operatorAndValues: "=tracee:latest",
+							operatorAndValues: "=tracker:latest",
 						},
 					},
 				},
@@ -1700,7 +1700,7 @@ func TestPrepareFilterMapsFromPolicies(t *testing.T) {
 					Rules: []k8s.Rule{
 						{
 							Event:   "read",
-							Filters: []string{"containerName=tracee"},
+							Filters: []string{"containerName=tracker"},
 						},
 					},
 				},
@@ -1712,10 +1712,10 @@ func TestPrepareFilterMapsFromPolicies(t *testing.T) {
 					eventFlags: []eventFlag{
 						readEvtFlag,
 						{
-							full:              "read.scope.containerName=tracee",
+							full:              "read.scope.containerName=tracker",
 							eventName:         "read",
 							eventFilter:       "read.scope.containerName",
-							operatorAndValues: "=tracee",
+							operatorAndValues: "=tracker",
 						},
 					},
 				},
@@ -1733,7 +1733,7 @@ func TestPrepareFilterMapsFromPolicies(t *testing.T) {
 					Rules: []k8s.Rule{
 						{
 							Event:   "read",
-							Filters: []string{"podName=daemonset/tracee"},
+							Filters: []string{"podName=daemonset/tracker"},
 						},
 					},
 				},
@@ -1745,10 +1745,10 @@ func TestPrepareFilterMapsFromPolicies(t *testing.T) {
 					eventFlags: []eventFlag{
 						readEvtFlag,
 						{
-							full:              "read.scope.podName=daemonset/tracee",
+							full:              "read.scope.podName=daemonset/tracker",
 							eventName:         "read",
 							eventFilter:       "read.scope.podName",
-							operatorAndValues: "=daemonset/tracee",
+							operatorAndValues: "=daemonset/tracker",
 						},
 					},
 				},
@@ -2030,7 +2030,7 @@ func TestCreatePolicies(t *testing.T) {
 		},
 		{
 			testName: "argfilter",
-			evtFlags: []string{"openat.data.pathname=/bin/ls,/tmp/tracee", "openat.data.pathname!=/etc/passwd"},
+			evtFlags: []string{"openat.data.pathname=/bin/ls,/tmp/tracker", "openat.data.pathname!=/etc/passwd"},
 		},
 		{
 			testName: "retfilter",

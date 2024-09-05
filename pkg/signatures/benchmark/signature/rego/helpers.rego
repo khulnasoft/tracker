@@ -1,6 +1,6 @@
-package tracee.helpers
+package tracker.helpers
 
-get_tracee_argument(arg_name) = res {
+get_tracker_argument(arg_name) = res {
     arg := input.args[_]
     arg.name == arg_name
     res := arg.value

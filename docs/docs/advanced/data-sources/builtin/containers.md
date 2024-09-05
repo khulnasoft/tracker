@@ -40,7 +40,7 @@ type e2eContainersDataSource struct {
 
 func (sig *e2eContainersDataSource) Init(ctx detect.SignatureContext) error {
     sig.cb = ctx.Callback
-    containersData, ok := ctx.GetDataSource("tracee", "containers")
+    containersData, ok := ctx.GetDataSource("tracker", "containers")
     if !ok {
         return fmt.Errorf("containers data source not registered")
     }

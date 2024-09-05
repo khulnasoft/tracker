@@ -182,17 +182,17 @@ func file_api_v1beta1_datasource_proto_rawDescGZIP() []byte {
 
 var file_api_v1beta1_datasource_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_api_v1beta1_datasource_proto_goTypes = []interface{}{
-	(*WriteDataSourceRequest)(nil),  // 0: tracee.v1beta1.WriteDataSourceRequest
-	(*WriteDataSourceResponse)(nil), // 1: tracee.v1beta1.WriteDataSourceResponse
+	(*WriteDataSourceRequest)(nil),  // 0: tracker.v1beta1.WriteDataSourceRequest
+	(*WriteDataSourceResponse)(nil), // 1: tracker.v1beta1.WriteDataSourceResponse
 	(*structpb.Value)(nil),          // 2: google.protobuf.Value
 }
 var file_api_v1beta1_datasource_proto_depIdxs = []int32{
-	2, // 0: tracee.v1beta1.WriteDataSourceRequest.key:type_name -> google.protobuf.Value
-	2, // 1: tracee.v1beta1.WriteDataSourceRequest.value:type_name -> google.protobuf.Value
-	0, // 2: tracee.v1beta1.DataSourceService.Write:input_type -> tracee.v1beta1.WriteDataSourceRequest
-	0, // 3: tracee.v1beta1.DataSourceService.WriteStream:input_type -> tracee.v1beta1.WriteDataSourceRequest
-	1, // 4: tracee.v1beta1.DataSourceService.Write:output_type -> tracee.v1beta1.WriteDataSourceResponse
-	1, // 5: tracee.v1beta1.DataSourceService.WriteStream:output_type -> tracee.v1beta1.WriteDataSourceResponse
+	2, // 0: tracker.v1beta1.WriteDataSourceRequest.key:type_name -> google.protobuf.Value
+	2, // 1: tracker.v1beta1.WriteDataSourceRequest.value:type_name -> google.protobuf.Value
+	0, // 2: tracker.v1beta1.DataSourceService.Write:input_type -> tracker.v1beta1.WriteDataSourceRequest
+	0, // 3: tracker.v1beta1.DataSourceService.WriteStream:input_type -> tracker.v1beta1.WriteDataSourceRequest
+	1, // 4: tracker.v1beta1.DataSourceService.Write:output_type -> tracker.v1beta1.WriteDataSourceResponse
+	1, // 5: tracker.v1beta1.DataSourceService.WriteStream:output_type -> tracker.v1beta1.WriteDataSourceResponse
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

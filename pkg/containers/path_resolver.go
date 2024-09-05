@@ -14,7 +14,7 @@ import (
 
 // ContainerPathResolver generates an accessible absolute path from the root
 // mount namespace to a relative path in a container. **NOTE**: to resolve host
-// mount namespace, tracee reads from /proc/1/ns, requiring CAP_SYS_PTRACE
+// mount namespace, tracker reads from /proc/1/ns, requiring CAP_SYS_PTRACE
 // capability.
 type ContainerPathResolver struct {
 	fs               fs.FS

@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "tracee.name" -}}
+{{- define "tracker.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "tracee.fullname" -}}
+{{- define "tracker.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "tracee.chart" -}}
+{{- define "tracker.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "tracee.labels" -}}
-helm.sh/chart: {{ include "tracee.chart" . }}
-{{ include "tracee.selectorLabels" . }}
+{{- define "tracker.labels" -}}
+helm.sh/chart: {{ include "tracker.chart" . }}
+{{ include "tracker.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,26 +45,26 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "tracee.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "tracee.name" . }}
+{{- define "tracker.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "tracker.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "tracee.serviceAccountName" -}}
+{{- define "tracker.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "tracee.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "tracker.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
-{{- define "tracee-operator.fullname" -}}
+{{- define "tracker-operator.fullname" -}}
 {{- default .Values.operator.name }}
 {{- end }}
 
-{{- define "tracee-operator.serviceAccountName" -}}
+{{- define "tracker-operator.serviceAccountName" -}}
 {{- default .Values.operator.serviceAccount.name }}
 {{- end }}

@@ -23,7 +23,7 @@ The LSM hook of setting the system time. This hook triggers the event.
 ## Example Use Case
 
 ```console
-./tracee -e security_settime64
+./tracker -e security_settime64
 ```
 
 ## Issues

@@ -7,11 +7,11 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-cri** - Select container runtimes to connect to for container events enrichment
+tracker **\-\-cri** - Select container runtimes to connect to for container events enrichment
 
 ## SYNOPSIS
 
-tracee **\-\-cri** <[crio|containerd|docker|podman]:socket\> [**\-\-cri** ...] ...
+tracker **\-\-cri** <[crio|containerd|docker|podman]:socket\> [**\-\-cri** ...] ...
 
 ## DESCRIPTION
 

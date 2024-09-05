@@ -77,7 +77,7 @@ contents and more related information.
 Example:
 
 ```console
-$ tracee --output json --events net_packet_http
+$ tracker --output json --events net_packet_http
 ```
 
 ```json

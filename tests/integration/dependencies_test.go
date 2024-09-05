@@ -117,7 +117,7 @@ func Test_EventsDependencies(t *testing.T) {
 
 	for _, testCaseInst := range testCases {
 		t.Run(testCaseInst.name, func(t *testing.T) {
-			// prepare tracee config
+			// prepare tracker config
 			testConfig := config.Config{
 				Capabilities: &config.CapabilitiesConfig{
 					BypassCaps: true,
@@ -132,13 +132,13 @@ func Test_EventsDependencies(t *testing.T) {
 			logOutChan, restoreLogger := testutils.SetTestLogger(t, logger.DebugLevel)
 			logsResultChan := testutils.TestLogs(t, testCaseInst.expectedLogs, logOutChan, logsDone)
 
-			// start tracee
+			// start tracker
 			trc, err := startTracker(ctx, t, testConfig, nil, nil)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
 			}
-			t.Logf("  --- started tracee ---")
+			t.Logf("  --- started tracker ---")
 			err = waitForTrackerStart(trc)
 			if err != nil {
 				cancel()
@@ -200,7 +200,7 @@ func Test_EventsDependencies(t *testing.T) {
 				t.Log(errStop)
 				failed = true
 			} else {
-				t.Logf("  --- stopped tracee ---")
+				t.Logf("  --- stopped tracker ---")
 			}
 
 			if failed {

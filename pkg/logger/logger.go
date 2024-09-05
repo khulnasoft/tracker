@@ -83,7 +83,7 @@ const (
 
 // LoggingConfig defines the configuration of the package level logging.
 //
-// Users importing tracee as a library may choose to construct a tracee flavored logger with
+// Users importing tracker as a library may choose to construct a tracker flavored logger with
 // NewLogger() or supply their own interface.
 //
 // Tracker offers aggregation and filtering support on top of any logger implementation complying to it's interface.
@@ -95,7 +95,7 @@ type LoggingConfig struct {
 	FlushInterval time.Duration
 }
 
-// LoggerConfig defines the configuration parameters for constructing tracee's logger implementation.
+// LoggerConfig defines the configuration parameters for constructing tracker's logger implementation.
 // Logger user AtomicLevel to allow changing the logging level at runtime.
 type LoggerConfig struct {
 	Writer  io.Writer

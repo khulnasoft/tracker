@@ -345,7 +345,7 @@ func (t *Tracker) processPrintMemDump(event *trace.Event) error {
 // Timing related functions
 //
 
-// normalizeEventCtxTimes normalizes the event context timings to be relative to tracee start time
+// normalizeEventCtxTimes normalizes the event context timings to be relative to tracker start time
 // or current time in nanoseconds.
 func (t *Tracker) normalizeEventCtxTimes(event *trace.Event) error {
 	eventId := events.ID(event.EventID)
@@ -364,7 +364,7 @@ func (t *Tracker) processSchedProcessFork(event *trace.Event) error {
 	return t.normalizeEventArgTime(event, "start_time")
 }
 
-// normalizeEventArgTime normalizes the event arg time to be relative to tracee start time or
+// normalizeEventArgTime normalizes the event arg time to be relative to tracker start time or
 // current time.
 func (t *Tracker) normalizeEventArgTime(event *trace.Event, argName string) error {
 	arg := events.GetArg(event, argName)

@@ -8,7 +8,7 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/cmd/printer"
 	"github.com/khulnasoft/tracker/pkg/config"
-	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/server/grpc"
@@ -27,7 +27,7 @@ type Runner struct {
 func (r Runner) Run(ctx context.Context) error {
 	// Create Tracker Singleton
 
-	t, err := tracee.New(r.TrackerConfig)
+	t, err := tracker.New(r.TrackerConfig)
 	if err != nil {
 		return errfmt.Errorf("error creating Tracker: %v", err)
 	}
@@ -57,7 +57,7 @@ func (r Runner) Run(ctx context.Context) error {
 	// collector to free the BPF object
 	r.TrackerConfig.BPFObjBytes = nil
 
-	// Initialize tracee
+	// Initialize tracker
 
 	err = t.Init(ctx)
 	if err != nil {
@@ -112,7 +112,7 @@ func (r Runner) Run(ctx context.Context) error {
 	err = t.Run(ctx)
 
 	// Drain remaininig channel events (sent during shutdown),
-	// the channel is closed by the tracee when it's done
+	// the channel is closed by the tracker when it's done
 	for event := range stream.ReceiveEvents() {
 		r.Printer.Print(event)
 	}
@@ -138,7 +138,7 @@ func GetContainerMode(containerFilterEnabled, noContainersEnrich bool) config.Co
 	return config.ContainerModeEnriched
 }
 
-const pidFileName = "tracee.pid"
+const pidFileName = "tracker.pid"
 
 // Initialize PID file
 func writePidFile(dir *os.File) error {

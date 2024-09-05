@@ -15,10 +15,10 @@
 debian
 .ubuntu*
 .package*
-tracee.spec
+tracker.spec
 
 # ignore Helm subcharts
-deploy/helm/tracee/charts/
+deploy/helm/tracker/charts/
 
 # dev related files
 .vscode

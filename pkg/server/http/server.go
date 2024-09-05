@@ -92,7 +92,7 @@ func (s *Server) EnablePProfEndpoint() {
 func (s *Server) EnablePyroAgent() error {
 	p, err := pyroscope.Start(
 		pyroscope.Config{
-			ApplicationName: "tracee",
+			ApplicationName: "tracker",
 			ServerAddress:   "http://localhost:4040",
 		},
 	)

@@ -4,8 +4,8 @@ The `--config` flag allows you to specify global configuration options for Track
 
 ## Usage
 
-To use the `--config` flag, you need to provide the path to the configuration file. For example, if you have a YAML configuration file located at /path/to/tracee-config.yaml, you can load it with the following command:
+To use the `--config` flag, you need to provide the path to the configuration file. For example, if you have a YAML configuration file located at /path/to/tracker-config.yaml, you can load it with the following command:
 
 ```console
-tracee --config /path/to/tracee-config.yaml
+tracker --config /path/to/tracker-config.yaml
 ```

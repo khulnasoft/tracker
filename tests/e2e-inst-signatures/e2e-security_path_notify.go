@@ -37,7 +37,7 @@ func (sig *e2eSecurityPathNotify) GetMetadata() (detect.SignatureMetadata, error
 
 func (sig *e2eSecurityPathNotify) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_path_notify"},
+		{Source: "tracker", Name: "security_path_notify"},
 	}, nil
 }
 

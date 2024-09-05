@@ -14,7 +14,7 @@ import (
 
 	"github.com/khulnasoft/tracker/pkg/config"
 	"github.com/khulnasoft/tracker/pkg/events"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/signatures/helpers"
@@ -1708,7 +1708,7 @@ func Test_EventFilters(t *testing.T) {
 			// wait for the previous test to cool down
 			coolDown(t, tc.coolDown)
 
-			// prepare tracee config
+			// prepare tracker config
 			config := config.Config{
 				Capabilities: &config.CapabilitiesConfig{
 					BypassCaps: true,
@@ -1718,14 +1718,14 @@ func Test_EventFilters(t *testing.T) {
 
 			ctx, cancel := context.WithCancel(context.Background())
 
-			// start tracee
+			// start tracker
 			trc, err := startTracker(ctx, t, config, nil, nil)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
 			}
 
-			t.Logf("  --- started tracee ---")
+			t.Logf("  --- started tracker ---")
 			err = waitForTrackerStart(trc)
 			if err != nil {
 				cancel()
@@ -1762,7 +1762,7 @@ func Test_EventFilters(t *testing.T) {
 				t.Log(errStop)
 				failed = true
 			} else {
-				t.Logf("  --- stopped tracee ---")
+				t.Logf("  --- stopped tracker ---")
 			}
 
 			if failed {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# This test attempts to compile tracee using upstream libbpfgo.
+# This test attempts to compile tracker using upstream libbpfgo.
 # It's run by github workflows inside action runners, just as
 # it can be run locally. In both cases it must be triggered by
 # 'make test-upstream-libbpfgo'.

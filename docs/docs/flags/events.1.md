@@ -7,11 +7,11 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-events** - Select which events to trace
+tracker **\-\-events** - Select which events to trace
 
 ## SYNOPSIS
 
-tracee **\-\-events** [<event-name1(,[-]event-name2...)\> | <[-]event-name1(,set1...)\> | <set1(,[-]event-name1,[-]event-name2...)\> | <event1.data.data-field[=|!=]value\> | <event1.retval[=|!=|<|\>|<=|\>=]value\> | <event1.scope.field[=|!=|<|\>|<=|\>=]value\> | <event.scope.container\>] ...
+tracker **\-\-events** [<event-name1(,[-]event-name2...)\> | <[-]event-name1(,set1...)\> | <set1(,[-]event-name1,[-]event-name2...)\> | <event1.data.data-field[=|!=]value\> | <event1.retval[=|!=|<|\>|<=|\>=]value\> | <event1.scope.field[=|!=|<|\>|<=|\>=]value\> | <event.scope.container\>] ...
 
 ## DESCRIPTION
 

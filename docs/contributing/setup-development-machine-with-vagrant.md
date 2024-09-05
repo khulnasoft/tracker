@@ -22,7 +22,7 @@ Clone and change directory to Tracker Git repository:
 
 ```console
 git clone --branch {{ git.tag }} https://github.com/khulnasoft/tracker.git
-cd tracee
+cd tracker
 ```
 
 Create and configure development machine according to the `Vagrantfile`:
@@ -95,7 +95,7 @@ from GitHub.
 
 ## Build and Run Tracker
 
-To build **tracee** executable binary, run the
+To build **tracker** executable binary, run the
 default make target:
 
 ```console
@@ -113,14 +113,14 @@ total 161096
 drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:06 btfhub
 drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:06 libbpf
 drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:08 signatures
--rwxr-xr-x 1 vagrant vagrant 62619312 Mar 29 19:08 tracee
--rw-r--r-- 1 vagrant vagrant 10753624 Mar 29 19:06 tracee.bpf.o
+-rwxr-xr-x 1 vagrant vagrant 62619312 Mar 29 19:08 tracker
+-rw-r--r-- 1 vagrant vagrant 10753624 Mar 29 19:06 tracker.bpf.o
 ```
 
 You can now run Tracker and see events printed to the standard output in a tabular format:
 
 ```console
-sudo ./dist/tracee
+sudo ./dist/tracker
 ```
 
 ```text
@@ -206,28 +206,28 @@ NAME           STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-
 ubuntu-jammy   Ready    <none>   40m   v1.26.1   10.0.2.15     <none>        Ubuntu 22.04.2 LTS   5.15.0-69-generic   containerd://1.6.8
 ```
 
-Create a new namespace called `tracee-system`:
+Create a new namespace called `tracker-system`:
 
 ```console
-kubectl create ns tracee-system
+kubectl create ns tracker-system
 ```
 
-Create Postee Persistent Volumes and StatefulSet in the `tracee-system`
+Create Postee Persistent Volumes and StatefulSet in the `tracker-system`
 namespace:
 
 ```console
-kubectl apply -n tracee-system \
+kubectl apply -n tracker-system \
   -f https://raw.githubusercontent.com/aquasecurity/postee/v2.2.0/deploy/kubernetes/hostPath/postee-pv.yaml \
   -f https://raw.githubusercontent.com/aquasecurity/postee/v2.2.0/deploy/kubernetes/postee.yaml
 ```
 
-Create Tracker DaemonSet in the `tracee-system`, configuring it to send 
+Create Tracker DaemonSet in the `tracker-system`, configuring it to send 
 detections to the standard output and send them over to Postee webhook on
 http://postee-svc:8082:
 
 ```console
-helm install tracee ./deploy/helm/tracee \
-  --namespace tracee-system \
+helm install tracker ./deploy/helm/tracker \
+  --namespace tracker-system \
   --set hostPID=true \
   --set webhook=http://postee-svc:8082
 ```
@@ -235,31 +235,31 @@ helm install tracee ./deploy/helm/tracee \
 !!! tip
     To test code that hasn't been released yet do the following:
 
-    1. Build the `tracee:latest` container image from the current Git revision:
+    1. Build the `tracker:latest` container image from the current Git revision:
        ```console
-       make -f builder/Makefile.tracee-container build-tracee
+       make -f builder/Makefile.tracker-container build-tracker
        ```
     2. Import the container image to MicroK8s registry:
        ```console
-       docker image save -o /tmp/tracee-latest.tar tracee:latest
-       microk8s ctr images import /tmp/tracee-latest.tar
-       rm /tmp/tracee-latest.tar
+       docker image save -o /tmp/tracker-latest.tar tracker:latest
+       microk8s ctr images import /tmp/tracker-latest.tar
+       rm /tmp/tracker-latest.tar
        ```
-    3. Create Tracker DaemonSet using `tracee:latest` as container image:
+    3. Create Tracker DaemonSet using `tracker:latest` as container image:
        ```console
-       kubectl apply -n tracee-system -k deploy/kubernetes/tracee
+       kubectl apply -n tracker-system -k deploy/kubernetes/tracker
        ```
 
 While Tracker pod is running, run `strace ls` command and observe detection
 printed to the standard output.
 
 ```console
-kubectl logs -n tracee-system -f daemonset/tracee
+kubectl logs -n tracker-system -f daemonset/tracker
 ```
 
 ```text
-INFO: probing tracee capabilities...
-INFO: starting tracee...
+INFO: probing tracker capabilities...
+INFO: starting tracker...
 {"timestamp":1680119087787203746,"threadStartTime":1680119087787109775,"processorId":0,"processId":95599,"cgroupId":9789,"threadId":95599,"parentProcessId":95597,"hostProcessId":95599,"hostThreadId":95599,"hostParentProcessId":95597,"userId":1000,"mountNamespace":4026531841,"pidNamespace":4026531836,"processName":"strace","hostName":"ubuntu-jammy","containerId":"","containerImage":"","containerName":"","podName":"","podNamespace":"","podUID":"","podSandbox":false,"eventId":"6018","eventName":"Anti-Debugging detected","matchedScopes":1,"argsNum":0,"returnValue":0,"syscall":"","stackAddresses":null,"contextFlags":{"containerStarted":false,"isCompat":false},"args":[],"metadata":{"Version":"1","Description":"A process used anti-debugging techniques to block a debugger. Malware use anti-debugging to stay invisible and inhibit analysis of their behavior.","Tags":null,"Properties":{"Category":"defense-evasion","Kubernetes_Technique":"","Severity":1,"Technique":"Debugger Evasion","external_id":"T1622","id":"attack-pattern--e4dc8c01-417f-458d-9ee0-bb0617c1b391","signatureID":"TRC-102","signatureName":"Anti-Debugging detected"}}}
 ```
 
@@ -267,7 +267,7 @@ If everything is configured properly, you can find the same detection in Postee
 logs:
 
 ```console
-kubectl -n tracee-system logs -f postee-0
+kubectl -n tracker-system logs -f postee-0
 ```
 
 ```text

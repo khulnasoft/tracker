@@ -41,7 +41,7 @@ func (sig *ProcessVmWriteCodeInjection) GetMetadata() (detect.SignatureMetadata,
 
 func (sig *ProcessVmWriteCodeInjection) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "process_vm_writev", Origin: "*"},
+		{Source: "tracker", Name: "process_vm_writev", Origin: "*"},
 	}, nil
 }
 

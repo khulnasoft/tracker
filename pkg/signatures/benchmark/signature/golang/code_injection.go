@@ -46,10 +46,10 @@ func (sig *codeInjection) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *codeInjection) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "ptrace"},
-		{Source: "tracee", Name: "open"},
-		{Source: "tracee", Name: "openat"},
-		{Source: "tracee", Name: "execve"},
+		{Source: "tracker", Name: "ptrace"},
+		{Source: "tracker", Name: "open"},
+		{Source: "tracker", Name: "openat"},
+		{Source: "tracker", Name: "execve"},
 	}, nil
 }
 

@@ -33,7 +33,7 @@ func (sig *e2eHookedSyscall) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eHookedSyscall) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "hooked_syscall"},
+		{Source: "tracker", Name: "hooked_syscall"},
 	}, nil
 }
 

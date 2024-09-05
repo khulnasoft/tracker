@@ -8,7 +8,7 @@ import (
 )
 
 // PrintAndExitIfHelp checks if any of the help flags are set and prints the relevant help message.
-// It is used only by the old binary (tracee-ebpf).
+// It is used only by the old binary (tracker-ebpf).
 func PrintAndExitIfHelp(ctx *cli.Context) {
 	keys := []string{
 		"cri",

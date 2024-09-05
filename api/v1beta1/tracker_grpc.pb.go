@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.23.4
-// source: api/v1beta1/tracee.proto
+// source: api/v1beta1/tracker.proto
 
 package v1beta1
 
@@ -29,29 +29,29 @@ type TrackerServiceClient interface {
 	GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error)
 }
 
-type traceeServiceClient struct {
+type trackerServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
 func NewTrackerServiceClient(cc grpc.ClientConnInterface) TrackerServiceClient {
-	return &traceeServiceClient{cc}
+	return &trackerServiceClient{cc}
 }
 
-func (c *traceeServiceClient) GetEventDefinitions(ctx context.Context, in *GetEventDefinitionsRequest, opts ...grpc.CallOption) (*GetEventDefinitionsResponse, error) {
+func (c *trackerServiceClient) GetEventDefinitions(ctx context.Context, in *GetEventDefinitionsRequest, opts ...grpc.CallOption) (*GetEventDefinitionsResponse, error) {
 	out := new(GetEventDefinitionsResponse)
-	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TrackerService/GetEventDefinitions", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/GetEventDefinitions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *traceeServiceClient) StreamEvents(ctx context.Context, in *StreamEventsRequest, opts ...grpc.CallOption) (TrackerService_StreamEventsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &TrackerService_ServiceDesc.Streams[0], "/tracee.v1beta1.TrackerService/StreamEvents", opts...)
+func (c *trackerServiceClient) StreamEvents(ctx context.Context, in *StreamEventsRequest, opts ...grpc.CallOption) (TrackerService_StreamEventsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TrackerService_ServiceDesc.Streams[0], "/tracker.v1beta1.TrackerService/StreamEvents", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &traceeServiceStreamEventsClient{stream}
+	x := &trackerServiceStreamEventsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -66,11 +66,11 @@ type TrackerService_StreamEventsClient interface {
 	grpc.ClientStream
 }
 
-type traceeServiceStreamEventsClient struct {
+type trackerServiceStreamEventsClient struct {
 	grpc.ClientStream
 }
 
-func (x *traceeServiceStreamEventsClient) Recv() (*StreamEventsResponse, error) {
+func (x *trackerServiceStreamEventsClient) Recv() (*StreamEventsResponse, error) {
 	m := new(StreamEventsResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -78,27 +78,27 @@ func (x *traceeServiceStreamEventsClient) Recv() (*StreamEventsResponse, error) 
 	return m, nil
 }
 
-func (c *traceeServiceClient) EnableEvent(ctx context.Context, in *EnableEventRequest, opts ...grpc.CallOption) (*EnableEventResponse, error) {
+func (c *trackerServiceClient) EnableEvent(ctx context.Context, in *EnableEventRequest, opts ...grpc.CallOption) (*EnableEventResponse, error) {
 	out := new(EnableEventResponse)
-	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TrackerService/EnableEvent", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/EnableEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *traceeServiceClient) DisableEvent(ctx context.Context, in *DisableEventRequest, opts ...grpc.CallOption) (*DisableEventResponse, error) {
+func (c *trackerServiceClient) DisableEvent(ctx context.Context, in *DisableEventRequest, opts ...grpc.CallOption) (*DisableEventResponse, error) {
 	out := new(DisableEventResponse)
-	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TrackerService/DisableEvent", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/DisableEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *traceeServiceClient) GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error) {
+func (c *trackerServiceClient) GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error) {
 	out := new(GetVersionResponse)
-	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TrackerService/GetVersion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/GetVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func _TrackerService_GetEventDefinitions_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracee.v1beta1.TrackerService/GetEventDefinitions",
+		FullMethod: "/tracker.v1beta1.TrackerService/GetEventDefinitions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TrackerServiceServer).GetEventDefinitions(ctx, req.(*GetEventDefinitionsRequest))
@@ -172,7 +172,7 @@ func _TrackerService_StreamEvents_Handler(srv interface{}, stream grpc.ServerStr
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(TrackerServiceServer).StreamEvents(m, &traceeServiceStreamEventsServer{stream})
+	return srv.(TrackerServiceServer).StreamEvents(m, &trackerServiceStreamEventsServer{stream})
 }
 
 type TrackerService_StreamEventsServer interface {
@@ -180,11 +180,11 @@ type TrackerService_StreamEventsServer interface {
 	grpc.ServerStream
 }
 
-type traceeServiceStreamEventsServer struct {
+type trackerServiceStreamEventsServer struct {
 	grpc.ServerStream
 }
 
-func (x *traceeServiceStreamEventsServer) Send(m *StreamEventsResponse) error {
+func (x *trackerServiceStreamEventsServer) Send(m *StreamEventsResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -198,7 +198,7 @@ func _TrackerService_EnableEvent_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracee.v1beta1.TrackerService/EnableEvent",
+		FullMethod: "/tracker.v1beta1.TrackerService/EnableEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TrackerServiceServer).EnableEvent(ctx, req.(*EnableEventRequest))
@@ -216,7 +216,7 @@ func _TrackerService_DisableEvent_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracee.v1beta1.TrackerService/DisableEvent",
+		FullMethod: "/tracker.v1beta1.TrackerService/DisableEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TrackerServiceServer).DisableEvent(ctx, req.(*DisableEventRequest))
@@ -234,7 +234,7 @@ func _TrackerService_GetVersion_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracee.v1beta1.TrackerService/GetVersion",
+		FullMethod: "/tracker.v1beta1.TrackerService/GetVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TrackerServiceServer).GetVersion(ctx, req.(*GetVersionRequest))
@@ -246,7 +246,7 @@ func _TrackerService_GetVersion_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TrackerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tracee.v1beta1.TrackerService",
+	ServiceName: "tracker.v1beta1.TrackerService",
 	HandlerType: (*TrackerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -273,5 +273,5 @@ var TrackerService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "api/v1beta1/tracee.proto",
+	Metadata: "api/v1beta1/tracker.proto",
 }

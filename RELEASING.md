@@ -5,15 +5,15 @@
    by accident).
 
    ```console
-   gh clone aquasec/tracee
+   gh clone aquasec/tracker
    ```
 
 1. Prepare release by creating the PR with the following changes
    1. Check if a libbpfgo update is needed (needs to be released first).
    1. Check if libbpf version is the same as libbpfgo's libbpf version.
    1. Update types module to latest.
-   1. Update the container image tag, with the one to be released, at: `deploy/kubernetes/tracee/tracee.yaml`
-   1. Update `home`, `version` and `appVersion` properties in [`deploy/helm/tracee/Chart.yaml`] -
+   1. Update the container image tag, with the one to be released, at: `deploy/kubernetes/tracker/tracker.yaml`
+   1. Update `home`, `version` and `appVersion` properties in [`deploy/helm/tracker/Chart.yaml`] -
       [example](https://github.com/khulnasoft/tracker/pull/2195)
    1. Create a PR with the tags bump
 
@@ -34,12 +34,12 @@
    ```
 
 1. Verify that the `release` workflow has built and published the artifacts.
-   1. Tracker binaries (tracee, tracee-ebpf, tracee-static, tracee-ebpf-static,
-      tracee-rules, signatures) in the form of a tar archive `tracee.<VERSION>.tar.gz`
+   1. Tracker binaries (tracker, tracker-ebpf, tracker-static, tracker-ebpf-static,
+      tracker-rules, signatures) in the form of a tar archive `tracker.<VERSION>.tar.gz`
    1. Source code zip and tar files
-   1. Docker images pushed to the aquasec/tracee repository.
+   1. Docker images pushed to the aquasec/tracker repository.
 1. Publish the Helm chart by triggering workflow [`.github/workflows/publish-helm.yaml`].
 
 [`.github/workflows/release.yaml`]: ./.github/workflows/release.yaml
 [`.github/workflows/publish-helm.yaml`]: ./.github/workflows/publish-helm.yaml
-[`deploy/helm/tracee/Chart.yaml`]: ./deploy/helm/tracee/Chart.yaml
+[`deploy/helm/tracker/Chart.yaml`]: ./deploy/helm/tracker/Chart.yaml

@@ -30,7 +30,7 @@ func Test_setupOutput(t *testing.T) {
 		expectedOutput string
 	}{
 		{
-			name: "happy path with tracee event and default output",
+			name: "happy path with tracker event and default output",
 			inputEvent: trace.Event{
 				ProcessName: "foobar.exe",
 				HostName:    "foobar.local",
@@ -46,7 +46,7 @@ Hostname: foobar.local
 `,
 		},
 		{
-			name: "happy path with tracee event and simple custom output template",
+			name: "happy path with tracker event and simple custom output template",
 			inputEvent: trace.Event{
 				ProcessName: "foobar.exe",
 				HostName:    "foobar.local",

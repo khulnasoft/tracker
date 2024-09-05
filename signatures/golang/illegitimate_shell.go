@@ -45,7 +45,7 @@ func (sig *IllegitimateShell) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *IllegitimateShell) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_bprm_check", Origin: "*"},
+		{Source: "tracker", Name: "security_bprm_check", Origin: "*"},
 	}, nil
 }
 

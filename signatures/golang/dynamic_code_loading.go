@@ -42,7 +42,7 @@ func (sig *DynamicCodeLoading) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *DynamicCodeLoading) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "mem_prot_alert", Origin: "*"},
+		{Source: "tracker", Name: "mem_prot_alert", Origin: "*"},
 	}, nil
 }
 

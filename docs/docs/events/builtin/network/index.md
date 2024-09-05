@@ -28,7 +28,7 @@ activity in common protocols.
 Trace all TCP packets sent to port 80 anywhere, from any process:
 
 ```console
-tracee --output json --events net_packet_tcp.data.dst_port=80
+tracker --output json --events net_packet_tcp.data.dst_port=80
 ```
 
 ```json
@@ -41,7 +41,7 @@ tracee --output json --events net_packet_tcp.data.dst_port=80
 Trace all DNS packets received ONLY from Google DNS server '8.8.8.8':
 
 ```console
-tracee --output json --events net_packet_dns.data.src=8.8.8.8
+tracker --output json --events net_packet_dns.data.src=8.8.8.8
 
 ```
 
@@ -115,7 +115,7 @@ func (sig *e2eDNS) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eDNS) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
     return []detect.SignatureEventSelector{
-        {Source: "tracee", Name: "net_packet_dns"},
+        {Source: "tracker", Name: "net_packet_dns"},
     }, nil
 }
 

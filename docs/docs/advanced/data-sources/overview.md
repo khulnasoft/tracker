@@ -41,7 +41,7 @@ stage as such:
 ```golang
 func (sig *mySig) Init(ctx detect.SignatureContext) error {
     ...
-    containersData, ok := ctx.GetDataSource("tracee", "containers")
+    containersData, ok := ctx.GetDataSource("tracker", "containers")
  if !ok {
   return fmt.Errorf("containers data source not registered")
  }
@@ -55,7 +55,7 @@ func (sig *mySig) Init(ctx detect.SignatureContext) error {
 As you can see, access to the data source has been requested using two keys: a
 namespace and a data source ID. Namespaces are employed to prevent name
 conflicts in the future when integrating custom data sources. All built-in data
-sources from Tracker will be available under the "tracee" namespace.
+sources from Tracker will be available under the "tracker" namespace.
 
 After verifying the data source's availability, it's suggested to include a
 version check against the data source. This approach ensures that outdated

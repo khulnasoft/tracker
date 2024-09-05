@@ -60,7 +60,7 @@ get information about which helper functions are used by the BPF program
 ## Example Use Case
 
 ```console
-./tracee -e bpf_attach
+./tracker -e bpf_attach
 ```
 
 ## Issues

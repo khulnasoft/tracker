@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/keepalive"
 
 	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
 )
@@ -34,7 +34,7 @@ func New(protocol, listenAddr string) (*Server, error) {
 	return &Server{listener: lis, protocol: protocol, listenAddr: listenAddr}, nil
 }
 
-func (s *Server) Start(ctx context.Context, t *tracee.Tracker, e *engine.Engine) {
+func (s *Server) Start(ctx context.Context, t *tracker.Tracker, e *engine.Engine) {
 	srvCtx, srvCancel := context.WithCancel(ctx)
 	defer srvCancel()
 
@@ -46,8 +46,8 @@ func (s *Server) Start(ctx context.Context, t *tracee.Tracker, e *engine.Engine)
 
 	grpcServer := grpc.NewServer(grpc.KeepaliveParams(keepaliveParams))
 	s.server = grpcServer
-	pb.RegisterTrackerServiceServer(grpcServer, &TrackerService{tracee: t})
-	pb.RegisterDiagnosticServiceServer(grpcServer, &DiagnosticService{tracee: t})
+	pb.RegisterTrackerServiceServer(grpcServer, &TrackerService{tracker: t})
+	pb.RegisterDiagnosticServiceServer(grpcServer, &DiagnosticService{tracker: t})
 	pb.RegisterDataSourceServiceServer(grpcServer, &DataSourceService{sigEngine: e})
 
 	go func() {

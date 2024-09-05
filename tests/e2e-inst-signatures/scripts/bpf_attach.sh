@@ -17,18 +17,18 @@ info() {
     echo "$@"
 }
 
-# run tracee with a single event (to trigger the other instance)
+# run tracker with a single event (to trigger the other instance)
 
-rm -f $TRACKER_TMP_DIR/tracee.pid
+rm -f $TRACKER_TMP_DIR/tracker.pid
 
-./dist/tracee \
+./dist/tracker \
     --install-path $TRACKER_TMP_DIR \
     --output none \
     --events security_file_open &
 
 pid=$?
 
-# wait tracee to be started + 5 seconds
+# wait tracker to be started + 5 seconds
 
 times=0
 timedout=0
@@ -37,8 +37,8 @@ while true; do
     times=$((times + 1))
     sleep 1
 
-    if [[ -f $TRACKER_TMP_DIR/tracee.pid ]]; then
-        info "bpf_attach test tracee instance started"
+    if [[ -f $TRACKER_TMP_DIR/tracker.pid ]]; then
+        info "bpf_attach test tracker instance started"
         break
     fi
 
@@ -49,7 +49,7 @@ while true; do
 done
 
 if [[ $timedout -eq 1 ]]; then
-    info_exit "could not start the bpf_attach test tracee instance"
+    info_exit "could not start the bpf_attach test tracker instance"
 fi
 
 sleep $TRACKER_RUN_TIMEOUT # stay alive for sometime (proforma)
@@ -57,10 +57,10 @@ sleep $TRACKER_RUN_TIMEOUT # stay alive for sometime (proforma)
 # try a clean exit
 kill -SIGINT "$pid"
 
-# wait tracee to shutdown (might take sometime, detaching is slow >= v6.x)
+# wait tracker to shutdown (might take sometime, detaching is slow >= v6.x)
 sleep $TRACKER_SHUTDOWN_TIMEOUT
 
-# make sure tracee is exited with SIGKILL
+# make sure tracker is exited with SIGKILL
 kill -SIGKILL "$pid" >/dev/null 2>&1
 
 exit 0

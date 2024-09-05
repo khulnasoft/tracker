@@ -1,5 +1,5 @@
 site_name: Tracker
-site_url: https://aquasecurity.github.io/tracee/
+site_url: https://aquasecurity.github.io/tracker/
 site_description: Runtime security and forensics using eBPF.
 docs_dir: docs/
 repo_name: GitHub
@@ -10,9 +10,9 @@ nav:
     - Home: index.md
     - Tutorials:
           - Overview: tutorials/overview.md
-          - Cosign - verify Tracker signature: tutorials/verify-tracee-signature.md
+          - Cosign - verify Tracker signature: tutorials/verify-tracker-signature.md
           - Access Tracker Metrics in Grafana and Prometheus: tutorials/deploy-grafana-dashboard.md
-          - Using Tracker Container Image with Vagrant on Mac: tutorials/tracee-vagrant.md
+          - Using Tracker Container Image with Vagrant on Mac: tutorials/tracker-vagrant.md
           - Working with Tracker's Policies on Kubernetes: tutorials/k8s-policies.md
           - Accessing Tracker Logs through Promtail and Loki: tutorials/promtail.md
           - Additional Resources: tutorials/additional-resources.md
@@ -619,7 +619,7 @@ nav:
 theme:
     name: material
     language: "en"
-    logo: images/tracee_logo_only.png
+    logo: images/tracker_logo_only.png
     features:
         - navigation.tabs
         - navigation.tabs.sticky

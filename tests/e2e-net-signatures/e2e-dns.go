@@ -48,7 +48,7 @@ func (sig *e2eDNS) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eDNS) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "net_packet_dns"},
+		{Source: "tracker", Name: "net_packet_dns"},
 	}, nil
 }
 

@@ -37,7 +37,7 @@ the capabilities that are gained during execve(2).
 
 ## Tracker and capabilities
 
-**tracee** tries to reduce its capabilities during its execution. The way it
+**tracker** tries to reduce its capabilities during its execution. The way it
 does is through different "execution protection rings":
 
 * Full:     All capabilities are effective (less secure)
@@ -56,7 +56,7 @@ capsh --print
 ## Bypass capabilities dropping feature
 
 !!! Attention
-    This session is important if you're facing errors related to **tracee**
+    This session is important if you're facing errors related to **tracker**
     dropping its capabilities OR any other permission related errors.
 
 Some environments **won't allow capabilities dropping** because of permission
@@ -65,21 +65,21 @@ issues (for example - **AWS Lambdas**).
 > It might be a result of seccomp filter for example, restricting syscalls
 > access.
 
-Failure in capabilities dropping will result tracee's exit with a matching
-error, to **guarantee that tracee isn't running with excess capabilities
+Failure in capabilities dropping will result tracker's exit with a matching
+error, to **guarantee that tracker isn't running with excess capabilities
 without the user agreement**.
 
-To **allow tracee to run with high capabilities**, and prevent those errors, the
+To **allow tracker to run with high capabilities**, and prevent those errors, the
 `--capabilities bypass=true` flag can be used. For the docker container users,
 the environment variable `CAPABILITIES_BYPASS=0|1` will have the same effect.
 
 !!! Note
-    Bypassing the capabilities drop will run **tracee** with all capabilities
+    Bypassing the capabilities drop will run **tracker** with all capabilities
     set as Effective and it is only recommended if you know what you are doing.
 
 ## Capabilities Errors (Missing or Too Permissive)
 
-During development, tracee might have bugs related to capabilities dropping
+During development, tracker might have bugs related to capabilities dropping
 feature: one event might not have its needed capabilities set as a dependency,
 for example, and you might still want to use that event.
 
@@ -90,6 +90,6 @@ is to rely on following 2 command line flags:
 - `--capabilities drop=cap_Y,capZ` (docker env variable CAPABILITIES_DROP)
 
 The first will add given capabilities to the Base ring, the ring that describe
-capabilities that will always be effective while tracee is running, so events
+capabilities that will always be effective while tracker is running, so events
 might be able to work. The last will remove the capabilities from that same
 ring.

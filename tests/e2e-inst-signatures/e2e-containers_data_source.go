@@ -25,7 +25,7 @@ var e2eContainersDataSourceMetadata = detect.SignatureMetadata{
 
 func (sig *e2eContainersDataSource) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	containersData, ok := ctx.GetDataSource("tracee", "containers")
+	containersData, ok := ctx.GetDataSource("tracker", "containers")
 	if !ok {
 		return fmt.Errorf("containers data source not registered")
 	}
@@ -42,7 +42,7 @@ func (sig *e2eContainersDataSource) GetMetadata() (detect.SignatureMetadata, err
 
 func (sig *e2eContainersDataSource) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "sched_process_exec", Origin: "container"},
+		{Source: "tracker", Name: "sched_process_exec", Origin: "container"},
 	}, nil
 }
 

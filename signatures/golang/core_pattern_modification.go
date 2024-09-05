@@ -43,7 +43,7 @@ func (sig *CorePatternModification) GetMetadata() (detect.SignatureMetadata, err
 
 func (sig *CorePatternModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "container"},
+		{Source: "tracker", Name: "security_file_open", Origin: "container"},
 	}, nil
 }
 

@@ -42,8 +42,8 @@ func (sig *StdioOverSocket) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *StdioOverSocket) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_socket_connect", Origin: "*"},
-		{Source: "tracee", Name: "socket_dup", Origin: "*"},
+		{Source: "tracker", Name: "security_socket_connect", Origin: "*"},
+		{Source: "tracker", Name: "socket_dup", Origin: "*"},
 	}, nil
 }
 

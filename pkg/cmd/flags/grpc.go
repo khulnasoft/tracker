@@ -16,7 +16,7 @@ func PrepareGRPCServer(listenAddr string) (*grpc.Server, error) {
 	addr := strings.SplitN(listenAddr, ":", 2)
 
 	if addr[0] != "tcp" && addr[0] != "unix" {
-		return nil, errfmt.Errorf("grpc supported protocols are tcp or unix. eg: tcp:4466, unix:/tmp/tracee.sock")
+		return nil, errfmt.Errorf("grpc supported protocols are tcp or unix. eg: tcp:4466, unix:/tmp/tracker.sock")
 	}
 
 	if len(addr[1]) == 0 {

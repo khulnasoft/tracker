@@ -1,7 +1,7 @@
-package tracee.TRC_7
+package tracker.TRC_7
 
 test_match_1 {
-	tracee_match with input as {
+	tracker_match with input as {
 		"eventName": "execve",
 		"argsNum": 2,
 		"args": [
@@ -18,7 +18,7 @@ test_match_1 {
 }
 
 test_match_2 {
-	tracee_match with input as {
+	tracker_match with input as {
 		"eventName": "security_file_open",
 		"argsNum": 4,
 		"args": [
@@ -43,7 +43,7 @@ test_match_2 {
 }
 
 test_match_no_ld_preload {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"eventName": "execve",
 		"argsNum": 2,
 		"args": [
@@ -60,7 +60,7 @@ test_match_no_ld_preload {
 }
 
 test_match_wrong_path {
-	not tracee_match with input as {
+	not tracker_match with input as {
 		"eventName": "security_file_open",
 		"argsNum": 4,
 		"args": [

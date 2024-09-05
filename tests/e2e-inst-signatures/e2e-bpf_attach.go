@@ -33,7 +33,7 @@ func (sig *e2eBpfAttach) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eBpfAttach) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "bpf_attach"},
+		{Source: "tracker", Name: "bpf_attach"},
 	}, nil
 }
 

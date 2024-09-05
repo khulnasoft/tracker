@@ -72,7 +72,7 @@ fields`.
 Example:
 
 ```console
-$ tracee --output json --events net_packet_icmp
+$ tracker --output json --events net_packet_icmp
 ```
 
 ```json

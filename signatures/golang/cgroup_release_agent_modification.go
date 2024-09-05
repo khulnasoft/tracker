@@ -43,8 +43,8 @@ func (sig *CgroupReleaseAgentModification) GetMetadata() (detect.SignatureMetada
 
 func (sig *CgroupReleaseAgentModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "container"},
-		{Source: "tracee", Name: "security_inode_rename", Origin: "container"},
+		{Source: "tracker", Name: "security_file_open", Origin: "container"},
+		{Source: "tracker", Name: "security_inode_rename", Origin: "container"},
 	}, nil
 }
 

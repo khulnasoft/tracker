@@ -7,11 +7,11 @@ date: 2024/06
 
 ## NAME
 
-tracee **\-\-scope** - Select the scope for tracing events
+tracker **\-\-scope** - Select the scope for tracing events
 
 ## SYNOPSIS
 
-tracee **\-\-scope** [<[uid|pid][=|!=|<|\>|<=|\>=]value1(,value2...)\> | <[mntns|pidns|tree][=|!=]value1(,value2...)\> | <[uts|comm|container|[executable|exec|binary|bin]][=|!=]value1(,value2...)\>] | <not-container\> | <container[=|!=]value\> | <[container|pid]=new\> | <follow\>]  ...
+tracker **\-\-scope** [<[uid|pid][=|!=|<|\>|<=|\>=]value1(,value2...)\> | <[mntns|pidns|tree][=|!=]value1(,value2...)\> | <[uts|comm|container|[executable|exec|binary|bin]][=|!=]value1(,value2...)\>] | <not-container\> | <container[=|!=]value\> | <[container|pid]=new\> | <follow\>]  ...
 
 ## DESCRIPTION
 

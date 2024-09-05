@@ -25,7 +25,7 @@ Possible options:
 [artifact:]mem                                capture memory regions that had write+execute (w+x) protection, and then changed to execute (x) only.
 [artifact:]network                            capture network traffic. Only TCP/UDP/ICMP protocols are currently supported.
 
-dir:/path/to/dir                              path where tracee will save produced artifacts. the artifact will be saved into an 'out' subdirectory. (default: /tmp/tracee).
+dir:/path/to/dir                              path where tracker will save produced artifacts. the artifact will be saved into an 'out' subdirectory. (default: /tmp/tracker).
 clear-dir                                     clear the captured artifacts output dir before starting (default: false).
 
 Network:
@@ -91,7 +91,7 @@ Network notes worth mentioning:
 func PrepareCapture(captureSlice []string, newBinary bool) (config.CaptureConfig, error) {
 	capture := config.CaptureConfig{}
 
-	outDir := "/tmp/tracee"
+	outDir := "/tmp/tracker"
 	clearDir := false
 
 	for i := range captureSlice {

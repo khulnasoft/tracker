@@ -48,7 +48,7 @@ func (sig *K8SServiceAccountToken) GetMetadata() (detect.SignatureMetadata, erro
 
 func (sig *K8SServiceAccountToken) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "security_file_open", Origin: "container"},
+		{Source: "tracker", Name: "security_file_open", Origin: "container"},
 	}, nil
 }
 

@@ -37,7 +37,7 @@ arguments showing important data about the obtained response.
 Example:
 
 ```console
-$ tracee --output json --events net_packet_dns_response
+$ tracker --output json --events net_packet_dns_response
 ```
 
 ```json

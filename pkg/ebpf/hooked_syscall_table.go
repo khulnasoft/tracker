@@ -20,7 +20,7 @@ import (
 var expectedSyscallTableInit = false
 
 // hookedSyscallTableRoutine the main routine that checks if there's a hooked syscall in the syscall table.
-// It runs on tracee's startup and from time to time.
+// It runs on tracker's startup and from time to time.
 func (t *Tracker) hookedSyscallTableRoutine(ctx gocontext.Context) {
 	logger.Debugw("Starting hookedSyscallTable goroutine")
 	defer logger.Debugw("Stopped hookedSyscallTable goroutine")

@@ -40,7 +40,7 @@ func (sig *FilelessExecution) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *FilelessExecution) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "sched_process_exec", Origin: "*"},
+		{Source: "tracker", Name: "sched_process_exec", Origin: "*"},
 	}, nil
 }
 

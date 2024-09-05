@@ -71,7 +71,7 @@ func (ctx DNSDatasource) Version() uint {
 }
 
 func (ctx DNSDatasource) Namespace() string {
-	return "tracee"
+	return "tracker"
 }
 
 func (ctx DNSDatasource) ID() string {

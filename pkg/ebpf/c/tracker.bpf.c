@@ -17,7 +17,7 @@
 #include <maps.h>
 #include <types.h>
 #include <capture_filtering.h>
-#include <tracee.h>
+#include <tracker.h>
 
 #include <common/arch.h>
 #include <common/arguments.h>
@@ -600,11 +600,11 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
 
     ret = bpf_map_update_elem(&task_info_map, &child_tid, p.task_info, BPF_ANY);
     if (ret < 0)
-        tracee_log(ctx, BPF_LOG_LVL_DEBUG, BPF_LOG_ID_MAP_UPDATE_ELEM, ret);
+        tracker_log(ctx, BPF_LOG_LVL_DEBUG, BPF_LOG_ID_MAP_UPDATE_ELEM, ret);
     task_info_t *task = bpf_map_lookup_elem(&task_info_map, &child_tid);
     if (unlikely(task == NULL)) {
         // this should never happen - we just updated the map with this key
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
         return 0;
     }
 
@@ -620,7 +620,7 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
         proc_info_t *p_proc_info = bpf_map_lookup_elem(&proc_info_map, &parent_pid);
         if (unlikely(p_proc_info == NULL)) {
             // parent should exist in proc_info_map (init_program_data sets it)
-            tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+            tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
             return 0;
         }
 
@@ -628,12 +628,12 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
         bpf_map_update_elem(&proc_info_map, &child_pid, p_proc_info, BPF_NOEXIST);
         c_proc_info = bpf_map_lookup_elem(&proc_info_map, &child_pid);
         if (unlikely(c_proc_info == NULL)) {
-            tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+            tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
             return 0;
         }
 
         c_proc_info->follow_in_scopes = get_scopes_to_follow(&p); // follow task for matched scopes
-        c_proc_info->new_proc = true; // started after tracee (new_pid filter)
+        c_proc_info->new_proc = true; // started after tracker (new_pid filter)
     }
 
     // Update the process tree map (filter related) if the parent has an entry.
@@ -652,7 +652,7 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
             if (tgid_filtered) {
                 ret = bpf_map_update_elem(inner_proc_tree_map, &child_pid, tgid_filtered, BPF_ANY);
                 if (ret < 0)
-                    tracee_log(ctx, BPF_LOG_LVL_DEBUG, BPF_LOG_ID_MAP_UPDATE_ELEM, ret);
+                    tracker_log(ctx, BPF_LOG_LVL_DEBUG, BPF_LOG_ID_MAP_UPDATE_ELEM, ret);
             }
         }
     }
@@ -1089,7 +1089,7 @@ statfunc bool kern_ver_below_min_lkm(struct pt_regs *ctx)
 
     goto below_threshold; // For compiler - avoid "unused label" warning
 below_threshold:
-    tracee_log(ctx,
+    tracker_log(ctx,
                BPF_LOG_LVL_ERROR,
                BPF_LOG_ID_UNSPEC,
                -1); // notify the user that the event logic isn't loaded even though it's requested
@@ -1124,8 +1124,8 @@ int uprobe_lkm_seeker_submitter(struct pt_regs *ctx)
     p.event->context.syscall = NO_SYSCALL;
 
     u32 trigger_pid = bpf_get_current_pid_tgid() >> 32;
-    // Uprobe was triggered from other tracee instance
-    if (p.config->tracee_pid != trigger_pid)
+    // Uprobe was triggered from other tracker instance
+    if (p.config->tracker_pid != trigger_pid)
         return 0;
 
     u32 flags =
@@ -1137,9 +1137,9 @@ int uprobe_lkm_seeker_submitter(struct pt_regs *ctx)
 }
 
 // There are 2 types of scans:
-// - Scan of modules that were loaded prior tracee started: this is only done once at the start of
-// tracee
-// - Scan of modules that were loaded after tracee started: runs periodically and on each new module
+// - Scan of modules that were loaded prior tracker started: this is only done once at the start of
+// tracker
+// - Scan of modules that were loaded after tracker started: runs periodically and on each new module
 // insertion
 SEC("uprobe/lkm_seeker")
 int uprobe_lkm_seeker(struct pt_regs *ctx)
@@ -1154,20 +1154,20 @@ int uprobe_lkm_seeker(struct pt_regs *ctx)
     // Uprobes are not triggered by syscalls, so we need to override the false value.
     p.event->context.syscall = NO_SYSCALL;
 
-    // uprobe was triggered from other tracee instance
-    if (p.config->tracee_pid != p.task_info->context.pid &&
-        p.config->tracee_pid != p.task_info->context.host_pid) {
+    // uprobe was triggered from other tracker instance
+    if (p.config->tracker_pid != p.task_info->context.pid &&
+        p.config->tracker_pid != p.task_info->context.host_pid) {
         return 0;
     }
 
     start_scan_time_init_shown_mods = get_current_time_in_ns();
     int ret = init_shown_modules();
     if (ret != 0) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
         return 1;
     }
 
-    // On first run, do a scan only relevant for modules that were inserted prior tracee started.
+    // On first run, do a scan only relevant for modules that were inserted prior tracker started.
     if (unlikely(!hidden_old_mod_scan_done)) {
         hidden_old_mod_scan_done = true;
         bpf_tail_call(ctx, &prog_array, TAIL_HIDDEN_KERNEL_MODULE_KSET);
@@ -1193,7 +1193,7 @@ int lkm_seeker_kset_tail(struct pt_regs *ctx)
 
     int ret = find_modules_from_module_kset_list(&p);
     if (ret < 0) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
         u32 flags = HISTORY_SCAN_FINISHED;
         lkm_seeker_send_to_userspace(
             (struct module *) HISTORY_SCAN_FAILURE, &flags, &p); // Report failure of history scan
@@ -1223,7 +1223,7 @@ int lkm_seeker_mod_tree_tail(struct pt_regs *ctx)
     // CONFIG_MODULES_TREE_LOOKUP=y
     int ret = find_modules_from_mod_tree(&p);
     if (ret < 0) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
         lkm_seeker_send_to_userspace(
             (struct module *) HISTORY_SCAN_FAILURE, &flags, &p); // Report failure of history scan
         return -1;
@@ -1251,7 +1251,7 @@ int lkm_seeker_proc_tail(struct pt_regs *ctx)
 
     int ret = check_is_proc_modules_hooked(&p);
     if (ret < 0) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
         return -1;
     }
 
@@ -1276,7 +1276,7 @@ int lkm_seeker_new_mod_only_tail(struct pt_regs *ctx)
 
     u64 start_scan_time = check_new_mods_only(&p);
     if (start_scan_time == 0) {
-        tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, HID_MOD_UNCOMPLETED_ITERATIONS);
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, HID_MOD_UNCOMPLETED_ITERATIONS);
         return -1;
     }
 
@@ -1298,7 +1298,7 @@ int tracepoint__sched__sched_process_exec(struct bpf_raw_tracepoint_args *ctx)
     if (!init_program_data(&p, ctx, SCHED_PROCESS_EXEC))
         return 0;
 
-    // Perform checks below before evaluate_scope_filters(), so tracee can filter by newly created containers
+    // Perform checks below before evaluate_scope_filters(), so tracker can filter by newly created containers
     // or processes. Assume that a new container, or pod, has started when a process of a newly
     // created cgroup and mount ns executed a binary.
 
@@ -1325,7 +1325,7 @@ int tracepoint__sched__sched_process_exec(struct bpf_raw_tracepoint_args *ctx)
 
     proc_info_t *proc_info = p.proc_info;
     proc_info->follow_in_scopes = get_scopes_to_follow(&p); // follow task for matched scopes
-    proc_info->new_proc = true; // task has started after tracee started running
+    proc_info->new_proc = true; // task has started after tracker started running
 
     // Extract the binary name to be used in evaluate_scope_filters
     __builtin_memset(proc_info->binary.path, 0, MAX_BIN_PATH_SIZE);
@@ -1663,9 +1663,9 @@ int uprobe_syscall_table_check(struct pt_regs *ctx)
     if (!init_program_data(&p, ctx, SYSCALL_TABLE_CHECK))
         return 0;
 
-    // uprobe was triggered from other tracee instance
-    if (p.config->tracee_pid != p.task_info->context.pid &&
-        p.config->tracee_pid != p.task_info->context.host_pid)
+    // uprobe was triggered from other tracker instance
+    if (p.config->tracker_pid != p.task_info->context.pid &&
+        p.config->tracker_pid != p.task_info->context.host_pid)
         return 0;
 
     // Uprobes are not triggered by syscalls, so we need to override the false value.
@@ -1706,9 +1706,9 @@ int uprobe_seq_ops_trigger(struct pt_regs *ctx)
     // Uprobes are not triggered by syscalls, so we need to override the false value.
     p.event->context.syscall = NO_SYSCALL;
 
-    // uprobe was triggered from other tracee instance
-    if (p.config->tracee_pid != p.task_info->context.pid &&
-        p.config->tracee_pid != p.task_info->context.host_pid)
+    // uprobe was triggered from other tracker instance
+    if (p.config->tracker_pid != p.task_info->context.pid &&
+        p.config->tracker_pid != p.task_info->context.host_pid)
         return 0;
 
     void *stext_addr = get_stext_addr();
@@ -1786,9 +1786,9 @@ int uprobe_mem_dump_trigger(struct pt_regs *ctx)
     // Uprobes are not triggered by syscalls, so we need to override the false value.
     p.event->context.syscall = NO_SYSCALL;
 
-    // uprobe was triggered from other tracee instance
-    if (p.config->tracee_pid != p.task_info->context.pid &&
-        p.config->tracee_pid != p.task_info->context.host_pid)
+    // uprobe was triggered from other tracker instance
+    if (p.config->tracker_pid != p.task_info->context.pid &&
+        p.config->tracker_pid != p.task_info->context.host_pid)
         return 0;
 
     if (size <= 0)
@@ -1797,7 +1797,7 @@ int uprobe_mem_dump_trigger(struct pt_regs *ctx)
     int ret = save_bytes_to_buf(&p.event->args_buf, (void *) address, size & MAX_MEM_DUMP_SIZE, 0);
     // return in case of failed pointer read
     if (ret == 0) {
-        tracee_log(ctx, BPF_LOG_LVL_ERROR, BPF_LOG_ID_MEM_READ, ret);
+        tracker_log(ctx, BPF_LOG_LVL_ERROR, BPF_LOG_ID_MEM_READ, ret);
         return 0;
     }
     save_to_submit_buf(&p.event->args_buf, (void *) &address, sizeof(void *), 1);
@@ -5671,7 +5671,7 @@ int BPF_KPROBE(trace_security_sk_clone)
     // There is a problem though, the "sock" does not contain a valid "socket"
     // associated to it yet (sk_socket is NULL as this is running with SoftIRQ
     // context). Without a "socket" we also don't have a "file" associated to
-    // it, nor an inode associated to that file. This is the way tracee links
+    // it, nor an inode associated to that file. This is the way tracker links
     // a network flow (packets) to a task.
     //
     // The only way we can relate this new "sock", just cloned by a kernel
@@ -6554,7 +6554,7 @@ CGROUP_SKB_HANDLE_FUNCTION(proto_tcp_http)
 // Control Plane Programs
 //
 // Control Plane programs are almost duplicate programs of select events which we send as direct
-// signals to tracee in a separate buffer. This is done to mitigate the consenquences of losing
+// signals to tracker in a separate buffer. This is done to mitigate the consenquences of losing
 // these events in the main perf buffer.
 //
 
@@ -6781,7 +6781,7 @@ int sched_process_exec_signal(struct bpf_raw_tracepoint_args *ctx)
     if (proc_info == NULL) {
         proc_info = init_proc_info(host_pid, 0);
         if (unlikely(proc_info == NULL)) {
-            tracee_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
+            tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_MAP_LOOKUP_ELEM, 0);
             return 0;
         }
     }

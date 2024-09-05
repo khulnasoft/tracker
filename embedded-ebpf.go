@@ -1,13 +1,13 @@
 //go:build ebpf
 // +build ebpf
 
-package tracee
+package tracker
 
 import (
 	"embed"
 )
 
-//go:embed "dist/tracee.bpf.o"
+//go:embed "dist/tracker.bpf.o"
 //go:embed "dist/btfhub/*"
 
 var BPFBundleInjected embed.FS

@@ -2,8 +2,8 @@
 # On cron schedule or on demand: Release snapshot
 #
 # This workflow ensures that the main branch is ready for release and that all
-# build configuration files are valid. Also scans tracee container images for
-# vulnerabilities, and publishes to DockerHub as aquasec/tracee:dev.
+# build configuration files are valid. Also scans tracker container images for
+# vulnerabilities, and publishes to DockerHub as aquasec/tracker:dev.
 #
 name: Release Snapshot
 on:
@@ -42,18 +42,18 @@ jobs:
       - name: Scan Docker Image for Vulnerabilities
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "tracee:dev"
+          image-ref: "tracker:dev"
           severity: "CRITICAL"
           exit-code: "1"
       - name: Publish to docker.io registry
         run: |
-          docker image tag tracee:dev aquasec/tracee:x86_64-dev
-          docker image push aquasec/tracee:x86_64-dev
+          docker image tag tracker:dev aquasec/tracker:x86_64-dev
+          docker image push aquasec/tracker:x86_64-dev
         shell: bash
       # Disabled to avoid generating too many sigstore cosign signatures
       # - name: Sign Docker image
       #   run: |
-      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracee:x86_64-dev)
+      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracker:x86_64-dev)
       #   shell: bash
   release-snapshot-aarch64:
     name: Release Snapshot (aarch64)
@@ -85,18 +85,18 @@ jobs:
       - name: Scan Docker Image for Vulnerabilities
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "tracee:dev"
+          image-ref: "tracker:dev"
           severity: "CRITICAL"
           exit-code: "1"
       - name: Publish to docker.io registry
         run: |
-          docker image tag tracee:dev aquasec/tracee:aarch64-dev
-          docker image push aquasec/tracee:aarch64-dev
+          docker image tag tracker:dev aquasec/tracker:aarch64-dev
+          docker image push aquasec/tracker:aarch64-dev
         shell: bash
       # Disabled to avoid generating too many sigstore cosign signatures
       # - name: Sign Docker image
       #   run: |
-      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracee:aarch64-dev)
+      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracker:aarch64-dev)
       #   shell: bash
   release-snapshot:
     name: Release Snapshot
@@ -124,19 +124,19 @@ jobs:
       - name: Publish to docker.io registry
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          docker manifest create aquasec/tracee:dev \
-            aquasec/tracee:x86_64-dev \
-            aquasec/tracee:aarch64-dev
-          docker manifest push aquasec/tracee:dev
+          docker manifest create aquasec/tracker:dev \
+            aquasec/tracker:x86_64-dev \
+            aquasec/tracker:aarch64-dev
+          docker manifest push aquasec/tracker:dev
 
           timestamp=$(date +%Y%m%d-%H%M%S%Z)
-          docker manifest create aquasec/tracee:dev-$timestamp \
-            aquasec/tracee:x86_64-dev \
-            aquasec/tracee:aarch64-dev
-          docker manifest push aquasec/tracee:dev-$timestamp
+          docker manifest create aquasec/tracker:dev-$timestamp \
+            aquasec/tracker:x86_64-dev \
+            aquasec/tracker:aarch64-dev
+          docker manifest push aquasec/tracker:dev-$timestamp
         shell: bash
       # Disabled to avoid generating too many sigstore cosign signatures
       # - name: Sign Docker image
       #   run: |
-      #     cosign sign -y aquasec/tracee:dev
+      #     cosign sign -y aquasec/tracker:dev
       #   shell: bash

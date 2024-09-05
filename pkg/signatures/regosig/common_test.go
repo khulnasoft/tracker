@@ -1,7 +1,7 @@
 package regosig_test
 
 const (
-	testRegoCodeBoolean = `package tracee.TRC_BOOL
+	testRegoCodeBoolean = `package tracker.TRC_BOOL
 
 __rego_metadoc__ := {
 	"id": "TRC-BOOL",
@@ -16,18 +16,18 @@ __rego_metadoc__ := {
 	}
 }
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := {
-		"source": "tracee",
+		"source": "tracker",
 		"name": "execve"
 	}
 }
 
-tracee_match {
+tracker_match {
 	endswith(input.args[0].value, "yo")
 }
 `
-	testRegoCodeObject = `package tracee.TRC_OBJECT
+	testRegoCodeObject = `package tracker.TRC_OBJECT
 
 __rego_metadoc__ := {
 	"id": "TRC-OBJECT",
@@ -42,14 +42,14 @@ __rego_metadoc__ := {
 	}
 }
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := {
-		"source": "tracee",
+		"source": "tracker",
 		"name": "ptrace"
 	}
 }
 
-tracee_match = res {
+tracker_match = res {
 	endswith(input.args[0].value, "yo")
 	input.args[1].value == 1337
 	res := {
@@ -59,7 +59,7 @@ tracee_match = res {
 	}
 }
 `
-	testRegoCodeInvalidObject = `package tracee.TRC_INVALID
+	testRegoCodeInvalidObject = `package tracker.TRC_INVALID
 __rego_metadoc__ := {
 	"id": "TRC-INVALID",
 	"version": "0.3.0",
@@ -73,14 +73,14 @@ __rego_metadoc__ := {
 	}
 }
 
-tracee_selected_events[eventSelector] {
+tracker_selected_events[eventSelector] {
 	eventSelector := {
-		"source": "tracee",
+		"source": "tracker",
 		"name": "ptrace"
 	}
 }
 
-tracee_match = res {
+tracker_match = res {
 	endswith(input.args[0].value, "invalid")
 	res := "foo bar string"
 }

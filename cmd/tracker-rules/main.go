@@ -29,7 +29,7 @@ const (
 
 func main() {
 	app := &cli.App{
-		Name:  "tracee-rules",
+		Name:  "tracker-rules",
 		Usage: "A rule engine for Runtime Security",
 		Action: func(c *cli.Context) error {
 			// Logger Setup
@@ -118,7 +118,7 @@ func main() {
 
 			var inputs engine.EventSources
 
-			opts, err := parseTrackerInputOptions(c.StringSlice("input-tracee"))
+			opts, err := parseTrackerInputOptions(c.StringSlice("input-tracker"))
 			if err == errHelp {
 				printHelp()
 				return nil
@@ -210,8 +210,8 @@ func main() {
 				Usage: "content type of the template in use. Recommended if using --webhook-template",
 			},
 			&cli.StringSliceFlag{
-				Name:  "input-tracee",
-				Usage: "configure tracee-ebpf as input source. see '--input-tracee help' for more info",
+				Name:  "input-tracker",
+				Usage: "configure tracker-ebpf as input source. see '--input-tracker help' for more info",
 			},
 			&cli.StringFlag{
 				Name:  "output-template",
@@ -263,7 +263,7 @@ func main() {
 			&cli.BoolFlag{
 				Name:  "allcaps",
 				Value: false,
-				Usage: "allow tracee-rules to run with all capabilities (use with caution)",
+				Usage: "allow tracker-rules to run with all capabilities (use with caution)",
 			},
 		},
 	}

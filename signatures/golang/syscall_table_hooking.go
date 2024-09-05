@@ -39,7 +39,7 @@ func (sig *SyscallTableHooking) GetMetadata() (detect.SignatureMetadata, error) 
 
 func (sig *SyscallTableHooking) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracee", Name: "hooked_syscall", Origin: "*"},
+		{Source: "tracker", Name: "hooked_syscall", Origin: "*"},
 	}, nil
 }
 

@@ -117,8 +117,8 @@ func GenerateInterface(event *trace.Event, t PcapType) (pcapgo.NgInterface, erro
 	desc := string(descBytes)
 
 	return pcapgo.NgInterface{ // https://www.tcpdump.org/linktypes.html
-		Name:        "tracee",
-		Comment:     "tracee packet capture",
+		Name:        "tracker",
+		Comment:     "tracker packet capture",
 		Description: desc,
 		LinkType:    layers.LinkTypeNull, // layer2 is 4 bytes (or 32bit)
 		SnapLength:  uint32(math.MaxUint32),

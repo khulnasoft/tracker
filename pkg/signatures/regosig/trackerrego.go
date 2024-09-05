@@ -19,8 +19,8 @@ import (
 // each struct instance is associated with a rego file
 // the rego file declares the following signatures:
 // __rego_metadoc__: a *document* rule that defines the rule's metadata (see GetMetadata())
-// tracee_selected_events: a *set* rule that defines the event selectors (see GetSelectedEvent())
-// tracee_match: a *boolean*, or a *document* rule that defines the logic of the signature (see OnEvent())
+// tracker_selected_events: a *set* rule that defines the event selectors (see GetSelectedEvent())
+// tracker_match: a *boolean*, or a *document* rule that defines the logic of the signature (see OnEvent())
 type RegoSignature struct {
 	cb             detect.SignatureHandler
 	compiledRego   *ast.Compiler
@@ -29,8 +29,8 @@ type RegoSignature struct {
 	selectedEvents []detect.SignatureEventSelector
 }
 
-const queryMatch string = "data.%s.tracee_match"
-const querySelectedEvents string = "data.%s.tracee_selected_events"
+const queryMatch string = "data.%s.tracker_match"
+const querySelectedEvents string = "data.%s.tracker_selected_events"
 const queryMetadata string = "data.%s.__rego_metadoc__"
 const packageNameRegex string = `package\s.*`
 
@@ -50,7 +50,7 @@ func NewRegoSignature(target string, partialEval bool, regoCodes ...string) (det
 			return nil, fmt.Errorf("invalid rego code received")
 		}
 		regoModuleName = splittedName[1]
-		if !strings.Contains(regoCode, "package tracee.helpers") {
+		if !strings.Contains(regoCode, "package tracker.helpers") {
 			pkgName = regoModuleName
 		}
 		regoMap[regoModuleName] = regoCode
@@ -130,7 +130,7 @@ func (sig *RegoSignature) getMetadata(pkgName string) (detect.SignatureMetadata,
 	return res, nil
 }
 
-// GetSelectedEvents implements the Signature interface by evaluating the Rego policy's tracee_selected_events rule
+// GetSelectedEvents implements the Signature interface by evaluating the Rego policy's tracker_selected_events rule
 // this is a *set* rule that defines the rule's SelectedEvents
 func (sig *RegoSignature) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return sig.selectedEvents, nil
@@ -153,7 +153,7 @@ func (sig *RegoSignature) getSelectedEvents(pkgName string) ([]detect.SignatureE
 	return res, nil
 }
 
-// OnEvent implements the Signature interface by evaluating the Rego policy's tracee_match rule
+// OnEvent implements the Signature interface by evaluating the Rego policy's tracker_match rule
 // this is a *boolean* or a *document* rule that defines the logic of the signature
 // if bool is "returned", a true evaluation will generate a Finding with no data
 // if document is "returned", any non-empty evaluation will generate a Finding with the document as the Finding's "Data"

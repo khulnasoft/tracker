@@ -1,7 +1,7 @@
-package tracee.TRC_15
+package tracker.TRC_15
 
 test_match_diamorphine_rootkit_output {
-	tracee_match with input as {
+	tracker_match with input as {
 		"eventName": "hooked_syscall",
 		"argsNum": 1,
 		"args": [{

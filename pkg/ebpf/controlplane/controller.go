@@ -11,14 +11,14 @@ import (
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/proctree"
-	traceetime "github.com/khulnasoft/tracker/pkg/time"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 // TODO: With the introduction of signal events, the control plane can now have a generic argument
 // parsing, just like the regular pipeline. So all arguments can be parsed before the handlers are
 // called.
 
-const pollTimeout int = 300 // from tracee.go (move to a consts package?)
+const pollTimeout int = 300 // from tracker.go (move to a consts package?)
 
 type Controller struct {
 	ctx            context.Context
@@ -29,7 +29,7 @@ type Controller struct {
 	cgroupManager  *containers.Containers
 	processTree    *proctree.ProcessTree
 	enrichDisabled bool
-	timeNormalizer traceetime.TimeNormalizer
+	timeNormalizer trackertime.TimeNormalizer
 }
 
 // NewController creates a new controller.
@@ -38,7 +38,7 @@ func NewController(
 	cgroupManager *containers.Containers,
 	enrichDisabled bool,
 	procTree *proctree.ProcessTree,
-	timeNormalizer traceetime.TimeNormalizer,
+	timeNormalizer trackertime.TimeNormalizer,
 ) (*Controller, error) {
 	var err error
 
@@ -125,13 +125,13 @@ func (ctrl *Controller) debug(enable bool) {
 	// 1. To enable the process tree "display" (this function);
 	// 2. To bpf_printk the "hash" and "start_time" at sched_process_exit_signal() in eBPF code;
 	// 3. To start a simple multi-threaded application (with processes and threads): https://gist.github.com/rafaeldtinoco/4b0a13213283ad636d5cc33be053a817
-	// 4. To start tracee.
+	// 4. To start tracker.
 	//
 	// Wait for the tree to be printed by proctree_output.go code (with "main" program on it, and
 	// its threads), exit "main program" and check "bpf tracelog". You will be able to compare the
 	// hash from the exit hook with the process tree one (and check different values).
 	//
-	// You may also execute "main" program after tracee has started, with debug enabled, and check
+	// You may also execute "main" program after tracker has started, with debug enabled, and check
 	// if the process tree shows it, and its threads, correctly.
 	//
 	// NOTE: Of course there are other ways of debugging, this one is the fastest and simpler

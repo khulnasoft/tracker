@@ -10,7 +10,7 @@ TRACKER_STARTUP_TIMEOUT=30
 TRACKER_SHUTDOWN_TIMEOUT=30
 TRACKER_RUN_TIMEOUT=60
 SCRIPT_TMP_DIR=/tmp
-TRACKER_TMP_DIR=/tmp/tracee
+TRACKER_TMP_DIR=/tmp/tracker
 
 # Default test to run if no other is given
 TESTS=${INSTTESTS:=VFS_WRITE}
@@ -39,7 +39,7 @@ fi
 . /etc/os-release
 
 if [[ ! -d ./signatures ]]; then
-    error_exit "need to be in tracee root directory"
+    error_exit "need to be in tracker root directory"
 fi
 
 rm -rf ${TRACKER_TMP_DIR:?}/* || error_exit "could not delete $TRACKER_TMP_DIR"
@@ -73,10 +73,10 @@ make -j"$(nproc)" all
 make e2e-inst-signatures
 set +e
 
-# Check if tracee was built correctly
+# Check if tracker was built correctly
 
-if [[ ! -x ./dist/tracee ]]; then
-    error_exit "could not find tracee executable"
+if [[ ! -x ./dist/tracker ]]; then
+    error_exit "could not find tracker executable"
 fi
 
 anyerror=""
@@ -89,7 +89,7 @@ for TEST in $TESTS; do
     info "= TEST: $TEST =============================================="
     info
 
-    # Some tests might need special setup (like running before tracee)
+    # Some tests might need special setup (like running before tracker)
 
     case $TEST in
     HOOKED_SYSCALL)
@@ -124,12 +124,12 @@ for TEST in $TESTS; do
         ;;
     esac
 
-    # Run tracee
+    # Run tracker
 
     rm -f $SCRIPT_TMP_DIR/build-$$
-    rm -f $SCRIPT_TMP_DIR/tracee-log-$$
+    rm -f $SCRIPT_TMP_DIR/tracker-log-$$
 
-    ./dist/tracee \
+    ./dist/tracker \
         --install-path $TRACKER_TMP_DIR \
         --cache cache-type=mem \
         --cache mem-cache-size=512 \
@@ -137,21 +137,21 @@ for TEST in $TESTS; do
         --output option:sort-events \
         --output json:$SCRIPT_TMP_DIR/build-$$ \
         --output option:parse-arguments \
-        --log file:$SCRIPT_TMP_DIR/tracee-log-$$ \
+        --log file:$SCRIPT_TMP_DIR/tracker-log-$$ \
         --signatures-dir "$SIG_DIR" \
-        --scope comm=echo,mv,ls,tracee,proctreetester,ping,ds_writer,fsnotify_tester,process_execute,tracee-ebpf,writev,set_fs_pwd.sh \
+        --scope comm=echo,mv,ls,tracker,proctreetester,ping,ds_writer,fsnotify_tester,process_execute,tracker-ebpf,writev,set_fs_pwd.sh \
         --dnscache enable \
-        --grpc-listen-addr unix:/tmp/tracee.sock \
+        --grpc-listen-addr unix:/tmp/tracker.sock \
         --events "$TEST" &
 
-    # Wait tracee to start
+    # Wait tracker to start
 
     times=0
     timedout=0
     while true; do
         times=$((times + 1))
         sleep 1
-        if [[ -f $TRACKER_TMP_DIR/tracee.pid ]]; then
+        if [[ -f $TRACKER_TMP_DIR/tracker.pid ]]; then
             info
             info "UP AND RUNNING"
             info
@@ -170,13 +170,13 @@ for TEST in $TESTS; do
         info
         info "$TEST: FAILED. ERRORS:"
         info
-        cat $SCRIPT_TMP_DIR/tracee-log-$$
+        cat $SCRIPT_TMP_DIR/tracker-log-$$
 
         anyerror="${anyerror}$TEST,"
         continue
     fi
 
-    # Allow tracee to start processing events
+    # Allow tracker to start processing events
 
     sleep 3
 
@@ -184,7 +184,7 @@ for TEST in $TESTS; do
 
     case $TEST in
     HOOKED_SYSCALL)
-        # wait for tracee hooked event to be processed
+        # wait for tracker hooked event to be processed
         sleep 15
         ;;
     FTRACE_HOOK)
@@ -201,7 +201,7 @@ for TEST in $TESTS; do
 
     # The cleanup happens at EXIT
 
-    logfile=$SCRIPT_TMP_DIR/tracee-log-$$
+    logfile=$SCRIPT_TMP_DIR/tracker-log-$$
 
     # Check if the test has failed or not
 
@@ -218,23 +218,23 @@ for TEST in $TESTS; do
         info "$TEST: SUCCESS"
     else
         anyerror="${anyerror}$TEST,"
-        info "$TEST: FAILED, stderr from tracee:"
-        cat $SCRIPT_TMP_DIR/tracee-log-$$
-        info "$TEST: FAILED, events from tracee:"
+        info "$TEST: FAILED, stderr from tracker:"
+        cat $SCRIPT_TMP_DIR/tracker-log-$$
+        info "$TEST: FAILED, events from tracker:"
         cat $SCRIPT_TMP_DIR/build-$$
         info
     fi
     info
 
     rm -f $SCRIPT_TMP_DIR/build-$$
-    rm -f $SCRIPT_TMP_DIR/tracee-log-$$
+    rm -f $SCRIPT_TMP_DIR/tracker-log-$$
 
-    # Make sure we exit tracee to start it again
+    # Make sure we exit tracker to start it again
 
-    pid_tracee=$(pidof tracee | cut -d' ' -f1)
-    kill -SIGINT "$pid_tracee"
+    pid_tracker=$(pidof tracker | cut -d' ' -f1)
+    kill -SIGINT "$pid_tracker"
     sleep $TRACKER_SHUTDOWN_TIMEOUT
-    kill -SIGKILL "$pid_tracee" >/dev/null 2>&1
+    kill -SIGKILL "$pid_tracker" >/dev/null 2>&1
     sleep 3
 
     # Cleanup leftovers
