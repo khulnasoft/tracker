@@ -67,7 +67,7 @@ If you run into any trouble using Tracker or you would like to give use user fee
 
 Find more information on [contribution documentation](./contributing/overview/).
 
-## More about Khulnasoft Security
+## More about Aqua Security
 
-Tracker is an [Khulnasoft Security](https://khulnasoft.com) open source project.  
+Tracker is an [Aqua Security](https://khulnasoft.com) open source project.  
 Learn about our open source work and portfolio [here](https://www.khulnasoft.com/products/open-source-projects/).

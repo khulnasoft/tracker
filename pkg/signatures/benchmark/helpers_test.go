@@ -4,7 +4,10 @@ import (
 	_ "embed"
 	"math/rand"
 
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/protocol"
 	"github.com/khulnasoft/tracker/types/trace"
 )
@@ -170,4 +173,21 @@ func ProduceEventsInMemoryRandom(n int, seed ...trace.Event) engine.EventSources
 	return engine.EventSources{
 		Tracker: eventsCh,
 	}
+}
+
+func allocateEventIdsForSigs(startId events.ID, sigs []detect.Signature) map[string]int32 {
+	namesToIds := make(map[string]int32)
+	newEventDefID := startId
+	// First allocate event IDs to all signatures
+	for _, s := range sigs {
+		m, err := s.GetMetadata()
+		if err != nil {
+			logger.Warnw("Failed to allocate id for signature", "error", err)
+			continue
+		}
+
+		namesToIds[m.EventName] = int32(newEventDefID)
+		newEventDefID++
+	}
+	return namesToIds
 }

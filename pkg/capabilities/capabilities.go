@@ -13,8 +13,8 @@ import (
 	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
-var caps *Capabilities // singleton for all packages
-
+var caps *Capabilities   // singleton for all packages
+var capsMutex sync.Mutex // mutex to protect access to caps
 var once sync.Once
 
 type RingType int
@@ -27,29 +27,46 @@ const (
 )
 
 type Capabilities struct {
-	have   *cap.Set
-	all    map[cap.Value]map[RingType]bool
-	bypass bool
-	lock   *sync.Mutex // big lock to guarantee all threads are on the same ring
+	have     *cap.Set
+	all      map[cap.Value]map[RingType]bool
+	bypass   bool
+	baseEbpf bool
+	lock     *sync.Mutex // big lock to guarantee all threads are on the same ring
+}
+
+type Config struct {
+	Bypass   bool
+	BaseEbpf bool
 }
 
 // Initialize initializes the "caps" instance (singleton).
-func Initialize(bypass bool) error {
+func Initialize(cfg Config) error {
 	var err error
 
 	once.Do(func() {
-		caps = &Capabilities{}
-		err = caps.initialize(bypass)
+		caps = &Capabilities{
+			lock: new(sync.Mutex),
+		}
+		caps.lock.Lock()
+		defer caps.lock.Unlock()
+
+		err = caps.initialize(cfg)
 	})
 
 	return errfmt.WrapError(err)
 }
 
 // GetInstance returns current "caps" instance. It initializes capabilities if
-// needed, bypassing the privilege dropping by default.
+// needed, bypassing the privilege dropping by default, and not adding eBPF to the base.
 func GetInstance() *Capabilities {
+	capsMutex.Lock()
+	defer capsMutex.Unlock()
+
 	if caps == nil {
-		err := Initialize(true)
+		err := Initialize(Config{
+			Bypass:   true,
+			BaseEbpf: false,
+		})
 		if err != nil {
 			return nil
 		}
@@ -58,13 +75,14 @@ func GetInstance() *Capabilities {
 	return caps
 }
 
-func (c *Capabilities) initialize(bypass bool) error {
-	if bypass {
+func (c *Capabilities) initialize(cfg Config) error {
+	if cfg.Bypass {
 		c.bypass = true
 		return nil
 	}
 
-	c.lock = new(sync.Mutex)
+	c.baseEbpf = cfg.BaseEbpf
+
 	c.all = make(map[cap.Value]map[RingType]bool)
 
 	for v := cap.Value(0); v < cap.MaxBits(); v++ {
@@ -92,10 +110,17 @@ func (c *Capabilities) initialize(bypass bool) error {
 
 	// Add eBPF related capabilities to eBPF ring
 
-	err = c.EBPFRingAdd(
-		cap.IPC_LOCK,
-		cap.SYS_RESOURCE,
-	)
+	if c.baseEbpf {
+		err = c.baseRingAdd(
+			cap.IPC_LOCK,
+			cap.SYS_RESOURCE,
+		)
+	} else {
+		err = c.eBPFRingAdd(
+			cap.IPC_LOCK,
+			cap.SYS_RESOURCE,
+		)
+	}
 	if err != nil {
 		logger.Fatalw("Adding initial capabilities to EBPF ring", "error", err)
 	}
@@ -123,22 +148,41 @@ func (c *Capabilities) initialize(bypass bool) error {
 	hasBPF, _ := c.have.GetFlag(cap.Permitted, cap.BPF)
 	if hasBPF {
 		if paranoid < 2 {
-			err = c.EBPFRingAdd(
-				cap.BPF,
-				cap.PERFMON,
-			)
+			if c.baseEbpf {
+				err = c.baseRingAdd(
+					cap.BPF,
+					cap.PERFMON,
+				)
+			} else {
+				err = c.eBPFRingAdd(
+					cap.BPF,
+					cap.PERFMON,
+				)
+			}
 		} else {
-			err = c.EBPFRingAdd(
-				cap.SYS_ADMIN,
-			)
+			if c.baseEbpf {
+				err = c.baseRingAdd(
+					cap.SYS_ADMIN,
+				)
+			} else {
+				err = c.eBPFRingAdd(
+					cap.SYS_ADMIN,
+				)
+			}
 		}
 		if err != nil {
 			logger.Fatalw("Adding eBPF capabilities to EBPF ring", "error", err)
 		}
 	} else {
-		err = c.EBPFRingAdd(
-			cap.SYS_ADMIN,
-		)
+		if c.baseEbpf {
+			err = c.baseRingAdd(
+				cap.SYS_ADMIN,
+			)
+		} else {
+			err = c.eBPFRingAdd(
+				cap.SYS_ADMIN,
+			)
+		}
 		if err != nil {
 			logger.Fatalw("Adding eBPF capabilities to EBPF ring", "error", err)
 		}
@@ -152,10 +196,10 @@ func (c *Capabilities) initialize(bypass bool) error {
 func (c *Capabilities) Full(cb func() error) error {
 	var err error
 
-	if !c.bypass {
-		c.lock.Lock()
-		defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
+	if !c.bypass {
 		err = c.apply(Full) // move to ring Full
 		if err != nil {
 			return errfmt.WrapError(err)
@@ -177,10 +221,10 @@ func (c *Capabilities) Full(cb func() error) error {
 func (c *Capabilities) EBPF(cb func() error) error {
 	var err error
 
-	if !c.bypass {
-		c.lock.Lock()
-		defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
+	if !c.bypass && !c.baseEbpf {
 		err = c.apply(EBPF) // move to ring EBPF
 		if err != nil {
 			return errfmt.WrapError(err)
@@ -189,7 +233,7 @@ func (c *Capabilities) EBPF(cb func() error) error {
 
 	errCb := cb() // callback
 
-	if !c.bypass {
+	if !c.bypass && !c.baseEbpf {
 		err = c.apply(Base) // back to ring Base
 		if err != nil {
 			return errfmt.WrapError(err)
@@ -202,10 +246,10 @@ func (c *Capabilities) EBPF(cb func() error) error {
 func (c *Capabilities) Specific(cb func() error, values ...cap.Value) error {
 	var err error
 
-	if !c.bypass {
-		c.lock.Lock()
-		defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
+	if !c.bypass {
 		err = c.set(Specific, values...)
 		if err != nil {
 			return errfmt.WrapError(err)
@@ -238,18 +282,48 @@ func (c *Capabilities) Specific(cb func() error, values ...cap.Value) error {
 // setters/getters
 
 func (c *Capabilities) EBPFRingAdd(values ...cap.Value) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	return c.eBPFRingAdd(values...)
+}
+
+func (c *Capabilities) EBPFRingRemove(values ...cap.Value) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	return c.eBPFRingRemove(values...)
+}
+
+func (c *Capabilities) BaseRingAdd(values ...cap.Value) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	return c.baseRingAdd(values...)
+}
+
+func (c *Capabilities) BaseRingRemove(values ...cap.Value) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	return c.baseRingRemove(values...)
+}
+
+// Private Methods
+
+func (c *Capabilities) eBPFRingAdd(values ...cap.Value) error {
 	logger.Debugw("Adding capabilities to EBPF ring", "capability", values)
 
 	return c.ringAdd(EBPF, values...)
 }
 
-func (c *Capabilities) EBPFRingRemove(values ...cap.Value) error {
+func (c *Capabilities) eBPFRingRemove(values ...cap.Value) error {
 	logger.Debugw("Removing capabilities from the EBPF ring", "capability", values)
 
 	return c.ringRemove(EBPF, values...)
 }
 
-func (c *Capabilities) BaseRingAdd(values ...cap.Value) error {
+func (c *Capabilities) baseRingAdd(values ...cap.Value) error {
 	logger.Debugw("Adding capabilities to base ring", "capability", values)
 
 	rings := []RingType{
@@ -269,7 +343,7 @@ func (c *Capabilities) BaseRingAdd(values ...cap.Value) error {
 	return c.apply(Base)
 }
 
-func (c *Capabilities) BaseRingRemove(values ...cap.Value) error {
+func (c *Capabilities) baseRingRemove(values ...cap.Value) error {
 	logger.Debugw("Removing capabilities from the base ring", "capability", values)
 
 	rings := []RingType{
@@ -289,8 +363,6 @@ func (c *Capabilities) BaseRingRemove(values ...cap.Value) error {
 	return c.apply(Base)
 }
 
-// Private Methods
-
 func (c *Capabilities) ringAdd(ring RingType, values ...cap.Value) error {
 	var err error
 
@@ -298,9 +370,7 @@ func (c *Capabilities) ringAdd(ring RingType, values ...cap.Value) error {
 		return nil
 	}
 
-	c.lock.Lock()
 	err = c.set(ring, values...)
-	c.lock.Unlock()
 
 	return errfmt.WrapError(err)
 }
@@ -312,9 +382,7 @@ func (c *Capabilities) ringRemove(ring RingType, values ...cap.Value) error {
 		return nil
 	}
 
-	c.lock.Lock()
 	err = c.unset(ring, values...)
-	c.lock.Unlock()
 
 	return errfmt.WrapError(err)
 }
@@ -341,17 +409,23 @@ func (c *Capabilities) setProc() error {
 
 func (c *Capabilities) set(t RingType, values ...cap.Value) error {
 	for _, v := range values {
-		c.all[v][t] = true
+		m, exists := c.all[v]
+		if !exists {
+			return fmt.Errorf("failed to set capability %v: not supported", v)
+		}
+		m[t] = true
 	}
-
 	return nil
 }
 
 func (c *Capabilities) unset(t RingType, values ...cap.Value) error {
 	for _, v := range values {
-		c.all[v][t] = false
+		m, exists := c.all[v]
+		if !exists {
+			return fmt.Errorf("failed to unset capability %v: not supported", v)
+		}
+		m[t] = false
 	}
-
 	return nil
 }
 

@@ -24,16 +24,16 @@ func (ctrl *Controller) procTreeForkProcessor(args []trace.Argument) error {
 	timestamp, err := parse.ArgVal[uint64](args, "timestamp")
 	errs = append(errs, err)
 
-	// Up Parent (Up in hierarchy until parent is a process and not a lwp)
-	parentTid, err := parse.ArgVal[int32](args, "up_parent_tid")
+	// Parent Process (Go up in hierarchy until parent is a process and not a lwp)
+	parentTid, err := parse.ArgVal[int32](args, "parent_process_tid")
 	errs = append(errs, err)
-	parentNsTid, err := parse.ArgVal[int32](args, "up_parent_ns_tid")
+	parentNsTid, err := parse.ArgVal[int32](args, "parent_process_ns_tid")
 	errs = append(errs, err)
-	parentPid, err := parse.ArgVal[int32](args, "up_parent_pid")
+	parentPid, err := parse.ArgVal[int32](args, "parent_process_pid")
 	errs = append(errs, err)
-	parentNsPid, err := parse.ArgVal[int32](args, "up_parent_ns_pid")
+	parentNsPid, err := parse.ArgVal[int32](args, "parent_process_ns_pid")
 	errs = append(errs, err)
-	parentStartTime, err := parse.ArgVal[uint64](args, "up_parent_start_time")
+	parentStartTime, err := parse.ArgVal[uint64](args, "parent_process_start_time")
 	errs = append(errs, err)
 
 	// Thread Group Leader (might be the same as the "child", if "child" is a process)
@@ -73,7 +73,7 @@ func (ctrl *Controller) procTreeForkProcessor(args []trace.Argument) error {
 
 	return ctrl.processTree.FeedFromFork(
 		proctree.ForkFeed{
-			TimeStamp:       timestamp,
+			TimeStamp:       uint64(ctrl.timeNormalizer.NormalizeTime(int(timestamp))),
 			ChildHash:       childHash,
 			ParentHash:      parentHash,
 			LeaderHash:      leaderHash,
@@ -81,17 +81,17 @@ func (ctrl *Controller) procTreeForkProcessor(args []trace.Argument) error {
 			ParentNsTid:     parentNsTid,
 			ParentPid:       parentPid,
 			ParentNsPid:     parentNsPid,
-			ParentStartTime: parentStartTime,
+			ParentStartTime: uint64(ctrl.timeNormalizer.NormalizeTime(int(parentStartTime))),
 			LeaderTid:       leaderTid,
 			LeaderNsTid:     leaderNsTid,
 			LeaderPid:       leaderPid,
 			LeaderNsPid:     leaderNsPid,
-			LeaderStartTime: leaderStartTime,
+			LeaderStartTime: uint64(ctrl.timeNormalizer.NormalizeTime(int(leaderStartTime))),
 			ChildTid:        childTid,
 			ChildNsTid:      childNsTid,
 			ChildPid:        childPid,
 			ChildNsPid:      childNsPid,
-			ChildStartTime:  childStartTime,
+			ChildStartTime:  uint64(ctrl.timeNormalizer.NormalizeTime(int(childStartTime))),
 		},
 	)
 }
@@ -154,7 +154,7 @@ func (ctrl *Controller) procTreeExecProcessor(args []trace.Argument) error {
 
 	return ctrl.processTree.FeedFromExec(
 		proctree.ExecFeed{
-			TimeStamp:         timestamp,
+			TimeStamp:         uint64(ctrl.timeNormalizer.NormalizeTime(int(timestamp))),
 			TaskHash:          taskHash,
 			ParentHash:        parentHash,
 			LeaderHash:        leaderHash,
@@ -208,7 +208,7 @@ func (ctrl *Controller) procTreeExitProcessor(args []trace.Argument) error {
 
 	return ctrl.processTree.FeedFromExit(
 		proctree.ExitFeed{
-			TimeStamp:  timestamp, // time of exit is already a timestamp
+			TimeStamp:  uint64(ctrl.timeNormalizer.NormalizeTime(int(timestamp))), // time of exit is already a timestamp
 			TaskHash:   taskHash,
 			ParentHash: parentHash,
 			LeaderHash: leaderHash,

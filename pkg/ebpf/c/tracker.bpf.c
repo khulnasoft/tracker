@@ -2,7 +2,7 @@
 
 // Note: This file is licenced differently from the rest of the project
 // SPDX-License-Identifier: GPL-2.0
-// Copyright (C) Khulnasoft Security inc.
+// Copyright (C) Aqua Security inc.
 
 #include <vmlinux.h>
 #include <vmlinux_flavors.h>
@@ -125,7 +125,7 @@ int sys_enter_init(struct bpf_raw_tracepoint_args *ctx)
     // exit, exit_group and rt_sigreturn syscalls don't return
     if (sys->id != SYSCALL_EXIT && sys->id != SYSCALL_EXIT_GROUP &&
         sys->id != SYSCALL_RT_SIGRETURN) {
-        sys->ts = bpf_ktime_get_ns();
+        sys->ts = get_current_time_in_ns();
         task_info->syscall_traced = true;
     }
 
@@ -358,6 +358,14 @@ int trace_sys_exit(struct bpf_raw_tracepoint_args *ctx)
     return 0;
 }
 
+// macros for syscall kprobes
+TRACE_SYSCALL(ptrace, SYSCALL_PTRACE)
+TRACE_SYSCALL(process_vm_writev, SYSCALL_PROCESS_VM_WRITEV)
+TRACE_SYSCALL(arch_prctl, SYSCALL_ARCH_PRCTL)
+TRACE_SYSCALL(dup, SYSCALL_DUP)
+TRACE_SYSCALL(dup2, SYSCALL_DUP2)
+TRACE_SYSCALL(dup3, SYSCALL_DUP3)
+
 SEC("raw_tracepoint/sys_execve")
 int syscall__execve_enter(void *ctx)
 {
@@ -531,7 +539,7 @@ statfunc int send_socket_dup(program_data_t *p, u64 oldfd, u64 newfd)
     return events_perf_submit(p, 0);
 }
 
-SEC("raw_tracepoint/sys_dup")
+SEC("kprobe/sys_dup")
 int sys_dup_exit_tail(void *ctx)
 {
     program_data_t p = {};
@@ -676,20 +684,20 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
 
     // Process tree information (if needed).
     if (p.config->options & OPT_FORK_PROCTREE) {
-        // Both, the thread group leader and the "up_parent" (the first process, not lwp, found
+        // Both, the thread group leader and the "parent_process" (the first process, not lwp, found
         // as a parent of the child in the hierarchy), are needed by the userland process tree.
         // The userland process tree default source of events is the signal events, but there is
         // an option to use regular event for maintaining it as well (and it is needed for some
         // situatins). These arguments will always be removed by userland event processors.
         struct task_struct *leader = get_leader_task(child);
-        struct task_struct *up_parent = get_leader_task(get_parent_task(leader));
+        struct task_struct *parent_process = get_leader_task(get_parent_task(leader));
 
-        // Up Parent information: Go up in hierarchy until parent is process.
-        u64 up_parent_start_time = get_task_start_time(up_parent);
-        int up_parent_pid = get_task_host_tgid(up_parent);
-        int up_parent_tid = get_task_host_pid(up_parent);
-        int up_parent_ns_pid = get_task_ns_tgid(up_parent);
-        int up_parent_ns_tid = get_task_ns_pid(up_parent);
+        // Parent Process information: Go up in hierarchy until parent is process.
+        u64 parent_process_start_time = get_task_start_time(parent_process);
+        int parent_process_pid = get_task_host_tgid(parent_process);
+        int parent_process_tid = get_task_host_pid(parent_process);
+        int parent_process_ns_pid = get_task_ns_tgid(parent_process);
+        int parent_process_ns_tid = get_task_ns_pid(parent_process);
         // Leader information.
         u64 leader_start_time = get_task_start_time(leader);
         int leader_pid = get_task_host_tgid(leader);
@@ -698,11 +706,12 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
         int leader_ns_tid = get_task_ns_pid(leader);
 
         // Up Parent: always a process (might be the same as Parent if parent is a process).
-        save_to_submit_buf(&p.event->args_buf, (void *) &up_parent_tid, sizeof(int), 10);
-        save_to_submit_buf(&p.event->args_buf, (void *) &up_parent_ns_tid, sizeof(int), 11);
-        save_to_submit_buf(&p.event->args_buf, (void *) &up_parent_pid, sizeof(int), 12);
-        save_to_submit_buf(&p.event->args_buf, (void *) &up_parent_ns_pid, sizeof(int), 13);
-        save_to_submit_buf(&p.event->args_buf, (void *) &up_parent_start_time, sizeof(u64), 14);
+        save_to_submit_buf(&p.event->args_buf, (void *) &parent_process_tid, sizeof(int), 10);
+        save_to_submit_buf(&p.event->args_buf, (void *) &parent_process_ns_tid, sizeof(int), 11);
+        save_to_submit_buf(&p.event->args_buf, (void *) &parent_process_pid, sizeof(int), 12);
+        save_to_submit_buf(&p.event->args_buf, (void *) &parent_process_ns_pid, sizeof(int), 13);
+        save_to_submit_buf(
+            &p.event->args_buf, (void *) &parent_process_start_time, sizeof(u64), 14);
         // Leader: always a process (might be the same as the Child if child is a process).
         save_to_submit_buf(&p.event->args_buf, (void *) &leader_tid, sizeof(int), 15);
         save_to_submit_buf(&p.event->args_buf, (void *) &leader_ns_tid, sizeof(int), 16);
@@ -718,7 +727,7 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
 }
 
 // number of iterations - value that the verifier was seen to cope with - the higher, the better
-#define MAX_NUM_MODULES         450
+#define MAX_NUM_MODULES         440
 #define HISTORY_SCAN_FAILURE    0
 #define HISTORY_SCAN_SUCCESSFUL 1
 
@@ -988,7 +997,7 @@ statfunc int find_modules_from_mod_tree(program_data_t *p)
 static __always_inline u64 check_new_mods_only(program_data_t *p)
 {
     struct module *pos, *n;
-    u64 start_scan_time = bpf_ktime_get_ns();
+    u64 start_scan_time = get_current_time_in_ns();
     char modules_sym[8] = "modules";
     kernel_new_mod_t *new_mod;
     u64 mod_addr;
@@ -1008,7 +1017,7 @@ static __always_inline u64 check_new_mods_only(program_data_t *p)
         mod_addr = (u64) pos;
         new_mod = bpf_map_lookup_elem(&new_module_map, &mod_addr);
         if (new_mod) {
-            new_mod->last_seen_time = bpf_ktime_get_ns();
+            new_mod->last_seen_time = get_current_time_in_ns();
         }
     }
 
@@ -1151,7 +1160,7 @@ int uprobe_lkm_seeker(struct pt_regs *ctx)
         return 0;
     }
 
-    start_scan_time_init_shown_mods = bpf_ktime_get_ns();
+    start_scan_time_init_shown_mods = get_current_time_in_ns();
     int ret = init_shown_modules();
     if (ret != 0) {
         tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
@@ -1404,6 +1413,7 @@ int sched_process_exec_event_submit_tail(struct bpf_raw_tracepoint_args *ctx)
     save_to_submit_buf(&p.event->args_buf, &stdin_type, sizeof(unsigned short), 12);
     save_str_to_buf(&p.event->args_buf, stdin_path, 13);
     save_to_submit_buf(&p.event->args_buf, &invoked_from_kernel, sizeof(int), 14);
+    save_str_to_buf(&p.event->args_buf, (void *) p.task_info->context.comm, 15);
     if (p.config->options & OPT_EXEC_ENV) {
         unsigned long env_start, env_end;
         env_start = get_env_start_from_mm(mm);
@@ -1411,7 +1421,7 @@ int sched_process_exec_event_submit_tail(struct bpf_raw_tracepoint_args *ctx)
         int envc = get_envc_from_bprm(bprm);
 
         save_args_str_arr_to_buf(
-            &p.event->args_buf, (void *) env_start, (void *) env_end, envc, 15);
+            &p.event->args_buf, (void *) env_start, (void *) env_end, envc, 16);
     }
 
     events_perf_submit(&p, 0);
@@ -1556,6 +1566,11 @@ int tracepoint__sched__sched_switch(struct bpf_raw_tracepoint_args *ctx)
 SEC("kprobe/filldir64")
 int BPF_KPROBE(trace_filldir64)
 {
+    // only inode=0 is relevant, simple filter prior to program run
+    unsigned long process_inode_number = (unsigned long) PT_REGS_PARM5(ctx);
+    if (process_inode_number != 0)
+        return 0;
+
     program_data_t p = {};
     if (!init_program_data(&p, ctx, HIDDEN_INODES))
         return 0;
@@ -1564,10 +1579,6 @@ int BPF_KPROBE(trace_filldir64)
         return 0;
 
     char *process_name = (char *) PT_REGS_PARM2(ctx);
-    unsigned long process_inode_number = (unsigned long) PT_REGS_PARM5(ctx);
-
-    if (process_inode_number != 0)
-        return 0;
 
     save_str_to_buf(&p.event->args_buf, process_name, 0);
     return events_perf_submit(&p, 0);
@@ -2173,22 +2184,19 @@ int BPF_KPROBE(trace_security_file_open)
     // Load the arguments given to the open syscall (which eventually invokes this function)
     char empty_string[1] = "";
     void *syscall_pathname = &empty_string;
-    syscall_data_t *sys = NULL;
-    bool syscall_traced = p.task_info->syscall_traced;
-    if (syscall_traced) {
-        sys = &p.task_info->syscall_data;
-        switch (sys->id) {
-            case SYSCALL_EXECVE:
-            case SYSCALL_OPEN:
-                syscall_pathname = (void *) sys->args.args[0];
-                break;
+    struct pt_regs *task_regs = get_current_task_pt_regs();
 
-            case SYSCALL_EXECVEAT:
-            case SYSCALL_OPENAT:
-            case SYSCALL_OPENAT2:
-                syscall_pathname = (void *) sys->args.args[1];
-                break;
-        }
+    switch (p.event->context.syscall) {
+        case SYSCALL_EXECVE:
+        case SYSCALL_OPEN:
+            syscall_pathname = (void *) get_syscall_arg1(p.event->task, task_regs, false);
+            break;
+
+        case SYSCALL_EXECVEAT:
+        case SYSCALL_OPENAT:
+        case SYSCALL_OPENAT2:
+            syscall_pathname = (void *) get_syscall_arg2(p.event->task, task_regs, false);
+            break;
     }
 
     save_str_to_buf(&p.event->args_buf, file_path, 0);
@@ -2605,30 +2613,25 @@ int BPF_KPROBE(trace_security_socket_connect)
             return 0;
     }
 
-    // Load args given to the syscall that invoked this function.
-    syscall_data_t *sys = &p.task_info->syscall_data;
-    if (!p.task_info->syscall_traced)
-        return 0;
-
     // Reduce line cols by having a few temp pointers.
     int (*stsb)(args_buffer_t *, void *, u32, u8) = save_to_submit_buf;
     void *args_buf = &p.event->args_buf;
-    void *to = (void *) &sys->args.args[0];
 
-    if (is_x86_compat(p.event->task)) // only i386 binaries uses socketcall
-        to = (void *) sys->args.args[1];
-
-    // Save the socket fd, depending on the syscall.
-    switch (sys->id) {
+    struct pt_regs *task_regs = get_current_task_pt_regs();
+    int sockfd;
+    void *arr_addr;
+    switch (p.event->context.syscall) {
         case SYSCALL_CONNECT:
-        case SYSCALL_SOCKETCALL:
+            sockfd = get_syscall_arg1(p.event->task, task_regs, false);
+            stsb(args_buf, &sockfd, sizeof(int), 0);
             break;
-        default:
-            return 0;
+        case SYSCALL_SOCKETCALL:
+            arr_addr = (void *) get_syscall_arg2(p.event->task, task_regs, false);
+            bpf_probe_read_user(
+                &sockfd, sizeof(int), arr_addr); // fd is the first entry in the array
+            stsb(args_buf, &sockfd, sizeof(int), 0);
+            break;
     }
-
-    // Save the socket fd argument to the event.
-    stsb(args_buf, to, sizeof(u32), 0);
 
     // Save the socket type argument to the event.
     stsb(args_buf, &type, sizeof(u32), 1);
@@ -2679,13 +2682,14 @@ int BPF_KPROBE(trace_security_socket_accept)
 
     struct socket *sock = (struct socket *) PT_REGS_PARM1(ctx);
     struct socket *new_sock = (struct socket *) PT_REGS_PARM2(ctx);
-    syscall_data_t *sys = &p.task_info->syscall_data;
+
+    struct pt_regs *task_regs = get_current_task_pt_regs();
 
     if (event_is_selected(SOCKET_ACCEPT, p.event->context.policies_version)) {
         args_t args = {};
         args.args[0] = (unsigned long) sock;
         args.args[1] = (unsigned long) new_sock;
-        args.args[2] = sys->args.args[0]; // sockfd
+        args.args[2] = get_syscall_arg1(p.event->task, task_regs, false); // sockfd
         save_args(&args, SOCKET_ACCEPT);
     }
 
@@ -2696,14 +2700,17 @@ int BPF_KPROBE(trace_security_socket_accept)
     if (!p.task_info->syscall_traced)
         return 0;
 
-    switch (sys->id) {
+    int sockfd;
+    switch (p.event->context.syscall) {
         case SYSCALL_ACCEPT:
         case SYSCALL_ACCEPT4:
-            save_to_submit_buf(&p.event->args_buf, (void *) &sys->args.args[0], sizeof(u32), 0);
+            sockfd = get_syscall_arg1(p.event->task, task_regs, false);
+            save_to_submit_buf(&p.event->args_buf, (void *) &sockfd, sizeof(int), 0);
             break;
 #if defined(bpf_target_x86) // armhf makes use of SYSCALL_ACCEPT/4
         case SYSCALL_SOCKETCALL:
-            save_to_submit_buf(&p.event->args_buf, (void *) sys->args.args[1], sizeof(u32), 0);
+            sockfd = get_syscall_arg2(p.event->task, task_regs, false);
+            save_to_submit_buf(&p.event->args_buf, (void *) &sockfd, sizeof(int), 0);
             break;
 #endif
         default:
@@ -2738,18 +2745,18 @@ int BPF_KPROBE(trace_security_socket_bind)
         return 0;
     }
 
-    // Load the arguments given to the bind syscall (which eventually invokes this function)
-    syscall_data_t *sys = &p.task_info->syscall_data;
-    if (!p.task_info->syscall_traced)
-        return 0;
-
-    switch (sys->id) {
+    struct pt_regs *task_regs = get_current_task_pt_regs();
+    int sockfd;
+    u64 sockfd_addr;
+    switch (p.event->context.syscall) {
         case SYSCALL_BIND:
-            save_to_submit_buf(&p.event->args_buf, (void *) &sys->args.args[0], sizeof(u32), 0);
+            sockfd = get_syscall_arg1(p.event->task, task_regs, false);
+            save_to_submit_buf(&p.event->args_buf, (void *) &sockfd, sizeof(u32), 0);
             break;
 #if defined(bpf_target_x86) // armhf makes use of SYSCALL_BIND
         case SYSCALL_SOCKETCALL:
-            save_to_submit_buf(&p.event->args_buf, (void *) sys->args.args[1], sizeof(u32), 0);
+            sockfd_addr = get_syscall_arg2(p.event->task, task_regs, false);
+            save_to_submit_buf(&p.event->args_buf, (void *) sockfd_addr, sizeof(u32), 0);
             break;
 #endif
         default:
@@ -2812,22 +2819,18 @@ int BPF_KPROBE(trace_security_socket_setsockopt)
     int level = (int) PT_REGS_PARM2(ctx);
     int optname = (int) PT_REGS_PARM3(ctx);
 
-    // Load the arguments given to the setsockopt syscall (which eventually invokes this function)
-    syscall_data_t *sys = &p.task_info->syscall_data;
-    if (sys == NULL) {
-        return -1;
-    }
-
-    if (!p.task_info->syscall_traced)
-        return 0;
-
-    switch (sys->id) {
+    struct pt_regs *task_regs = get_current_task_pt_regs();
+    int sockfd;
+    u64 sockfd_addr;
+    switch (p.event->context.syscall) {
         case SYSCALL_SETSOCKOPT:
-            save_to_submit_buf(&p.event->args_buf, (void *) &sys->args.args[0], sizeof(u32), 0);
+            sockfd = get_syscall_arg1(p.event->task, task_regs, false);
+            save_to_submit_buf(&p.event->args_buf, (void *) &sockfd, sizeof(u32), 0);
             break;
 #if defined(bpf_target_x86) // armhf makes use of SYSCALL_SETSOCKOPT
         case SYSCALL_SOCKETCALL:
-            save_to_submit_buf(&p.event->args_buf, (void *) sys->args.args[1], sizeof(u32), 0);
+            sockfd_addr = get_syscall_arg2(p.event->task, task_regs, false);
+            save_to_submit_buf(&p.event->args_buf, (void *) sockfd_addr, sizeof(u32), 0);
             break;
 #endif
         default:
@@ -3417,18 +3420,16 @@ int BPF_KPROBE(trace_mmap_alert)
     if (!evaluate_scope_filters(&p))
         return 0;
 
-    // Load the arguments given to the mmap syscall (which eventually invokes this function)
-    syscall_data_t *sys = &p.task_info->syscall_data;
-    if (!p.task_info->syscall_traced || sys->id != SYSCALL_MMAP)
+    if (p.event->context.syscall != SYSCALL_MMAP)
         return 0;
 
-    int prot = sys->args.args[2];
-
+    struct pt_regs *task_regs = get_current_task_pt_regs();
+    int prot = get_syscall_arg3(p.event->task, task_regs, false);
     if ((prot & (VM_WRITE | VM_EXEC)) == (VM_WRITE | VM_EXEC)) {
         u32 alert = ALERT_MMAP_W_X;
-        int fd = sys->args.args[4];
-        void *addr = (void *) sys->args.args[0];
-        size_t len = sys->args.args[1];
+        void *addr = (void *) get_syscall_arg1(p.event->task, task_regs, false);
+        size_t len = get_syscall_arg2(p.event->task, task_regs, false);
+        int fd = get_syscall_arg5(p.event->task, task_regs, false);
         int prev_prot = 0;
         file_info_t file_info = {.pathname_p = NULL};
         if (fd >= 0) {
@@ -3563,18 +3564,18 @@ int BPF_KPROBE(trace_security_file_mprotect)
     if (!init_program_data(&p, ctx, SECURITY_FILE_MPROTECT))
         return 0;
 
-    // Load the arguments given to the mprotect syscall (which eventually invokes this function)
-    syscall_data_t *sys = &p.task_info->syscall_data;
-    if (!p.task_info->syscall_traced ||
-        (sys->id != SYSCALL_MPROTECT && sys->id != SYSCALL_PKEY_MPROTECT))
+    if (p.event->context.syscall != SYSCALL_MPROTECT &&
+        p.event->context.syscall != SYSCALL_PKEY_MPROTECT)
         return 0;
 
     struct vm_area_struct *vma = (struct vm_area_struct *) PT_REGS_PARM1(ctx);
     unsigned long reqprot = PT_REGS_PARM2(ctx);
     unsigned long prev_prot = get_vma_flags(vma);
     struct file *file = (struct file *) BPF_CORE_READ(vma, vm_file);
-    void *addr = (void *) sys->args.args[0];
-    size_t len = sys->args.args[1];
+
+    struct pt_regs *task_regs = get_current_task_pt_regs();
+    void *addr = (void *) get_syscall_arg1(p.event->task, task_regs, false);
+    size_t len = get_syscall_arg2(p.event->task, task_regs, false);
 
     if (evaluate_scope_filters(&p)) {
         file_info = get_file_info(file);
@@ -3586,8 +3587,8 @@ int BPF_KPROBE(trace_security_file_mprotect)
         save_to_submit_buf(&p.event->args_buf, &addr, sizeof(void *), 4);
         save_to_submit_buf(&p.event->args_buf, &len, sizeof(size_t), 5);
 
-        if (sys->id == SYSCALL_PKEY_MPROTECT) {
-            int pkey = sys->args.args[3];
+        if (p.event->context.syscall == SYSCALL_PKEY_MPROTECT) {
+            int pkey = get_syscall_arg4(p.event->task, task_regs, false);
             save_to_submit_buf(&p.event->args_buf, &pkey, sizeof(int), 6);
         }
 
@@ -4308,7 +4309,7 @@ int tracepoint__module__module_load(struct bpf_raw_tracepoint_args *ctx)
     struct module *mod = (struct module *) ctx->args[0];
 
     if (event_is_selected(HIDDEN_KERNEL_MODULE_SEEKER, p.event->context.policies_version)) {
-        u64 insert_time = bpf_ktime_get_ns();
+        u64 insert_time = get_current_time_in_ns();
         kernel_new_mod_t new_mod = {.insert_time = insert_time};
         u64 mod_addr = (u64) mod;
         // new_module_map - must be after the module is added to modules list,
@@ -4320,6 +4321,22 @@ int tracepoint__module__module_load(struct bpf_raw_tracepoint_args *ctx)
 
     if (!evaluate_scope_filters(&p))
         return 0;
+
+    if (p.event->context.syscall == SYSCALL_FINIT_MODULE) {
+        struct pt_regs *task_regs = get_current_task_pt_regs();
+        int fd = get_syscall_arg1(p.event->task, task_regs, false);
+        struct file *file = get_struct_file_from_fd(fd);
+        void *file_path = get_path_str(__builtin_preserve_access_index(&file->f_path));
+        dev_t dev = get_dev_from_file(file);
+        unsigned long inode = get_inode_nr_from_file(file);
+        u64 ctime = get_ctime_nanosec_from_file(file);
+
+        // add file related info
+        save_str_to_buf(&p.event->args_buf, file_path, 3);
+        save_to_submit_buf(&p.event->args_buf, &dev, sizeof(dev_t), 4);
+        save_to_submit_buf(&p.event->args_buf, &inode, sizeof(unsigned long), 5);
+        save_to_submit_buf(&p.event->args_buf, &ctime, sizeof(u64), 6);
+    }
 
     const char *version = BPF_CORE_READ(mod, version);
     const char *srcversion = BPF_CORE_READ(mod, srcversion);
@@ -4345,7 +4362,7 @@ int tracepoint__module__module_free(struct bpf_raw_tracepoint_args *ctx)
         // risk of race condition
         bpf_map_delete_elem(&new_module_map, &mod_addr);
 
-        kernel_deleted_mod_t deleted_mod = {.deleted_time = bpf_ktime_get_ns()};
+        kernel_deleted_mod_t deleted_mod = {.deleted_time = get_current_time_in_ns()};
         bpf_map_update_elem(&recent_deleted_module_map, &mod_addr, &deleted_mod, BPF_ANY);
     }
 
@@ -4975,13 +4992,21 @@ statfunc int execute_failed_tail2(struct pt_regs *ctx)
     if (!init_tailcall_program_data(&p, ctx))
         return -1;
 
-    syscall_data_t *sys = &p.task_info->syscall_data;
-    save_str_arr_to_buf(
-        &p.event->args_buf, (const char *const *) sys->args.args[1], 10); // userspace argv
+    long long argv, envp;
+    struct pt_regs *regs = get_current_task_pt_regs();
+
+    if (p.event->context.syscall == SYSCALL_EXECVE) {
+        argv = get_syscall_arg2(p.event->task, regs, false);
+        envp = get_syscall_arg3(p.event->task, regs, false);
+    } else {
+        argv = get_syscall_arg3(p.event->task, regs, false);
+        envp = get_syscall_arg4(p.event->task, regs, false);
+    }
+
+    save_str_arr_to_buf(&p.event->args_buf, (const char *const *) argv, 10); // userspace argv
 
     if (p.config->options & OPT_EXEC_ENV) {
-        save_str_arr_to_buf(
-            &p.event->args_buf, (const char *const *) sys->args.args[2], 11); // userspace envp
+        save_str_arr_to_buf(&p.event->args_buf, (const char *const *) envp, 11); // userspace envp
     }
 
     int ret = PT_REGS_RC(ctx); // needs to be int
@@ -5090,11 +5115,14 @@ int BPF_KPROBE(trace_set_fs_pwd)
     if (!evaluate_scope_filters(&p))
         return 0;
 
-    syscall_data_t *sys = &p.task_info->syscall_data;
+    if (get_task_parent_flags(p.event->task) & PF_KTHREAD)
+        return 0;
 
     void *unresolved_path = NULL;
-    if (sys->id == SYSCALL_CHDIR)
-        unresolved_path = (void *) sys->args.args[0];
+    if (p.event->context.syscall == SYSCALL_CHDIR) {
+        struct pt_regs *task_regs = get_current_task_pt_regs();
+        unresolved_path = (void *) get_syscall_arg1(p.event->task, task_regs, false);
+    }
 
     void *resolved_path = get_path_str((struct path *) PT_REGS_PARM2(ctx));
 
@@ -5126,6 +5154,33 @@ int BPF_KPROBE(trace_security_task_setrlimit)
     save_to_submit_buf(&p.event->args_buf, &resource, sizeof(unsigned int), 1);
     save_to_submit_buf(&p.event->args_buf, &new_rlim_cur, sizeof(u64), 2);
     save_to_submit_buf(&p.event->args_buf, &new_rlim_max, sizeof(u64), 3);
+
+    return events_perf_submit(&p, 0);
+}
+
+SEC("kprobe/security_settime64")
+int BPF_KPROBE(trace_security_settime64)
+{
+    program_data_t p = {};
+    if (!init_program_data(&p, ctx, SECURITY_SETTIME64))
+        return 0;
+
+    if (!evaluate_scope_filters(&p))
+        return 0;
+
+    const struct timespec64 *ts = (const struct timespec64 *) PT_REGS_PARM1(ctx);
+    const struct timezone *tz = (const struct timezone *) PT_REGS_PARM2(ctx);
+
+    u64 tv_sec = BPF_CORE_READ(ts, tv_sec);
+    u64 tv_nsec = BPF_CORE_READ(ts, tv_nsec);
+
+    int tz_minuteswest = BPF_CORE_READ(tz, tz_minuteswest);
+    int tz_dsttime = BPF_CORE_READ(tz, tz_dsttime);
+
+    save_to_submit_buf(&p.event->args_buf, &tv_sec, sizeof(u64), 0);
+    save_to_submit_buf(&p.event->args_buf, &tv_nsec, sizeof(u64), 1);
+    save_to_submit_buf(&p.event->args_buf, &tz_minuteswest, sizeof(int), 2);
+    save_to_submit_buf(&p.event->args_buf, &tz_dsttime, sizeof(int), 3);
 
     return events_perf_submit(&p, 0);
 }
@@ -5397,7 +5452,7 @@ statfunc u32 cgroup_skb_submit_flow(struct __sk_buff *ctx,
                                     u32 event_type, u32 size, u32 flow)
 {
     netflowvalue_t *netflowvalptr, netflowvalue = {
-                                       .last_update = bpf_ktime_get_ns(),
+                                       .last_update = get_current_time_in_ns(),
                                        .direction = flow_unknown,
                                    };
 
@@ -6590,7 +6645,7 @@ int sched_process_fork_signal(struct bpf_raw_tracepoint_args *ctx)
     struct task_struct *parent = (struct task_struct *) ctx->args[0];
     struct task_struct *child = (struct task_struct *) ctx->args[1];
     struct task_struct *leader = get_leader_task(child);
-    struct task_struct *up_parent = get_leader_task(get_parent_task(leader));
+    struct task_struct *parent_process = get_leader_task(get_parent_task(leader));
 
     // In the Linux kernel:
     //
@@ -6620,7 +6675,7 @@ int sched_process_fork_signal(struct bpf_raw_tracepoint_args *ctx)
     // userland tgid = kernel pid
 
     // The event timestamp, so process tree info can be changelog'ed.
-    u64 timestamp = bpf_ktime_get_ns();
+    u64 timestamp = get_current_time_in_ns();
     save_to_submit_buf(&signal->args_buf, &timestamp, sizeof(u64), 0);
 
     // Parent information.
@@ -6637,12 +6692,12 @@ int sched_process_fork_signal(struct bpf_raw_tracepoint_args *ctx)
     int child_ns_pid = get_task_ns_tgid(child);
     int child_ns_tid = get_task_ns_pid(child);
 
-    // Up Parent information: Go up in hierarchy until parent is process.
-    u64 up_parent_start_time = get_task_start_time(up_parent);
-    int up_parent_pid = get_task_host_tgid(up_parent);
-    int up_parent_tid = get_task_host_pid(up_parent);
-    int up_parent_ns_pid = get_task_ns_tgid(up_parent);
-    int up_parent_ns_tid = get_task_ns_pid(up_parent);
+    // Parent Process information: Go up in hierarchy until parent is process.
+    u64 parent_process_start_time = get_task_start_time(parent_process);
+    int parent_process_pid = get_task_host_tgid(parent_process);
+    int parent_process_tid = get_task_host_pid(parent_process);
+    int parent_process_ns_pid = get_task_ns_tgid(parent_process);
+    int parent_process_ns_tid = get_task_ns_pid(parent_process);
 
     // Leader information.
     u64 leader_start_time = get_task_start_time(leader);
@@ -6665,12 +6720,12 @@ int sched_process_fork_signal(struct bpf_raw_tracepoint_args *ctx)
     save_to_submit_buf(&signal->args_buf, (void *) &child_ns_pid, sizeof(int), 9);
     save_to_submit_buf(&signal->args_buf, (void *) &child_start_time, sizeof(u64), 10);
 
-    // Up Parent: always a real process (might be the same as Parent if it is a real process).
-    save_to_submit_buf(&signal->args_buf, (void *) &up_parent_tid, sizeof(int), 11);
-    save_to_submit_buf(&signal->args_buf, (void *) &up_parent_ns_tid, sizeof(int), 12);
-    save_to_submit_buf(&signal->args_buf, (void *) &up_parent_pid, sizeof(int), 13);
-    save_to_submit_buf(&signal->args_buf, (void *) &up_parent_ns_pid, sizeof(int), 14);
-    save_to_submit_buf(&signal->args_buf, (void *) &up_parent_start_time, sizeof(u64), 15);
+    // Parent Process: always a real process (might be the same as Parent if it is a real process).
+    save_to_submit_buf(&signal->args_buf, (void *) &parent_process_tid, sizeof(int), 11);
+    save_to_submit_buf(&signal->args_buf, (void *) &parent_process_ns_tid, sizeof(int), 12);
+    save_to_submit_buf(&signal->args_buf, (void *) &parent_process_pid, sizeof(int), 13);
+    save_to_submit_buf(&signal->args_buf, (void *) &parent_process_ns_pid, sizeof(int), 14);
+    save_to_submit_buf(&signal->args_buf, (void *) &parent_process_start_time, sizeof(u64), 15);
 
     // Leader: always a real process (might be the same as the Child if child is a real process).
     save_to_submit_buf(&signal->args_buf, (void *) &leader_tid, sizeof(int), 16);
@@ -6707,7 +6762,7 @@ int sched_process_exec_signal(struct bpf_raw_tracepoint_args *ctx)
     u32 leader_hash = hash_task_id(get_task_host_pid(leader), get_task_start_time(leader));
 
     // The event timestamp, so process tree info can be changelog'ed.
-    u64 timestamp = bpf_ktime_get_ns();
+    u64 timestamp = get_current_time_in_ns();
     save_to_submit_buf(&signal->args_buf, &timestamp, sizeof(u64), 0);
 
     save_to_submit_buf(&signal->args_buf, (void *) &task_hash, sizeof(u32), 1);
@@ -6802,7 +6857,7 @@ int sched_process_exit_signal(struct bpf_raw_tracepoint_args *ctx)
     u32 leader_hash = hash_task_id(get_task_host_pid(leader), get_task_start_time(leader));
 
     // The event timestamp, so process tree info can be changelog'ed.
-    u64 timestamp = bpf_ktime_get_ns();
+    u64 timestamp = get_current_time_in_ns();
     save_to_submit_buf(&signal->args_buf, &timestamp, sizeof(u64), 0);
 
     save_to_submit_buf(&signal->args_buf, (void *) &task_hash, sizeof(u32), 1);

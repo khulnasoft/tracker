@@ -3,12 +3,14 @@ package ebpf
 import (
 	gocontext "context"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"unsafe"
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
@@ -40,6 +42,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/proctree"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
 	"github.com/khulnasoft/tracker/pkg/streams"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/pkg/utils/environment"
 	"github.com/khulnasoft/tracker/pkg/utils/proc"
@@ -125,6 +128,8 @@ type Tracker struct {
 	// This does not mean they are required for tracker to function.
 	// TODO: remove this in favor of dependency manager nodes
 	requiredKsyms []string
+	// Time for normalization
+	timeNormalizer trackertime.TimeNormalizer
 }
 
 func (t *Tracker) Stats() *metrics.Stats {
@@ -272,7 +277,16 @@ func New(cfg config.Config) (*Tracker, error) {
 
 	// Initialize capabilities rings soon
 
-	err = capabilities.Initialize(t.config.Capabilities.BypassCaps)
+	useBaseEbpf := func(cfg config.Config) bool {
+		return cfg.Output.StackAddresses
+	}
+
+	err = capabilities.Initialize(
+		capabilities.Config{
+			Bypass:   t.config.Capabilities.BypassCaps,
+			BaseEbpf: useBaseEbpf(t.config),
+		},
+	)
 	if err != nil {
 		return t, errfmt.WrapError(err)
 	}
@@ -340,7 +354,10 @@ func New(cfg config.Config) (*Tracker, error) {
 			utils.SetBit(&emit, uint(p.ID))
 			t.selectEvent(e, events.EventState{Submit: submit, Emit: emit})
 
-			t.policyManager.EnableRule(p.ID, e)
+			err := t.policyManager.EnableRule(p.ID, e)
+			if err != nil {
+				logger.Errorw("Failed to enable rule", "policy", p.ID, "event", e, "error", err)
+			}
 		}
 	}
 
@@ -429,15 +446,6 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		}
 	} else {
 		logger.Debugw("Initializing buckets cache", "error", errfmt.WrapError(err))
-	}
-
-	// Initialize Process Tree (if enabled)
-
-	if t.config.ProcTree.Source != proctree.SourceNone {
-		t.processTree, err = proctree.NewProcessTree(ctx, t.config.ProcTree)
-		if err != nil {
-			return errfmt.WrapError(err)
-		}
 	}
 
 	// Initialize cgroups filesystems
@@ -530,6 +538,53 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		}
 	}
 
+	// Initialize time normalizer
+
+	// Checking the kernel symbol needs to happen after obtaining the capability;
+	// otherwise, we get a warning.
+	usedClockID := trackertime.CLOCK_BOOTTIME
+	err = capabilities.GetInstance().EBPF(
+		func() error {
+			supported, innerErr := bpf.BPFHelperIsSupported(bpf.BPFProgTypeKprobe, bpf.BPFFuncKtimeGetBootNs)
+
+			// only report if operation not permitted
+			if errors.Is(innerErr, syscall.EPERM) {
+				return innerErr
+			}
+
+			// If BPFFuncKtimeGetBootNs is not available, eBPF will generate events based on monotonic time.
+			if !supported {
+				usedClockID = trackertime.CLOCK_MONOTONIC
+			}
+			return nil
+		})
+	if err != nil {
+		return errfmt.WrapError(err)
+	}
+
+	// elapsed time in nanoseconds since system start
+	t.startTime = uint64(trackertime.GetStartTimeNS(int32(usedClockID)))
+	// time in nanoseconds when the system was booted
+	t.bootTime = uint64(trackertime.GetBootTimeNS(int32(usedClockID)))
+
+	t.timeNormalizer = trackertime.CreateTimeNormalizerByConfig(t.config.Output.RelativeTime, t.startTime, t.bootTime)
+
+	// Initialize Process Tree (if enabled)
+
+	if t.config.ProcTree.Source != proctree.SourceNone {
+		// As procfs use boot time to calculate process start time, we can use the procfs
+		// only if the times we get from the eBPF programs are based on the boot time (instead of monotonic).
+		proctreeConfig := t.config.ProcTree
+		if usedClockID == trackertime.CLOCK_MONOTONIC {
+			proctreeConfig.ProcfsInitialization = false
+			proctreeConfig.ProcfsQuerying = false
+		}
+		t.processTree, err = proctree.NewProcessTree(ctx, proctreeConfig, t.timeNormalizer)
+		if err != nil {
+			return errfmt.WrapError(err)
+		}
+	}
+
 	// Initialize eBPF programs and maps
 
 	err = capabilities.GetInstance().EBPF(
@@ -606,11 +661,6 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		},
 	}
 
-	// Initialize times
-
-	t.startTime = uint64(utils.GetStartTimeNS())
-	t.bootTime = uint64(utils.GetBootTimeNS())
-
 	return nil
 }
 
@@ -636,27 +686,11 @@ func (t *Tracker) initTailCall(tailCall events.TailCall) error {
 		return errfmt.Errorf("could not get BPF program FD for %s: %v", tailCallProgName, err)
 	}
 
-	once := &sync.Once{}
-
 	// Pick all indexes (event, or syscall, IDs) the BPF program should be related to.
 	for _, index := range tailCallIndexes {
-		// Special treatment for indexes of syscall events.
-		if events.Core.GetDefinitionByID(events.ID(index)).IsSyscall() {
-			// Optimization: enable enter/exit probes only if at least one syscall is enabled.
-			once.Do(func() {
-				err := t.probes.Attach(probes.SyscallEnter__Internal, t.kernelSymbols)
-				if err != nil {
-					logger.Errorw("error attaching to syscall enter", "error", err)
-				}
-				err = t.probes.Attach(probes.SyscallExit__Internal, t.kernelSymbols)
-				if err != nil {
-					logger.Errorw("error attaching to syscall enter", "error", err)
-				}
-			})
-			// Workaround: Do not map eBPF program to unsupported syscalls (arm64, e.g.)
-			if index >= uint32(events.Unsupported) {
-				continue
-			}
+		// Workaround: Do not map eBPF program to unsupported syscalls (arm64, e.g.)
+		if index >= uint32(events.Unsupported) {
+			continue
 		}
 		// Update given eBPF map with the eBPF program file descriptor at given index.
 		err := bpfMap.Update(unsafe.Pointer(&index), unsafe.Pointer(&bpfProgFD))
@@ -1358,6 +1392,10 @@ func (t *Tracker) initBPF() error {
 		return errfmt.WrapError(err)
 	}
 
+	// Need to force nil to allow the garbage
+	// collector to free the BPF object
+	t.config.BPFObjBytes = nil
+
 	// Populate eBPF maps with initial data
 
 	err = t.populateBPFMaps()
@@ -1372,6 +1410,7 @@ func (t *Tracker) initBPF() error {
 		t.containers,
 		t.config.NoContainersEnrich,
 		t.processTree,
+		t.timeNormalizer,
 	)
 	if err != nil {
 		return errfmt.WrapError(err)
@@ -1978,7 +2017,7 @@ func (t *Tracker) Subscribe(policyNames []string) (*streams.Stream, error) {
 func (t *Tracker) subscribe(policyMask uint64) *streams.Stream {
 	// TODO: the channel size matches the pipeline channel size,
 	// but we should make it configurable in the future.
-	return t.streamsManager.Subscribe(policyMask, 10000)
+	return t.streamsManager.Subscribe(policyMask, t.config.PipelineChannelSize)
 }
 
 // Unsubscribe unsubscribes stream
@@ -2021,7 +2060,10 @@ func (t *Tracker) EnableRule(policyNames []string, ruleId string) error {
 			return err
 		}
 
-		t.policyManager.EnableRule(p.ID, eventID)
+		err = t.policyManager.EnableRule(p.ID, eventID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -2040,7 +2082,10 @@ func (t *Tracker) DisableRule(policyNames []string, ruleId string) error {
 			return err
 		}
 
-		t.policyManager.DisableRule(p.ID, eventID)
+		err = t.policyManager.DisableRule(p.ID, eventID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

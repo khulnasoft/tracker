@@ -1,9 +1,13 @@
+![Tracker Logo](docs/images/tracker.png)
+
 <!-- links that differ between docs and readme -->
 [installation]:https://khulnasoft.github.io/tracker/latest/docs/install/
 [docker-guide]:https://khulnasoft.github.io/tracker/latest/docs/install/docker/
 [kubernetes-guide]:https://khulnasoft.github.io/tracker/latest/docs/install/kubernetes/
 [prereqs]:https://khulnasoft.github.io/tracker/latest/docs/install/prerequisites/
 [macfaq]:https://khulnasoft.github.io/tracker/latest/docs/advanced/mac/
+
+Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
 
 ## About Tracker
 
@@ -51,7 +55,7 @@ If you run into any trouble using Tracker or you would like to give use user fee
 
 Find more information on [contribution documentation](https://khulnasoft.github.io/tracker/latest/contributing/overview/).
 
-## More about Khulnasoft Security
+## More about Aqua Security
 
-Tracker is an [Khulnasoft Security](https://khulnasoft.com) open source project.  
+Tracker is an [Aqua Security](https://khulnasoft.com) open source project.  
 Learn about our open source work and portfolio [here](https://www.khulnasoft.com/products/open-source-projects/).

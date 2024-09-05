@@ -13,6 +13,15 @@ MAKE = make
 MAKEFLAGS += --no-print-directory
 
 #
+# env
+#
+
+GOENV_MK = goenv.mk
+
+# load Go environment variables
+-include $(GOENV_MK)
+
+#
 # tools
 #
 
@@ -237,7 +246,6 @@ env:
 	@echo "CGO_EXT_LDFLAGS_RULES    $(CGO_EXT_LDFLAGS_RULES)"
 	@echo ---------------------------------------
 	@echo "GO_ENV_EBPF              $(GO_ENV_EBPF)"
-	@echo "GO_ENV_RULES             $(GO_ENV_RULES)"
 	@echo ---------------------------------------
 	@echo "TRACKER_SRC               $(TRACKER_SRC)"
 	@echo "TRACKER_SRC_DIRS          $(TRACKER_SRC_DIRS)"
@@ -349,6 +357,7 @@ $(OUTPUT_DIR)/btfhub:
 LIBBPF_CFLAGS = "-fPIC"
 LIBBPF_LDFLAGS =
 LIBBPF_SRC = ./3rdparty/libbpf/src
+LIBBPF_INCLUDE_UAPI = $(abspath ./3rdparty/libbpf/include/uapi)
 LIBBPF_DESTDIR = $(OUTPUT_DIR)/libbpf
 LIBBPF_OBJDIR = $(LIBBPF_DESTDIR)/obj
 LIBBPF_OBJ = $(LIBBPF_OBJDIR)/libbpf.a
@@ -369,6 +378,27 @@ $(LIBBPF_OBJ): \
 		LIBDIR=$(abspath $(LIBBPF_OBJDIR)) \
 		INCLUDEDIR= UAPIDIR= prefix= libdir= \
 		install install_uapi_headers
+
+.ONESHELL:
+.eval_goenv: $(LIBBPF_OBJ)
+#
+	@{
+ifeq ($(STATIC), 1)
+		$(eval GO_TAGS_EBPF := $(GO_TAGS_EBPF),netgo)
+		$(eval CGO_EXT_LDFLAGS_EBPF := $(CGO_EXT_LDFLAGS_EBPF) -static)
+		$(eval PKG_CONFIG_FLAG := --static)
+endif
+		$(eval GO_ENV_EBPF = )
+		$(eval GO_ENV_EBPF += GOOS=linux)
+		$(eval GO_ENV_EBPF += CC=$(CMD_CLANG))
+		$(eval GO_ENV_EBPF += GOARCH=$(GO_ARCH))
+		$(eval GO_ENV_EBPF += CGO_CFLAGS=$(CUSTOM_CGO_CFLAGS))
+		$(eval CUSTOM_CGO_LDFLAGS := "$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) $(CMD_PKGCONFIG) $(PKG_CONFIG_FLAG) --libs $(LIB_BPF))")
+		$(eval GO_ENV_EBPF := $(GO_ENV_EBPF) CGO_LDFLAGS=$(CUSTOM_CGO_LDFLAGS))
+		export GO_ENV_EBPF=$(GO_ENV_EBPF)
+		echo 'GO_ENV_EBPF := $(GO_ENV_EBPF)' > $(GOENV_MK)
+		$(CMD_TOUCH) $@
+	}
 
 $(LIBBPF_SRC): \
 	| .check_$(CMD_GIT)
@@ -419,23 +449,9 @@ TRACKER_SRC_DIRS = ./cmd/ ./pkg/ ./signatures/
 TRACKER_SRC = $(shell find $(TRACKER_SRC_DIRS) -type f -name '*.go' ! -name '*_test.go')
 GO_TAGS_EBPF = core,ebpf
 CGO_EXT_LDFLAGS_EBPF =
-CUSTOM_CGO_CFLAGS = "-I$(abspath $(OUTPUT_DIR)/libbpf)"
+CUSTOM_CGO_CFLAGS = "-I$(abspath $(OUTPUT_DIR)/libbpf) -I$(LIBBPF_INCLUDE_UAPI)"
 PKG_CONFIG_PATH = $(LIBBPF_OBJDIR)
 PKG_CONFIG_FLAG =
-
-ifeq ($(STATIC), 1)
-    GO_TAGS_EBPF := $(GO_TAGS_EBPF),netgo
-    CGO_EXT_LDFLAGS_EBPF += -static
-    PKG_CONFIG_FLAG = --static
-endif
-
-CUSTOM_CGO_LDFLAGS = "$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) $(CMD_PKGCONFIG) $(PKG_CONFIG_FLAG) --libs $(LIB_BPF))"
-GO_ENV_EBPF =
-GO_ENV_EBPF += GOOS=linux
-GO_ENV_EBPF += CC=$(CMD_CLANG)
-GO_ENV_EBPF += GOARCH=$(GO_ARCH)
-GO_ENV_EBPF += CGO_CFLAGS=$(CUSTOM_CGO_CFLAGS)
-GO_ENV_EBPF += CGO_LDFLAGS=$(CUSTOM_CGO_LDFLAGS)
 
 TRACKER_PROTOS = ./api/v1beta1/*.proto
 
@@ -472,7 +488,8 @@ tracker: $(OUTPUT_DIR)/tracker
 $(OUTPUT_DIR)/tracker: \
 	$(OUTPUT_DIR)/tracker.bpf.o \
 	$(TRACKER_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
 	btfhub \
 	signatures
@@ -504,7 +521,8 @@ tracker-ebpf: $(OUTPUT_DIR)/tracker-ebpf
 $(OUTPUT_DIR)/tracker-ebpf: \
 	$(OUTPUT_DIR)/tracker.bpf.o \
 	$(TRACKER_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
 	btfhub
 #
@@ -529,22 +547,6 @@ clean-tracker-ebpf:
 # tracker-rules (deprecated)
 #
 
-STATIC ?= 0
-GO_TAGS_RULES =
-CGO_EXT_LDFLAGS_RULES =
-
-ifeq ($(STATIC), 1)
-    CGO_EXT_LDFLAGS_RULES += -static
-    GO_TAGS_RULES := netgo
-endif
-
-GO_ENV_RULES =
-GO_ENV_RULES += GOOS=linux
-GO_ENV_RULES += CC=$(CMD_CLANG)
-GO_ENV_RULES += GOARCH=$(GO_ARCH)
-GO_ENV_RULES += CGO_CFLAGS=
-GO_ENV_RULES += CGO_LDFLAGS=
-
 TRACKER_RULES_SRC_DIRS = ./cmd/tracker-rules/ ./pkg/signatures/
 TRACKER_RULES_SRC=$(shell find $(TRACKER_RULES_SRC_DIRS) -type f -name '*.go')
 
@@ -553,11 +555,12 @@ tracker-rules: $(OUTPUT_DIR)/tracker-rules
 
 $(OUTPUT_DIR)/tracker-rules: \
 	$(TRACKER_RULES_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	$(OUTPUT_DIR) \
 	signatures
 #
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		-tags $(GO_TAGS_RULES) \
 		-ldflags="$(GO_DEBUG_FLAG) \
 			-extldflags \"$(CGO_EXT_LDFLAGS_RULES)\" \
@@ -596,12 +599,13 @@ signatures: $(OUTPUT_DIR)/signatures
 $(OUTPUT_DIR)/signatures: \
 	$(GOSIGNATURES_SRC) \
 	$(REGO_SIGNATURES_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_INSTALL) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_MKDIR) -p $@
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		--buildmode=plugin \
 		-o $@/builtin.so \
 		$(GOSIGNATURES_SRC)
@@ -657,8 +661,9 @@ tracker-gptdocs: $(OUTPUT_DIR)/tracker-gptdocs
 
 $(OUTPUT_DIR)/tracker-gptdocs: \
 	$(TRACKER_GPTDOCS_SRC) \
-	$(LIBBPF_OBJ) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
+	.checklib_$(LIB_BPF) \
 	$(OUTPUT_DIR)
 #
 	$(MAKE) $(OUTPUT_DIR)/btfhub
@@ -695,12 +700,13 @@ e2e-net-signatures: $(OUTPUT_DIR)/e2e-net-signatures
 
 $(OUTPUT_DIR)/e2e-net-signatures: \
 	$(E2E_NET_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_INSTALL) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_MKDIR) -p $@
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		--buildmode=plugin \
 		-o $@/builtin.so \
 		$(E2E_NET_SRC)
@@ -726,12 +732,13 @@ e2e-inst-signatures: $(OUTPUT_DIR)/e2e-inst-signatures
 
 $(OUTPUT_DIR)/e2e-inst-signatures: \
 	$(E2E_INST_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_INSTALL) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_MKDIR) -p $@
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		--buildmode=plugin \
 		-o $@/builtin.so \
 		$(E2E_INST_SRC)
@@ -749,7 +756,8 @@ clean-e2e-inst-signatures:
 test-unit: \
 	tracker-ebpf \
 	test-types \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) test \
@@ -782,8 +790,8 @@ test-types: \
 
 .PHONY: $(OUTPUT_DIR)/syscaller
 $(OUTPUT_DIR)/syscaller: \
-	$(LIBBPF_OBJ) \
-	| .check_$(CMD_GO)
+	| .eval_goenv \
+	.check_$(CMD_GO) \
 #
 	$(GO_ENV_EBPF) \
 	$(CMD_GO) build -o $(OUTPUT_DIR)/syscaller ./tests/integration/syscaller/cmd
@@ -792,7 +800,8 @@ $(OUTPUT_DIR)/syscaller: \
 test-integration: \
 	$(OUTPUT_DIR)/syscaller \
 	tracker \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) test \
@@ -816,7 +825,8 @@ test-signatures: \
 
 .PHONY: test-upstream-libbpfgo
 test-upstream-libbpfgo: \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	./tests/libbpfgo.sh $(GO_ENV_EBPF)
 
@@ -827,7 +837,8 @@ test-upstream-libbpfgo: \
 .PHONY: test-performance
 test-performance: \
 	tracker \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) test \
@@ -872,7 +883,8 @@ check-code:: \
 .PHONY: check-vet
 check-vet: \
 	tracker-ebpf \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) vet \
@@ -882,7 +894,8 @@ check-vet: \
 .PHONY: check-staticcheck
 check-staticcheck: \
 	tracker-ebpf \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_STATICCHECK)
 #
 	@$(GO_ENV_EBPF) \
@@ -969,29 +982,40 @@ protoc:
 # man pages
 #
 
-MARKDOWN_DIR ?= ./docs/docs/flags
-MAN_DIR ?= ./docs/man
+MARKDOWN_DIR ?= docs/docs/flags
+MAN_DIR ?= docs/man
+OUTPUT_MAN_DIR := $(OUTPUT_DIR)/$(MAN_DIR)
 MARKDOW_FILES := $(shell find $(MARKDOWN_DIR) \
 					-type f \
 					-name '*.md' \
 				)
 MAN_FILES := $(patsubst $(MARKDOWN_DIR)/%.md,$(MAN_DIR)/%,$(MARKDOW_FILES))
 
+$(OUTPUT_MAN_DIR): \
+	| .check_$(CMD_MKDIR)
+#
+	$(CMD_MKDIR) -p $@
+
 $(MAN_DIR)/%: $(MARKDOWN_DIR)/%.md \
 	| .check_$(CMD_PANDOC) \
+	$(OUTPUT_MAN_DIR)
 #
-	@echo Generating $@
-	@$(CMD_PANDOC) \
+	@echo Generating $@ && \
+	$(CMD_PANDOC) \
 		--verbose \
 		--standalone \
 		--to man \
 		$< \
-		-o $@
+		-o $@ && \
+	echo Copying $@ to $(OUTPUT_MAN_DIR) && \
+	cp $@ $(OUTPUT_MAN_DIR)
 
 .PHONY: clean-man
 clean-man:
-	@echo Cleaning $(MAN_DIR)
-	@rm -f $(MAN_DIR)/*
+	@echo Cleaning $(MAN_DIR) && \
+	rm -f $(MAN_DIR)/* && \
+	echo Cleaning $(OUTPUT_MAN_DIR) && \
+	rm -rf $(OUTPUT_MAN_DIR)
 
 .PHONY: man
 man: clean-man $(MAN_FILES)
@@ -1002,11 +1026,14 @@ man: clean-man $(MAN_FILES)
 #
 
 .PHONY: clean
+.ONESHELL:
 clean:
 #
 	$(CMD_RM) -rf $(OUTPUT_DIR)
+	$(CMD_RM) -f $(GOENV_MK)
 	$(CMD_RM) -f .*.md5
 	$(CMD_RM) -f .check*
+	$(CMD_RM) -f .eval_*
 	$(CMD_RM) -f .*-pkgs*
 
 # tracker-operator

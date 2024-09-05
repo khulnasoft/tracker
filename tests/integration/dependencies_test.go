@@ -167,11 +167,10 @@ func Test_EventsDependencies(t *testing.T) {
 			// test kprobes
 			err = testAttachedKprobes(testCaseInst.expectedKprobes, testCaseInst.unexpectedKprobes)
 			if err != nil {
-    if err != nil {
-        t.Logf("Test %s failed: %v", t.Name(), err)
-        failed = true
-        defer cleanup()
-    }
+				t.Logf("Test %s failed: %v", t.Name(), err)
+				failed = true
+				goto cleanup
+			}
 
 			// test events
 			testCmdEvents = createCmdEvents(testCaseInst.expectedEvents, testCaseInst.unexpectedEvents)

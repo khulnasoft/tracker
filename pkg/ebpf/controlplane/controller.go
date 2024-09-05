@@ -11,6 +11,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/proctree"
+	trackertime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 // TODO: With the introduction of signal events, the control plane can now have a generic argument
@@ -28,6 +29,7 @@ type Controller struct {
 	cgroupManager  *containers.Containers
 	processTree    *proctree.ProcessTree
 	enrichDisabled bool
+	timeNormalizer trackertime.TimeNormalizer
 }
 
 // NewController creates a new controller.
@@ -36,6 +38,7 @@ func NewController(
 	cgroupManager *containers.Containers,
 	enrichDisabled bool,
 	procTree *proctree.ProcessTree,
+	timeNormalizer trackertime.TimeNormalizer,
 ) (*Controller, error) {
 	var err error
 
@@ -46,6 +49,7 @@ func NewController(
 		cgroupManager:  cgroupManager,
 		processTree:    procTree,
 		enrichDisabled: enrichDisabled,
+		timeNormalizer: timeNormalizer,
 	}
 
 	p.signalBuffer, err = bpfModule.InitPerfBuf("signals", p.signalChan, p.lostSignalChan, 1024)
