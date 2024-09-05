@@ -6,9 +6,9 @@
 
 # variables
 
-TRACEE_TMP="/tmp/tracee"
-TRACEE_OUT="${TRACEE_TMP}/out"
-TRACEE_EXE=${TRACEE_EXE:="/tracee/tracee"}
+TRACKER_TMP="/tmp/tracee"
+TRACKER_OUT="${TRACKER_TMP}/out"
+TRACKER_EXE=${TRACKER_EXE:="/tracee/tracee"}
 
 LIBBPFGO_OSRELEASE_FILE=${LIBBPFGO_OSRELEASE_FILE:="/etc/os-release-host"}
 
@@ -19,14 +19,14 @@ CAPABILITIES_DROP=${CAPABILITIES_DROP:=""}
 # functions
 
 run_tracee() {
-    mkdir -p $TRACEE_OUT
+    mkdir -p $TRACKER_OUT
 
     if [ $# -ne 0 ]; then
         # no default arguments, just given ones
-        $TRACEE_EXE "$@"
+        $TRACKER_EXE "$@"
     else
         # default arguments
-        $TRACEE_EXE \
+        $TRACKER_EXE \
         --metrics \
         --cache cache-type=mem \
         --cache mem-cache-size=512 \
@@ -44,8 +44,8 @@ run_tracee() {
 
 # startup
 
-if [ ! -x $TRACEE_EXE ]; then
-    echo "ERROR: cannot execute $TRACEE_EXE"
+if [ ! -x $TRACKER_EXE ]; then
+    echo "ERROR: cannot execute $TRACKER_EXE"
     exit 1
 fi
 

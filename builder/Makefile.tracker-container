@@ -59,7 +59,7 @@ CMD_DOCKER ?= docker
 .PHONY: help
 help:
 	@echo ""
-	@echo "CREATES THE OFFICIAL TRACEE CONTAINER IMAGE"
+	@echo "CREATES THE OFFICIAL TRACKER CONTAINER IMAGE"
 	@echo ""
 	@echo "To GENERATE tracee container:"
 	@echo ""
@@ -108,8 +108,8 @@ ifeq ($(SNAPSHOT),1)
 	TAG=dev
 endif
 
-TRACEE_CONT_NAME = tracee:$(TAG)
-TRACEE_CONT_DOCKERFILE = builder/Dockerfile.alpine-tracee-container
+TRACKER_CONT_NAME = tracee:$(TAG)
+TRACKER_CONT_DOCKERFILE = builder/Dockerfile.alpine-tracee-container
 
 .PHONY: build-tracee
 build-tracee: \
@@ -118,8 +118,8 @@ build-tracee: \
 #
 	$(CMD_DOCKER) build \
 		--network host \
-		-f $(TRACEE_CONT_DOCKERFILE) \
-		-t $(TRACEE_CONT_NAME) \
+		-f $(TRACKER_CONT_DOCKERFILE) \
+		-t $(TRACKER_CONT_NAME) \
 		--build-arg=BTFHUB=$(BTFHUB) \
 		--build-arg=FLAVOR=tracee-core \
 		--target tracee-core \
@@ -144,7 +144,7 @@ run-tracee: \
 #
 	$(CMD_DOCKER) \
 		$(DOCKER_RUN_ARGS) \
-		--rm -it $(TRACEE_CONT_NAME) \
+		--rm -it $(TRACKER_CONT_NAME) \
 		$(ARG)
 
 #

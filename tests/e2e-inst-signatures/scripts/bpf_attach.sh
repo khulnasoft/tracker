@@ -1,10 +1,10 @@
 #!/bin/bash
 
-TRACEE_STARTUP_TIMEOUT=60
-TRACEE_SHUTDOWN_TIMEOUT=60
-TRACEE_RUN_TIMEOUT=5
+TRACKER_STARTUP_TIMEOUT=60
+TRACKER_SHUTDOWN_TIMEOUT=60
+TRACKER_RUN_TIMEOUT=5
 
-TRACEE_TMP_DIR=/tmp/bpf_attach
+TRACKER_TMP_DIR=/tmp/bpf_attach
 
 info_exit() {
     echo -n "INFO: "
@@ -19,10 +19,10 @@ info() {
 
 # run tracee with a single event (to trigger the other instance)
 
-rm -f $TRACEE_TMP_DIR/tracee.pid
+rm -f $TRACKER_TMP_DIR/tracee.pid
 
 ./dist/tracee \
-    --install-path $TRACEE_TMP_DIR \
+    --install-path $TRACKER_TMP_DIR \
     --output none \
     --events security_file_open &
 
@@ -37,12 +37,12 @@ while true; do
     times=$((times + 1))
     sleep 1
 
-    if [[ -f $TRACEE_TMP_DIR/tracee.pid ]]; then
+    if [[ -f $TRACKER_TMP_DIR/tracee.pid ]]; then
         info "bpf_attach test tracee instance started"
         break
     fi
 
-    if [[ $times -gt $TRACEE_STARTUP_TIMEOUT ]]; then
+    if [[ $times -gt $TRACKER_STARTUP_TIMEOUT ]]; then
         timedout=1
         break
     fi
@@ -52,13 +52,13 @@ if [[ $timedout -eq 1 ]]; then
     info_exit "could not start the bpf_attach test tracee instance"
 fi
 
-sleep $TRACEE_RUN_TIMEOUT # stay alive for sometime (proforma)
+sleep $TRACKER_RUN_TIMEOUT # stay alive for sometime (proforma)
 
 # try a clean exit
 kill -SIGINT "$pid"
 
 # wait tracee to shutdown (might take sometime, detaching is slow >= v6.x)
-sleep $TRACEE_SHUTDOWN_TIMEOUT
+sleep $TRACKER_SHUTDOWN_TIMEOUT
 
 # make sure tracee is exited with SIGKILL
 kill -SIGKILL "$pid" >/dev/null 2>&1

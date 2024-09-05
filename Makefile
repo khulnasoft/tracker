@@ -230,8 +230,8 @@ env:
 	@echo "STATIC                   $(STATIC)"
 	@echo ---------------------------------------
 	@echo "BPF_VCPU                 $(BPF_VCPU)"
-	@echo "TRACEE_EBPF_OBJ_SRC      $(TRACEE_EBPF_OBJ_SRC)"
-	@echo "TRACEE_EBPF_OBJ_HEADERS  $(TRACEE_EBPF_OBJ_HEADERS)"
+	@echo "TRACKER_EBPF_OBJ_SRC      $(TRACKER_EBPF_OBJ_SRC)"
+	@echo "TRACKER_EBPF_OBJ_HEADERS  $(TRACKER_EBPF_OBJ_HEADERS)"
 	@echo ---------------------------------------
 	@echo "GO_ARCH                  $(GO_ARCH)"
 	@echo "GO_TAGS_EBPF             $(GO_TAGS_EBPF)"
@@ -247,17 +247,17 @@ env:
 	@echo ---------------------------------------
 	@echo "GO_ENV_EBPF              $(GO_ENV_EBPF)"
 	@echo ---------------------------------------
-	@echo "TRACEE_SRC               $(TRACEE_SRC)"
-	@echo "TRACEE_SRC_DIRS          $(TRACEE_SRC_DIRS)"
+	@echo "TRACKER_SRC               $(TRACKER_SRC)"
+	@echo "TRACKER_SRC_DIRS          $(TRACKER_SRC_DIRS)"
 	@echo ---------------------------------------
-	@echo "TRACEE_RULES_SRC_DIRS    $(TRACEE_RULES_SRC_DIRS)"
-	@echo "TRACEE_RULES_SRC         $(TRACEE_RULES_SRC)"
+	@echo "TRACKER_RULES_SRC_DIRS    $(TRACKER_RULES_SRC_DIRS)"
+	@echo "TRACKER_RULES_SRC         $(TRACKER_RULES_SRC)"
 	@echo ---------------------------------------
-	@echo "TRACEE_BENCH_SRC_DIRS    $(TRACEE_BENCH_SRC_DIRS)"
-	@echo "TRACEE_BENCH_SRC         $(TRACEE_BENCH_SRC)"
+	@echo "TRACKER_BENCH_SRC_DIRS    $(TRACKER_BENCH_SRC_DIRS)"
+	@echo "TRACKER_BENCH_SRC         $(TRACKER_BENCH_SRC)"
 	@echo ---------------------------------------
-	@echo "TRACEE_GPTDOCS_SRC_DIRS  $(TRACEE_GPTDOCS_SRC_DIRS)"
-	@echo "TRACEE_GPTDOCS_SRC       $(TRACEE_GPTDOCS_SRC)"
+	@echo "TRACKER_GPTDOCS_SRC_DIRS  $(TRACKER_GPTDOCS_SRC_DIRS)"
+	@echo "TRACKER_GPTDOCS_SRC       $(TRACKER_GPTDOCS_SRC)"
 	@echo ---------------------------------------
 	@echo "GOSIGNATURES_DIR         $(GOSIGNATURES_DIR)"
 	@echo "GOSIGNATURES_SRC         $(GOSIGNATURES_SRC)"
@@ -270,7 +270,7 @@ env:
 	@echo "E2E_INST_DIR             $(E2E_INST_DIR)"
 	@echo "E2E_INST_SRC             $(E2E_INST_SRC)"
 	@echo ---------------------------------------
-	@echo "TRACEE_PROTOS            $(TRACEE_PROTOS)"
+	@echo "TRACKER_PROTOS            $(TRACKER_PROTOS)"
 	@echo ---------------------------------------
 
 #
@@ -411,16 +411,16 @@ endif
 # ebpf object
 #
 
-TRACEE_EBPF_OBJ_SRC = ./pkg/ebpf/c/tracee.bpf.c
-TRACEE_EBPF_OBJ_HEADERS = $(shell find pkg/ebpf/c -name *.h)
+TRACKER_EBPF_OBJ_SRC = ./pkg/ebpf/c/tracee.bpf.c
+TRACKER_EBPF_OBJ_HEADERS = $(shell find pkg/ebpf/c -name *.h)
 
 .PHONY: bpf
 bpf: $(OUTPUT_DIR)/tracee.bpf.o
 
 $(OUTPUT_DIR)/tracee.bpf.o: \
 	$(LIBBPF_OBJ) \
-	$(TRACEE_EBPF_OBJ_SRC) \
-	$(TRACEE_EBPF_OBJ_HEADERS)
+	$(TRACKER_EBPF_OBJ_SRC) \
+	$(TRACKER_EBPF_OBJ_HEADERS)
 #
 	$(CMD_CLANG) \
 		-D__TARGET_ARCH_$(LINUX_ARCH) \
@@ -432,7 +432,7 @@ $(OUTPUT_DIR)/tracee.bpf.o: \
 		-target bpf \
 		-O2 -g \
 		-mcpu=$(BPF_VCPU) \
-		-c $(TRACEE_EBPF_OBJ_SRC) \
+		-c $(TRACKER_EBPF_OBJ_SRC) \
 		-o $@
 
 .PHONY: clean-bpf
@@ -445,15 +445,15 @@ clean-bpf:
 #
 
 STATIC ?= 0
-TRACEE_SRC_DIRS = ./cmd/ ./pkg/ ./signatures/
-TRACEE_SRC = $(shell find $(TRACEE_SRC_DIRS) -type f -name '*.go' ! -name '*_test.go')
+TRACKER_SRC_DIRS = ./cmd/ ./pkg/ ./signatures/
+TRACKER_SRC = $(shell find $(TRACKER_SRC_DIRS) -type f -name '*.go' ! -name '*_test.go')
 GO_TAGS_EBPF = core,ebpf
 CGO_EXT_LDFLAGS_EBPF =
 CUSTOM_CGO_CFLAGS = "-I$(abspath $(OUTPUT_DIR)/libbpf) -I$(LIBBPF_INCLUDE_UAPI)"
 PKG_CONFIG_PATH = $(LIBBPF_OBJDIR)
 PKG_CONFIG_FLAG =
 
-TRACEE_PROTOS = ./api/v1beta1/*.proto
+TRACKER_PROTOS = ./api/v1beta1/*.proto
 
 #
 # btfhub (expensive: only run if ebpf obj changed)
@@ -487,7 +487,7 @@ tracee: $(OUTPUT_DIR)/tracee
 
 $(OUTPUT_DIR)/tracee: \
 	$(OUTPUT_DIR)/tracee.bpf.o \
-	$(TRACEE_SRC) \
+	$(TRACKER_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
@@ -520,7 +520,7 @@ tracee-ebpf: $(OUTPUT_DIR)/tracee-ebpf
 
 $(OUTPUT_DIR)/tracee-ebpf: \
 	$(OUTPUT_DIR)/tracee.bpf.o \
-	$(TRACEE_SRC) \
+	$(TRACKER_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
@@ -547,14 +547,14 @@ clean-tracee-ebpf:
 # tracee-rules (deprecated)
 #
 
-TRACEE_RULES_SRC_DIRS = ./cmd/tracee-rules/ ./pkg/signatures/
-TRACEE_RULES_SRC=$(shell find $(TRACEE_RULES_SRC_DIRS) -type f -name '*.go')
+TRACKER_RULES_SRC_DIRS = ./cmd/tracee-rules/ ./pkg/signatures/
+TRACKER_RULES_SRC=$(shell find $(TRACKER_RULES_SRC_DIRS) -type f -name '*.go')
 
 .PHONY: tracee-rules
 tracee-rules: $(OUTPUT_DIR)/tracee-rules
 
 $(OUTPUT_DIR)/tracee-rules: \
-	$(TRACEE_RULES_SRC) \
+	$(TRACKER_RULES_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
 	$(OUTPUT_DIR) \
@@ -623,8 +623,8 @@ clean-signatures:
 
 # tracee-bench
 
-TRACEE_BENCH_SRC_DIRS = ./cmd/tracee-bench/
-TRACEE_BENCH_SRC = $(shell find $(TRACEE_BENCH_SRC_DIRS) \
+TRACKER_BENCH_SRC_DIRS = ./cmd/tracee-bench/
+TRACKER_BENCH_SRC = $(shell find $(TRACKER_BENCH_SRC_DIRS) \
 			-type f \
 			-name '*.go' \
 			! -name '*_test.go' \
@@ -634,7 +634,7 @@ TRACEE_BENCH_SRC = $(shell find $(TRACEE_BENCH_SRC_DIRS) \
 tracee-bench: $(OUTPUT_DIR)/tracee-bench
 
 $(OUTPUT_DIR)/tracee-bench: \
-	$(TRACEE_BENCH_SRC) \
+	$(TRACKER_BENCH_SRC) \
 	| .checkver_$(CMD_GO) \
 	$(OUTPUT_DIR)
 #
@@ -649,8 +649,8 @@ clean-tracee-bench:
 
 # tracee-gptdocs
 
-TRACEE_GPTDOCS_SRC_DIRS = ./cmd/tracee-gptdocs/ ./pkg/cmd/
-TRACEE_GPTDOCS_SRC = $(shell find $(TRACEE_GPTDOCS_SRC_DIRS) \
+TRACKER_GPTDOCS_SRC_DIRS = ./cmd/tracee-gptdocs/ ./pkg/cmd/
+TRACKER_GPTDOCS_SRC = $(shell find $(TRACKER_GPTDOCS_SRC_DIRS) \
 			-type f \
 			-name '*.go' \
 			! -name '*_test.go' \
@@ -660,7 +660,7 @@ TRACEE_GPTDOCS_SRC = $(shell find $(TRACEE_GPTDOCS_SRC_DIRS) \
 tracee-gptdocs: $(OUTPUT_DIR)/tracee-gptdocs
 
 $(OUTPUT_DIR)/tracee-gptdocs: \
-	$(TRACEE_GPTDOCS_SRC) \
+	$(TRACKER_GPTDOCS_SRC) \
 	| .eval_goenv \
 	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
@@ -976,7 +976,7 @@ protoc:
 		--go_opt=paths=source_relative \
 		--go-json_out=orig_name=true,paths=source_relative:. \
 		--go-grpc_out=. \
-		--go-grpc_opt=paths=source_relative $(TRACEE_PROTOS)
+		--go-grpc_opt=paths=source_relative $(TRACKER_PROTOS)
 
 #
 # man pages

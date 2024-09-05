@@ -21,7 +21,7 @@ import (
 // object binary, checks if BTF is enabled, unpacks the BTF file from BTF Hub if
 // necessary, and assigns the kernel configuration and BPF object bytes.
 func BpfObject(cfg *config.Config, kConfig *environment.KernelConfig, osInfo *environment.OSInfo, installPath string, version string) error {
-	btfFilePath, err := checkEnvPath("TRACEE_BTF_FILE")
+	btfFilePath, err := checkEnvPath("TRACKER_BTF_FILE")
 	if btfFilePath == "" && err != nil {
 		return errfmt.WrapError(err)
 	}
