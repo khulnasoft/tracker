@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/aquasecurity/tracee/pkg/signatures/signature"
-	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/khulnasoft/tracker/pkg/signatures/signature"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 func Test_listSigs(t *testing.T) {

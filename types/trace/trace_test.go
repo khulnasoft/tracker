@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/khulnasoft/tracker/types/protocol"
 )
 
 func TestEventUnmarshalJSON(t *testing.T) {

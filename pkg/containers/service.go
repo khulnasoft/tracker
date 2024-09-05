@@ -3,8 +3,8 @@ package containers
 import (
 	"context"
 
-	"github.com/aquasecurity/tracee/pkg/containers/runtime"
-	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/containers/runtime"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 type runtimeInfoService struct {

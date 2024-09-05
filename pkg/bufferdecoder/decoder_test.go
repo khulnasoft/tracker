@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func TestDecodeContext(t *testing.T) {

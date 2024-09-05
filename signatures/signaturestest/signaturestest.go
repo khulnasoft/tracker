@@ -1,6 +1,6 @@
 package signaturestest
 
-import "github.com/aquasecurity/tracee/types/detect"
+import "github.com/khulnasoft/tracker/types/detect"
 
 // FindingsHolder is a utility struct that defines detect.SignatureHandler
 // callback method and holds detect.Finding values received as the callback's

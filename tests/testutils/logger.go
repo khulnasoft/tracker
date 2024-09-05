@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // SetTestLogger create a logger which prints the logs to the returned channel.

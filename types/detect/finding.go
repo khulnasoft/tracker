@@ -3,7 +3,7 @@ package detect
 import (
 	"sync"
 
-	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/khulnasoft/tracker/types/protocol"
 )
 
 // Finding is the main output of a signature. It represents a match result for the signature business logic

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/aquasecurity/tracee/tests/e2e-inst-signatures/datasourcetest"
-	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/khulnasoft/tracker/tests/e2e-inst-signatures/datasourcetest"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 var ExportedSignatures = []detect.Signature{

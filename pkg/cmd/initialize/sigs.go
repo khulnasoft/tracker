@@ -3,11 +3,11 @@ package initialize
 import (
 	"strconv"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/utils/set"
-	"github.com/aquasecurity/tracee/types/detect"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils/set"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func CreateEventsFromSignatures(startId events.ID, sigs []detect.Signature) map[string]int32 {

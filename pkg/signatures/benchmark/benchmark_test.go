@@ -9,12 +9,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/signatures/benchmark/signature/golang"
-	"github.com/aquasecurity/tracee/pkg/signatures/benchmark/signature/rego"
-	"github.com/aquasecurity/tracee/pkg/signatures/engine"
-	"github.com/aquasecurity/tracee/types/detect"
-	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/signatures/benchmark/signature/golang"
+	"github.com/khulnasoft/tracker/pkg/signatures/benchmark/signature/rego"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/protocol"
 )
 
 const (

@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"gotest.tools/assert"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/events/trigger"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/trigger"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func NewFakeTriggerEvent() trace.Event {

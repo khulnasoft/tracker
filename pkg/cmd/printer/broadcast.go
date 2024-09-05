@@ -3,9 +3,9 @@ package printer
 import (
 	"sync"
 
-	"github.com/aquasecurity/tracee/pkg/config"
-	"github.com/aquasecurity/tracee/pkg/metrics"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/metrics"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // Broadcast is a printer that broadcasts events to multiple printers

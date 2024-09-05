@@ -1,10 +1,10 @@
 package ebpf
 
 import (
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/types/detect"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // FindingToEvent converts a detect.Finding into a trace.Event

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/aquasecurity/tracee/pkg/events/queue"
+	"github.com/khulnasoft/tracker/pkg/events/queue"
 )
 
 func TestPrepareCache(t *testing.T) {

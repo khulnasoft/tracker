@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/config"
 )
 
 func TestPrepareTrackerEbpfOutput(t *testing.T) {

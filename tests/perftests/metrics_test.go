@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 
-	"github.com/aquasecurity/tracee/tests/testutils"
+	"github.com/khulnasoft/tracker/tests/testutils"
 )
 
 var metrics = []string{

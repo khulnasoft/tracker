@@ -84,4 +84,4 @@ sudo ./dist/tracee \
 See [signatures/rego] for example Rego signatures.
 
 [Rego]: https://www.openpolicyagent.org/docs/latest/#rego
-[signatures/rego]: https://github.com/aquasecurity/tracee/tree/{{ git.tag }}/signatures/rego
+[signatures/rego]: https://github.com/khulnasoft/tracker/tree/{{ git.tag }}/signatures/rego

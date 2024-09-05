@@ -3,8 +3,8 @@ package probes
 import (
 	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // NOTE: thread-safety guaranteed by the ProbeGroup big lock.

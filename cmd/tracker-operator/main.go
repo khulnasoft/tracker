@@ -13,8 +13,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	policyv1beta1 "github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
-	"github.com/aquasecurity/tracee/pkg/k8s/controller"
+	policyv1beta1 "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/k8s/controller"
 )
 
 var (

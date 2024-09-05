@@ -35,7 +35,7 @@ if [[ ! -d ./signatures ]]; then
     error_exit "need to be in tracee root directory"
 fi
 
-DOCKER_IMAGE=ghcr.io/aquasecurity/tracee-tester:latest
+DOCKER_IMAGE=ghcr.io/khulnasoft/tracker-tester:latest
 
 # run CO-RE TRC-102 test only by default
 TESTS=${TESTS:=TRC-102}

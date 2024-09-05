@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events"
 )
 
 // sysArgs is a struct containing the arguments to be passed to a syscall

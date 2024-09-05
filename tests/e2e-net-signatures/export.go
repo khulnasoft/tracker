@@ -1,6 +1,6 @@
 package main
 
-import "github.com/aquasecurity/tracee/types/detect"
+import "github.com/khulnasoft/tracker/types/detect"
 
 var ExportedSignatures = []detect.Signature{
 	// Network Protocol Events

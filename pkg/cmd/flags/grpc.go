@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/server/grpc"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/server/grpc"
 )
 
 func PrepareGRPCServer(listenAddr string) (*grpc.Server, error) {

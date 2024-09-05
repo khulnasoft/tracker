@@ -21,10 +21,10 @@ There are 2 ways you can get your own golang signatures working with tracee.
             "fmt"
             "strings"
 
-            "github.com/aquasecurity/tracee/signatures/helpers"
-            "github.com/aquasecurity/tracee/types/detect"
-            "github.com/aquasecurity/tracee/types/protocol"
-            "github.com/aquasecurity/tracee/types/trace"
+            "github.com/khulnasoft/tracker/signatures/helpers"
+            "github.com/khulnasoft/tracker/types/detect"
+            "github.com/khulnasoft/tracker/types/protocol"
+            "github.com/khulnasoft/tracker/types/trace"
         )
 
         type signatureExample struct {

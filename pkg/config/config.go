@@ -3,14 +3,14 @@ package config
 import (
 	"io"
 
-	"github.com/aquasecurity/tracee/pkg/containers/runtime"
-	"github.com/aquasecurity/tracee/pkg/dnscache"
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/events/queue"
-	"github.com/aquasecurity/tracee/pkg/policy"
-	"github.com/aquasecurity/tracee/pkg/proctree"
-	"github.com/aquasecurity/tracee/pkg/signatures/engine"
-	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/pkg/containers/runtime"
+	"github.com/khulnasoft/tracker/pkg/dnscache"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events/queue"
+	"github.com/khulnasoft/tracker/pkg/policy"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
 // Config is a struct containing user defined configuration to initialize Tracker

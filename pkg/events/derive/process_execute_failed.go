@@ -5,8 +5,8 @@ import (
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // ExecFailedGenerator is the object which implement the ProcessExecuteFailed event derivation

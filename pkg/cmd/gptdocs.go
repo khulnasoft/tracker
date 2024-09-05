@@ -13,8 +13,8 @@ import (
 	gogpt "github.com/sashabaranov/go-gpt3"
 	"gopkg.in/yaml.v2"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 const (

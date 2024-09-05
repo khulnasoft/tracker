@@ -23,11 +23,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aquasecurity/tracee/pkg/containers"
-	"github.com/aquasecurity/tracee/pkg/containers/runtime"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	traceeversion "github.com/aquasecurity/tracee/pkg/version"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/containers"
+	"github.com/khulnasoft/tracker/pkg/containers/runtime"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	traceeversion "github.com/khulnasoft/tracker/pkg/version"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 const InitProcNsDir = "/proc/1/ns"

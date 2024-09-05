@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/aquasecurity/tracee/pkg/cmd/printer"
-	"github.com/aquasecurity/tracee/pkg/config"
-	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/server/grpc"
-	"github.com/aquasecurity/tracee/pkg/server/http"
-	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/cmd/printer"
+	"github.com/khulnasoft/tracker/pkg/config"
+	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/server/grpc"
+	"github.com/khulnasoft/tracker/pkg/server/http"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 type Runner struct {

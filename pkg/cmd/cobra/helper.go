@@ -1,10 +1,10 @@
 package cobra
 
 import (
-	"github.com/aquasecurity/tracee/pkg/cmd/flags"
-	k8s "github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
-	"github.com/aquasecurity/tracee/pkg/policy"
-	"github.com/aquasecurity/tracee/pkg/policy/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/cmd/flags"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/policy"
+	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
 )
 
 func createPoliciesFromK8SPolicy(policies []k8s.PolicyInterface) ([]*policy.Policy, error) {

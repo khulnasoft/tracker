@@ -5,7 +5,7 @@ import (
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
-	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 type e2eWritable struct {

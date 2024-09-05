@@ -5,8 +5,8 @@ import (
 
 	"github.com/open-policy-agent/opa/compile"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/signatures/rego"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/signatures/rego"
 )
 
 func regoHelp() string {

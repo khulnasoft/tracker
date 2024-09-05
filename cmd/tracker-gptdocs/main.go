@@ -10,7 +10,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/aquasecurity/tracee/pkg/cmd"
+	"github.com/khulnasoft/tracker/pkg/cmd"
 )
 
 const (

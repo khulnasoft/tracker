@@ -3,7 +3,7 @@ package bucketscache
 import (
 	"sync"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 type BucketsCache struct {

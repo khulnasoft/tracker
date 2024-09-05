@@ -9,10 +9,10 @@ import (
 	"plugin"
 	"strings"
 
-	embedded "github.com/aquasecurity/tracee"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/signatures/regosig"
-	"github.com/aquasecurity/tracee/types/detect"
+	embedded "github.com/khulnasoft/tracker"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/signatures/regosig"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 func Find(target string, partialEval bool, signaturesDir []string, signatures []string, aioEnabled bool) ([]detect.Signature, []detect.DataSource, error) {

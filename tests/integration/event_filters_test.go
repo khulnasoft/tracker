@@ -12,14 +12,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/goleak"
 
-	"github.com/aquasecurity/tracee/pkg/config"
-	"github.com/aquasecurity/tracee/pkg/events"
-	k8s "github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
-	"github.com/aquasecurity/tracee/pkg/policy/v1beta1"
-	"github.com/aquasecurity/tracee/pkg/utils"
-	"github.com/aquasecurity/tracee/signatures/helpers"
-	"github.com/aquasecurity/tracee/tests/testutils"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/events"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
+	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/signatures/helpers"
+	"github.com/khulnasoft/tracker/tests/testutils"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // Test_EventFilters tests a variety of trace event filters

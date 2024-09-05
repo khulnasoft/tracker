@@ -1,6 +1,6 @@
 # Installing Tracker
 
-1. Tracker executable binary is available in under [releases](https://github.com/aquasecurity/tracee/releases).
+1. Tracker executable binary is available in under [releases](https://github.com/khulnasoft/tracker/releases).
 2. Tracker container image is available in Docker Hub as [aquasec/tracee](https://hub.docker.com/r/aquasec/tracee).
 3. Tracker Helm chart is available in Aqua Security's registry: `https://aquasecurity.github.io/helm-charts/` as `tracee`.
 

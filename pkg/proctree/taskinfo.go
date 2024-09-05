@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	ch "github.com/aquasecurity/tracee/pkg/changelog"
-	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	ch "github.com/khulnasoft/tracker/pkg/changelog"
+	traceetime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 // TaskInfoFeed allows external packages to set/get multiple values of a task at once.

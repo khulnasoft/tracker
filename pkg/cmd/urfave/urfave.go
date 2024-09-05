@@ -3,15 +3,15 @@ package urfave
 import (
 	cli "github.com/urfave/cli/v2"
 
-	"github.com/aquasecurity/tracee/pkg/cmd"
-	"github.com/aquasecurity/tracee/pkg/cmd/flags"
-	"github.com/aquasecurity/tracee/pkg/cmd/flags/server"
-	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
-	"github.com/aquasecurity/tracee/pkg/cmd/printer"
-	"github.com/aquasecurity/tracee/pkg/config"
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/pkg/cmd"
+	"github.com/khulnasoft/tracker/pkg/cmd/flags"
+	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
+	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
+	"github.com/khulnasoft/tracker/pkg/cmd/printer"
+	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
 func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {

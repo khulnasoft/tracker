@@ -3,8 +3,8 @@ package sorting
 import (
 	"sync"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 type eventNode struct {

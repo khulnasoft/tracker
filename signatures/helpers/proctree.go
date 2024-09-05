@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aquasecurity/tracee/types/datasource"
-	"github.com/aquasecurity/tracee/types/detect"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/types/datasource"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // ProcessTreeDS is an envelope to the process tree datasource API, to make it intuitive and easy

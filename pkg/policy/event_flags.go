@@ -1,6 +1,6 @@
 package policy
 
-import "github.com/aquasecurity/tracee/pkg/utils"
+import "github.com/khulnasoft/tracker/pkg/utils"
 
 // eventFlags is a struct that holds the flags of an event.
 type eventFlags struct {

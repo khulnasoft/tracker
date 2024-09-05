@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 type DNSDatasource struct {

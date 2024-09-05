@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aquasecurity/tracee/pkg/filehash"
+	"github.com/khulnasoft/tracker/pkg/filehash"
 )
 
 func BenchmarkComputeFileHashOld(b *testing.B) {

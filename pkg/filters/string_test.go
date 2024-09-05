@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/tracee/pkg/filters/sets"
+	"github.com/khulnasoft/tracker/pkg/filters/sets"
 )
 
 func TestStringFilterParse(t *testing.T) {

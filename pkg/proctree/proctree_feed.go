@@ -3,9 +3,9 @@ package proctree
 import (
 	"path/filepath"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	traceetime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 //

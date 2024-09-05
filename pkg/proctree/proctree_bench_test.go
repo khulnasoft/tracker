@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	traceetime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 func BenchmarkProcessTree(b *testing.B) {

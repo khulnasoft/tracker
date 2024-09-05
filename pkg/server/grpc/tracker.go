@@ -10,13 +10,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	pb "github.com/aquasecurity/tracee/api/v1beta1"
-	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/streams"
-	"github.com/aquasecurity/tracee/pkg/version"
-	"github.com/aquasecurity/tracee/types/trace"
+	pb "github.com/khulnasoft/tracker/api/v1beta1"
+	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/streams"
+	"github.com/khulnasoft/tracker/pkg/version"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // EventTranslationTable translates internal to external protobuf Event Id

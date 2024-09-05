@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aquasecurity/tracee/signatures/helpers"
-	"github.com/aquasecurity/tracee/types/datasource"
-	"github.com/aquasecurity/tracee/types/detect"
-	"github.com/aquasecurity/tracee/types/protocol"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/signatures/helpers"
+	"github.com/khulnasoft/tracker/types/datasource"
+	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 var firstEventWait = sync.Once{}

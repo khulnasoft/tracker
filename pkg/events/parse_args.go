@@ -8,9 +8,9 @@ import (
 
 	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/events/parsers"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func ParseArgs(event *trace.Event) error {

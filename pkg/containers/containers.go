@@ -17,11 +17,11 @@ import (
 
 	"github.com/aquasecurity/libbpfgo"
 
-	"github.com/aquasecurity/tracee/pkg/cgroup"
-	cruntime "github.com/aquasecurity/tracee/pkg/containers/runtime"
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/k8s"
-	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/cgroup"
+	cruntime "github.com/khulnasoft/tracker/pkg/containers/runtime"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/k8s"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // Containers contains information about running containers in the host.

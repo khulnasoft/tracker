@@ -3,14 +3,14 @@ package ebpf
 import (
 	"unsafe"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // TODO: Just like recent change in `KernelSymbolTable`, in kernel_symbols.go,
 // this needs to be changed somehow. Symbols might be duplicated, so might be
-// the addresses (https://github.com/aquasecurity/tracee/issues/3798).
+// the addresses (https://github.com/khulnasoft/tracker/issues/3798).
 
 var maxKsymNameLen = 64 // Most match the constant in the bpf code
 var globalSymbolOwner = "system"

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/aquasecurity/tracee/types/datasource"
-	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/khulnasoft/tracker/types/datasource"
+	"github.com/khulnasoft/tracker/types/detect"
 )
 
 // DataSource is an implementation to detect.Datasource interface, enveloping the ProcessTree type.

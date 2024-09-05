@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/proctree"
-	"github.com/aquasecurity/tracee/pkg/utils/environment"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 var (

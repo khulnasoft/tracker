@@ -1,8 +1,8 @@
 package policy
 
 import (
-	"github.com/aquasecurity/tracee/pkg/filters"
-	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/khulnasoft/tracker/pkg/filters"
+	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // compute recalculates values, updates flags, fills the reduced userland map,

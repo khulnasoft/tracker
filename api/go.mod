@@ -1,4 +1,4 @@
-module github.com/aquasecurity/tracee/api
+module github.com/khulnasoft/tracker/api
 
 go 1.22.0
 

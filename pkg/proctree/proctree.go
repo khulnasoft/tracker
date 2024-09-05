@@ -7,8 +7,8 @@ import (
 
 	"github.com/hashicorp/golang-lru/v2/expirable"
 
-	"github.com/aquasecurity/tracee/pkg/logger"
-	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	traceetime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 //

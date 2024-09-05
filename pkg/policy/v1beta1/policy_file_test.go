@@ -6,9 +6,9 @@ import (
 
 	"gotest.tools/assert"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	k8s "github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func TestPolicyValidate(t *testing.T) {

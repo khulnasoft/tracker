@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func GetTrackerArgumentByName(event trace.Event, argName string) (trace.Argument, error) {

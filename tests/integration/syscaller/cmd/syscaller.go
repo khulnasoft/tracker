@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/tests/testutils"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/tests/testutils"
 )
 
 func main() {

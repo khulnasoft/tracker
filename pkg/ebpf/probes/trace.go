@@ -5,9 +5,9 @@ import (
 
 	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
 )
 
 // NOTE: thread-safety guaranteed by the ProbeGroup big lock.
@@ -112,7 +112,7 @@ func (p *TraceProbe) attach(module *bpf.Module, args ...interface{}) error {
 		var link *bpf.BPFLink
 		var attachFunc func(uint64) (*bpf.BPFLink, error)
 		var syms []environment.KernelSymbol
-		// https://github.com/aquasecurity/tracee/issues/3653#issuecomment-1832642225
+		// https://github.com/khulnasoft/tracker/issues/3653#issuecomment-1832642225
 		//
 		// After commit b022f0c7e404 ('tracing/kprobes: Return EADDRNOTAVAIL
 		// when func matches several symbols') it is better to attach kprobes

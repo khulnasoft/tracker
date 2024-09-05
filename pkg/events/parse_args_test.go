@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/tracee/pkg/events/parsers"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func TestParseArgs(t *testing.T) {

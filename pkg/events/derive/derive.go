@@ -1,8 +1,8 @@
 package derive
 
 import (
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // DeriveFunction is a function prototype for a function that receives an event as

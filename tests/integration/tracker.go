@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
-	"github.com/aquasecurity/tracee/pkg/config"
-	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
-	"github.com/aquasecurity/tracee/pkg/proctree"
-	"github.com/aquasecurity/tracee/pkg/utils/environment"
-	uproc "github.com/aquasecurity/tracee/pkg/utils/proc"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
+	"github.com/khulnasoft/tracker/pkg/config"
+	tracee "github.com/khulnasoft/tracker/pkg/ebpf"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	uproc "github.com/khulnasoft/tracker/pkg/utils/proc"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // eventBuffer is a thread-safe buffer for tracee events

@@ -8,13 +8,13 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/aquasecurity/tracee/pkg/bufferdecoder"
-	"github.com/aquasecurity/tracee/pkg/capabilities"
-	"github.com/aquasecurity/tracee/pkg/errfmt"
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/utils"
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
+	"github.com/khulnasoft/tracker/pkg/capabilities"
+	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // Max depth of each stack trace to track (MAX_STACK_DETPH in eBPF code)
@@ -549,7 +549,7 @@ func (t *Tracker) deriveEvents(ctx context.Context, in <-chan *trace.Event) (
 					event := &derivatives[i]
 
 					// Skip events that dont work with filtering due to missing types
-					// being handled (https://github.com/aquasecurity/tracee/issues/2486)
+					// being handled (https://github.com/khulnasoft/tracker/issues/2486)
 					switch events.ID(derivatives[i].EventID) {
 					case events.SymbolsLoaded:
 					case events.SharedObjectLoaded:

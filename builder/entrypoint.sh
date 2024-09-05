@@ -86,7 +86,7 @@ if [ $tracee_ret -eq 2 ]; then
     echo "INFO: It seems that your environment isn't supported by Tracker."
     echo "INFO: If you think this is an error, please open an issue at:"
     echo "INFO:"
-    echo "INFO: https://github.com/aquasecurity/tracee/"
+    echo "INFO: https://github.com/khulnasoft/tracker/"
     echo "INFO:"
 fi
 

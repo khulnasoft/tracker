@@ -3,7 +3,7 @@
 Tracker has many different options and settings that control how Tracker operates. 
 This section presents available configuration options. To learn about how to apply configuration to Tracker, please refer to the [CLI](./cli.md) or [Kubernetes](./kubernetes.md) specific guides.
 
-A complete config file with all available options can be found [here](https://github.com/aquasecurity/tracee/blob/main/examples/config/global_config.yaml). Most of the options are documented in different sections in the documentation.
+A complete config file with all available options can be found [here](https://github.com/khulnasoft/tracker/blob/main/examples/config/global_config.yaml). Most of the options are documented in different sections in the documentation.
 
 ```yaml
 blob-perf-buffer-size: 1024

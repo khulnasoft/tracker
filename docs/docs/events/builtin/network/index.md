@@ -59,7 +59,7 @@ tracee --output json --events net_packet_dns.data.src=8.8.8.8
 It is possible to create Golang (or Rego) signatures for the network events. If you haven't read about how to create signatures, do it [HERE](../../custom/golang.md).
 
 !!! Examples Note
-    Below is an example of how to create a signature for the `net_packet_dns` event. This same example is used by Tracker CI/CD tests and can be found at the [GitHub repository](https://github.com/aquasecurity/tracee/tree/main/tests/e2e-net-signatures), together with some other signatures for the network events.
+    Below is an example of how to create a signature for the `net_packet_dns` event. This same example is used by Tracker CI/CD tests and can be found at the [GitHub repository](https://github.com/khulnasoft/tracker/tree/main/tests/e2e-net-signatures), together with some other signatures for the network events.
 
 1. **net_packet_dns** signature example
 
@@ -70,10 +70,10 @@ import (
     "fmt"
     "strings"
 
-    "github.com/aquasecurity/tracee/signatures/helpers"
-    "github.com/aquasecurity/tracee/types/detect"
-    "github.com/aquasecurity/tracee/types/protocol"
-    "github.com/aquasecurity/tracee/types/trace"
+    "github.com/khulnasoft/tracker/signatures/helpers"
+    "github.com/khulnasoft/tracker/types/detect"
+    "github.com/khulnasoft/tracker/types/protocol"
+    "github.com/khulnasoft/tracker/types/trace"
 )
 
 //

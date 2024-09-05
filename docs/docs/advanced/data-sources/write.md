@@ -17,7 +17,7 @@ Start by adding a file `threshold_datasource.go`:
     import (
         "encoding/json"
 
-        "github.com/aquasecurity/tracee/types/detect"
+        "github.com/khulnasoft/tracker/types/detect"
     )
 
     type thresholdDataSource struct {
@@ -122,7 +122,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	"github.com/aquasecurity/tracee/api/v1beta1"
+	"github.com/khulnasoft/tracker/api/v1beta1"
 )
 
 func printAndExit(msg string, args ...any) {

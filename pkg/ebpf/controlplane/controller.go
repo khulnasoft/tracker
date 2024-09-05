@@ -7,11 +7,11 @@ import (
 
 	"github.com/aquasecurity/libbpfgo"
 
-	"github.com/aquasecurity/tracee/pkg/containers"
-	"github.com/aquasecurity/tracee/pkg/events"
-	"github.com/aquasecurity/tracee/pkg/logger"
-	"github.com/aquasecurity/tracee/pkg/proctree"
-	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	"github.com/khulnasoft/tracker/pkg/containers"
+	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/proctree"
+	traceetime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 // TODO: With the introduction of signal events, the control plane can now have a generic argument

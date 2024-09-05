@@ -4,7 +4,7 @@
 package queue
 
 import (
-	"github.com/aquasecurity/tracee/types/trace"
+	"github.com/khulnasoft/tracker/types/trace"
 )
 
 type CacheConfig EventQueue

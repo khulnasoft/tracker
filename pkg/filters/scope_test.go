@@ -6,7 +6,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/tracee/pkg/filters/sets"
+	"github.com/khulnasoft/tracker/pkg/filters/sets"
 )
 
 func TestScopeFilterClone(t *testing.T) {

@@ -3,7 +3,7 @@ name: tracee
 description: Linux Runtime Security and Forensics using eBPF
 home: https://aquasecurity.github.io/tracee/v0.22.0/
 sources:
-  - https://github.com/aquasecurity/tracee
+  - https://github.com/khulnasoft/tracker
 
 # A chart can be either an 'application' or a 'library' chart.
 #

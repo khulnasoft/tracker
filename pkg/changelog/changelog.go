@@ -3,7 +3,7 @@ package changelog
 import (
 	"time"
 
-	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 type comparable interface {
