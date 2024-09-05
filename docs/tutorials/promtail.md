@@ -33,7 +33,7 @@ Thus, we will install Tracker inside our cluster through the Tracker Helm Chart.
 Add the Tracker Helm Chart:
 
 ```console
-helm repo add aqua https://khulnasoft.github.io/helm-charts/
+helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
 ```
 
 Update the repository list on Helm:
@@ -45,7 +45,7 @@ helm repo update
 Install the Tracker Helm Chart inside your Kubernetes cluster:
 
 ```console
-helm install tracker aqua/tracker \
+helm install tracker khulnasoft/tracker \
         --namespace tracker-system --create-namespace \
         --set hostPID=true
 ```
