@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eSecurityPathNotify struct {
@@ -17,25 +17,27 @@ type e2eSecurityPathNotify struct {
 	found_fanotify bool
 }
 
+var e2eSecurityPathNotifyMetadata = detect.SignatureMetadata{
+	ID:          "SECURITY_PATH_NOTIFY",
+	EventName:   "SECURITY_PATH_NOTIFY",
+	Version:     "0.1.0",
+	Name:        "Security Path Notify Test",
+	Description: "Instrumentation events E2E Tests: Security Path Notify",
+	Tags:        []string{"e2e", "instrumentation"},
+}
+
 func (sig *e2eSecurityPathNotify) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
 	return nil
 }
 
 func (sig *e2eSecurityPathNotify) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "SECURITY_PATH_NOTIFY",
-		EventName:   "SECURITY_PATH_NOTIFY",
-		Version:     "0.1.0",
-		Name:        "Security Path Notify Test",
-		Description: "Instrumentation events E2E Tests: Security Path Notify",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eSecurityPathNotifyMetadata, nil
 }
 
 func (sig *e2eSecurityPathNotify) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_path_notify"},
+		{Source: "tracee", Name: "security_path_notify"},
 	}, nil
 }
 
@@ -47,7 +49,7 @@ func (sig *e2eSecurityPathNotify) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_path_notify":
-		pathName, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathName, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

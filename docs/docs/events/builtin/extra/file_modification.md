@@ -41,7 +41,7 @@ Catch the file ctime change and submit the event if marked to be submitted
 ## Example Use Case
 
 ```console
-./tracker -e file_modification
+./tracee -e file_modification
 ```
 
 ## Note

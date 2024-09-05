@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events"
 )
 
 func Test_InitNamespacesEvent(t *testing.T) {

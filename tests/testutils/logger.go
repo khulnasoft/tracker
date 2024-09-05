@@ -9,12 +9,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 // SetTestLogger create a logger which prints the logs to the returned channel.
 // This function is meant to be used by tests to check logs, and by that test the
-// flow of Tracker from outside.
+// flow of Tracee from outside.
 func SetTestLogger(t *testing.T, l logger.Level) (loggerOutput <-chan []byte, restoreLogger func()) {
 	t.Logf("  --- setting test logger ---")
 

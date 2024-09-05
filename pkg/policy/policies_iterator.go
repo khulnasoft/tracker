@@ -1,6 +1,6 @@
 package policy
 
-import "github.com/khulnasoft/tracker/pkg/utils"
+import "github.com/aquasecurity/tracee/pkg/utils"
 
 // policiesIterator is an iterator for Policies.
 type policiesIterator struct {

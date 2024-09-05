@@ -10,13 +10,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/streams"
-	"github.com/khulnasoft/tracker/pkg/version"
-	"github.com/khulnasoft/tracker/types/trace"
+	pb "github.com/aquasecurity/tracee/api/v1beta1"
+	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/streams"
+	"github.com/aquasecurity/tracee/pkg/version"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // EventTranslationTable translates internal to external protobuf Event Id
@@ -587,31 +587,31 @@ var EventTranslationTable = [events.MaxBuiltinID]pb.EventId{
 	events.FtraceHook:            pb.EventId_ftrace_hook,
 }
 
-type TrackerService struct {
-	pb.UnimplementedTrackerServiceServer
-	tracker *tracker.Tracker
+type TraceeService struct {
+	pb.UnimplementedTraceeServiceServer
+	tracee *tracee.Tracee
 }
 
-func (s *TrackerService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.TrackerService_StreamEventsServer) error {
+func (s *TraceeService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.TraceeService_StreamEventsServer) error {
 	var stream *streams.Stream
 	var err error
 
 	if len(in.Policies) == 0 {
-		stream = s.tracker.SubscribeAll()
+		stream = s.tracee.SubscribeAll()
 	} else {
-		stream, err = s.tracker.Subscribe(in.Policies)
+		stream, err = s.tracee.Subscribe(in.Policies)
 		if err != nil {
 			return err
 		}
 	}
-	defer s.tracker.Unsubscribe(stream)
+	defer s.tracee.Unsubscribe(stream)
 
 	mask := fmutils.NestedMaskFromPaths(in.GetMask().GetPaths())
 
 	for e := range stream.ReceiveEvents() {
 		// TODO: this conversion is temporary, we will use the new event structure
-		// on tracker internals, so the event received by the stream will already be a proto
-		eventProto, err := convertTrackerEventToProto(e)
+		// on tracee internals, so the event received by the stream will already be a proto
+		eventProto, err := convertTraceeEventToProto(e)
 		if err != nil {
 			logger.Errorw("error can't create event proto: " + err.Error())
 			continue
@@ -628,8 +628,8 @@ func (s *TrackerService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.
 	return nil
 }
 
-func (s *TrackerService) EnableEvent(ctx context.Context, in *pb.EnableEventRequest) (*pb.EnableEventResponse, error) {
-	err := s.tracker.EnableEvent(in.Name)
+func (s *TraceeService) EnableEvent(ctx context.Context, in *pb.EnableEventRequest) (*pb.EnableEventResponse, error) {
+	err := s.tracee.EnableEvent(in.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -637,8 +637,8 @@ func (s *TrackerService) EnableEvent(ctx context.Context, in *pb.EnableEventRequ
 	return &pb.EnableEventResponse{}, nil
 }
 
-func (s *TrackerService) DisableEvent(ctx context.Context, in *pb.DisableEventRequest) (*pb.DisableEventResponse, error) {
-	err := s.tracker.DisableEvent(in.Name)
+func (s *TraceeService) DisableEvent(ctx context.Context, in *pb.DisableEventRequest) (*pb.DisableEventResponse, error) {
+	err := s.tracee.DisableEvent(in.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -646,7 +646,7 @@ func (s *TrackerService) DisableEvent(ctx context.Context, in *pb.DisableEventRe
 	return &pb.DisableEventResponse{}, nil
 }
 
-func (s *TrackerService) GetEventDefinitions(ctx context.Context, in *pb.GetEventDefinitionsRequest) (*pb.GetEventDefinitionsResponse, error) {
+func (s *TraceeService) GetEventDefinitions(ctx context.Context, in *pb.GetEventDefinitionsRequest) (*pb.GetEventDefinitionsResponse, error) {
 	definitions, err := getDefinitions(in)
 	if err != nil {
 		return nil, err
@@ -664,7 +664,7 @@ func (s *TrackerService) GetEventDefinitions(ctx context.Context, in *pb.GetEven
 	}, nil
 }
 
-func (s *TrackerService) GetVersion(ctx context.Context, in *pb.GetVersionRequest) (*pb.GetVersionResponse, error) {
+func (s *TraceeService) GetVersion(ctx context.Context, in *pb.GetVersionRequest) (*pb.GetVersionResponse, error) {
 	return &pb.GetVersionResponse{Version: version.GetVersion()}, nil
 }
 
@@ -715,7 +715,7 @@ func getExternalID(e trace.Event) pb.EventId {
 	return pb.EventId(e.EventID)
 }
 
-func convertTrackerEventToProto(e trace.Event) (*pb.Event, error) {
+func convertTraceeEventToProto(e trace.Event) (*pb.Event, error) {
 	process := getProcess(e)
 	container := getContainer(e)
 	k8s := getK8s(e)

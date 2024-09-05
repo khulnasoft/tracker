@@ -3,9 +3,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tracker-templates
+  name: tracee-templates
   labels:
-    {{- include "tracker.labels" . | nindent 4 }}
+    {{- include "tracee.labels" . | nindent 4 }}
 data:
   {{- range .Values.extraWebhookTemplates }}
   {{ .name }}: | {{ .goTemplate | nindent 4 }}

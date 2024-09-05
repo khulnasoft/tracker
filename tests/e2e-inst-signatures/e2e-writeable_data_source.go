@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eWritableDatasourceSig struct {
 	cb       detect.SignatureHandler
 	writable detect.DataSource
+}
+
+var e2eWritableDatasourceSigMetadata = detect.SignatureMetadata{
+	ID:          "WRITABLE_DATA_SOURCE",
+	EventName:   "WRITABLE_DATA_SOURCE",
+	Version:     "0.1.0",
+	Name:        "Writable Data Source Test",
+	Description: "Instrumentation events E2E Tests: Writable Data Source Test",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eWritableDatasourceSig) Init(ctx detect.SignatureContext) error {
@@ -27,19 +36,12 @@ func (sig *e2eWritableDatasourceSig) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eWritableDatasourceSig) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "WRITABLE_DATA_SOURCE",
-		EventName:   "WRITABLE_DATA_SOURCE",
-		Version:     "0.1.0",
-		Name:        "Writable Data Source Test",
-		Description: "Instrumentation events E2E Tests: Writable Data Source Test",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eWritableDatasourceSigMetadata, nil
 }
 
 func (sig *e2eWritableDatasourceSig) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "sched_process_exit"},
+		{Source: "tracee", Name: "sched_process_exit"},
 	}, nil
 }
 

@@ -97,12 +97,17 @@ proctree:
     cache:
         process: 8192
         thread: 4096
+    cache-ttl:
+        process: 5
+        thread: 10
 `,
 			key: "proctree",
 			expectedFlags: []string{
 				"source=events",
 				"process-cache=8192",
 				"thread-cache=4096",
+				"process-cache-ttl=5",
+				"thread-cache-ttl=10",
 			},
 		},
 		{
@@ -339,14 +344,14 @@ output:
             password: pass
             host: 127.0.0.1
             port: 24224
-            tag: tracker1
+            tag: tracee1
         - forward2:
             protocol: udp
             user: user
             password: pass
             host: 127.0.0.1
             port: 24225
-            tag: tracker2
+            tag: tracee2
     webhook:
         - webhook1:
             protocol: http
@@ -376,8 +381,8 @@ output:
 				"table-verbose:stdout",
 				"json:/path/to/json1.out",
 				"gotemplate=template1:file3,file4",
-				"forward:tcp://user:pass@127.0.0.1:24224?tag=tracker1",
-				"forward:udp://user:pass@127.0.0.1:24225?tag=tracker2",
+				"forward:tcp://user:pass@127.0.0.1:24224?tag=tracee1",
+				"forward:udp://user:pass@127.0.0.1:24225?tag=tracee2",
 				"webhook:http://localhost:8000?timeout=5s&gotemplate=/path/to/template1&contentType=application/json",
 				"webhook:http://localhost:9000?timeout=3s&gotemplate=/path/to/template2&contentType=application/ld+json",
 			},
@@ -589,6 +594,20 @@ func TestProcTreeConfigFlags(t *testing.T) {
 			expected: []string{
 				"process-cache=8192",
 				"thread-cache=4096",
+			},
+		},
+		{
+			name: "process cache ttl set",
+			config: ProcTreeConfig{
+				Source: "",
+				CacheTTL: ProcTreeCacheTTLConfig{
+					Process: 5,
+					Thread:  10,
+				},
+			},
+			expected: []string{
+				"process-cache-ttl=5",
+				"thread-cache-ttl=10",
 			},
 		},
 		{

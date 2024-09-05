@@ -1752,7 +1752,7 @@ type Event struct {
 	unknownFields protoimpl.UnknownFields
 
 	Timestamp *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Id        EventId                `protobuf:"varint,2,opt,name=id,proto3,enum=tracker.v1beta1.EventId" json:"id,omitempty"`
+	Id        EventId                `protobuf:"varint,2,opt,name=id,proto3,enum=tracee.v1beta1.EventId" json:"id,omitempty"`
 	Name      string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	Policies  *Policies              `protobuf:"bytes,4,opt,name=policies,proto3,oneof" json:"policies,omitempty"`
 	Context   *Context               `protobuf:"bytes,5,opt,name=context,proto3" json:"context,omitempty"`
@@ -3424,55 +3424,55 @@ func file_api_v1beta1_event_proto_rawDescGZIP() []byte {
 var file_api_v1beta1_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_v1beta1_event_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_api_v1beta1_event_proto_goTypes = []interface{}{
-	(EventId)(0),                   // 0: tracker.v1beta1.EventId
-	(*Event)(nil),                  // 1: tracker.v1beta1.Event
-	(*Policies)(nil),               // 2: tracker.v1beta1.Policies
-	(*Context)(nil),                // 3: tracker.v1beta1.Context
-	(*Process)(nil),                // 4: tracker.v1beta1.Process
-	(*Executable)(nil),             // 5: tracker.v1beta1.Executable
-	(*User)(nil),                   // 6: tracker.v1beta1.User
-	(*Thread)(nil),                 // 7: tracker.v1beta1.Thread
-	(*UserStackTrace)(nil),         // 8: tracker.v1beta1.UserStackTrace
-	(*StackAddress)(nil),           // 9: tracker.v1beta1.StackAddress
-	(*Container)(nil),              // 10: tracker.v1beta1.Container
-	(*ContainerImage)(nil),         // 11: tracker.v1beta1.ContainerImage
-	(*K8S)(nil),                    // 12: tracker.v1beta1.K8s
-	(*Pod)(nil),                    // 13: tracker.v1beta1.Pod
-	(*K8SNamespace)(nil),           // 14: tracker.v1beta1.K8sNamespace
-	nil,                            // 15: tracker.v1beta1.Pod.LabelsEntry
+	(EventId)(0),                   // 0: tracee.v1beta1.EventId
+	(*Event)(nil),                  // 1: tracee.v1beta1.Event
+	(*Policies)(nil),               // 2: tracee.v1beta1.Policies
+	(*Context)(nil),                // 3: tracee.v1beta1.Context
+	(*Process)(nil),                // 4: tracee.v1beta1.Process
+	(*Executable)(nil),             // 5: tracee.v1beta1.Executable
+	(*User)(nil),                   // 6: tracee.v1beta1.User
+	(*Thread)(nil),                 // 7: tracee.v1beta1.Thread
+	(*UserStackTrace)(nil),         // 8: tracee.v1beta1.UserStackTrace
+	(*StackAddress)(nil),           // 9: tracee.v1beta1.StackAddress
+	(*Container)(nil),              // 10: tracee.v1beta1.Container
+	(*ContainerImage)(nil),         // 11: tracee.v1beta1.ContainerImage
+	(*K8S)(nil),                    // 12: tracee.v1beta1.K8s
+	(*Pod)(nil),                    // 13: tracee.v1beta1.Pod
+	(*K8SNamespace)(nil),           // 14: tracee.v1beta1.K8sNamespace
+	nil,                            // 15: tracee.v1beta1.Pod.LabelsEntry
 	(*timestamppb.Timestamp)(nil),  // 16: google.protobuf.Timestamp
-	(*EventValue)(nil),             // 17: tracker.v1beta1.EventValue
-	(*Threat)(nil),                 // 18: tracker.v1beta1.Threat
+	(*EventValue)(nil),             // 17: tracee.v1beta1.EventValue
+	(*Threat)(nil),                 // 18: tracee.v1beta1.Threat
 	(*wrapperspb.UInt32Value)(nil), // 19: google.protobuf.UInt32Value
 }
 var file_api_v1beta1_event_proto_depIdxs = []int32{
-	16, // 0: tracker.v1beta1.Event.timestamp:type_name -> google.protobuf.Timestamp
-	0,  // 1: tracker.v1beta1.Event.id:type_name -> tracker.v1beta1.EventId
-	2,  // 2: tracker.v1beta1.Event.policies:type_name -> tracker.v1beta1.Policies
-	3,  // 3: tracker.v1beta1.Event.context:type_name -> tracker.v1beta1.Context
-	17, // 4: tracker.v1beta1.Event.data:type_name -> tracker.v1beta1.EventValue
-	18, // 5: tracker.v1beta1.Event.threat:type_name -> tracker.v1beta1.Threat
-	4,  // 6: tracker.v1beta1.Context.process:type_name -> tracker.v1beta1.Process
-	10, // 7: tracker.v1beta1.Context.container:type_name -> tracker.v1beta1.Container
-	12, // 8: tracker.v1beta1.Context.k8s:type_name -> tracker.v1beta1.K8s
-	5,  // 9: tracker.v1beta1.Process.executable:type_name -> tracker.v1beta1.Executable
-	19, // 10: tracker.v1beta1.Process.unique_id:type_name -> google.protobuf.UInt32Value
-	19, // 11: tracker.v1beta1.Process.host_pid:type_name -> google.protobuf.UInt32Value
-	19, // 12: tracker.v1beta1.Process.pid:type_name -> google.protobuf.UInt32Value
-	6,  // 13: tracker.v1beta1.Process.real_user:type_name -> tracker.v1beta1.User
-	7,  // 14: tracker.v1beta1.Process.thread:type_name -> tracker.v1beta1.Thread
-	4,  // 15: tracker.v1beta1.Process.ancestors:type_name -> tracker.v1beta1.Process
-	19, // 16: tracker.v1beta1.User.id:type_name -> google.protobuf.UInt32Value
-	16, // 17: tracker.v1beta1.Thread.start_time:type_name -> google.protobuf.Timestamp
-	19, // 18: tracker.v1beta1.Thread.unique_id:type_name -> google.protobuf.UInt32Value
-	19, // 19: tracker.v1beta1.Thread.host_tid:type_name -> google.protobuf.UInt32Value
-	19, // 20: tracker.v1beta1.Thread.tid:type_name -> google.protobuf.UInt32Value
-	8,  // 21: tracker.v1beta1.Thread.user_stack_trace:type_name -> tracker.v1beta1.UserStackTrace
-	9,  // 22: tracker.v1beta1.UserStackTrace.addresses:type_name -> tracker.v1beta1.StackAddress
-	11, // 23: tracker.v1beta1.Container.image:type_name -> tracker.v1beta1.ContainerImage
-	13, // 24: tracker.v1beta1.K8s.pod:type_name -> tracker.v1beta1.Pod
-	14, // 25: tracker.v1beta1.K8s.namespace:type_name -> tracker.v1beta1.K8sNamespace
-	15, // 26: tracker.v1beta1.Pod.labels:type_name -> tracker.v1beta1.Pod.LabelsEntry
+	16, // 0: tracee.v1beta1.Event.timestamp:type_name -> google.protobuf.Timestamp
+	0,  // 1: tracee.v1beta1.Event.id:type_name -> tracee.v1beta1.EventId
+	2,  // 2: tracee.v1beta1.Event.policies:type_name -> tracee.v1beta1.Policies
+	3,  // 3: tracee.v1beta1.Event.context:type_name -> tracee.v1beta1.Context
+	17, // 4: tracee.v1beta1.Event.data:type_name -> tracee.v1beta1.EventValue
+	18, // 5: tracee.v1beta1.Event.threat:type_name -> tracee.v1beta1.Threat
+	4,  // 6: tracee.v1beta1.Context.process:type_name -> tracee.v1beta1.Process
+	10, // 7: tracee.v1beta1.Context.container:type_name -> tracee.v1beta1.Container
+	12, // 8: tracee.v1beta1.Context.k8s:type_name -> tracee.v1beta1.K8s
+	5,  // 9: tracee.v1beta1.Process.executable:type_name -> tracee.v1beta1.Executable
+	19, // 10: tracee.v1beta1.Process.unique_id:type_name -> google.protobuf.UInt32Value
+	19, // 11: tracee.v1beta1.Process.host_pid:type_name -> google.protobuf.UInt32Value
+	19, // 12: tracee.v1beta1.Process.pid:type_name -> google.protobuf.UInt32Value
+	6,  // 13: tracee.v1beta1.Process.real_user:type_name -> tracee.v1beta1.User
+	7,  // 14: tracee.v1beta1.Process.thread:type_name -> tracee.v1beta1.Thread
+	4,  // 15: tracee.v1beta1.Process.ancestors:type_name -> tracee.v1beta1.Process
+	19, // 16: tracee.v1beta1.User.id:type_name -> google.protobuf.UInt32Value
+	16, // 17: tracee.v1beta1.Thread.start_time:type_name -> google.protobuf.Timestamp
+	19, // 18: tracee.v1beta1.Thread.unique_id:type_name -> google.protobuf.UInt32Value
+	19, // 19: tracee.v1beta1.Thread.host_tid:type_name -> google.protobuf.UInt32Value
+	19, // 20: tracee.v1beta1.Thread.tid:type_name -> google.protobuf.UInt32Value
+	8,  // 21: tracee.v1beta1.Thread.user_stack_trace:type_name -> tracee.v1beta1.UserStackTrace
+	9,  // 22: tracee.v1beta1.UserStackTrace.addresses:type_name -> tracee.v1beta1.StackAddress
+	11, // 23: tracee.v1beta1.Container.image:type_name -> tracee.v1beta1.ContainerImage
+	13, // 24: tracee.v1beta1.K8s.pod:type_name -> tracee.v1beta1.Pod
+	14, // 25: tracee.v1beta1.K8s.namespace:type_name -> tracee.v1beta1.K8sNamespace
+	15, // 26: tracee.v1beta1.Pod.labels:type_name -> tracee.v1beta1.Pod.LabelsEntry
 	27, // [27:27] is the sub-list for method output_type
 	27, // [27:27] is the sub-list for method input_type
 	27, // [27:27] is the sub-list for extension type_name

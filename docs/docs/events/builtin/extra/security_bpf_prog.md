@@ -44,7 +44,7 @@ get information about which helper functions are used by the BPF program
 ## Example Use Case
 
 ```console
-./tracker -e security_bpf_prog
+./tracee -e security_bpf_prog
 ```
 
 ## Issues

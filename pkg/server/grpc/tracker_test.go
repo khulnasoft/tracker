@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/types/trace"
+	pb "github.com/aquasecurity/tracee/api/v1beta1"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func Test_convertEventWithProcessContext(t *testing.T) {
@@ -37,7 +37,7 @@ func Test_convertEventWithProcessContext(t *testing.T) {
 		ParentEntityId:      11,
 	}
 
-	protoEvent, err := convertTrackerEventToProto(traceEvent)
+	protoEvent, err := convertTraceeEventToProto(traceEvent)
 	assert.NoError(t, err)
 
 	assert.Equal(t, uint32(1), protoEvent.Context.Process.Pid.Value)
@@ -65,7 +65,7 @@ func Test_convertEventWithStackaddresses(t *testing.T) {
 		StackAddresses: []uint64{1, 2, 3},
 	}
 
-	protoEvent, err := convertTrackerEventToProto(traceEvent)
+	protoEvent, err := convertTraceeEventToProto(traceEvent)
 	assert.NoError(t, err)
 
 	expected := []*pb.StackAddress{
@@ -91,7 +91,7 @@ func Test_convertEventWithContainerContext(t *testing.T) {
 		},
 	}
 
-	protoEvent, err := convertTrackerEventToProto(traceEvent)
+	protoEvent, err := convertTraceeEventToProto(traceEvent)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "containerID", protoEvent.Context.Container.Id)
@@ -111,7 +111,7 @@ func Test_convertEventWithK8sContext(t *testing.T) {
 		},
 	}
 
-	protoEvent, err := convertTrackerEventToProto(traceEvent)
+	protoEvent, err := convertTraceeEventToProto(traceEvent)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "podName", protoEvent.Context.K8S.Pod.Name)
@@ -134,7 +134,7 @@ func Test_convertEventWithThreat(t *testing.T) {
 		},
 	}
 
-	protoEvent, err := convertTrackerEventToProto(traceEvent)
+	protoEvent, err := convertTraceeEventToProto(traceEvent)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "An attempt to abuse the Docker UNIX ..", protoEvent.Threat.Description)

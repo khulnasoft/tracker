@@ -5,10 +5,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type RcdModification struct {
@@ -16,6 +16,22 @@ type RcdModification struct {
 	rcdFiles   []string
 	rcdDirs    []string
 	rcdCommand string
+}
+
+var rcdModificationMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1026",
+	Version:     "1",
+	Name:        "Rcd modification detected",
+	EventName:   "rcd_modification",
+	Description: "The rcd files were modified. rcd files are scripts executed on boot and runlevel switch. Those scripts are responsible for service control in runlevel switch. Adversaries may add or modify rcd files in order to persist a reboot, thus maintaining malicious execution on the affected host.",
+	Properties: map[string]interface{}{
+		"Severity":             2,
+		"Category":             "persistence",
+		"Technique":            "RC Scripts",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--dca670cf-eeec-438f-8185-fd959d9ef211",
+		"external_id":          "T1037.004",
+	},
 }
 
 func (sig *RcdModification) Init(ctx detect.SignatureContext) error {
@@ -27,28 +43,14 @@ func (sig *RcdModification) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *RcdModification) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1026",
-		Version:     "1",
-		Name:        "Rcd modification detected",
-		EventName:   "rcd_modification",
-		Description: "The rcd files were modified. rcd files are scripts executed on boot and runlevel switch. Those scripts are responsible for service control in runlevel switch. Adversaries may add or modify rcd files in order to persist a reboot, thus maintaining malicious execution on the affected host.",
-		Properties: map[string]interface{}{
-			"Severity":             2,
-			"Category":             "persistence",
-			"Technique":            "RC Scripts",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--dca670cf-eeec-438f-8185-fd959d9ef211",
-			"external_id":          "T1037.004",
-		},
-	}, nil
+	return rcdModificationMetadata, nil
 }
 
 func (sig *RcdModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_file_open", Origin: "*"},
-		{Source: "tracker", Name: "security_inode_rename", Origin: "*"},
-		{Source: "tracker", Name: "sched_process_exec", Origin: "*"},
+		{Source: "tracee", Name: "security_file_open", Origin: "*"},
+		{Source: "tracee", Name: "security_inode_rename", Origin: "*"},
+		{Source: "tracee", Name: "sched_process_exec", Origin: "*"},
 	}, nil
 }
 
@@ -60,12 +62,12 @@ func (sig *RcdModification) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_file_open":
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
@@ -74,14 +76,14 @@ func (sig *RcdModification) OnEvent(event protocol.Event) error {
 			return sig.checkFileOrDir(event, pathname)
 		}
 	case "security_inode_rename":
-		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}
 
 		return sig.checkFileOrDir(event, newPath)
 	case "sched_process_exec":
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

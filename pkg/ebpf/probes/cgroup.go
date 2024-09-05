@@ -1,11 +1,11 @@
 package probes
 
 import (
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/cgroup"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
 )
 
 // NOTE: thread-safety guaranteed by the ProbeGroup big lock.
@@ -100,7 +100,7 @@ func (p *CgroupProbe) detach(args ...interface{}) error {
 
 	// Legacy attachments (for now cgroupv2 prog attachments under older
 	// kernels) might not be done using BpfLink logic. Without a file
-	// descriptor for the link, tracker needs to raise its capabilities
+	// descriptor for the link, tracee needs to raise its capabilities
 	// in order to call bpf() syscall for the legacy detachment.
 	err = capabilities.GetInstance().EBPF(
 		func() error {

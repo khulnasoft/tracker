@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/proctree"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var (
@@ -21,7 +21,7 @@ func init() {
 }
 
 // processEvent processes an event by passing it through all registered event processors.
-func (t *Tracker) processEvent(event *trace.Event) []error {
+func (t *Tracee) processEvent(event *trace.Event) []error {
 	var errs []error
 
 	processors := t.eventProcessor[events.ID(event.EventID)]         // this event processors
@@ -39,7 +39,7 @@ func (t *Tracker) processEvent(event *trace.Event) []error {
 }
 
 // processLost handles lost events in a separate goroutine.
-func (t *Tracker) processLostEvents() {
+func (t *Tracee) processLostEvents() {
 	logger.Debugw("Starting processLostEvents goroutine")
 	defer logger.Debugw("Stopped processLostEvents goroutine")
 
@@ -58,7 +58,7 @@ func (t *Tracker) processLostEvents() {
 			}
 			logger.Warnw(fmt.Sprintf("Lost %d events", lost))
 
-		// internal done channel is closed when Tracker is stopped via Tracker.Close()
+		// internal done channel is closed when Tracee is stopped via Tracee.Close()
 		case <-t.done:
 			return
 		}
@@ -66,7 +66,7 @@ func (t *Tracker) processLostEvents() {
 }
 
 // RegisterEventProcessor registers a new event processor for a specific event id.
-func (t *Tracker) RegisterEventProcessor(id events.ID, proc func(evt *trace.Event) error) {
+func (t *Tracee) RegisterEventProcessor(id events.ID, proc func(evt *trace.Event) error) {
 	if t.eventProcessor == nil {
 		t.eventProcessor = make(map[events.ID][]func(evt *trace.Event) error)
 	}
@@ -77,7 +77,7 @@ func (t *Tracker) RegisterEventProcessor(id events.ID, proc func(evt *trace.Even
 }
 
 // registerEventProcessors registers all event processors, each to a specific event id.
-func (t *Tracker) registerEventProcessors() {
+func (t *Tracee) registerEventProcessors() {
 	//
 	// Process Tree Processors
 	//
@@ -93,8 +93,6 @@ func (t *Tracker) registerEventProcessors() {
 	if t.config.ProcTree.Source != proctree.SourceNone {
 		t.RegisterEventProcessor(events.All, t.procTreeAddBinInfo)
 	}
-	// Processors regitered even if process tree source is disabled.
-	t.RegisterEventProcessor(events.SchedProcessFork, t.procTreeForkRemoveArgs)
 
 	//
 	// DNS Cache Processors

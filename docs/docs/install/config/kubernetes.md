@@ -1,16 +1,16 @@
-# Configuring Tracker in Kubernetes
+# Configuring Tracee in Kubernetes
 
-In Kubernetes, Tracker uses a ConfigMap, called `tracker` to make Tracker configuration accessible. The ConfigMap includes a data file called `config.yaml` with the desired configuration. For example:
+In Kubernetes, Tracee uses a ConfigMap, called `tracee` to make Tracee configuration accessible. The ConfigMap includes a data file called `config.yaml` with the desired configuration. For example:
 
 ```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app.kubernetes.io/name: tracker
-    app.kubernetes.io/component: tracker
-    app.kubernetes.io/part-of: tracker
-  name: tracker
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/component: tracee
+    app.kubernetes.io/part-of: tracee
+  name: tracee
 data:
   config.yaml: |-
     cache:
@@ -25,13 +25,13 @@ You can use `kubectl` to interact with it:
 View:
 
 ```shell
-kubectl get cm tracker-config -n tracker
+kubectl get cm tracee-config -n tracee
 ```
 
 Edit:
 
 ```shell
-kubectl edit cm tracker-config -n tracker
+kubectl edit cm tracee-config -n tracee
 ```
 
 ## Helm
@@ -39,23 +39,23 @@ kubectl edit cm tracker-config -n tracker
 You can customize specific options with the helm installation:
 
 ```
-helm install tracker khulnasoft/tracker \
-        --namespace tracker --create-namespace \
+helm install tracee aqua/tracee \
+        --namespace tracee --create-namespace \
         --set config.blobPerfBufferSize=1024
 ```
 
 or after installation:
 
 ```
-helm install tracker khulnasoft/tracker \
-        --namespace tracker --create-namespace \
+helm install tracee aqua/tracee \
+        --namespace tracee --create-namespace \
         --set config.output.format=table
 ```
 
 or to provide a complete config file:
 
 ```
- helm install tracker khulnasoft/tracker \
-        --namespace tracker --create-namespace \
+ helm install tracee aqua/tracee \
+        --namespace tracee --create-namespace \
         --set-file configFile=myconfig.yaml
 ```

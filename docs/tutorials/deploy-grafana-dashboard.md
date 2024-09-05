@@ -1,9 +1,9 @@
-# Access Tracker Metrics in Prometheus and Grafana
+# Access Tracee Metrics in Prometheus and Grafana
 
-Tracker exposes a metrics endpoint. 
-This makes it possible to monitor Tracker like other cloud native workloads.
+Tracee exposes a metrics endpoint. 
+This makes it possible to monitor Tracee like other cloud native workloads.
 
-In this tutorial, we will showcase how to access Tracker metrics through Prometheus and Grafana running through docker containers.
+In this tutorial, we will showcase how to access Tracee metrics through Prometheus and Grafana running through docker containers.
 The tutorial can easily adapted to Kubernetes workloads with the configuration provided.
 
 ## Tutorial Overview
@@ -11,74 +11,74 @@ The tutorial can easily adapted to Kubernetes workloads with the configuration p
 Grafana is a visualization tools for exported metrics and logs, most commonly
 used alongside Prometheus.
 
-Since version 0.7.0, tracker exports useful runtime metrics to Prometheus.
+Since version 0.7.0, tracee exports useful runtime metrics to Prometheus.
 
-By using Grafana and the new metrics from tracker, we can deploy a simple
-dashboard which tracks the tracker instance performance and outputs.
+By using Grafana and the new metrics from tracee, we can deploy a simple
+dashboard which tracks the tracee instance performance and outputs.
 
-There are two options for accessing Tracker metrics:
+There are two options for accessing Tracee metrics:
 
-* Running the Tracker Docker Container Image -- Shown in this tutorial
-* Running the Tracker Helm Chart -- Detailed as part of the [Promtail-Tracker](./promtail.md) tutorial
+* Running the Tracee Docker Container Image -- Shown in this tutorial
+* Running the Tracee Helm Chart -- Detailed as part of the [Promtail-Tracee](./promtail.md) tutorial
 
-![Dashboard Image](../images/tracker-grafana-dashboard.png)
+![Dashboard Image](../images/tracee-grafana-dashboard.png)
 
-## Tracker Docker Container Image
+## Tracee Docker Container Image
 
 These metrics exports are enabled by default in all docker images and can be
 enabled using the `--metrics` flag.
 
-[tracker]: https://github.com/khulnasoft/tracker/tree/{{ git.tag }}/cmd/tracker
+[tracee]: https://github.com/aquasecurity/tracee/tree/{{ git.tag }}/cmd/tracee
 
 ### Prerequisites
 
 The following tools must be available for use, they can all be installed either
 through docker or installed/built on your machine. Note that you need to be on a Linux machine to follow the Docker tutorial.
 Alternative, on a MacBook it is possible to use Vagrant with Parallels as detailed in the following tutorial:
-[Running Tracker on Mac with Parallels and Vagrant](./tracker-vagrant.md)
+[Running Tracee on Mac with Parallels and Vagrant](./tracee-vagrant.md)
 
-- [Tracker](https://github.com/khulnasoft/tracker/)
+- [Tracee](https://github.com/aquasecurity/tracee/)
 - [Prometheus](https://prometheus.io/download/)
 - [Grafana](https://grafana.com/docs/grafana/latest/getting-started/getting-started)
 
-### Run Tracker with Metrics Enabled -- The Docker Command
+### Run Tracee with Metrics Enabled -- The Docker Command
 
-Tracker can be most easily deployed with metrics enabled by default and port
+Tracee can be most easily deployed with metrics enabled by default and port
 forwarded through the following commands:
 
 ```shell
-docker run --name tracker -it --rm \
+docker run --name tracee -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
   -p 3366:3366 \
-  khulnasoft/tracker:latest \
+  aquasec/tracee:latest \
   --metrics 
 ```
 
 Of course, the forwarded metrics ports can be changed, but you should note that
 some of the later instructions depend on these ports.
 
-If running Tracker locally through built binaries, the metrics address may be
+If running Tracee locally through built binaries, the metrics address may be
 overrides with the `--listen-addr` flag.
 
-### Run Prometheus and Configure it to Scrape Tracker
+### Run Prometheus and Configure it to Scrape Tracee
 
 Install Prometheus or pull it's Docker image. Then create the following
-configuration file, call it `prometheus.yml` to scrape Tracker:
+configuration file, call it `prometheus.yml` to scrape Tracee:
 
 ```yaml
 # A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Tracker.
+# Here it's Tracee.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'tracker'
+  - job_name: 'tracee'
 
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     metrics_path: /metrics
 
-    #Scrape tracker's default metrics hosts.
+    #Scrape tracee's default metrics hosts.
     #If forwarding different ports make sure to change these addresses.
     static_configs:
       - targets: ['localhost:3366']
@@ -104,14 +104,14 @@ docker run \
     prom/prometheus
 ```
 
-Ensure that prometheus can scrape the Tracker target: Open the Prometheus UI at `http://localhost:9090`
+Ensure that prometheus can scrape the Tracee target: Open the Prometheus UI at `http://localhost:9090`
 Under Status < Targets will be the scrape targets listed.
 
 If successful, move to the next step, otherwise consult with the Prometheus documentation.
 
-## Run Grafana to display Tracker's Prometheus Metrics
+## Run Grafana to display Tracee's Prometheus Metrics
 
-After successfully deploying Tracker and Prometheus we may now run Grafana to
+After successfully deploying Tracee and Prometheus we may now run Grafana to
 visualize it's metrics.
 
 Install Grafana using the Grafana container image:
@@ -136,11 +136,11 @@ Note that you might have to use your local IP address again instead of `localhos
 
 You may now either create your own Dashboard or import our default dashboard.
 
-### Import Tracker's Default Dashboard
+### Import Tracee's Default Dashboard
 
 First download our Grafana Dashboard's json [here].
 
-[here]: https://github.com/khulnasoft/tracker/tree/main/deploy/grafana/tracker.json
+[here]: https://github.com/aquasecurity/tracee/tree/main/deploy/grafana/tracee.json
 
 After adding the data source hover on the plus icon in the sidebar and select
 "Import". Press "Upload JSON File" at the top of the page and select the

@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	"github.com/khulnasoft/tracker/api/v1beta1"
+	"github.com/aquasecurity/tracee/api/v1beta1"
 )
 
 func printAndExit(msg string, args ...any) {
@@ -64,11 +64,11 @@ func main() {
 	}
 
 	conn, err := grpc.NewClient(
-		"unix:///tmp/tracker.sock",
+		"unix:///tmp/tracee.sock",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		printAndExit("failed to dial tracker grpc server: %v\n", err)
+		printAndExit("failed to dial tracee grpc server: %v\n", err)
 	}
 	client := v1beta1.NewDataSourceServiceClient(conn)
 	err = contaminate(client)

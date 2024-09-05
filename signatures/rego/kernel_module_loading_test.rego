@@ -1,14 +1,14 @@
-package tracker.TRC_6
+package tracee.TRC_6
 
 test_match_1 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "init_module",
 		"argsNum": 0,
 	}
 }
 
 test_match_2 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "security_kernel_read_file",
 		"argsNum": 4,
 		"args": [
@@ -33,14 +33,14 @@ test_match_2 {
 }
 
 test_match_deprecated_event {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "finit_module",
 		"argsNum": 0,
 	}
 }
 
 test_match_wrong_event {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "ptrace",
 		"argsNum": 1,
 		"args": [{
@@ -51,7 +51,7 @@ test_match_wrong_event {
 }
 
 test_match_wrong_type {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "security_kernel_read_file",
 		"argsNum": 4,
 		"args": [

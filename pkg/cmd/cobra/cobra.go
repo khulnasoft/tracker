@@ -6,24 +6,24 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/khulnasoft/tracker/pkg/cmd"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/cmd/printer"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/k8s"
-	"github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/pkg/cmd"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags/server"
+	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
+	"github.com/aquasecurity/tracee/pkg/cmd/printer"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/k8s"
+	"github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/policy"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
-func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
+func GetTraceeRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	var runner cmd.Runner
 
 	// Log command line flags
@@ -69,12 +69,13 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	sigNameToEventId := initialize.CreateEventsFromSignatures(events.StartSignatureID, sigs)
 
-	// Initialize a tracker config structure
+	// Initialize a tracee config structure
 
 	cfg := config.Config{
-		PerfBufferSize:     viper.GetInt("perf-buffer-size"),
-		BlobPerfBufferSize: viper.GetInt("blob-perf-buffer-size"),
-		NoContainersEnrich: viper.GetBool("no-containers"),
+		PerfBufferSize:      viper.GetInt("perf-buffer-size"),
+		BlobPerfBufferSize:  viper.GetInt("blob-perf-buffer-size"),
+		PipelineChannelSize: viper.GetInt("pipeline-channel-size"),
+		NoContainersEnrich:  viper.GetBool("no-containers"),
 	}
 
 	// OS release information
@@ -243,7 +244,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	if err != nil {
 		return runner, err
 	}
-	cfg.Output = output.TrackerConfig
+	cfg.Output = output.TraceeConfig
 
 	// Create printer
 
@@ -296,8 +297,8 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	// Decide BTF & BPF files to use (based in the kconfig, release & environment info)
 
-	trackerInstallPath := viper.GetString("install-path")
-	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, trackerInstallPath, version)
+	traceeInstallPath := viper.GetString("install-path")
+	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, traceeInstallPath, version)
 	if err != nil {
 		return runner, errfmt.Errorf("failed preparing BPF object: %v", err)
 	}
@@ -322,14 +323,14 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	runner.HTTPServer = httpServer
 	runner.GRPCServer = grpcServer
-	runner.TrackerConfig = cfg
+	runner.TraceeConfig = cfg
 	runner.Printer = p
-	runner.InstallPath = trackerInstallPath
+	runner.InstallPath = traceeInstallPath
 
 	// parse arguments must be enabled if the rule engine is part of the pipeline
-	runner.TrackerConfig.Output.ParseArguments = true
+	runner.TraceeConfig.Output.ParseArguments = true
 
-	runner.TrackerConfig.EngineConfig = engine.Config{
+	runner.TraceeConfig.EngineConfig = engine.Config{
 		Enabled:          true,
 		SigNameToEventID: sigNameToEventId,
 		Signatures:       sigs,

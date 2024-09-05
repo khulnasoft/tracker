@@ -13,13 +13,13 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/parse"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var (
@@ -84,12 +84,12 @@ func deriveHiddenKernelModulesArgs() multiDeriveArgsFunction {
 			}
 			return nil, nil
 		} else if flags&kset != 0 || flags&modTree != 0 {
-			// These types of scan only happens once on tracker's startup.
+			// These types of scan only happens once on tracee's startup.
 			// Cache results and only send them out when receiving that the history scan finished successfully
 			eventsFromHistoryScan.Add(&event, struct{}{})
 			return nil, nil
 		} else if flags&historyScanFinished != 0 {
-			// Happens only once on tracker's startup when the scan finished (successfully/unsuccessfully)
+			// Happens only once on tracee's startup when the scan finished (successfully/unsuccessfully)
 			return handleHistoryScanFinished(address)
 		}
 
@@ -185,7 +185,7 @@ func extractFromEvent(args []trace.Argument, address uint64) []interface{} {
 	return []interface{}{addrHex, name, srcversion}
 }
 
-// newModsCheckForHidden monitors only new added modules (added while tracker is
+// newModsCheckForHidden monitors only new added modules (added while tracee is
 // running), and reports if they are hidden
 func newModsCheckForHidden(startScanTime uint64, flags uint32) error {
 	// Since in old kernels it is not possible to iterate on a hashmap, the job

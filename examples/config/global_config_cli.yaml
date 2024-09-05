@@ -7,7 +7,7 @@ capabilities: []
 containers: false
 cri: []
 healthz: false
-install-path: /tmp/tracker
+install-path: /tmp/tracee
 listen-addr: :3366
 log:
     - info

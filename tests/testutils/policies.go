@@ -3,11 +3,11 @@ package testutils
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/events"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags"
+	"github.com/aquasecurity/tracee/pkg/events"
+	k8s "github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/aquasecurity/tracee/pkg/policy"
+	"github.com/aquasecurity/tracee/pkg/policy/v1beta1"
 )
 
 // BuildPoliciesFromEvents create a Policies instance with a single policy,

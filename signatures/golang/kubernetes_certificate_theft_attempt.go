@@ -4,16 +4,32 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type KubernetesCertificateTheftAttempt struct {
 	cb                 detect.SignatureHandler
 	legitProcs         []string
 	k8sCertificatesDir string
+}
+
+var kubernetesCertificateTheftAttemptMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1018",
+	Version:     "1",
+	Name:        "K8s TLS certificate theft detected",
+	EventName:   "k8s_cert_theft",
+	Description: "Theft of Kubernetes TLS certificates was detected. TLS certificates are used to establish trust between systems. The Kubernetes certificate is used to to enable secure communication between Kubernetes components, such as kubelet scheduler controller and API Server. An adversary may steal a Kubernetes certificate on a compromised system to impersonate Kubernetes components within the cluster.",
+	Properties: map[string]interface{}{
+		"Severity":             3,
+		"Category":             "credential-access",
+		"Technique":            "Steal Application Access Token",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--890c9858-598c-401d-a4d5-c67ebcdd703a",
+		"external_id":          "T1528",
+	},
 }
 
 func (sig *KubernetesCertificateTheftAttempt) Init(ctx detect.SignatureContext) error {
@@ -24,27 +40,13 @@ func (sig *KubernetesCertificateTheftAttempt) Init(ctx detect.SignatureContext) 
 }
 
 func (sig *KubernetesCertificateTheftAttempt) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1018",
-		Version:     "1",
-		Name:        "K8s TLS certificate theft detected",
-		EventName:   "k8s_cert_theft",
-		Description: "Theft of Kubernetes TLS certificates was detected. TLS certificates are used to establish trust between systems. The Kubernetes certificate is used to to enable secure communication between Kubernetes components, such as kubelet scheduler controller and API Server. An adversary may steal a Kubernetes certificate on a compromised system to impersonate Kubernetes components within the cluster.",
-		Properties: map[string]interface{}{
-			"Severity":             3,
-			"Category":             "credential-access",
-			"Technique":            "Steal Application Access Token",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--890c9858-598c-401d-a4d5-c67ebcdd703a",
-			"external_id":          "T1528",
-		},
-	}, nil
+	return kubernetesCertificateTheftAttemptMetadata, nil
 }
 
 func (sig *KubernetesCertificateTheftAttempt) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_file_open", Origin: "*"},
-		{Source: "tracker", Name: "security_inode_rename", Origin: "*"},
+		{Source: "tracee", Name: "security_file_open", Origin: "*"},
+		{Source: "tracee", Name: "security_inode_rename", Origin: "*"},
 	}, nil
 }
 
@@ -65,13 +67,13 @@ func (sig *KubernetesCertificateTheftAttempt) OnEvent(event protocol.Event) erro
 			}
 		}
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
 
 		if helpers.IsFileRead(flags) {
-			pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+			pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 			if err != nil {
 				return err
 			}
@@ -79,7 +81,7 @@ func (sig *KubernetesCertificateTheftAttempt) OnEvent(event protocol.Event) erro
 			path = pathname
 		}
 	case "security_inode_rename":
-		oldPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "old_path")
+		oldPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "old_path")
 		if err != nil {
 			return err
 		}

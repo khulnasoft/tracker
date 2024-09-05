@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/khulnasoft/tracker/types/datasource"
-	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/aquasecurity/tracee/types/datasource"
+	"github.com/aquasecurity/tracee/types/detect"
 )
 
 // DataSource is an implementation to detect.Datasource interface, enveloping the ProcessTree type.
@@ -40,7 +40,7 @@ func (ptds *DataSource) Version() uint {
 
 // Namespace returns the namespace of the DataSource.
 func (ptds *DataSource) Namespace() string {
-	return "tracker"
+	return "tracee"
 }
 
 // ID returns the ID of the DataSource.

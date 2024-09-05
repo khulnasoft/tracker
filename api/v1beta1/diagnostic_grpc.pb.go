@@ -37,7 +37,7 @@ func NewDiagnosticServiceClient(cc grpc.ClientConnInterface) DiagnosticServiceCl
 
 func (c *diagnosticServiceClient) GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsResponse, error) {
 	out := new(GetMetricsResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.DiagnosticService/GetMetrics", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.DiagnosticService/GetMetrics", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *diagnosticServiceClient) GetMetrics(ctx context.Context, in *GetMetrics
 
 func (c *diagnosticServiceClient) ChangeLogLevel(ctx context.Context, in *ChangeLogLevelRequest, opts ...grpc.CallOption) (*ChangeLogLevelResponse, error) {
 	out := new(ChangeLogLevelResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.DiagnosticService/ChangeLogLevel", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.DiagnosticService/ChangeLogLevel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *diagnosticServiceClient) ChangeLogLevel(ctx context.Context, in *Change
 
 func (c *diagnosticServiceClient) GetStacktrace(ctx context.Context, in *GetStacktraceRequest, opts ...grpc.CallOption) (*GetStacktraceResponse, error) {
 	out := new(GetStacktraceResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.DiagnosticService/GetStacktrace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.DiagnosticService/GetStacktrace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func _DiagnosticService_GetMetrics_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.DiagnosticService/GetMetrics",
+		FullMethod: "/tracee.v1beta1.DiagnosticService/GetMetrics",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DiagnosticServiceServer).GetMetrics(ctx, req.(*GetMetricsRequest))
@@ -126,7 +126,7 @@ func _DiagnosticService_ChangeLogLevel_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.DiagnosticService/ChangeLogLevel",
+		FullMethod: "/tracee.v1beta1.DiagnosticService/ChangeLogLevel",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DiagnosticServiceServer).ChangeLogLevel(ctx, req.(*ChangeLogLevelRequest))
@@ -144,7 +144,7 @@ func _DiagnosticService_GetStacktrace_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.DiagnosticService/GetStacktrace",
+		FullMethod: "/tracee.v1beta1.DiagnosticService/GetStacktrace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DiagnosticServiceServer).GetStacktrace(ctx, req.(*GetStacktraceRequest))
@@ -156,7 +156,7 @@ func _DiagnosticService_GetStacktrace_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DiagnosticService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tracker.v1beta1.DiagnosticService",
+	ServiceName: "tracee.v1beta1.DiagnosticService",
 	HandlerType: (*DiagnosticServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

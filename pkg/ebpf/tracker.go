@@ -3,57 +3,60 @@ package ebpf
 import (
 	gocontext "context"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"unsafe"
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/bucketscache"
-	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/ebpf/controlplane"
-	"github.com/khulnasoft/tracker/pkg/ebpf/initialization"
-	"github.com/khulnasoft/tracker/pkg/ebpf/probes"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
-	"github.com/khulnasoft/tracker/pkg/events/derive"
-	"github.com/khulnasoft/tracker/pkg/events/sorting"
-	"github.com/khulnasoft/tracker/pkg/events/trigger"
-	"github.com/khulnasoft/tracker/pkg/filehash"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/metrics"
-	"github.com/khulnasoft/tracker/pkg/pcaps"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/streams"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/pkg/utils/proc"
-	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/bucketscache"
+	"github.com/aquasecurity/tracee/pkg/bufferdecoder"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/cgroup"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/containers"
+	"github.com/aquasecurity/tracee/pkg/dnscache"
+	"github.com/aquasecurity/tracee/pkg/ebpf/controlplane"
+	"github.com/aquasecurity/tracee/pkg/ebpf/initialization"
+	"github.com/aquasecurity/tracee/pkg/ebpf/probes"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/dependencies"
+	"github.com/aquasecurity/tracee/pkg/events/derive"
+	"github.com/aquasecurity/tracee/pkg/events/sorting"
+	"github.com/aquasecurity/tracee/pkg/events/trigger"
+	"github.com/aquasecurity/tracee/pkg/filehash"
+	"github.com/aquasecurity/tracee/pkg/filters"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/metrics"
+	"github.com/aquasecurity/tracee/pkg/pcaps"
+	"github.com/aquasecurity/tracee/pkg/policy"
+	"github.com/aquasecurity/tracee/pkg/proctree"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/pkg/streams"
+	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/pkg/utils/proc"
+	"github.com/aquasecurity/tracee/pkg/utils/sharedobjs"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 const (
-	pkgName          = "tracker"
+	pkgName          = "tracee"
 	maxMemDumpLength = 127
 )
 
-// Tracker traces system calls and system events using eBPF
-type Tracker struct {
+// Tracee traces system calls and system events using eBPF
+type Tracee struct {
 	config    config.Config
 	bootTime  uint64
 	startTime uint64
@@ -119,19 +122,21 @@ type Tracker struct {
 	streamsManager *streams.StreamsManager
 	// policyManager manages policy state
 	policyManager *policy.PolicyManager
-	// The dependencies of events used by Tracker
+	// The dependencies of events used by Tracee
 	eventsDependencies *dependencies.Manager
 	// Ksymbols needed to be kept alive in table.
-	// This does not mean they are required for tracker to function.
+	// This does not mean they are required for tracee to function.
 	// TODO: remove this in favor of dependency manager nodes
 	requiredKsyms []string
+	// Time for normalization
+	timeNormalizer traceetime.TimeNormalizer
 }
 
-func (t *Tracker) Stats() *metrics.Stats {
+func (t *Tracee) Stats() *metrics.Stats {
 	return &t.stats
 }
 
-func (t *Tracker) Engine() *engine.Engine {
+func (t *Tracee) Engine() *engine.Engine {
 	return t.sigEngine
 }
 
@@ -168,14 +173,14 @@ func GetCaptureEventsList(cfg config.Config) map[events.ID]events.EventState {
 	return captureEvents
 }
 
-func (t *Tracker) addEventState(eventID events.ID, chosenState events.EventState) {
+func (t *Tracee) addEventState(eventID events.ID, chosenState events.EventState) {
 	currentState := t.eventsState[eventID]
 	currentState.Submit |= chosenState.Submit
 	currentState.Emit |= chosenState.Emit
 	t.eventsState[eventID] = currentState
 }
 
-func (t *Tracker) addDependenciesToStateRecursive(eventNode *dependencies.EventNode) {
+func (t *Tracee) addDependenciesToStateRecursive(eventNode *dependencies.EventNode) {
 	eventID := eventNode.GetID()
 	for _, dependencyEventID := range eventNode.GetDependencies().GetIDs() {
 		t.addDependencyEventToState(dependencyEventID, []events.ID{eventID})
@@ -186,7 +191,7 @@ func (t *Tracker) addDependenciesToStateRecursive(eventNode *dependencies.EventN
 	}
 }
 
-func (t *Tracker) selectEvent(eventID events.ID, chosenState events.EventState) {
+func (t *Tracee) selectEvent(eventID events.ID, chosenState events.EventState) {
 	t.addEventState(eventID, chosenState)
 	eventNode, err := t.eventsDependencies.SelectEvent(eventID)
 	if err != nil {
@@ -197,9 +202,9 @@ func (t *Tracker) selectEvent(eventID events.ID, chosenState events.EventState) 
 	t.addDependenciesToStateRecursive(eventNode)
 }
 
-// addDependencyEventToState adds to tracker's state an event that is a dependency of other events.
+// addDependencyEventToState adds to tracee's state an event that is a dependency of other events.
 // The difference from chosen events is that it doesn't affect its eviction.
-func (t *Tracker) addDependencyEventToState(evtID events.ID, dependentEvts []events.ID) {
+func (t *Tracee) addDependencyEventToState(evtID events.ID, dependentEvts []events.ID) {
 	newState := events.EventState{}
 	for _, dependentEvent := range dependentEvts {
 		newState.Submit |= t.eventsState[dependentEvent].Submit
@@ -210,23 +215,23 @@ func (t *Tracker) addDependencyEventToState(evtID events.ID, dependentEvts []eve
 	}
 }
 
-func (t *Tracker) removeEventFromState(evtID events.ID) {
+func (t *Tracee) removeEventFromState(evtID events.ID) {
 	logger.Debugw("Remove event from state", "event", events.Core.GetDefinitionByID(evtID).GetName())
 	delete(t.eventsState, evtID)
 	delete(t.eventSignatures, evtID)
 }
 
-// New creates a new Tracker instance based on a given valid Config. It is expected that it won't
+// New creates a new Tracee instance based on a given valid Config. It is expected that it won't
 // cause external system side effects (reads, writes, etc).
-func New(cfg config.Config) (*Tracker, error) {
+func New(cfg config.Config) (*Tracee, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, errfmt.Errorf("validation error: %v", err)
 	}
 
-	// Create Tracker
+	// Create Tracee
 
-	t := &Tracker{
+	t := &Tracee{
 		config:          cfg,
 		done:            make(chan struct{}),
 		writtenFiles:    make(map[string]string),
@@ -272,7 +277,16 @@ func New(cfg config.Config) (*Tracker, error) {
 
 	// Initialize capabilities rings soon
 
-	err = capabilities.Initialize(t.config.Capabilities.BypassCaps)
+	useBaseEbpf := func(cfg config.Config) bool {
+		return cfg.Output.StackAddresses
+	}
+
+	err = capabilities.Initialize(
+		capabilities.Config{
+			Bypass:   t.config.Capabilities.BypassCaps,
+			BaseEbpf: useBaseEbpf(t.config),
+		},
+	)
 	if err != nil {
 		return t, errfmt.WrapError(err)
 	}
@@ -340,7 +354,10 @@ func New(cfg config.Config) (*Tracker, error) {
 			utils.SetBit(&emit, uint(p.ID))
 			t.selectEvent(e, events.EventState{Submit: submit, Emit: emit})
 
-			t.policyManager.EnableRule(p.ID, e)
+			err := t.policyManager.EnableRule(p.ID, e)
+			if err != nil {
+				logger.Errorw("Failed to enable rule", "policy", p.ID, "event", e, "error", err)
+			}
 		}
 	}
 
@@ -398,11 +415,11 @@ func New(cfg config.Config) (*Tracker, error) {
 	return t, nil
 }
 
-// Init initialize tracker instance and it's various subsystems, potentially
+// Init initialize tracee instance and it's various subsystems, potentially
 // performing external system operations to initialize them.
 // NOTE: any initialization logic, especially one that causes side effects
 // should go here and not New().
-func (t *Tracker) Init(ctx gocontext.Context) error {
+func (t *Tracee) Init(ctx gocontext.Context) error {
 	var err error
 
 	// Initialize buckets cache
@@ -429,15 +446,6 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		}
 	} else {
 		logger.Debugw("Initializing buckets cache", "error", errfmt.WrapError(err))
-	}
-
-	// Initialize Process Tree (if enabled)
-
-	if t.config.ProcTree.Source != proctree.SourceNone {
-		t.processTree, err = proctree.NewProcessTree(ctx, t.config.ProcTree)
-		if err != nil {
-			return errfmt.WrapError(err)
-		}
 	}
 
 	// Initialize cgroups filesystems
@@ -530,6 +538,53 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		}
 	}
 
+	// Initialize time normalizer
+
+	// Checking the kernel symbol needs to happen after obtaining the capability;
+	// otherwise, we get a warning.
+	usedClockID := traceetime.CLOCK_BOOTTIME
+	err = capabilities.GetInstance().EBPF(
+		func() error {
+			supported, innerErr := bpf.BPFHelperIsSupported(bpf.BPFProgTypeKprobe, bpf.BPFFuncKtimeGetBootNs)
+
+			// only report if operation not permitted
+			if errors.Is(innerErr, syscall.EPERM) {
+				return innerErr
+			}
+
+			// If BPFFuncKtimeGetBootNs is not available, eBPF will generate events based on monotonic time.
+			if !supported {
+				usedClockID = traceetime.CLOCK_MONOTONIC
+			}
+			return nil
+		})
+	if err != nil {
+		return errfmt.WrapError(err)
+	}
+
+	// elapsed time in nanoseconds since system start
+	t.startTime = uint64(traceetime.GetStartTimeNS(int32(usedClockID)))
+	// time in nanoseconds when the system was booted
+	t.bootTime = uint64(traceetime.GetBootTimeNS(int32(usedClockID)))
+
+	t.timeNormalizer = traceetime.CreateTimeNormalizerByConfig(t.config.Output.RelativeTime, t.startTime, t.bootTime)
+
+	// Initialize Process Tree (if enabled)
+
+	if t.config.ProcTree.Source != proctree.SourceNone {
+		// As procfs use boot time to calculate process start time, we can use the procfs
+		// only if the times we get from the eBPF programs are based on the boot time (instead of monotonic).
+		proctreeConfig := t.config.ProcTree
+		if usedClockID == traceetime.CLOCK_MONOTONIC {
+			proctreeConfig.ProcfsInitialization = false
+			proctreeConfig.ProcfsQuerying = false
+		}
+		t.processTree, err = proctree.NewProcessTree(ctx, proctreeConfig, t.timeNormalizer)
+		if err != nil {
+			return errfmt.WrapError(err)
+		}
+	}
+
 	// Initialize eBPF programs and maps
 
 	err = capabilities.GetInstance().EBPF(
@@ -606,16 +661,11 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		},
 	}
 
-	// Initialize times
-
-	t.startTime = uint64(utils.GetStartTimeNS())
-	t.bootTime = uint64(utils.GetBootTimeNS())
-
 	return nil
 }
 
 // initTailCall initializes a given tailcall.
-func (t *Tracker) initTailCall(tailCall events.TailCall) error {
+func (t *Tracee) initTailCall(tailCall events.TailCall) error {
 	tailCallMapName := tailCall.GetMapName()
 	tailCallProgName := tailCall.GetProgName()
 	tailCallIndexes := tailCall.GetIndexes()
@@ -636,27 +686,11 @@ func (t *Tracker) initTailCall(tailCall events.TailCall) error {
 		return errfmt.Errorf("could not get BPF program FD for %s: %v", tailCallProgName, err)
 	}
 
-	once := &sync.Once{}
-
 	// Pick all indexes (event, or syscall, IDs) the BPF program should be related to.
 	for _, index := range tailCallIndexes {
-		// Special treatment for indexes of syscall events.
-		if events.Core.GetDefinitionByID(events.ID(index)).IsSyscall() {
-			// Optimization: enable enter/exit probes only if at least one syscall is enabled.
-			once.Do(func() {
-				err := t.probes.Attach(probes.SyscallEnter__Internal, t.kernelSymbols)
-				if err != nil {
-					logger.Errorw("error attaching to syscall enter", "error", err)
-				}
-				err = t.probes.Attach(probes.SyscallExit__Internal, t.kernelSymbols)
-				if err != nil {
-					logger.Errorw("error attaching to syscall enter", "error", err)
-				}
-			})
-			// Workaround: Do not map eBPF program to unsupported syscalls (arm64, e.g.)
-			if index >= uint32(events.Unsupported) {
-				continue
-			}
+		// Workaround: Do not map eBPF program to unsupported syscalls (arm64, e.g.)
+		if index >= uint32(events.Unsupported) {
+			continue
 		}
 		// Update given eBPF map with the eBPF program file descriptor at given index.
 		err := bpfMap.Update(unsafe.Pointer(&index), unsafe.Pointer(&bpfProgFD))
@@ -668,10 +702,10 @@ func (t *Tracker) initTailCall(tailCall events.TailCall) error {
 	return nil
 }
 
-// initDerivationTable initializes tracker's events.DerivationTable. For each
+// initDerivationTable initializes tracee's events.DerivationTable. For each
 // event, represented through its ID, we declare to which other events it can be
 // derived and the corresponding function to derive into that Event.
-func (t *Tracker) initDerivationTable() error {
+func (t *Tracee) initDerivationTable() error {
 	shouldSubmit := func(id events.ID) func() bool {
 		return func() bool { return t.eventsState[id].Submit > 0 }
 	}
@@ -854,7 +888,7 @@ const (
 	optForkProcTree
 )
 
-func (t *Tracker) getOptionsConfig() uint32 {
+func (t *Tracee) getOptionsConfig() uint32 {
 	var cOptVal uint32
 
 	if t.config.Output.ExecEnv {
@@ -893,11 +927,11 @@ func (t *Tracker) getOptionsConfig() uint32 {
 	return cOptVal
 }
 
-// newConfig returns a new Config instance based on the current Tracker state and
+// newConfig returns a new Config instance based on the current Tracee state and
 // the given policies config and version.
-func (t *Tracker) newConfig(cfg *policy.PoliciesConfig) *Config {
+func (t *Tracee) newConfig(cfg *policy.PoliciesConfig) *Config {
 	return &Config{
-		TrackerPid:       uint32(os.Getpid()),
+		TraceePid:       uint32(os.Getpid()),
 		Options:         t.getOptionsConfig(),
 		CgroupV1Hid:     uint32(t.cgroups.GetDefaultCgroupHierarchyID()),
 		PoliciesVersion: 1, // version will be removed soon
@@ -905,7 +939,7 @@ func (t *Tracker) newConfig(cfg *policy.PoliciesConfig) *Config {
 	}
 }
 
-func (t *Tracker) initKsymTableRequiredSyms() error {
+func (t *Tracee) initKsymTableRequiredSyms() error {
 	// Get all required symbols needed in the table
 	// 1. all event ksym dependencies
 	// 2. specific cases (hooked_seq_ops, hooked_symbols, print_mem_dump)
@@ -1027,7 +1061,7 @@ func getUnavailbaleKsymbols(ksymbols []events.KSymbol, kernelSymbols *environmen
 // validateKallsymsDependencies load all symbols required by events dependencies
 // from the kallsyms file to check for missing symbols. If some symbols are
 // missing, it will cancel their event with informative error message.
-func (t *Tracker) validateKallsymsDependencies() {
+func (t *Tracee) validateKallsymsDependencies() {
 	evtDefSymDeps := func(id events.ID) []events.KSymbol {
 		depsNode, _ := t.eventsDependencies.GetEvent(id)
 		deps := depsNode.GetDependencies()
@@ -1083,7 +1117,7 @@ func (t *Tracker) validateKallsymsDependencies() {
 	}
 }
 
-func (t *Tracker) populateBPFMaps() error {
+func (t *Tracee) populateBPFMaps() error {
 	// Prepare 32bit to 64bit syscall number mapping
 	sys32to64BPFMap, err := t.bpfModule.GetMap("sys_32_to_64_map") // u32, u32
 	if err != nil {
@@ -1215,7 +1249,7 @@ func (t *Tracker) populateBPFMaps() error {
 }
 
 // populateFilterMaps populates the eBPF maps with the given policies
-func (t *Tracker) populateFilterMaps(updateProcTree bool) error {
+func (t *Tracee) populateFilterMaps(updateProcTree bool) error {
 	polCfg, err := t.policyManager.UpdateBPF(
 		t.bpfModule,
 		t.containers,
@@ -1242,7 +1276,7 @@ func (t *Tracker) populateFilterMaps(updateProcTree bool) error {
 // Calling attachment of probes if a supported behavior, and will do nothing
 // if it has been attached already.
 // Return whether the event was successfully attached or not.
-func (t *Tracker) attachEvent(id events.ID) error {
+func (t *Tracee) attachEvent(id events.ID) error {
 	evtName := events.Core.GetDefinitionByID(id).GetName()
 	depsNode, err := t.eventsDependencies.GetEvent(id)
 	if err != nil {
@@ -1272,7 +1306,7 @@ func (t *Tracker) attachEvent(id events.ID) error {
 }
 
 // attachProbes attaches selected events probes to their respective eBPF programs.
-func (t *Tracker) attachProbes() error {
+func (t *Tracee) attachProbes() error {
 	// Subscribe to all watchers on the dependencies to attach and/or detach
 	// probes upon changes
 	t.eventsDependencies.SubscribeAdd(
@@ -1321,7 +1355,7 @@ func (t *Tracker) attachProbes() error {
 	return nil
 }
 
-func (t *Tracker) initBPFProbes() error {
+func (t *Tracee) initBPFProbes() error {
 	var err error
 	// Execute code with higher privileges: ring1 (required)
 
@@ -1348,7 +1382,7 @@ func (t *Tracker) initBPFProbes() error {
 	return nil
 }
 
-func (t *Tracker) initBPF() error {
+func (t *Tracee) initBPF() error {
 	var err error
 
 	// Load the eBPF object into kernel
@@ -1357,6 +1391,10 @@ func (t *Tracker) initBPF() error {
 	if err != nil {
 		return errfmt.WrapError(err)
 	}
+
+	// Need to force nil to allow the garbage
+	// collector to free the BPF object
+	t.config.BPFObjBytes = nil
 
 	// Populate eBPF maps with initial data
 
@@ -1372,6 +1410,7 @@ func (t *Tracker) initBPF() error {
 		t.containers,
 		t.config.NoContainersEnrich,
 		t.processTree,
+		t.timeNormalizer,
 	)
 	if err != nil {
 		return errfmt.WrapError(err)
@@ -1454,7 +1493,7 @@ func (t *Tracker) initBPF() error {
 const pollTimeout int = 300
 
 // Run starts the trace. it will run until ctx is cancelled
-func (t *Tracker) Run(ctx gocontext.Context) error {
+func (t *Tracee) Run(ctx gocontext.Context) error {
 	// Some events need initialization before the perf buffers are polled
 
 	go t.hookedSyscallTableRoutine(ctx)
@@ -1534,7 +1573,7 @@ func (t *Tracker) Run(ctx gocontext.Context) error {
 		}
 	}
 
-	t.Close() // close Tracker
+	t.Close() // close Tracee
 
 	return nil
 }
@@ -1570,21 +1609,21 @@ func updateCaptureMapFile(fileDir *os.File, filePath string, capturedFiles map[s
 }
 
 // Close cleans up created resources
-func (t *Tracker) Close() {
-	// clean up (unsubscribe) all streams connected if tracker is done
+func (t *Tracee) Close() {
+	// clean up (unsubscribe) all streams connected if tracee is done
 	if t.streamsManager != nil {
 		t.streamsManager.Close()
 	}
 	if t.controlPlane != nil {
 		err := t.controlPlane.Stop()
 		if err != nil {
-			logger.Errorw("failed to stop control plane when closing tracker", "err", err)
+			logger.Errorw("failed to stop control plane when closing tracee", "err", err)
 		}
 	}
 	if t.probes != nil {
 		err := t.probes.DetachAll()
 		if err != nil {
-			logger.Errorw("failed to detach probes when closing tracker", "err", err)
+			logger.Errorw("failed to detach probes when closing tracee", "err", err)
 		}
 	}
 	if t.bpfModule != nil {
@@ -1593,7 +1632,7 @@ func (t *Tracker) Close() {
 	if t.containers != nil {
 		err := t.containers.Close()
 		if err != nil {
-			logger.Errorw("failed to clean containers module when closing tracker", "err", err)
+			logger.Errorw("failed to clean containers module when closing tracee", "err", err)
 		}
 	}
 	if err := t.cgroups.Destroy(); err != nil {
@@ -1605,12 +1644,12 @@ func (t *Tracker) Close() {
 	close(t.done)
 }
 
-// Running returns true if the tracker is running
-func (t *Tracker) Running() bool {
+// Running returns true if the tracee is running
+func (t *Tracee) Running() bool {
 	return t.running.Load()
 }
 
-func (t *Tracker) computeOutFileHash(fileName string) (string, error) {
+func (t *Tracee) computeOutFileHash(fileName string) (string, error) {
 	f, err := utils.OpenAt(t.OutDir, fileName, os.O_RDONLY, 0)
 	if err != nil {
 		return "", errfmt.WrapError(err)
@@ -1623,8 +1662,8 @@ func (t *Tracker) computeOutFileHash(fileName string) (string, error) {
 	return filehash.ComputeFileHash(f)
 }
 
-// getSelfLoadedPrograms returns a map of all programs loaded by tracker.
-func (t *Tracker) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
+// getSelfLoadedPrograms returns a map of all programs loaded by tracee.
+func (t *Tracee) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
 	selfLoadedPrograms := map[string]int{} // map k: symbol name, v: number of hooks
 
 	log := func(event string, program string) {
@@ -1705,10 +1744,10 @@ func (t *Tracker) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
 	return selfLoadedPrograms
 }
 
-// invokeInitEvents emits Tracker events, called Initialization Events, that are generated from the
+// invokeInitEvents emits Tracee events, called Initialization Events, that are generated from the
 // userland process itself, and not from the kernel. These events usually serve as informational
 // events for the signatures engine/logic.
-func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
+func (t *Tracee) invokeInitEvents(out chan *trace.Event) {
 	var matchedPolicies uint64
 
 	setMatchedPolicies := func(event *trace.Event, matchedPolicies uint64, pManager *policy.PolicyManager) {
@@ -1724,11 +1763,11 @@ func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
 
 	// Initial namespace events
 
-	matchedPolicies = policiesMatch(t.eventsState[events.TrackerInfo])
+	matchedPolicies = policiesMatch(t.eventsState[events.TraceeInfo])
 	if matchedPolicies > 0 {
-		trackerDataEvent := events.TrackerInfoEvent(t.bootTime, t.startTime)
-		setMatchedPolicies(&trackerDataEvent, matchedPolicies, t.policyManager)
-		out <- &trackerDataEvent
+		traceeDataEvent := events.TraceeInfoEvent(t.bootTime, t.startTime)
+		setMatchedPolicies(&traceeDataEvent, matchedPolicies, t.policyManager)
+		out <- &traceeDataEvent
 		_ = t.stats.EventCount.Increment()
 	}
 
@@ -1762,7 +1801,7 @@ func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
 		logger.Debugw("started ftraceHook goroutine")
 
 		// TODO: Ideally, this should be inside the goroutine and be computed before each run,
-		// as in the future tracker events may be changed in run time.
+		// as in the future tracee events may be changed in run time.
 		// Currently, moving it inside the goroutine leads to a circular importing due to
 		// eventsState (which is used inside the goroutine).
 		// eventsState is planned to be removed, and this call should move inside the routine
@@ -1774,7 +1813,7 @@ func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
 }
 
 // netEnabled returns true if any base network event is to be traced
-func (t *Tracker) netEnabled() bool {
+func (t *Tracee) netEnabled() bool {
 	for k := range t.eventsState {
 		if k >= events.NetPacketBase && k <= events.MaxNetID {
 			return true
@@ -1791,7 +1830,7 @@ func (t *Tracker) netEnabled() bool {
 
 // triggerSeqOpsIntegrityCheck is used by a Uprobe to trigger an eBPF program
 // that prints the seq ops pointers
-func (t *Tracker) triggerSeqOpsIntegrityCheck(event trace.Event) {
+func (t *Tracee) triggerSeqOpsIntegrityCheck(event trace.Event) {
 	_, ok := t.eventsState[events.HookedSeqOps]
 	if !ok {
 		return
@@ -1812,7 +1851,7 @@ func (t *Tracker) triggerSeqOpsIntegrityCheck(event trace.Event) {
 }
 
 //go:noinline
-func (t *Tracker) triggerSeqOpsIntegrityCheckCall(
+func (t *Tracee) triggerSeqOpsIntegrityCheckCall(
 	eventHandle uint64,
 	seqOpsStruct [len(derive.NetSeqOps)]uint64) error {
 	return nil
@@ -1820,7 +1859,7 @@ func (t *Tracker) triggerSeqOpsIntegrityCheckCall(
 
 // triggerMemDump is used by a Uprobe to trigger an eBPF program
 // that prints the first bytes of requested symbols or addresses
-func (t *Tracker) triggerMemDump(event trace.Event) []error {
+func (t *Tracee) triggerMemDump(event trace.Event) []error {
 	if _, ok := t.eventsState[events.PrintMemDump]; !ok {
 		return nil
 	}
@@ -1936,32 +1975,32 @@ func (t *Tracker) triggerMemDump(event trace.Event) []error {
 	return errs
 }
 
-// AddReadyCallback sets a callback function to be called when the tracker started all its probes
+// AddReadyCallback sets a callback function to be called when the tracee started all its probes
 // and is ready to receive events
-func (t *Tracker) AddReadyCallback(f func(ctx gocontext.Context)) {
+func (t *Tracee) AddReadyCallback(f func(ctx gocontext.Context)) {
 	t.readyCallback = f
 }
 
 // ready executes the ready callback if it was set.
-// doesn't block the execution of the tracker
-func (t *Tracker) ready(ctx gocontext.Context) {
+// doesn't block the execution of the tracee
+func (t *Tracee) ready(ctx gocontext.Context) {
 	if t.readyCallback != nil {
 		go t.readyCallback(ctx)
 	}
 }
 
 //go:noinline
-func (t *Tracker) triggerMemDumpCall(address uint64, length uint64, eventHandle uint64) error {
+func (t *Tracee) triggerMemDumpCall(address uint64, length uint64, eventHandle uint64) error {
 	return nil
 }
 
 // SubscribeAll returns a stream subscribed to all policies
-func (t *Tracker) SubscribeAll() *streams.Stream {
+func (t *Tracee) SubscribeAll() *streams.Stream {
 	return t.subscribe(policy.PolicyAll)
 }
 
 // Subscribe returns a stream subscribed to selected policies
-func (t *Tracker) Subscribe(policyNames []string) (*streams.Stream, error) {
+func (t *Tracee) Subscribe(policyNames []string) (*streams.Stream, error) {
 	var policyMask uint64
 
 	for _, policyName := range policyNames {
@@ -1975,18 +2014,18 @@ func (t *Tracker) Subscribe(policyNames []string) (*streams.Stream, error) {
 	return t.subscribe(policyMask), nil
 }
 
-func (t *Tracker) subscribe(policyMask uint64) *streams.Stream {
+func (t *Tracee) subscribe(policyMask uint64) *streams.Stream {
 	// TODO: the channel size matches the pipeline channel size,
 	// but we should make it configurable in the future.
-	return t.streamsManager.Subscribe(policyMask, 10000)
+	return t.streamsManager.Subscribe(policyMask, t.config.PipelineChannelSize)
 }
 
 // Unsubscribe unsubscribes stream
-func (t *Tracker) Unsubscribe(s *streams.Stream) {
+func (t *Tracee) Unsubscribe(s *streams.Stream) {
 	t.streamsManager.Unsubscribe(s)
 }
 
-func (t *Tracker) EnableEvent(eventName string) error {
+func (t *Tracee) EnableEvent(eventName string) error {
 	id, found := events.Core.GetDefinitionIDByName(eventName)
 	if !found {
 		return errfmt.Errorf("error event not found: %s", eventName)
@@ -1997,7 +2036,7 @@ func (t *Tracker) EnableEvent(eventName string) error {
 	return nil
 }
 
-func (t *Tracker) DisableEvent(eventName string) error {
+func (t *Tracee) DisableEvent(eventName string) error {
 	id, found := events.Core.GetDefinitionIDByName(eventName)
 	if !found {
 		return errfmt.Errorf("error event not found: %s", eventName)
@@ -2009,7 +2048,7 @@ func (t *Tracker) DisableEvent(eventName string) error {
 }
 
 // EnableRule enables a rule in the specified policies
-func (t *Tracker) EnableRule(policyNames []string, ruleId string) error {
+func (t *Tracee) EnableRule(policyNames []string, ruleId string) error {
 	eventID, found := events.Core.GetDefinitionIDByName(ruleId)
 	if !found {
 		return errfmt.Errorf("error rule not found: %s", ruleId)
@@ -2021,14 +2060,17 @@ func (t *Tracker) EnableRule(policyNames []string, ruleId string) error {
 			return err
 		}
 
-		t.policyManager.EnableRule(p.ID, eventID)
+		err = t.policyManager.EnableRule(p.ID, eventID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 // DisableRule disables a rule in the specified policies
-func (t *Tracker) DisableRule(policyNames []string, ruleId string) error {
+func (t *Tracee) DisableRule(policyNames []string, ruleId string) error {
 	eventID, found := events.Core.GetDefinitionIDByName(ruleId)
 	if !found {
 		return errfmt.Errorf("error rule not found: %s", ruleId)
@@ -2040,7 +2082,10 @@ func (t *Tracker) DisableRule(policyNames []string, ruleId string) error {
 			return err
 		}
 
-		t.policyManager.DisableRule(p.ID, eventID)
+		err = t.policyManager.DisableRule(p.ID, eventID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

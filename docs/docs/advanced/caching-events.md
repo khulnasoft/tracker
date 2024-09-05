@@ -1,15 +1,15 @@
 # Special: Caching Events
 
-Tracker has an events caching (in-memory) mechanism. In order to check latest
+Tracee has an events caching (in-memory) mechanism. In order to check latest
 caching options you may execute:
 
 ```console
-./dist/tracker man cache
+./dist/tracee man cache
 ```
 
 <!-- TODO: reference the architecture page again-->
 
-![Tracker Cache](../../images/tracker-cache.png)
+![Tracee Cache](../../images/tracee-cache.png)
 
 The caching happens in userland, it is an in-memory caching, and it helps with
 workload bursts: if kernel produces more events than userland is capable of
@@ -31,7 +31,7 @@ The effects of this are the following:
 Example using **1GB cache**:
 
 ```console
-sudo ./dist/tracker \
+sudo ./dist/tracee \
     --cache cache-type=mem \
     --cache mem-cache-size=1024 \
     -o format:json \
@@ -41,10 +41,10 @@ sudo ./dist/tracker \
 ```
 
 !!! Attention
-    If you pipe **tracker** output to another tool, like `jq`:
+    If you pipe **tracee** output to another tool, like `jq`:
     ```console
     | jq -c '. | {cgroupid, processname, containername}'
     ```
-    You may cause latencies in **tracker** pipeline because the event json
-    processing from `jq` might not be as fast as how **tracker** is capable of
+    You may cause latencies in **tracee** pipeline because the event json
+    processing from `jq` might not be as fast as how **tracee** is capable of
     writing events to it.

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/metrics"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/signatures/metrics"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
 )
 
 const ALL_EVENT_ORIGINS = "*"
@@ -22,10 +22,10 @@ type Config struct {
 	Enabled          bool             // Enables the signatures engine to run in the events pipeline
 	SigNameToEventID map[string]int32 // Cache of loaded signature event names to event ids, used to filter in dispatching
 
-	// Callback from tracker to determine if event should be dispatched to signature.
+	// Callback from tracee to determine if event should be dispatched to signature.
 	// This is done as a callback becaues importing the events package breaks compilation for the
-	// tracker-rules binary.
-	// When tracker-rules is removed, and the policy coordinator is implemented (PR #3305)
+	// tracee-rules binary.
+	// When tracee-rules is removed, and the policy coordinator is implemented (PR #3305)
 	// this solution should be abandoned in favor of using it alongside the engine.
 	ShouldDispatchEvent func(eventIdInt32 int32) bool
 
@@ -51,7 +51,7 @@ type Engine struct {
 
 // EventSources is a bundle of input sources used to configure the Engine
 type EventSources struct {
-	Tracker chan protocol.Event
+	Tracee chan protocol.Event
 }
 
 func (engine *Engine) Stats() *metrics.Stats {
@@ -62,7 +62,7 @@ func (engine *Engine) Stats() *metrics.Stats {
 // inputs and outputs are given as channels created by the consumer
 // Signatures are not loaded at this point, Init must be called to perform config side effects.
 func NewEngine(config Config, sources EventSources, output chan *detect.Finding) (*Engine, error) {
-	if sources.Tracker == nil || output == nil {
+	if sources.Tracee == nil || output == nil {
 		return nil, fmt.Errorf("nil input received")
 	}
 	engine := Engine{}
@@ -149,9 +149,9 @@ func (engine *Engine) matchHandler(res *detect.Finding) {
 }
 
 // checkCompletion is a function that runs at the end of each input source
-// closing tracker-rules if no more pending input sources exists
+// closing tracee-rules if no more pending input sources exists
 func (engine *Engine) checkCompletion() bool {
-	if engine.inputs.Tracker == nil {
+	if engine.inputs.Tracee == nil {
 		engine.unloadAllSignatures()
 		engine.waitGroup.Wait()
 		return true
@@ -213,7 +213,7 @@ func (engine *Engine) processEvent(event protocol.Event) {
 func (engine *Engine) consumeSources(ctx context.Context) {
 	for {
 		select {
-		case event, ok := <-engine.inputs.Tracker:
+		case event, ok := <-engine.inputs.Tracee:
 			if !ok {
 				engine.signaturesMutex.RLock()
 				for sig := range engine.signatures {
@@ -223,14 +223,14 @@ func (engine *Engine) consumeSources(ctx context.Context) {
 						continue
 					}
 					for _, sel := range se {
-						if sel.Source == "tracker" {
-							_ = sig.OnSignal(detect.SignalSourceComplete("tracker"))
+						if sel.Source == "tracee" {
+							_ = sig.OnSignal(detect.SignalSourceComplete("tracee"))
 							break
 						}
 					}
 				}
 				engine.signaturesMutex.RUnlock()
-				engine.inputs.Tracker = nil
+				engine.inputs.Tracee = nil
 				if engine.checkCompletion() {
 					close(engine.output)
 					return
@@ -249,7 +249,7 @@ drain:
 	// drain and process all remaining events
 	for {
 		select {
-		case event := <-engine.inputs.Tracker:
+		case event := <-engine.inputs.Tracee:
 			engine.processEvent(event)
 
 		default:

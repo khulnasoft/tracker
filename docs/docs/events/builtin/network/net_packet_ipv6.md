@@ -60,7 +60,7 @@ fields`.
 Example:
 
 ```console
-tracker --output json --events net_packet_ipv6
+tracee --output json --events net_packet_ipv6
 ```
 
 ```json

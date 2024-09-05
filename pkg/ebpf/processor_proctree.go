@@ -2,13 +2,13 @@ package ebpf
 
 import (
 	"fmt"
-	"time"
 
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events/parse"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/proctree"
+	traceetime "github.com/aquasecurity/tracee/pkg/time"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -16,7 +16,7 @@ import (
 //
 
 // procTreeForkProcessor handles process fork events.
-func (t *Tracker) procTreeForkProcessor(event *trace.Event) error {
+func (t *Tracee) procTreeForkProcessor(event *trace.Event) error {
 	var errs []error
 
 	if t.processTree == nil {
@@ -25,16 +25,16 @@ func (t *Tracker) procTreeForkProcessor(event *trace.Event) error {
 
 	// NOTE: The "parent" related arguments can be ignored for process tree purposes.
 
-	// Up Parent (Up in hierarchy until parent is a process and not a lwp)
-	parentTid, err := parse.ArgVal[int32](event.Args, "up_parent_tid")
+	// Parent Process (Go up in hierarchy until parent is a process and not a lwp)
+	parentTid, err := parse.ArgVal[int32](event.Args, "parent_process_tid")
 	errs = append(errs, err)
-	parentNsTid, err := parse.ArgVal[int32](event.Args, "up_parent_ns_tid")
+	parentNsTid, err := parse.ArgVal[int32](event.Args, "parent_process_ns_tid")
 	errs = append(errs, err)
-	parentPid, err := parse.ArgVal[int32](event.Args, "up_parent_pid")
+	parentPid, err := parse.ArgVal[int32](event.Args, "parent_process_pid")
 	errs = append(errs, err)
-	parentNsPid, err := parse.ArgVal[int32](event.Args, "up_parent_ns_pid")
+	parentNsPid, err := parse.ArgVal[int32](event.Args, "parent_process_ns_pid")
 	errs = append(errs, err)
-	parentStartTime, err := parse.ArgVal[uint64](event.Args, "up_parent_start_time")
+	parentStartTime, err := parse.ArgVal[uint64](event.Args, "parent_process_start_time")
 	errs = append(errs, err)
 
 	// Thread Group Leader (might be the same as the "child", if "child" is a process)
@@ -75,7 +75,7 @@ func (t *Tracker) procTreeForkProcessor(event *trace.Event) error {
 
 	return t.processTree.FeedFromFork(
 		proctree.ForkFeed{
-			TimeStamp:       childStartTime, // event timestamp is the same
+			TimeStamp:       uint64(t.timeNormalizer.NormalizeTime(int(childStartTime))), // event timestamp is the same
 			ChildHash:       childHash,
 			ParentHash:      parentHash,
 			LeaderHash:      leaderHash,
@@ -83,56 +83,23 @@ func (t *Tracker) procTreeForkProcessor(event *trace.Event) error {
 			ParentNsTid:     parentNsTid,
 			ParentPid:       parentPid,
 			ParentNsPid:     parentNsPid,
-			ParentStartTime: parentStartTime,
+			ParentStartTime: uint64(t.timeNormalizer.NormalizeTime(int(parentStartTime))),
 			LeaderTid:       leaderTid,
 			LeaderNsTid:     leaderNsTid,
 			LeaderPid:       leaderPid,
 			LeaderNsPid:     leaderNsPid,
-			LeaderStartTime: leaderStartTime,
+			LeaderStartTime: uint64(t.timeNormalizer.NormalizeTime(int(leaderStartTime))),
 			ChildTid:        childTid,
 			ChildNsTid:      childNsTid,
 			ChildPid:        childPid,
 			ChildNsPid:      childNsPid,
-			ChildStartTime:  childStartTime,
+			ChildStartTime:  uint64(t.timeNormalizer.NormalizeTime(int(childStartTime))),
 		},
 	)
 }
 
-// procTreeForkRemoveArgs removes arguments needed for the process tree only (when source is events).
-func (t *Tracker) procTreeForkRemoveArgs(event *trace.Event) error {
-	argsToRemove := []string{
-		"up_parent_tid",
-		"up_parent_ns_tid",
-		"up_parent_pid",
-		"up_parent_ns_pid",
-		"up_parent_start_time",
-		"leader_tid",
-		"leader_ns_tid",
-		"leader_pid",
-		"leader_ns_pid",
-		"leader_start_time",
-	}
-
-	m := make(map[string]trace.Argument)
-	for _, arg := range event.Args {
-		m[arg.Name] = arg
-	}
-
-	for _, argName := range argsToRemove {
-		delete(m, argName)
-	}
-
-	event.Args = make([]trace.Argument, 0, len(m))
-	for _, arg := range m {
-		event.Args = append(event.Args, arg)
-	}
-	event.ArgsNum = len(event.Args)
-
-	return nil
-}
-
 // procTreeExecProcessor handles process exec events.
-func (t *Tracker) procTreeExecProcessor(event *trace.Event) error {
+func (t *Tracee) procTreeExecProcessor(event *trace.Event) error {
 	var errs []error
 
 	if t.processTree == nil {
@@ -186,7 +153,7 @@ func (t *Tracker) procTreeExecProcessor(event *trace.Event) error {
 
 	return t.processTree.FeedFromExec(
 		proctree.ExecFeed{
-			TimeStamp:         timestamp,
+			TimeStamp:         uint64(t.timeNormalizer.NormalizeTime(int(timestamp))),
 			TaskHash:          taskHash,
 			ParentHash:        0, // regular pipeline does not have parent hash
 			LeaderHash:        0, // regular pipeline does not have leader hash
@@ -209,7 +176,7 @@ func (t *Tracker) procTreeExecProcessor(event *trace.Event) error {
 }
 
 // procTreeExitProcessor handles process exit events.
-func (t *Tracker) procTreeExitProcessor(event *trace.Event) error {
+func (t *Tracee) procTreeExitProcessor(event *trace.Event) error {
 	var errs []error
 
 	if t.processTree == nil {
@@ -237,7 +204,7 @@ func (t *Tracker) procTreeExitProcessor(event *trace.Event) error {
 
 	return t.processTree.FeedFromExit(
 		proctree.ExitFeed{
-			TimeStamp:  timestamp, // time of exit is already a timestamp
+			TimeStamp:  uint64(t.timeNormalizer.NormalizeTime(int(timestamp))), // time of exit is already a timestamp
 			TaskHash:   taskHash,
 			ParentHash: 0, // regular pipeline does not have parent hash
 			LeaderHash: 0, // regular pipeline does not have leader hash
@@ -252,7 +219,7 @@ func (t *Tracker) procTreeExitProcessor(event *trace.Event) error {
 //
 
 // procTreeAddBinInfo enriches the event with processes information from the process tree.
-func (t *Tracker) procTreeAddBinInfo(event *trace.Event) error {
+func (t *Tracee) procTreeAddBinInfo(event *trace.Event) error {
 	currentProcess, procOk := t.processTree.GetProcessByHash(event.ProcessEntityId)
 	if !procOk {
 		_, threadOk := t.processTree.GetThreadByHash(event.ProcessEntityId)
@@ -270,7 +237,7 @@ func (t *Tracker) procTreeAddBinInfo(event *trace.Event) error {
 	}
 
 	// Event timestamp is changed to relative (or not) at the end of all processors only.
-	eventTimestamp := time.Unix(0, int64(event.Timestamp)+int64(t.bootTime))
+	eventTimestamp := traceetime.NsSinceEpochToTime(uint64(t.timeNormalizer.NormalizeTime(event.Timestamp)))
 
 	executable := currentProcess.GetExecutable()
 

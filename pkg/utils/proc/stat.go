@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
 )
 
 //

@@ -3,19 +3,19 @@ package ebpf
 import (
 	"unsafe"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 // TODO: Just like recent change in `KernelSymbolTable`, in kernel_symbols.go,
 // this needs to be changed somehow. Symbols might be duplicated, so might be
-// the addresses (https://github.com/khulnasoft/tracker/issues/3798).
+// the addresses (https://github.com/aquasecurity/tracee/issues/3798).
 
 var maxKsymNameLen = 64 // Most match the constant in the bpf code
 var globalSymbolOwner = "system"
 
-func (t *Tracker) UpdateKallsyms() error {
+func (t *Tracee) UpdateKallsyms() error {
 	// NOTE: Make sure to refresh the kernel symbols table before updating the eBPF map.
 
 	// Find the eBPF map.
@@ -42,7 +42,7 @@ func (t *Tracker) UpdateKallsyms() error {
 		}
 	}
 
-	// For every ksymbol required by tracker ...
+	// For every ksymbol required by tracee ...
 	for _, required := range allReqSymbols {
 		// ... get the symbol address from the kallsyms file ...
 		symbol, err := t.kernelSymbols.GetSymbolByOwnerAndName(globalSymbolOwner, required)

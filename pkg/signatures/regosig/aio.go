@@ -11,9 +11,9 @@ import (
 	"github.com/open-policy-agent/opa/compile"
 	"github.com/open-policy-agent/opa/rego"
 
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var (
@@ -24,8 +24,8 @@ var (
 const (
 	moduleMain             = "main.rego"
 	queryMetadataAll       = "data.main.__rego_metadoc_all__"
-	querySelectedEventsAll = "data.main.tracker_selected_events_all"
-	queryMatchAll          = "data.main.tracker_match_all"
+	querySelectedEventsAll = "data.main.tracee_selected_events_all"
+	queryMatchAll          = "data.main.tracee_match_all"
 )
 
 // Options holds various Option items that can be passed to the NewAIO constructor.

@@ -15,12 +15,12 @@ import (
 	"github.com/urfave/cli/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags/server"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/types/detect"
 )
 
 const (
@@ -29,7 +29,7 @@ const (
 
 func main() {
 	app := &cli.App{
-		Name:  "tracker-rules",
+		Name:  "tracee-rules",
 		Usage: "A rule engine for Runtime Security",
 		Action: func(c *cli.Context) error {
 			// Logger Setup
@@ -76,7 +76,11 @@ func main() {
 			// happens after Find() is called) in that case.
 
 			bypass := c.Bool("allcaps") || !isRoot()
-			err = capabilities.Initialize(bypass)
+			err = capabilities.Initialize(
+				capabilities.Config{
+					Bypass: bypass,
+				},
+			)
 			if err != nil {
 				return err
 			}
@@ -114,7 +118,7 @@ func main() {
 
 			var inputs engine.EventSources
 
-			opts, err := parseTrackerInputOptions(c.StringSlice("input-tracker"))
+			opts, err := parseTraceeInputOptions(c.StringSlice("input-tracee"))
 			if err == errHelp {
 				printHelp()
 				return nil
@@ -123,7 +127,7 @@ func main() {
 				return err
 			}
 
-			inputs.Tracker, err = setupTrackerInputSource(opts)
+			inputs.Tracee, err = setupTraceeInputSource(opts)
 			if err != nil {
 				return err
 			}
@@ -206,8 +210,8 @@ func main() {
 				Usage: "content type of the template in use. Recommended if using --webhook-template",
 			},
 			&cli.StringSliceFlag{
-				Name:  "input-tracker",
-				Usage: "configure tracker-ebpf as input source. see '--input-tracker help' for more info",
+				Name:  "input-tracee",
+				Usage: "configure tracee-ebpf as input source. see '--input-tracee help' for more info",
 			},
 			&cli.StringFlag{
 				Name:  "output-template",
@@ -259,7 +263,7 @@ func main() {
 			&cli.BoolFlag{
 				Name:  "allcaps",
 				Value: false,
-				Usage: "allow tracker-rules to run with all capabilities (use with caution)",
+				Usage: "allow tracee-rules to run with all capabilities (use with caution)",
 			},
 		},
 	}

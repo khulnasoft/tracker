@@ -1,15 +1,15 @@
 # Golang Signatures
 
-There are 2 ways you can get your own golang signatures working with tracker.
+There are 2 ways you can get your own golang signatures working with tracee.
 
 1. **Built-In Golang signatures**
 
     !!! Tip
         This is the preferred way to get your own golang signatures integrated
-        into Tracker, as you will find in the next part of this page, but it
+        into Tracee, as you will find in the next part of this page, but it
         needs a better end-user experience (being worked).
 
-    In order to get your golang signature compiled with tracker, you can create
+    In order to get your golang signature compiled with tracee, you can create
     a file called `signatures/golang/signature_example.go` and place the
     following code in it:
 
@@ -21,10 +21,10 @@ There are 2 ways you can get your own golang signatures working with tracker.
             "fmt"
             "strings"
 
-            "github.com/khulnasoft/tracker/signatures/helpers"
-            "github.com/khulnasoft/tracker/types/detect"
-            "github.com/khulnasoft/tracker/types/protocol"
-            "github.com/khulnasoft/tracker/types/trace"
+            "github.com/aquasecurity/tracee/signatures/helpers"
+            "github.com/aquasecurity/tracee/types/detect"
+            "github.com/aquasecurity/tracee/types/protocol"
+            "github.com/aquasecurity/tracee/types/trace"
         )
 
         type signatureExample struct {
@@ -56,8 +56,8 @@ There are 2 ways you can get your own golang signatures working with tracker.
         ) {
 
             return []detect.SignatureEventSelector{
-                {Source: "tracker", Name: "openat"},
-                {Source: "tracker", Name: "execve"},
+                {Source: "tracee", Name: "openat"},
+                {Source: "tracee", Name: "execve"},
             }, nil
         }
 
@@ -70,7 +70,7 @@ There are 2 ways you can get your own golang signatures working with tracker.
 
                 switch e.EventName {
                 case "openat", "execve":
-                    arg, err := helpers.GetTrackerArgumentByName(e, "pathname", helpers.GetArgOps{DefaultArgs: false})
+                    arg, err := helpers.GetTraceeArgumentByName(e, "pathname", helpers.GetArgOps{DefaultArgs: false})
                     if err != nil {
                         return err
                     }
@@ -111,11 +111,11 @@ There are 2 ways you can get your own golang signatures working with tracker.
     }
     ```
 
-    Follow instructions on [how to build Tracker] and you will get your new signature
+    Follow instructions on [how to build Tracee] and you will get your new signature
     available to use. You may even select only the signatures you created:
 
     ```console
-    sudo ./dist/tracker \
+    sudo ./dist/tracee \
         --output json \
         --events mine
     ```
@@ -129,7 +129,7 @@ There are 2 ways you can get your own golang signatures working with tracker.
     a cached external data-source and return a positive detection for cases A,
     B or C.
 
-    [how to build Tracker]: ../../../contributing/building/building.md
+    [how to build Tracee]: ../../../contributing/building/building.md
 
 2. Create a golang signature plugin and dynamically load it during runtime
 
@@ -138,18 +138,18 @@ There are 2 ways you can get your own golang signatures working with tracker.
         you consider all the problems that emerge from using it:
 
         1. **Can't use different go versions** (need to compile the go plugin
-           with the exact same version that was used to build Tracker).
+           with the exact same version that was used to build Tracee).
 
-        2. Both Tracker and your golang plugin signature must be built with the
+        2. Both Tracee and your golang plugin signature must be built with the
            **exact same GOPATH** or you will get a "plugin was built with a
            different version of package XXX" error.
 
         3. Any **dependency** you have in your plugin should be of the **same
-           version** with the dependencies of Tracker.
+           version** with the dependencies of Tracee.
 
-        4. Compiling tracker statically is sometimes useful to have a **complete
+        4. Compiling tracee statically is sometimes useful to have a **complete
            portable eBPF tracing/detection solution**. One good example when
-           statically compiling tracker is a good idea is to have a single
+           statically compiling tracee is a good idea is to have a single
            binary capable of running in GLIBC (most of them) and MUSL (Alpine)
            powered Linux distros.
 

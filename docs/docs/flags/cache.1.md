@@ -1,17 +1,17 @@
 ---
-title: TRACKER-CACHE
+title: TRACEE-CACHE
 section: 1
-header: Tracker Cache Flag Manual
+header: Tracee Cache Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-cache** - Select different cache types for the event pipeline queueing
+tracee **\-\-cache** - Select different cache types for the event pipeline queueing
 
 ## SYNOPSIS
 
-tracker **\-\-cache** [none|cache-type=<type\>] [**\-\-cache** mem-cache-size=<size\>]
+tracee **\-\-cache** [none|cache-type=<type\>] [**\-\-cache** mem-cache-size=<size\>]
 
 ## DESCRIPTION
 

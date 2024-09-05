@@ -3,7 +3,7 @@
 set -e
 set -x # for debugging
 
-# This script installs the dependencies for compiling tracker and running the e2e
+# This script installs the dependencies for compiling tracee and running the e2e
 # tests. Note that for llvm, binaries might be installed from the OS package
 # manager or from github, depending on the OS version. This happens because
 # upstream llvm binaries are not available for all OS versions.

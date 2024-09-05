@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.co/khulnasoft/tracker/api/v1beta1";
+option go_package = "github.co/aquasecurity/tracee/api/v1beta1";
 
-package tracker.v1beta1;
+package tracee.v1beta1;
 
 import "google/protobuf/field_mask.proto";
 import "api/v1beta1/event.proto";
@@ -49,7 +49,7 @@ message StreamEventsResponse {
     Event event = 1;
 }
 
-service TrackerService {
+service TraceeService {
     rpc GetEventDefinitions(GetEventDefinitionsRequest) returns (GetEventDefinitionsResponse);
     rpc StreamEvents(StreamEventsRequest) returns (stream StreamEventsResponse);
 

@@ -7,8 +7,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 func logHelp() string {
@@ -33,7 +33,7 @@ Examples:
   --log debug                                        | outputs debug level logs
   --log debug --log aggregate                        | outputs aggregated debug level logs every 3 seconds (default)
   --log aggregate:5s                                 | outputs aggregated logs every 5 seconds
-  --log debug --log file:/tmp/tracker.log             | outputs debug level logs to /tmp/tracker.log
+  --log debug --log file:/tmp/tracee.log             | outputs debug level logs to /tmp/tracee.log
   --log filter:'msg=foo,bar;pkg=core;lvl=error'      | Filters in logs that have either 'foo' or 'bar' in the message, are from the 'core' package, and are of 'error' level.
   --log filter-out:'msg=foo,bar;pkg=core;lvl=error'  | Filters out logs that have either 'foo' or 'bar' in the message, are from the 'core' package, and are of 'error' level.
   --log filter:msg=foo,bar --log filter-out:pkg=core | Filters in logs that have either 'foo' or 'bar' in the message, and based on that result, filters out logs that are from the 'core' package.

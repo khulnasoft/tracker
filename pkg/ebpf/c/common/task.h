@@ -10,7 +10,7 @@
 // PROTOTYPES
 
 statfunc int get_task_flags(struct task_struct *task);
-statfunc int get_task_syscall_id(struct task_struct *task);
+statfunc int get_current_task_syscall_id(void);
 statfunc u32 get_task_mnt_ns_id(struct task_struct *task);
 statfunc u32 get_task_pid_ns_for_children_id(struct task_struct *task);
 statfunc u32 get_task_pid_ns_id(struct task_struct *task);
@@ -39,14 +39,25 @@ statfunc int get_task_flags(struct task_struct *task)
     return BPF_CORE_READ(task, flags);
 }
 
-statfunc int get_task_syscall_id(struct task_struct *task)
+statfunc int get_current_task_syscall_id(void)
 {
     // There is no originated syscall in kernel thread context
-    if (get_task_flags(task) & PF_KTHREAD) {
+    struct task_struct *curr = (struct task_struct *) bpf_get_current_task();
+    if (get_task_flags(curr) & PF_KTHREAD) {
         return NO_SYSCALL;
     }
-    struct pt_regs *regs = get_task_pt_regs(task);
-    return get_syscall_id_from_regs(regs);
+
+    struct pt_regs *regs = get_current_task_pt_regs();
+    int id = get_syscall_id_from_regs(regs);
+    if (is_compat(curr)) {
+        // Translate 32bit syscalls to 64bit syscalls, so we can send to the correct handler
+        u32 *id_64 = bpf_map_lookup_elem(&sys_32_to_64_map, &id);
+        if (id_64 == 0)
+            return 0;
+
+        id = *id_64;
+    }
+    return id;
 }
 
 statfunc u32 get_task_mnt_ns_id(struct task_struct *task)
@@ -151,6 +162,15 @@ statfunc u32 get_task_ppid(struct task_struct *task)
 
 statfunc u64 get_task_start_time(struct task_struct *task)
 {
+    // Only use the boot time member if we can use boot time for current time
+    if (bpf_core_enum_value_exists(enum bpf_func_id, BPF_FUNC_ktime_get_boot_ns)) {
+        // real_start_time was renamed to start_boottime in kernel 5.5, so most likely
+        // it will be available as the bpf_ktime_get_boot_ns is available since kernel 5.8.
+        // The only case it won't be available is if it was backported to an older kernel.
+        if (bpf_core_field_exists(struct task_struct, start_boottime))
+            return BPF_CORE_READ(task, start_boottime);
+        return BPF_CORE_READ(task, real_start_time);
+    }
     return BPF_CORE_READ(task, start_time);
 }
 

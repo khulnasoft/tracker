@@ -1,4 +1,4 @@
-module github.com/khulnasoft/tracker/types
+module github.com/aquasecurity/tracee/types
 
 go 1.22.0
 

@@ -8,19 +8,19 @@ import (
 
 	cli "github.com/urfave/cli/v2"
 
-	"github.com/khulnasoft/tracker/pkg/cmd"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/cmd/urfave"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/cmd"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags/server"
+	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
+	"github.com/aquasecurity/tracee/pkg/cmd/urfave"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 var version string
 
 func main() {
 	app := &cli.App{
-		Name:    "Tracker",
+		Name:    "Tracee",
 		Usage:   "Trace OS events and syscalls using eBPF",
 		Version: version,
 		Action: func(c *cli.Context) error {
@@ -39,7 +39,7 @@ func main() {
 			}
 			initialize.SetLibbpfgoCallbacks()
 
-			runner, err := urfave.GetTrackerRunner(c, version)
+			runner, err := urfave.GetTraceeRunner(c, version)
 			if err != nil {
 				return err
 			}
@@ -77,7 +77,7 @@ func main() {
 				Name:    "capabilities",
 				Aliases: []string{"caps"},
 				Value:   nil,
-				Usage:   "define capabilities for tracker to run with. run '--capabilities help' for more info.",
+				Usage:   "define capabilities for tracee to run with. run '--capabilities help' for more info.",
 			},
 			&cli.StringSliceFlag{
 				Name:    "output",
@@ -118,10 +118,15 @@ func main() {
 				Value: 1024, // 4 MB of contiguous pages
 				Usage: "size, in pages, of the internal perf ring buffer used to send blobs from the kernel",
 			},
+			&cli.IntFlag{
+				Name:  "pipeline-channel-size",
+				Value: 10000,
+				Usage: "size, in event objects, of each pipeline stage's output channel",
+			},
 			&cli.StringFlag{
 				Name:  "install-path",
-				Value: "/tmp/tracker",
-				Usage: "path where tracker will install or lookup it's resources",
+				Value: "/tmp/tracee",
+				Usage: "path where tracee will install or lookup it's resources",
 			},
 			&cli.BoolFlag{
 				Name:  server.MetricsEndpointFlag,

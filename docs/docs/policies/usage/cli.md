@@ -1,41 +1,41 @@
 # CLI Policy Usage
 
-This section details how to use the flags in the Tracker CLI.
+This section details how to use the flags in the Tracee CLI.
 
-## Applying Tracker Polcies
+## Applying Tracee Polcies
 
-A [policy file](../index.md) can be applied in the Tracker command using the `--policy` flag and providing a path to the location of the policy file.
+A [policy file](../index.md) can be applied in the Tracee command using the `--policy` flag and providing a path to the location of the policy file.
 
 ```console
-tracker --policy ./policy.yml
+tracee --policy ./policy.yml
 ```
 
 ## Using multiple policies
 
-To specify multiple policies, users can either specify the directory, which contains all of the policies that they would like to load into Tracker, or by specifying the policies one by one.
+To specify multiple policies, users can either specify the directory, which contains all of the policies that they would like to load into Tracee, or by specifying the policies one by one.
 
 Through a directory:
 
 ```console
-tracker --policy ./policy-directory
+tracee --policy ./policy-directory
 ```
 
 By specifying individual policies:
 
 ```console
-tracker --policy ./policy-one.yaml --policy ./policy-two.yaml 
+tracee --policy ./policy-one.yaml --policy ./policy-two.yaml 
 ```
 
 ## EXAMPLE
 
 ```console
-tracker --config ./config.yaml --policy ./policy.yaml && cat /tmp/debug.json
+tracee --config ./config.yaml --policy ./policy.yaml && cat /tmp/debug.json
 ```
 
 ### config.yaml (example)
 
 ```yaml
-install-path: /tmp/tracker
+install-path: /tmp/tracee
 
 # debugging
 
@@ -67,6 +67,9 @@ proctree:
     cache:
         process: 8192
         thread: 8192
+    cache-ttl:
+        process: 120
+        thread: 120
 # cri:
 #     - runtime:
 #         name: docker
@@ -106,7 +109,7 @@ output:
 ### policy.yaml
 
 ```yaml
-apiVersion: tracker.khulnasoft.com/v1beta1
+apiVersion: tracee.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
   name: signatures
@@ -147,7 +150,7 @@ spec:
     - event: proc_fops_hooking
     - event: syscall_hooking
     - event: dropped_executable
-    # tracker open by cat in /tmp/* files
+    # tracee open by cat in /tmp/* files
     - event: openat
       filters:
         - comm=cat

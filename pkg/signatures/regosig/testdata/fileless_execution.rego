@@ -1,6 +1,6 @@
-package tracker.TRC_5
+package tracee.TRC_5
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-5",
@@ -15,39 +15,39 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracker",
+	"source": "tracee",
 	"name": "sched_process_exec",
 }]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "sched_process_exec"
-	pathname = helpers.get_tracker_argument("pathname")
+	pathname = helpers.get_tracee_argument("pathname")
 	startswith(pathname, "memfd:")
 
 	not startswith(pathname, "memfd:runc")
 	input.containerId == ""
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "sched_process_exec"
-	pathname = helpers.get_tracker_argument("pathname")
+	pathname = helpers.get_tracee_argument("pathname")
 	startswith(pathname, "memfd:")
 
 	input.containerId != ""
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "sched_process_exec"
-	pathname = helpers.get_tracker_argument("pathname")
+	pathname = helpers.get_tracee_argument("pathname")
 	startswith(pathname, "/dev/shm")
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "sched_process_exec"
-	pathname = helpers.get_tracker_argument("pathname")
+	pathname = helpers.get_tracee_argument("pathname")
 	startswith(pathname, "/run/shm")
 }

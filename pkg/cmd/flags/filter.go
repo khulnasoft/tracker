@@ -3,7 +3,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events"
 )
 
 func filterHelp() string {

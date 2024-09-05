@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eTCP struct {
 	cb detect.SignatureHandler
+}
+
+var e2eTCPMetadata = detect.SignatureMetadata{
+	ID:          "TCP",
+	EventName:   "TCP",
+	Version:     "0.1.0",
+	Name:        "Network TCP Test",
+	Description: "Network E2E Tests: TCP",
+	Tags:        []string{"e2e", "network"},
 }
 
 func (sig *e2eTCP) Init(ctx detect.SignatureContext) error {
@@ -19,19 +28,12 @@ func (sig *e2eTCP) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eTCP) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TCP",
-		EventName:   "TCP",
-		Version:     "0.1.0",
-		Name:        "Network TCP Test",
-		Description: "Network E2E Tests: TCP",
-		Tags:        []string{"e2e", "network"},
-	}, nil
+	return e2eTCPMetadata, nil
 }
 
 func (sig *e2eTCP) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "net_packet_tcp"},
+		{Source: "tracee", Name: "net_packet_tcp"},
 	}, nil
 }
 
@@ -48,12 +50,12 @@ func (sig *e2eTCP) OnEvent(event protocol.Event) error {
 			return nil
 		}
 
-		src, err := helpers.GetTrackerStringArgumentByName(eventObj, "src")
+		src, err := helpers.GetTraceeStringArgumentByName(eventObj, "src")
 		if err != nil {
 			return err
 		}
 
-		dst, err := helpers.GetTrackerStringArgumentByName(eventObj, "dst")
+		dst, err := helpers.GetTraceeStringArgumentByName(eventObj, "dst")
 		if err != nil {
 			return err
 		}

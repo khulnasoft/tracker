@@ -1,4 +1,4 @@
-// Invoked tracker-ebpf events from user mode
+// Invoked tracee-ebpf events from user mode
 //
 // This utility can be useful to generate information needed by signatures that
 // is not provided by normal events in the kernel.
@@ -7,12 +7,12 @@
 // cannot anticipate which events will be invoked and as a result what
 // information will be extracted.
 //
-// This is critical because tracker-rules is independent, and doesn't have to run
-// on the same machine as tracker-ebpf. This means that tracker-rules might lack
+// This is critical because tracee-rules is independent, and doesn't have to run
+// on the same machine as tracee-ebpf. This means that tracee-rules might lack
 // basic information of the operating machine needed for some signatures.
 //
 // By creating user mode events this information could be intentionally
-// collected and passed to tracker-ebpf afterwards.
+// collected and passed to tracee-ebpf afterwards.
 package events
 
 import (
@@ -23,11 +23,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	trackerversion "github.com/khulnasoft/tracker/pkg/version"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/containers"
+	"github.com/aquasecurity/tracee/pkg/containers/runtime"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	traceeversion "github.com/aquasecurity/tracee/pkg/version"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 const InitProcNsDir = "/proc/1/ns"
@@ -40,7 +40,7 @@ func InitNamespacesEvent() trace.Event {
 
 	initNamespacesEvent := trace.Event{
 		Timestamp:   int(time.Now().UnixNano()),
-		ProcessName: "tracker-ebpf",
+		ProcessName: "tracee-ebpf",
 		EventID:     int(InitNamespaces),
 		EventName:   initNamespacesDef.GetName(),
 		ArgsNum:     len(initNamespacesArgs),
@@ -50,26 +50,26 @@ func InitNamespacesEvent() trace.Event {
 	return initNamespacesEvent
 }
 
-// TrackerInfoEvent exports data related to Tracker's initialization
-func TrackerInfoEvent(bootTime uint64, startTime uint64) trace.Event {
-	def := Core.GetDefinitionByID(TrackerInfo)
+// TraceeInfoEvent exports data related to Tracee's initialization
+func TraceeInfoEvent(bootTime uint64, startTime uint64) trace.Event {
+	def := Core.GetDefinitionByID(TraceeInfo)
 	params := def.GetParams()
 	args := []trace.Argument{
 		{ArgMeta: params[0], Value: bootTime},
 		{ArgMeta: params[1], Value: startTime},
-		{ArgMeta: params[2], Value: trackerversion.GetVersion()},
+		{ArgMeta: params[2], Value: traceeversion.GetVersion()},
 	}
 
-	trackerInfoEvent := trace.Event{
+	traceeInfoEvent := trace.Event{
 		Timestamp:   int(time.Now().UnixNano()),
-		ProcessName: "tracker",
+		ProcessName: "tracee",
 		EventID:     int(def.GetID()),
 		EventName:   def.GetName(),
 		ArgsNum:     len(args),
 		Args:        args,
 	}
 
-	return trackerInfoEvent
+	return traceeInfoEvent
 }
 
 // getInitNamespaceArguments fetches the namespaces of the init process and
@@ -143,7 +143,7 @@ func ExistingContainersEvents(cts *containers.Containers, enrichDisabled bool) [
 		}
 		existingContainerEvent := trace.Event{
 			Timestamp:   int(time.Now().UnixNano()),
-			ProcessName: "tracker-ebpf",
+			ProcessName: "tracee-ebpf",
 			EventID:     int(ExistingContainer),
 			EventName:   def.GetName(),
 			ArgsNum:     len(args),

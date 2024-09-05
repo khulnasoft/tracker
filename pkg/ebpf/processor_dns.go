@@ -3,12 +3,12 @@ package ebpf
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
-func (t *Tracker) populateDnsCache(event *trace.Event) error {
+func (t *Tracee) populateDnsCache(event *trace.Event) error {
 	if event.EventID != int(events.NetPacketDNS) {
 		// Sanity check.
 		return fmt.Errorf("received event %s: event is not net_packet_dns_response", event.EventName)

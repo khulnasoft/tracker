@@ -4,10 +4,10 @@ import (
 	gocontext "context"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/derive"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/derive"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils"
 )
 
 // lkmSeekerRoutine handles the kernel module hiding check logic. The logic runs
@@ -24,7 +24,7 @@ import (
 //
 // Several techniques are used to find hidden modules - each of them is triggered by
 // using a tailcall.
-func (t *Tracker) lkmSeekerRoutine(ctx gocontext.Context) {
+func (t *Tracee) lkmSeekerRoutine(ctx gocontext.Context) {
 	logger.Debugw("Starting lkmSeekerRoutine goroutine")
 	defer logger.Debugw("Stopped lkmSeekerRoutine goroutine")
 
@@ -102,9 +102,9 @@ func (t *Tracker) lkmSeekerRoutine(ctx gocontext.Context) {
 }
 
 //go:noinline
-func (t *Tracker) triggerKernelModuleSeeker() {
+func (t *Tracee) triggerKernelModuleSeeker() {
 }
 
 //go:noinline
-func (t *Tracker) triggerKernelModuleSubmitter(address uint64, flags uint64) {
+func (t *Tracee) triggerKernelModuleSubmitter(address uint64, flags uint64) {
 }

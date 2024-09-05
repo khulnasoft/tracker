@@ -14,10 +14,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func Test_setupOutput(t *testing.T) {
@@ -30,7 +30,7 @@ func Test_setupOutput(t *testing.T) {
 		expectedOutput string
 	}{
 		{
-			name: "happy path with tracker event and default output",
+			name: "happy path with tracee event and default output",
 			inputEvent: trace.Event{
 				ProcessName: "foobar.exe",
 				HostName:    "foobar.local",
@@ -46,7 +46,7 @@ Hostname: foobar.local
 `,
 		},
 		{
-			name: "happy path with tracker event and simple custom output template",
+			name: "happy path with tracee event and simple custom output template",
 			inputEvent: trace.Event{
 				ProcessName: "foobar.exe",
 				HostName:    "foobar.local",

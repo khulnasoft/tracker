@@ -1,5 +1,5 @@
 #
-# When tag vXXX is pushed: Release Tracker
+# When tag vXXX is pushed: Release Tracee
 #
 name: Release
 on:
@@ -14,7 +14,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     runs-on: 
-      - ubuntu-latest
+      - graas_ami-0cdf7ad6d9627da45_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
       - EXECUTION_TYPE=LONG
     permissions:
       contents: write
@@ -34,8 +34,8 @@ jobs:
       - name: Login to docker.io registry
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build
         run: |
           make -f builder/Makefile.release
@@ -44,21 +44,21 @@ jobs:
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          docker image tag tracker:latest khulnasoft/tracker:${ARCH}-${TAG}
-          docker image push khulnasoft/tracker:${ARCH}-${TAG}
+          docker image tag tracee:latest aquasec/tracee:${ARCH}-${TAG}
+          docker image push aquasec/tracee:${ARCH}-${TAG}
         shell: bash
       - name: Sign Docker image
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:${ARCH}-${TAG})
+          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracee:${ARCH}-${TAG})
         shell: bash
   release-aarch64:
     name: Release (aarch64)
     env:
       GH_TOKEN: ${{ github.token }}
     runs-on:
-      - ubuntu-latest
+      - graas_ami-07740487fa433aa54_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
       - EXECUTION_TYPE=LONG
     permissions:
       contents: write
@@ -78,8 +78,8 @@ jobs:
       - name: Login to docker.io registry
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build
         run: |
           make -f builder/Makefile.release
@@ -88,14 +88,14 @@ jobs:
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          docker image tag tracker:latest khulnasoft/tracker:${ARCH}-${TAG}
-          docker image push khulnasoft/tracker:${ARCH}-${TAG}
+          docker image tag tracee:latest aquasec/tracee:${ARCH}-${TAG}
+          docker image push aquasec/tracee:${ARCH}-${TAG}
         shell: bash
       - name: Sign Docker image
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:${ARCH}-${TAG})
+          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracee:${ARCH}-${TAG})
         shell: bash
   release:
     name: Release
@@ -119,24 +119,24 @@ jobs:
       - name: Login to docker.io registry
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Publish to docker.io registry
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          docker manifest create khulnasoft/tracker:latest \
-            khulnasoft/tracker:x86_64-${TAG} \
-            khulnasoft/tracker:aarch64-${TAG}
-          docker manifest create khulnasoft/tracker:${TAG} \
-            khulnasoft/tracker:x86_64-${TAG} \
-            khulnasoft/tracker:aarch64-${TAG}
-          docker manifest push khulnasoft/tracker:latest
-          docker manifest push khulnasoft/tracker:${TAG}
+          docker manifest create aquasec/tracee:latest \
+            aquasec/tracee:x86_64-${TAG} \
+            aquasec/tracee:aarch64-${TAG}
+          docker manifest create aquasec/tracee:${TAG} \
+            aquasec/tracee:x86_64-${TAG} \
+            aquasec/tracee:aarch64-${TAG}
+          docker manifest push aquasec/tracee:latest
+          docker manifest push aquasec/tracee:${TAG}
         shell: bash
       - name: Sign the latest manifest with Cosign
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
-          cosign sign -y khulnasoft/tracker:latest
-          cosign sign -y khulnasoft/tracker:${TAG}
+          cosign sign -y aquasec/tracee:latest
+          cosign sign -y aquasec/tracee:${TAG}
         shell: bash

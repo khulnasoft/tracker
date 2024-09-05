@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/aquasecurity/tracee/types/detect"
 )
 
 type DNSDatasource struct {
@@ -71,7 +71,7 @@ func (ctx DNSDatasource) Version() uint {
 }
 
 func (ctx DNSDatasource) Namespace() string {
-	return "tracker"
+	return "tracee"
 }
 
 func (ctx DNSDatasource) ID() string {

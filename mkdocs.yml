@@ -1,20 +1,20 @@
-site_name: Tracker
-site_url: https://khulnasoft.github.io/tracker/
+site_name: Tracee
+site_url: https://aquasecurity.github.io/tracee/
 site_description: Runtime security and forensics using eBPF.
 docs_dir: docs/
 repo_name: GitHub
-repo_url: https://github.com/khulnasoft/tracker
+repo_url: https://github.com/aquasecurity/tracee
 edit_uri: ""
 
 nav:
     - Home: index.md
     - Tutorials:
           - Overview: tutorials/overview.md
-          - Cosign - verify Tracker signature: tutorials/verify-tracker-signature.md
-          - Access Tracker Metrics in Grafana and Prometheus: tutorials/deploy-grafana-dashboard.md
-          - Using Tracker Container Image with Vagrant on Mac: tutorials/tracker-vagrant.md
-          - Working with Tracker's Policies on Kubernetes: tutorials/k8s-policies.md
-          - Accessing Tracker Logs through Promtail and Loki: tutorials/promtail.md
+          - Cosign - verify Tracee signature: tutorials/verify-tracee-signature.md
+          - Access Tracee Metrics in Grafana and Prometheus: tutorials/deploy-grafana-dashboard.md
+          - Using Tracee Container Image with Vagrant on Mac: tutorials/tracee-vagrant.md
+          - Working with Tracee's Policies on Kubernetes: tutorials/k8s-policies.md
+          - Accessing Tracee Logs through Promtail and Loki: tutorials/promtail.md
           - Additional Resources: tutorials/additional-resources.md
     - Docs:
           - Overview: docs/overview.md
@@ -26,7 +26,7 @@ nav:
                 - Container Engines: docs/install/container-engines.md
                 - Prometheus: docs/install/prometheus.md
                 - Healthz: docs/install/healthz.md
-                - Configure Tracker:
+                - Configure Tracee:
                       - Overview: docs/install/config/index.md
                       - CLI: docs/install/config/cli.md
                       - Kubernetes: docs/install/config/kubernetes.md
@@ -109,6 +109,7 @@ nav:
                             - security_socket_bind: docs/events/builtin/extra/security_socket_bind.md
                             - security_socket_connect: docs/events/builtin/extra/security_socket_connect.md
                             - security_socket_setsockopt: docs/events/builtin/extra/security_socket_setsockopt.md
+                            - security_settime64: docs/docs/events/builtin/extra/security_settime64.md
                             - symbols_collision: docs/events/builtin/extra/symbols_collision.md
                             - symbols_loaded: docs/events/builtin/extra/symbols_loaded.md
                             - vfs_read: docs/events/builtin/extra/vfs_read.md
@@ -612,13 +613,13 @@ nav:
           - Source Code Guidelines: contributing/guidelines.md
           - Setup Development Machine with Vagrant: contributing/setup-development-machine-with-vagrant.md
           - Building:
-                - Building Tracker: contributing/building/building.md
+                - Building Tracee: contributing/building/building.md
                 - Building Environment: contributing/building/environment.md
                 - Building Containers: contributing/building/containers.md
 theme:
     name: material
     language: "en"
-    logo: images/tracker_logo_only.png
+    logo: images/tracee_logo_only.png
     features:
         - navigation.tabs
         - navigation.tabs.sticky

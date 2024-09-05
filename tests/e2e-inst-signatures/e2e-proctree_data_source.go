@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/datasource"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/datasource"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var firstEventWait = sync.Once{}
@@ -24,6 +24,15 @@ const (
 type e2eProcessTreeDataSource struct {
 	cb            detect.SignatureHandler
 	processTreeDS *helpers.ProcessTreeDS
+}
+
+var e2eProcessTreeDataSourceMetadata = detect.SignatureMetadata{
+	ID:          "PROCTREE_DATA_SOURCE",
+	EventName:   "PROCTREE_DATA_SOURCE",
+	Version:     "0.1.0",
+	Name:        "Process Tree Data Source Test",
+	Description: "Instrumentation events E2E Tests: Process Tree Data Source Test",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 // Init is called once when the signature is loaded.
@@ -41,14 +50,7 @@ func (sig *e2eProcessTreeDataSource) Init(ctx detect.SignatureContext) error {
 
 // GetMetadata returns metadata about the signature.
 func (sig *e2eProcessTreeDataSource) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "PROCTREE_DATA_SOURCE",
-		EventName:   "PROCTREE_DATA_SOURCE",
-		Version:     "0.1.0",
-		Name:        "Process Tree Data Source Test",
-		Description: "Instrumentation events E2E Tests: Process Tree Data Source Test",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eProcessTreeDataSourceMetadata, nil
 }
 
 // GetSelectedEvents returns a list of events that the signature wants to subscribe to.
@@ -56,7 +58,7 @@ func (sig *e2eProcessTreeDataSource) GetSelectedEvents() (
 	[]detect.SignatureEventSelector, error,
 ) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "sched_process_exec", Origin: "*"},
+		{Source: "tracee", Name: "sched_process_exec", Origin: "*"},
 	}, nil
 }
 
@@ -70,7 +72,7 @@ func (sig *e2eProcessTreeDataSource) OnEvent(event protocol.Event) error {
 	switch eventObj.EventName {
 	case "sched_process_exec":
 		// ATTENTION: In order to have all the information in the data source, this signature needs
-		// that tracker is running with the following flags:
+		// that tracee is running with the following flags:
 		//
 		// * --output option:sort-events
 		// * --proctree source=both
@@ -87,7 +89,7 @@ func (sig *e2eProcessTreeDataSource) OnEvent(event protocol.Event) error {
 		})
 
 		// Check that the event is from the tester
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil || !strings.HasSuffix(pathname, testerName) {
 			return err
 		}
@@ -214,7 +216,7 @@ func (sig *e2eProcessTreeDataSource) checkProcess(eventObj *trace.Event) error {
 	// procfs enrichment, but that requires raising privileges and, since our procfs enrichment is
 	// async, that might not be an option (due to cost of raising capabilities).
 	//
-	// pathname, err := helpers.GetTrackerStringArgumentByName(*eventObj, "pathname")
+	// pathname, err := helpers.GetTraceeStringArgumentByName(*eventObj, "pathname")
 	// if err != nil {
 	// 	return err
 	// }

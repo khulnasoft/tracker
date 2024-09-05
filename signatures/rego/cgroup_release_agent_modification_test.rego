@@ -1,7 +1,7 @@
-package tracker.TRC_14
+package tracee.TRC_14
 
 test_match_1 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "security_file_open",
 		"argsNum": 2,
 		"args": [
@@ -20,7 +20,7 @@ test_match_1 {
 }
 
 test_match_wrong_request {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "security_file_open",
 		"argsNum": 2,
 		"args": [

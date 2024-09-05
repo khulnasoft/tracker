@@ -7,11 +7,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags"
+	"github.com/aquasecurity/tracee/pkg/config"
 )
 
-func TestTrackerEbpfPrepareOutputPrinterConfig(t *testing.T) {
+func TestTraceeEbpfPrepareOutputPrinterConfig(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -67,7 +67,7 @@ func TestTrackerEbpfPrepareOutputPrinterConfig(t *testing.T) {
 		t.Run(testcase.testName, func(t *testing.T) {
 			t.Parallel()
 
-			outputConfig, err := flags.TrackerEbpfPrepareOutput(testcase.outputSlice, false)
+			outputConfig, err := flags.TraceeEbpfPrepareOutput(testcase.outputSlice, false)
 			if err != nil {
 				assert.ErrorContains(t, err, testcase.expectedError.Error())
 			} else {

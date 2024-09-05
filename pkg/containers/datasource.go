@@ -3,7 +3,7 @@ package containers
 import (
 	"encoding/json"
 
-	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/aquasecurity/tracee/types/detect"
 )
 
 type SignaturesDataSource struct {
@@ -66,7 +66,7 @@ func (ctx SignaturesDataSource) Version() uint {
 }
 
 func (ctx SignaturesDataSource) Namespace() string {
-	return "tracker"
+	return "tracee"
 }
 
 func (ctx SignaturesDataSource) ID() string {

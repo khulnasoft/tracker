@@ -7,21 +7,21 @@ import (
 	"path/filepath"
 	"strings"
 
-	embed "github.com/khulnasoft/tracker"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	embed "github.com/aquasecurity/tracee"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
 // BpfObject sets up and configures a BPF object for tracing and monitoring
-// system events within the kernel. It takes pointers to tracker.Config,
+// system events within the kernel. It takes pointers to tracee.Config,
 // environment.KernelConfig, and environment.OSInfo structures, as well as an
 // installation path and a version string. The function unpacks the CO-RE eBPF
 // object binary, checks if BTF is enabled, unpacks the BTF file from BTF Hub if
 // necessary, and assigns the kernel configuration and BPF object bytes.
 func BpfObject(cfg *config.Config, kConfig *environment.KernelConfig, osInfo *environment.OSInfo, installPath string, version string) error {
-	btfFilePath, err := checkEnvPath("TRACKER_BTF_FILE")
+	btfFilePath, err := checkEnvPath("TRACEE_BTF_FILE")
 	if btfFilePath == "" && err != nil {
 		return errfmt.WrapError(err)
 	}
@@ -39,7 +39,7 @@ func BpfObject(cfg *config.Config, kConfig *environment.KernelConfig, osInfo *en
 	// BTF unavailable: check embedded BTF files
 
 	if !environment.OSBTFEnabled() && btfFilePath == "" {
-		unpackBTFFile := filepath.Join(installPath, "/tracker.btf")
+		unpackBTFFile := filepath.Join(installPath, "/tracee.btf")
 		err = unpackBTFHub(unpackBTFFile, osInfo)
 		if err == nil {
 			logger.Debugw("BTF: btfhub embedded BTF file", "file", unpackBTFFile)
@@ -68,7 +68,7 @@ func checkEnvPath(env string) (string, error) {
 }
 
 func unpackCOREBinary() ([]byte, error) {
-	b, err := embed.BPFBundleInjected.ReadFile("dist/tracker.bpf.o")
+	b, err := embed.BPFBundleInjected.ReadFile("dist/tracee.bpf.o")
 	if err != nil {
 		return nil, err
 	}

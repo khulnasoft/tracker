@@ -8,9 +8,9 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -29,7 +29,7 @@ const (
 	familyIpv6
 )
 
-func (t *Tracker) handleNetCaptureEvents(ctx context.Context) {
+func (t *Tracee) handleNetCaptureEvents(ctx context.Context) {
 	logger.Debugw("Starting handleNetCaptureEvents goroutine")
 	defer logger.Debugw("Stopped handleNetCaptureEvents goroutine")
 
@@ -49,7 +49,7 @@ func (t *Tracker) handleNetCaptureEvents(ctx context.Context) {
 	}
 }
 
-func (t *Tracker) processNetCapEvents(ctx context.Context, in <-chan *trace.Event) <-chan error {
+func (t *Tracee) processNetCapEvents(ctx context.Context, in <-chan *trace.Event) <-chan error {
 	errc := make(chan error, 1)
 
 	go func() {
@@ -89,7 +89,7 @@ func (t *Tracker) processNetCapEvents(ctx context.Context, in <-chan *trace.Even
 // TODO: usually networking parsing functions are big, still, this might need
 // some refactoring to make it smaller (code reuse might not be a key for the
 // refactor).
-func (t *Tracker) processNetCapEvent(event *trace.Event) {
+func (t *Tracee) processNetCapEvent(event *trace.Event) {
 	eventId := events.ID(event.EventID)
 
 	switch eventId {
@@ -162,7 +162,7 @@ func (t *Tracker) processNetCapEvent(event *trace.Event) {
 		//
 		// 1) Fake Layer 2:
 		//
-		// Tracker captures L3 packets only, but pcap needs a L2 header, as it
+		// Tracee captures L3 packets only, but pcap needs a L2 header, as it
 		// mixes IPv4 and IPv6 packets in the same pcap file.
 		//
 		// The easiest link type is "Null", which emulates a BSD loopback
@@ -176,7 +176,7 @@ func (t *Tracker) processNetCapEvent(event *trace.Event) {
 		//
 		// Tcpdump, when reading the generated pcap files, will complain about
 		// missing packet payload if the IP header says one length and the
-		// actual data in the payload is smaller (what happens when tracker
+		// actual data in the payload is smaller (what happens when tracee
 		// pcap-snaplen option is not set to max). The code bellow changes IP
 		// length field to the length of the captured data.
 		//

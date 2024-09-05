@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/exp/slices"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 type cacheQuery struct {

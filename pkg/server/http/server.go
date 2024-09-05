@@ -9,7 +9,7 @@ import (
 	"github.com/grafana/pyroscope-go"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 // Server represents a http server
@@ -92,7 +92,7 @@ func (s *Server) EnablePProfEndpoint() {
 func (s *Server) EnablePyroAgent() error {
 	p, err := pyroscope.Start(
 		pyroscope.Config{
-			ApplicationName: "tracker",
+			ApplicationName: "tracee",
 			ServerAddress:   "http://localhost:4040",
 		},
 	)

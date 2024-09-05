@@ -5,7 +5,7 @@
 
 #include <common/common.h>
 
-statfunc void do_tracker_log(
+statfunc void do_tracee_log(
     void *ctx, enum bpf_log_level level, enum bpf_log_id id, s64 ret, u32 line, void *file)
 {
     if (!ctx || !file)
@@ -31,7 +31,7 @@ statfunc void do_tracker_log(
 
     bpf_log_count_t counter_buf = {};
     counter_buf.count = 1;
-    counter_buf.ts = bpf_ktime_get_ns(); // store the current ts
+    counter_buf.ts = get_current_time_in_ns(); // store the current ts
     u64 ts_prev = 0;
 
     bpf_log_count_t *counter = bpf_map_lookup_elem(&logs_count, &log_output->log);
@@ -53,6 +53,6 @@ statfunc void do_tracker_log(
     }
 }
 
-#define tracker_log(ctx, level, id, ret) do_tracker_log(ctx, level, id, ret, __LINE__, __FILE__);
+#define tracee_log(ctx, level, id, ret) do_tracee_log(ctx, level, id, ret, __LINE__, __FILE__);
 
 #endif

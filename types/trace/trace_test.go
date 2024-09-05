@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/aquasecurity/tracee/types/protocol"
 )
 
 func TestEventUnmarshalJSON(t *testing.T) {
@@ -215,7 +215,7 @@ func TestEvent_ToProtocol(t *testing.T) {
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
 						Origin: string(HostOrigin),
-						Source: "tracker",
+						Source: "tracee",
 						Name:   "execve",
 					},
 				},
@@ -238,7 +238,7 @@ func TestEvent_ToProtocol(t *testing.T) {
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
 						Origin: string(ContainerOrigin),
-						Source: "tracker",
+						Source: "tracee",
 						Name:   "execve",
 					},
 				},
@@ -260,7 +260,7 @@ func TestEvent_ToProtocol(t *testing.T) {
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
 						Origin: string(ContainerInitOrigin),
-						Source: "tracker",
+						Source: "tracee",
 						Name:   "open",
 					},
 				},

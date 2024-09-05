@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/khulnasoft-lab/libbpfgo"
+	"github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 var (
@@ -73,19 +73,19 @@ func SetLibbpfgoCallbacks() {
 			logger.Log(lvl, false, msg)
 		},
 		LogFilters: []func(libLevel int, msg string) bool{
-			// Ignore libbpf outputs that are not relevant to tracker
+			// Ignore libbpf outputs that are not relevant to tracee
 			func(libLevel int, msg string) bool {
 				if libLevel != libbpfgo.LibbpfWarnLevel {
 					return true
 				}
 
-				// BUG: https:/github.com/khulnasoft/tracker/issues/1676
+				// BUG: https:/github.com/aquasecurity/tracee/issues/1676
 				if libbpfgoKernelExclusivityFlagOnRegexp.MatchString(msg) {
 					return true
 				}
 
-				// BUGS: https://github.com/khulnasoft/tracker/issues/2446
-				//       https://github.com/khulnasoft/tracker/issues/2754
+				// BUGS: https://github.com/aquasecurity/tracee/issues/2446
+				//       https://github.com/aquasecurity/tracee/issues/2754
 				if libbpfgoKprobePerfEventRegexp.MatchString(msg) {
 					return true
 				}
@@ -97,7 +97,7 @@ func SetLibbpfgoCallbacks() {
 					return true
 				}
 
-				// BUG: https://github.com/khulnasoft/tracker/issues/1602
+				// BUG: https://github.com/aquasecurity/tracee/issues/1602
 				if libbpfgoBpfCreateMapXattrRegexp.MatchString(msg) {
 					return true
 				}

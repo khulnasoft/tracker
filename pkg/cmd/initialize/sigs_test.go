@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func Test_CreateEventsFromSigs(t *testing.T) {
@@ -196,7 +196,7 @@ func newFakeSignature(name string, deps []string) detect.Signature {
 			selectedEvents := make([]detect.SignatureEventSelector, 0, len(deps))
 
 			for _, d := range deps {
-				eventSelector := detect.SignatureEventSelector{Name: d, Source: "tracker", Origin: "*"}
+				eventSelector := detect.SignatureEventSelector{Name: d, Source: "tracee", Origin: "*"}
 				selectedEvents = append(selectedEvents, eventSelector)
 			}
 

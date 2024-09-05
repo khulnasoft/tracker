@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events"
 )
 
 func TestFilter_prepareEventsToTrace(t *testing.T) {

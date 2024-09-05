@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: policies.tracker.khulnasoft.com
+  name: policies.tracee.khulnasoft.com
 spec:
-  group: tracker.khulnasoft.com
+  group: tracee.khulnasoft.com
   names:
     kind: Policy
     listKind: PolicyList
@@ -31,7 +31,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: tracker policy spec
+            description: tracee policy spec
             properties:
               defaultActions:
                 items:

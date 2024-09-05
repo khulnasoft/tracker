@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 // SymbolToOffset attempts to resolve a 'symbol' name in the binary found at

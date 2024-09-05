@@ -4,16 +4,32 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type ProcMemAccess struct {
 	cb                 detect.SignatureHandler
 	procMemPathPattern string
 	compiledRegex      *regexp.Regexp
+}
+
+var procMemAccessMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1023",
+	Version:     "1",
+	Name:        "Process memory access detected",
+	EventName:   "proc_mem_access",
+	Description: "Process memory access detected. Adversaries may access other processes memory to steal credentials and secrets.",
+	Properties: map[string]interface{}{
+		"Severity":             3,
+		"Category":             "credential-access",
+		"Technique":            "Proc Filesystem",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--3120b9fa-23b8-4500-ae73-09494f607b7d",
+		"external_id":          "T1003.007",
+	},
 }
 
 func (sig *ProcMemAccess) Init(ctx detect.SignatureContext) error {
@@ -25,26 +41,12 @@ func (sig *ProcMemAccess) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *ProcMemAccess) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1023",
-		Version:     "1",
-		Name:        "Process memory access detected",
-		EventName:   "proc_mem_access",
-		Description: "Process memory access detected. Adversaries may access other processes memory to steal credentials and secrets.",
-		Properties: map[string]interface{}{
-			"Severity":             3,
-			"Category":             "credential-access",
-			"Technique":            "Proc Filesystem",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--3120b9fa-23b8-4500-ae73-09494f607b7d",
-			"external_id":          "T1003.007",
-		},
-	}, nil
+	return procMemAccessMetadata, nil
 }
 
 func (sig *ProcMemAccess) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_file_open", Origin: "*"},
+		{Source: "tracee", Name: "security_file_open", Origin: "*"},
 	}, nil
 }
 
@@ -56,12 +58,12 @@ func (sig *ProcMemAccess) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_file_open":
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}

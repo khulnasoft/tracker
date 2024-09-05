@@ -1,6 +1,6 @@
 # Writable Data Sources
 
-Since v0.20.0 tracker includes a new `DataSourceService` in its gRPC server. This service includes the ability
+Since v0.20.0 tracee includes a new `DataSourceService` in its gRPC server. This service includes the ability
 to write generic data into a specified data source, both through streaming and unary methods. 
 However, in order to utilize this feature, a speciailized `WritableDataSource` must be specified in the RPC arguments.
 These data sources are currently only available through custom data sources, meaning that no built-in data sources support this feature.
@@ -17,7 +17,7 @@ Start by adding a file `threshold_datasource.go`:
     import (
         "encoding/json"
 
-        "github.com/khulnasoft/tracker/types/detect"
+        "github.com/aquasecurity/tracee/types/detect"
     )
 
     type thresholdDataSource struct {
@@ -122,7 +122,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	"github.com/khulnasoft/tracker/api/v1beta1"
+	"github.com/aquasecurity/tracee/api/v1beta1"
 )
 
 func printAndExit(msg string, args ...any) {
@@ -131,14 +131,14 @@ func printAndExit(msg string, args ...any) {
 }
 
 func main() {
-    trackerAddressPtr := flag.String("key", "", "key to set in the data source")
+    traceeAddressPtr := flag.String("key", "", "key to set in the data source")
 	thresholdPtr := flag.Int("value", "", "key to set in the data source")
 	flag.Parse()
 
-	trackerAddress := *trackerAddressPtr
+	traceeAddress := *traceeAddressPtr
 	threshold := *thresholdPtr
 
-	if trackerAddress == "" {
+	if traceeAddress == "" {
 		printAndExit("empty address given\n")
 	}
 	if threshold == 0 {
@@ -149,11 +149,11 @@ func main() {
 	}
 
 	conn, err := grpc.Dial(
-		trackerAddress,
+		traceeAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		printAndExit("failed to dial tracker grpc server: %v\n", err)
+		printAndExit("failed to dial tracee grpc server: %v\n", err)
 	}
 	client := v1beta1.NewDataSourceServiceClient(conn)
 	_, err = client.Write(context.Background(), &v1beta1.WriteDataSourceRequest{

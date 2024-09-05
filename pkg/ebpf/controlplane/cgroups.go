@@ -1,11 +1,11 @@
 package controlplane
 
 import (
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events/parse"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -47,8 +47,9 @@ func (ctrl *Controller) processCgroupMkdir(args []trace.Argument) error {
 		return errfmt.WrapError(err)
 	}
 
-	if !ctrl.enrichDisabled {
-		// If cgroupId belongs to a container, enrich now (in a goroutine)
+	if info.ContainerRoot && !ctrl.enrichDisabled {
+		// If cgroupId belongs to a container, and is the root (to avoid duplicate requests)
+		// enrich now (in a goroutine)
 		go func() {
 			_, err := ctrl.cgroupManager.EnrichCgroupInfo(cgroupId)
 			if err != nil {

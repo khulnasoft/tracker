@@ -9,10 +9,10 @@ import (
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils"
 )
 
 // Constants
@@ -20,7 +20,7 @@ import (
 const (
 	procMounts      = "/proc/self/mountinfo"
 	procFilesystems = "/proc/filesystems"
-	tmpPathPrefix   = "tracker"
+	tmpPathPrefix   = "tracee"
 )
 
 //

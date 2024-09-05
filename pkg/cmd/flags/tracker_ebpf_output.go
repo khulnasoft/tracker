@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
 )
 
 func outputHelp() string {
@@ -35,9 +35,9 @@ Use this flag multiple times to choose multiple output options
 `
 }
 
-func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, error) {
+func TraceeEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, error) {
 	outConfig := PrepareOutputResult{}
-	trackerConfig := &config.OutputConfig{}
+	traceeConfig := &config.OutputConfig{}
 
 	var outPath string
 
@@ -62,7 +62,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 		case "out-file":
 			outPath = outputParts[1]
 		case "option":
-			err := setOption(trackerConfig, outputParts[1], newBinary)
+			err := setOption(traceeConfig, outputParts[1], newBinary)
 			if err != nil {
 				return outConfig, err
 			}
@@ -74,7 +74,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 	printerConfigs := make([]config.PrinterConfig, 0)
 
 	if printerKind == "table" {
-		if err := setOption(trackerConfig, "parse-arguments", newBinary); err != nil {
+		if err := setOption(traceeConfig, "parse-arguments", newBinary); err != nil {
 			return outConfig, err
 		}
 	}
@@ -83,7 +83,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 		stdoutConfig := config.PrinterConfig{
 			Kind:       printerKind,
 			OutFile:    os.Stdout,
-			RelativeTS: trackerConfig.RelativeTime,
+			RelativeTS: traceeConfig.RelativeTime,
 		}
 
 		printerConfigs = append(printerConfigs, stdoutConfig)
@@ -97,13 +97,13 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 			Kind:       printerKind,
 			OutPath:    outPath,
 			OutFile:    file,
-			RelativeTS: trackerConfig.RelativeTime,
+			RelativeTS: traceeConfig.RelativeTime,
 		}
 
 		printerConfigs = append(printerConfigs, printerConfig)
 	}
 
-	outConfig.TrackerConfig = trackerConfig
+	outConfig.TraceeConfig = traceeConfig
 	outConfig.PrinterConfigs = printerConfigs
 
 	return outConfig, nil

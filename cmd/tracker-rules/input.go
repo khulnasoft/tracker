@@ -9,11 +9,11 @@ import (
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var errHelp = errfmt.Errorf("user has requested help text")
@@ -25,20 +25,20 @@ const (
 	jsonInputFormat
 )
 
-type trackerInputOptions struct {
+type traceeInputOptions struct {
 	inputFile   *os.File
 	inputFormat inputFormat
 }
 
-func setupTrackerInputSource(opts *trackerInputOptions) (chan protocol.Event, error) {
+func setupTraceeInputSource(opts *traceeInputOptions) (chan protocol.Event, error) {
 	if opts.inputFormat == jsonInputFormat {
-		return setupTrackerJSONInputSource(opts)
+		return setupTraceeJSONInputSource(opts)
 	}
 
 	return nil, errfmt.Errorf("could not set up input source")
 }
 
-func setupTrackerJSONInputSource(opts *trackerInputOptions) (chan protocol.Event, error) {
+func setupTraceeJSONInputSource(opts *traceeInputOptions) (chan protocol.Event, error) {
 	res := make(chan protocol.Event)
 	scanner := bufio.NewScanner(opts.inputFile)
 	go func() {
@@ -60,14 +60,14 @@ func setupTrackerJSONInputSource(opts *trackerInputOptions) (chan protocol.Event
 	return res, nil
 }
 
-func parseTrackerInputOptions(inputOptions []string) (*trackerInputOptions, error) {
+func parseTraceeInputOptions(inputOptions []string) (*traceeInputOptions, error) {
 	var (
-		inputSourceOptions trackerInputOptions
+		inputSourceOptions traceeInputOptions
 		err                error
 	)
 
 	if len(inputOptions) == 0 {
-		return nil, errfmt.Errorf("no tracker input options specified")
+		return nil, errfmt.Errorf("no tracee input options specified")
 	}
 
 	for i := range inputOptions {
@@ -77,29 +77,29 @@ func parseTrackerInputOptions(inputOptions []string) (*trackerInputOptions, erro
 
 		kv := strings.Split(inputOptions[i], ":")
 		if len(kv) != 2 {
-			return nil, errfmt.Errorf("invalid input-tracker option: %s", inputOptions[i])
+			return nil, errfmt.Errorf("invalid input-tracee option: %s", inputOptions[i])
 		}
 		if kv[0] == "" || kv[1] == "" {
 			return nil, errfmt.Errorf("empty key or value passed: key: >%s< value: >%s<", kv[0], kv[1])
 		}
 		if kv[0] == "file" {
-			err = parseTrackerInputFile(&inputSourceOptions, kv[1])
+			err = parseTraceeInputFile(&inputSourceOptions, kv[1])
 			if err != nil {
 				return nil, errfmt.WrapError(err)
 			}
 		} else if kv[0] == "format" {
-			err = parseTrackerInputFormat(&inputSourceOptions, kv[1])
+			err = parseTraceeInputFormat(&inputSourceOptions, kv[1])
 			if err != nil {
 				return nil, errfmt.WrapError(err)
 			}
 		} else {
-			return nil, errfmt.Errorf("invalid input-tracker option key: %s", kv[0])
+			return nil, errfmt.Errorf("invalid input-tracee option key: %s", kv[0])
 		}
 	}
 	return &inputSourceOptions, nil
 }
 
-func parseTrackerInputFile(option *trackerInputOptions, fileOpt string) error {
+func parseTraceeInputFile(option *traceeInputOptions, fileOpt string) error {
 	var f *os.File
 
 	if fileOpt == "stdin" {
@@ -110,7 +110,7 @@ func parseTrackerInputFile(option *trackerInputOptions, fileOpt string) error {
 		func() error {
 			_, err := os.Stat(fileOpt)
 			if err != nil {
-				return errfmt.Errorf("invalid Tracker input file: %s", fileOpt)
+				return errfmt.Errorf("invalid Tracee input file: %s", fileOpt)
 			}
 			f, err = os.Open(fileOpt)
 			if err != nil {
@@ -128,7 +128,7 @@ func parseTrackerInputFile(option *trackerInputOptions, fileOpt string) error {
 	return nil
 }
 
-func parseTrackerInputFormat(option *trackerInputOptions, formatString string) error {
+func parseTraceeInputFormat(option *traceeInputOptions, formatString string) error {
 	formatString = strings.ToUpper(formatString)
 
 	switch formatString {
@@ -136,26 +136,26 @@ func parseTrackerInputFormat(option *trackerInputOptions, formatString string) e
 		option.inputFormat = jsonInputFormat
 	default:
 		option.inputFormat = invalidInputFormat
-		return errfmt.Errorf("invalid tracker input format specified: %s", formatString)
+		return errfmt.Errorf("invalid tracee input format specified: %s", formatString)
 	}
 
 	return nil
 }
 
 func printHelp() {
-	trackerInputHelp := `
-tracker-rules --input-tracker <key:value>,<key:value> --input-tracker <key:value>
+	traceeInputHelp := `
+tracee-rules --input-tracee <key:value>,<key:value> --input-tracee <key:value>
 
-Specify various key value pairs for input options tracker-ebpf. The following key options are available:
+Specify various key value pairs for input options tracee-ebpf. The following key options are available:
 
 'file'   - Input file source. You can specify a relative or absolute path. You may also specify 'stdin' for standard input.
 'format' - Input format. The only supported format is 'json' at the moment.
 
 Examples:
 
-'tracker-rules --input-tracker file:./events.json --input-tracker format:json'
-'sudo tracker-ebpf -o format:json | tracker-rules --input-tracker file:stdin --input-tracker format:json'
+'tracee-rules --input-tracee file:./events.json --input-tracee format:json'
+'sudo tracee-ebpf -o format:json | tracee-rules --input-tracee file:stdin --input-tracee format:json'
 `
 
-	fmt.Println(trackerInputHelp)
+	fmt.Println(traceeInputHelp)
 }

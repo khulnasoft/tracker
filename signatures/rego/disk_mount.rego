@@ -1,6 +1,6 @@
-package tracker.TRC_11
+package tracee.TRC_11
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-11",
@@ -16,19 +16,19 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracker",
+	"source": "tracee",
 	"name": "security_sb_mount",
 	"origin": "container",
 }]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match = res {
+tracee_match = res {
 	input.eventName == "security_sb_mount"
 
-	devname := helpers.get_tracker_argument("dev_name")
+	devname := helpers.get_tracee_argument("dev_name")
 	startswith(devname, "/dev/")
 
 	# exclude runc

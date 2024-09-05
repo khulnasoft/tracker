@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/aquasecurity/tracee/pkg/utils"
 )
 
 type BoolFilter struct {

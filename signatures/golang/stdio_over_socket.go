@@ -3,15 +3,31 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type StdioOverSocket struct {
 	cb         detect.SignatureHandler
 	legitPorts []string
+}
+
+var stdioOverSocketMetadata = detect.SignatureMetadata{
+	ID:          "TRC-101",
+	Version:     "2",
+	Name:        "Process standard input/output over socket detected",
+	EventName:   "stdio_over_socket",
+	Description: "A process has its standard input/output redirected to a socket. This behavior is the base of a Reverse Shell attack, which is when an interactive shell being invoked from a target machine back to the attacker's machine, giving it interactive control over the target. Adversaries may use a Reverse Shell to retain control over a compromised target while bypassing security measures like network firewalls.",
+	Properties: map[string]interface{}{
+		"Severity":             3,
+		"Category":             "execution",
+		"Technique":            "Unix Shell",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--a9d4b653-6915-42af-98b2-5758c4ceee56",
+		"external_id":          "T1059.004",
+	},
 }
 
 func (sig *StdioOverSocket) Init(ctx detect.SignatureContext) error {
@@ -21,27 +37,13 @@ func (sig *StdioOverSocket) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *StdioOverSocket) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-101",
-		Version:     "2",
-		Name:        "Process standard input/output over socket detected",
-		EventName:   "stdio_over_socket",
-		Description: "A process has its standard input/output redirected to a socket. This behavior is the base of a Reverse Shell attack, which is when an interactive shell being invoked from a target machine back to the attacker's machine, giving it interactive control over the target. Adversaries may use a Reverse Shell to retain control over a compromised target while bypassing security measures like network firewalls.",
-		Properties: map[string]interface{}{
-			"Severity":             3,
-			"Category":             "execution",
-			"Technique":            "Unix Shell",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--a9d4b653-6915-42af-98b2-5758c4ceee56",
-			"external_id":          "T1059.004",
-		},
-	}, nil
+	return stdioOverSocketMetadata, nil
 }
 
 func (sig *StdioOverSocket) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_socket_connect", Origin: "*"},
-		{Source: "tracker", Name: "socket_dup", Origin: "*"},
+		{Source: "tracee", Name: "security_socket_connect", Origin: "*"},
+		{Source: "tracee", Name: "socket_dup", Origin: "*"},
 	}, nil
 }
 
@@ -56,12 +58,12 @@ func (sig *StdioOverSocket) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_socket_connect":
-		sockfd, err = helpers.GetTrackerIntArgumentByName(eventObj, "sockfd")
+		sockfd, err = helpers.GetTraceeIntArgumentByName(eventObj, "sockfd")
 		if err != nil {
 			return err
 		}
 	case "socket_dup":
-		sockfd, err = helpers.GetTrackerIntArgumentByName(eventObj, "newfd")
+		sockfd, err = helpers.GetTraceeIntArgumentByName(eventObj, "newfd")
 		if err != nil {
 			return err
 		}

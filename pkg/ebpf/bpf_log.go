@@ -7,8 +7,8 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 const BPFMaxLogFileLen = 72 // BPF_MAX_LOG_FILE_LEN
@@ -18,7 +18,7 @@ type BPFLogType uint32
 const (
 	BPFLogIDUnspec BPFLogType = iota // BPF_LOG_ID_UNSPEC
 
-	// tracker functions
+	// tracee functions
 	BPFLogIDInitContext // BPF_LOG_ID_INIT_CONTEXT
 
 	// bpf helpers functions
@@ -36,7 +36,7 @@ const (
 var stringMap = map[BPFLogType]string{
 	BPFLogIDUnspec: "BPF_LOG_ID_UNSPEC",
 
-	// tracker functions
+	// tracee functions
 	BPFLogIDInitContext: "BPF_LOG_ID_INIT_CONTEXT",
 
 	// bpf helpers functions
@@ -54,7 +54,7 @@ var stringMap = map[BPFLogType]string{
 var errorMap = map[BPFLogType]string{
 	BPFLogIDUnspec: "Unspecifed BPF log",
 
-	// tracker functions
+	// tracee functions
 	BPFLogIDInitContext: "Failed to init context",
 
 	// bpf helpers functions
@@ -168,7 +168,7 @@ func (b *BPFLog) Decode(rawBuffer []byte) error {
 	return nil
 }
 
-func (t *Tracker) processBPFLogs(ctx context.Context) {
+func (t *Tracee) processBPFLogs(ctx context.Context) {
 	logger.Debugw("Starting processBPFLogs goroutine")
 	defer logger.Debugw("Stopped processBPFLogs goroutine")
 

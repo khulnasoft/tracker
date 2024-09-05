@@ -1,8 +1,8 @@
 package sorting
 
 import (
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // Events queue with the ability to follow if it was updated since last check and insertion by time specific for CPU

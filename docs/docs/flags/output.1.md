@@ -1,17 +1,17 @@
 ---
-title: TRACKER-OUTPUT
+title: TRACEE-OUTPUT
 section: 1
-header: Tracker Output Flag Manual
+header: Tracee Output Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-output** - Control how and where output is printed
+tracee **\-\-output** - Control how and where output is printed
 
 ## SYNOPSIS
 
-tracker **\-\-output** <format[:file,...]\> | gotemplate=template[:file,...] | forward:url | webhook:url | option:{stack-addresses,exec-env,relative-time,exec-hash[={inode,dev-inode,digest-inode}],parse-arguments,parse-arguments-fds,sort-events} ...
+tracee **\-\-output** <format[:file,...]\> | gotemplate=template[:file,...] | forward:url | webhook:url | option:{stack-addresses,exec-env,relative-time,exec-hash[={inode,dev-inode,digest-inode}],parse-arguments,parse-arguments-fds,sort-events} ...
 
 
 ## DESCRIPTION
@@ -92,10 +92,10 @@ Other options:
   --output table --output option:stack-addresses
   ```
 
-- To output events via the Forward protocol to `127.0.0.1` on port `24224` with the tag 'tracker' using TCP, use the following flag:
+- To output events via the Forward protocol to `127.0.0.1` on port `24224` with the tag 'tracee' using TCP, use the following flag:
 
   ```console
-  --output forward:tcp://user:pass@127.0.0.1:24224?tag=tracker
+  --output forward:tcp://user:pass@127.0.0.1:24224?tag=tracee
   ```
 
 - To output events to the webhook endpoint `http://webhook:8080`, use the following flag:

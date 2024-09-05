@@ -1,4 +1,4 @@
-Tracker offers a set of network events that makes it easy to trace network
+Tracee offers a set of network events that makes it easy to trace network
 activity in common protocols.
 
 ## Available network events
@@ -28,7 +28,7 @@ activity in common protocols.
 Trace all TCP packets sent to port 80 anywhere, from any process:
 
 ```console
-tracker --output json --events net_packet_tcp.data.dst_port=80
+tracee --output json --events net_packet_tcp.data.dst_port=80
 ```
 
 ```json
@@ -41,7 +41,7 @@ tracker --output json --events net_packet_tcp.data.dst_port=80
 Trace all DNS packets received ONLY from Google DNS server '8.8.8.8':
 
 ```console
-tracker --output json --events net_packet_dns.data.src=8.8.8.8
+tracee --output json --events net_packet_dns.data.src=8.8.8.8
 
 ```
 
@@ -59,7 +59,7 @@ tracker --output json --events net_packet_dns.data.src=8.8.8.8
 It is possible to create Golang (or Rego) signatures for the network events. If you haven't read about how to create signatures, do it [HERE](../../custom/golang.md).
 
 !!! Examples Note
-    Below is an example of how to create a signature for the `net_packet_dns` event. This same example is used by Tracker CI/CD tests and can be found at the [GitHub repository](https://github.com/khulnasoft/tracker/tree/main/tests/e2e-net-signatures), together with some other signatures for the network events.
+    Below is an example of how to create a signature for the `net_packet_dns` event. This same example is used by Tracee CI/CD tests and can be found at the [GitHub repository](https://github.com/aquasecurity/tracee/tree/main/tests/e2e-net-signatures), together with some other signatures for the network events.
 
 1. **net_packet_dns** signature example
 
@@ -70,10 +70,10 @@ import (
     "fmt"
     "strings"
 
-    "github.com/khulnasoft/tracker/signatures/helpers"
-    "github.com/khulnasoft/tracker/types/detect"
-    "github.com/khulnasoft/tracker/types/protocol"
-    "github.com/khulnasoft/tracker/types/trace"
+    "github.com/aquasecurity/tracee/signatures/helpers"
+    "github.com/aquasecurity/tracee/types/detect"
+    "github.com/aquasecurity/tracee/types/protocol"
+    "github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -115,7 +115,7 @@ func (sig *e2eDNS) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *e2eDNS) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
     return []detect.SignatureEventSelector{
-        {Source: "tracker", Name: "net_packet_dns"},
+        {Source: "tracee", Name: "net_packet_dns"},
     }, nil
 }
 

@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"gotest.tools/assert"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/trigger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/trigger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func NewFakeTriggerEvent() trace.Event {
@@ -24,7 +24,7 @@ func NewFakeTriggerEvent() trace.Event {
 		HostParentProcessID: 1,
 		UserID:              1000,
 		ProcessName:         "cat",
-		HostName:            "tracker",
+		HostName:            "tracee",
 		EventID:             2,
 		EventName:           "open",
 		ArgsNum:             3,
@@ -128,7 +128,7 @@ func TestContext_Apply(t *testing.T) {
 				ProcessID:   0,
 				ArgsNum:     3,
 				Container:   trace.Container{ID: ""},
-				ProcessName: "tracker-ebpf",
+				ProcessName: "tracee-ebpf",
 				Args: []trace.Argument{
 					{
 						ArgMeta: trace.ArgMeta{

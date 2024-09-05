@@ -11,10 +11,10 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/dnscache"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // Event return value (retval) encodes network event information, such as:
@@ -414,7 +414,7 @@ func getLayer7FromPacket(packet gopacket.Packet) (gopacket.ApplicationLayer, err
 }
 
 //
-// Proto Types (tracker/types/trace)
+// Proto Types (tracee/types/trace)
 //
 
 // getProtoIPv4 returns the ProtoIPv4 from the IPv4.

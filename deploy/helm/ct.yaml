@@ -1,5 +1,5 @@
 charts:
-  - deploy/helm/tracker
+  - deploy/helm/tracee
 remote: origin
 target-branch: main
 validate-maintainers: false

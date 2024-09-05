@@ -1,4 +1,4 @@
-# Working with Tracker Policies on Kubernetes
+# Working with Tracee Policies on Kubernetes
 
 
 ## Prerequisites
@@ -9,54 +9,54 @@ Before you begin, ensure that you have the following:
 - kubectl command-line tool installed and configured to work with your cluster
 - Helm v3 or later installed on your local machine
 
-## Install Tracker via Helm
+## Install Tracee via Helm
 
-To install Tracker using Helm, follow these steps:
+To install Tracee using Helm, follow these steps:
 
-Add the Khulnasoft Security Helm repository:
+Add the Aqua Security Helm repository:
 
 ```console
-helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
+helm repo add aqua https://aquasecurity.github.io/helm-charts/
 ```
 
-Install Tracker with the default settings:
+Install Tracee with the default settings:
 
 ```console
-helm install tracker khulnasoft/tracker \
-    --namespace tracker-system --create-namespace \
+helm install tracee aqua/tracee \
+    --namespace tracee-system --create-namespace \
     --set hostPID=true
 ```
 
-This command installs Tracker in the tracker-system namespace, enabling the use of the host's PID namespace.
+This command installs Tracee in the tracee-system namespace, enabling the use of the host's PID namespace.
 
-## Add a new Tracker policy
+## Add a new Tracee policy
 
-By default, Tracker comes with a policy for signature events. In this step, you will learn how to add a new policy suit your requirements.
+By default, Tracee comes with a policy for signature events. In this step, you will learn how to add a new policy suit your requirements.
 
 
-The `tracker-policies` configmap should have all policies tracker will load when booting. Let's take a look on the default policy:
+The `tracee-policies` configmap should have all policies tracee will load when booting. Let's take a look on the default policy:
 
 ```console
-kubectl get configmap -n tracker-system
+kubectl get configmap -n tracee-system
 
 NAME               DATA   AGE
-tracker-config      1      58m
-tracker-policies    2      58m
+tracee-config      1      58m
+tracee-policies    2      58m
 ```
 
 Let's take a look at a look at the default policy:
 
 ```console
-kubectl describe configmap/tracker-policies -ntracker-system
+kubectl describe configmap/tracee-policies -ntracee-system
 ```
 ```yaml
-Name:         tracker-policies
-Namespace:    tracker-system
+Name:         tracee-policies
+Namespace:    tracee-system
 Data
 ====
 signatures.yaml:
 ----
-apiVersion: tracker.khulnasoft.com/v1beta1
+apiVersion: tracee.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: signature-events
@@ -98,12 +98,12 @@ spec:
 	  - event: dropped_executable
 ```
 
-But let's supposed we also need tracker to trace all `execve` events, for it we need to change the configmap `tracker-policies` adding a new policy.
+But let's supposed we also need tracee to trace all `execve` events, for it we need to change the configmap `tracee-policies` adding a new policy.
 
-Let's edit the tracker-policies ConfigMap using kubectl:
+Let's edit the tracee-policies ConfigMap using kubectl:
 
 ```console
-kubectl edit cm/tracker-policies -n tracker-system
+kubectl edit cm/tracee-policies -n tracee-system
 ```
 
 The ConfigMap will open in your default text editor. Locate the data section.
@@ -113,7 +113,7 @@ To add a new policy for tracking execve events, add the following YAML block bef
 ```yaml
 data:
   events.yaml: |-
-    apiVersion: tracker.khulnasoft.com/v1beta1
+    apiVersion: tracee.khulnasoft.com/v1beta1
     kind: Policy
     metadata:
         name: execve-event
@@ -132,28 +132,28 @@ Save and close the file. The changes will be applied to the configmap.
 !!! note
 	If you having a problem editing the configmap, you can apply it directly with:
 	```console
-	kubectl apply -f https://gist.githubusercontent.com/josedonizetti/3df19a61d39840441ea5be448d6c9354/raw/c50b9b66d7996bb27b6fac301d24d6390e356f8c/tracker-policies-configmap.yaml
+	kubectl apply -f https://gist.githubusercontent.com/josedonizetti/3df19a61d39840441ea5be448d6c9354/raw/c50b9b66d7996bb27b6fac301d24d6390e356f8c/tracee-policies-configmap.yaml
 	```
 
-Step 3: Restart Tracker Daemonset
-After modifying the Tracker policies, you need to restart the Tracker daemonset for the changes to take effect.
+Step 3: Restart Tracee Daemonset
+After modifying the Tracee policies, you need to restart the Tracee daemonset for the changes to take effect.
 
-Restart the Tracker daemonset using the following command:
+Restart the Tracee daemonset using the following command:
 
 ```console
-kubectl rollout restart ds/tracker -n tracker-system
+kubectl rollout restart ds/tracee -n tracee-system
 ```
 
 Wait for the daemonset to restart and stabilize. You can monitor the progress using the following command:
 
 ```console
-kubectl rollout status ds/tracker -n tracker-system
+kubectl rollout status ds/tracee -n tracee-system
 ```
 
 Then check for `execve` events:
 
 ```conosle
-kubectl logs -f ds/tracker -n tracker-system | grep execve
+kubectl logs -f ds/tracee -n tracee-system | grep execve
 ```
 
 ```json
@@ -162,7 +162,7 @@ kubectl logs -f ds/tracker -n tracker-system | grep execve
 
 Once the daemonset is up and running, the modified policies will be applied.
 
-Congratulations! You have successfully installed Tracker via Helm, modified the default policies to add an `execve` event policy.
+Congratulations! You have successfully installed Tracee via Helm, modified the default policies to add an `execve` event policy.
 
 Note: Modifying the policies may have security implications, so it is important to carefully consider the events you enable based on your specific requirements and security considerations.
 

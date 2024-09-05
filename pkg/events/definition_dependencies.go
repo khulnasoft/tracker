@@ -3,7 +3,7 @@ package events
 import (
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft/tracker/pkg/ebpf/probes"
+	"github.com/aquasecurity/tracee/pkg/ebpf/probes"
 )
 
 // Dependencies is a struct that holds all the dependencies of a given event definition.
@@ -77,7 +77,7 @@ func (d Dependencies) GetCapabilities() Capabilities {
 
 type Probe struct {
 	handle   probes.Handle
-	required bool // tracker fails if probe can't be attached
+	required bool // tracee fails if probe can't be attached
 }
 
 func NewProbe(handle probes.Handle, required bool) Probe {
@@ -96,7 +96,7 @@ func (p Probe) IsRequired() bool {
 
 type KSymbol struct {
 	symbol   string
-	required bool // tracker fails if symbol is not found
+	required bool // tracee fails if symbol is not found
 }
 
 func NewKSymbol(symbol string, required bool) KSymbol {

@@ -11,11 +11,11 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/counter"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/counter"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 const (
@@ -50,7 +50,7 @@ func init() {
 // GetFtraceBaseEvent creates an ftrace hook event with basic common fields
 func GetFtraceBaseEvent() *trace.Event {
 	ftraceHookBaseEvent := &trace.Event{
-		ProcessName: "tracker",
+		ProcessName: "tracee",
 		EventID:     int(FtraceHook),
 		EventName:   Core.GetDefinitionByID(FtraceHook).GetName(),
 	}
@@ -161,12 +161,12 @@ func checkFtraceHooks(eventsCounter counter.Counter, out chan *trace.Event, base
 			directArg = true // To be used in the next line (next iteration)
 		}
 
-		causedByTracker, newCount, err := isCausedBySelfLoadedProg(selfLoadedProgs, args[symbolIndex].Value.(string), args[countIndex].Value.(int))
+		causedByTracee, newCount, err := isCausedBySelfLoadedProg(selfLoadedProgs, args[symbolIndex].Value.(string), args[countIndex].Value.(int))
 		if err != nil {
 			return err
 		}
 
-		if causedByTracker {
+		if causedByTracee {
 			continue
 		}
 
@@ -200,26 +200,26 @@ func checkFtraceHooks(eventsCounter counter.Counter, out chan *trace.Event, base
 	return nil
 }
 
-// isCausedBySelfLoadedProg checks if the hook is caused solely by tracker.
-// Returns the effective count taking into consideration the hooks by tracker and ftrace based k[ret]probes
+// isCausedBySelfLoadedProg checks if the hook is caused solely by tracee.
+// Returns the effective count taking into consideration the hooks by tracee and ftrace based k[ret]probes
 func isCausedBySelfLoadedProg(selfLoadedProgs map[string]int, symbol string, oldCount int) (bool, int, error) {
 	newCount := oldCount
 
-	numHooksFromTracker, found := selfLoadedProgs[symbol]
-	if found { // Tracker uses this hook
+	numHooksFromTracee, found := selfLoadedProgs[symbol]
+	if found { // Tracee uses this hook
 		// In case of k[ret]probe, there might be multiple hooks on same symbol and the ftrace count will still be 1. Check kprobe list directly.
 		numKprobes, err := numKprobesOnSymbol(symbol)
 		if err != nil {
 			return false, -1, err
 		}
 
-		if oldCount != 1 { // Someone else must be hooking using ftrace since tracker only causes 1 ftrace hook
-			newCount = oldCount - 1 + (numKprobes - numHooksFromTracker) // Reduce count caused by tracker and add the number of k[ret]probes (other than tracker's)
+		if oldCount != 1 { // Someone else must be hooking using ftrace since tracee only causes 1 ftrace hook
+			newCount = oldCount - 1 + (numKprobes - numHooksFromTracee) // Reduce count caused by tracee and add the number of k[ret]probes (other than tracee's)
 		} else {
-			if numKprobes == numHooksFromTracker { // count is 1 and all k[ret]probes are caused by us... there's nothing to report
+			if numKprobes == numHooksFromTracee { // count is 1 and all k[ret]probes are caused by us... there's nothing to report
 				return true, -1, nil
 			}
-			newCount = numKprobes - numHooksFromTracker // The amount of k[ret]probes other than tracker's
+			newCount = numKprobes - numHooksFromTracee // The amount of k[ret]probes other than tracee's
 		}
 	}
 

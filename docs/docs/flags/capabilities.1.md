@@ -1,17 +1,17 @@
 ---
-title: TRACKER-CAPABILITIES
+title: TRACEE-CAPABILITIES
 section: 1
-header: Tracker Capabilities Flag Manual
+header: Tracee Capabilities Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-capabilities** - Opt out from dropping capabilities by default or set specific ones
+tracee **\-\-capabilities** - Opt out from dropping capabilities by default or set specific ones
 
 ## SYNOPSIS
 
-tracker **\-\-capabilities** [<bypass=[true|false]\> | <add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ... [**\-\-capabilities** [<add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ...]
+tracee **\-\-capabilities** [<bypass=[true|false]\> | <add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ... [**\-\-capabilities** [<add=cap1(,cap2...)\> | <drop=cap1(,cap2...)\>] ...]
 
 ## DESCRIPTION
 

@@ -1,13 +1,13 @@
 # Process Tree Data
 
-The `Process Tree` feature offers a structured view of processes and threads active in the system where Tracker is deployed. This setup facilitates quick access, updates, and tracking of processes, child processes, and related threads. All relationship and metadata data points for processes and threads are versioned, so you can pull data snapshots from a precise timestamp.
+The `Process Tree` feature offers a structured view of processes and threads active in the system where Tracee is deployed. This setup facilitates quick access, updates, and tracking of processes, child processes, and related threads. All relationship and metadata data points for processes and threads are versioned, so you can pull data snapshots from a precise timestamp.
 
 ## Enabling the Feature
 
 To switch on the `Process Tree` feature, run the command:
 
 ```bash
-sudo tracker --output option:sort-events --output json --output option:parse-arguments --proctree source=both --events <event_type>
+sudo tracee --output option:sort-events --output json --output option:parse-arguments --proctree source=both --events <event_type>
 ```
 
 The underlying structure is populated using the core `sched_process_fork`, `sched_process_exec`, and `sched_process_exit` events and their data. There's also an option to bootstrap the process tree through a secondary route using internal signal events.
@@ -26,7 +26,7 @@ The process tree query the procfs upon initialization and during runtime to fill
 ## Command Line Option
 
 ```bash
-$ tracker --proctree help
+$ tracee --proctree help
 Example:
   --proctree source=[none|events|signals|both]
       none         | process tree is disabled (default).
@@ -35,6 +35,8 @@ Example:
       both         | process tree is built from both events and signals.
   --proctree process-cache=8192   | will cache up to 8192 processes in the tree (LRU cache).
   --proctree thread-cache=4096    | will cache up to 4096 threads in the tree (LRU cache).
+  --proctree process-cache-ttl=60 | will set the process cache element TTL to 60 seconds.
+  --proctree thread-cache-ttl=60  | will set the thread cache element TTL to 60 seconds.
   --proctree disable-procfs-query | Will disable procfs quering during runtime
 
 Use comma OR use the flag multiple times to choose multiple options:
@@ -73,7 +75,7 @@ Every entity in the `Process Tree`, be it a process or thread, is indexed using 
 
 ## Process Tree Artifacts
 
-In an upcoming update, the process tree will be enhanced with the addition of `artifacts`. Each process within the tree will be augmented with these "artifacts" to denote a task's various interactions and operations within the system. These artifacts, sourced from the tracing events provided by Tracker, offer a detailed depiction of a process's activities at the system level. Potential artifacts encompass:
+In an upcoming update, the process tree will be enhanced with the addition of `artifacts`. Each process within the tree will be augmented with these "artifacts" to denote a task's various interactions and operations within the system. These artifacts, sourced from the tracing events provided by Tracee, offer a detailed depiction of a process's activities at the system level. Potential artifacts encompass:
 
 - **File Operations**: Opened files, read/write activities, file deletion, and attribute changes.
 - **Network Activities**: Sockets created, inbound/outbound connections, transmitted/received data packets, and protocol-specific operations (like TCP handshakes or UDP transmissions).
@@ -87,7 +89,7 @@ This enhancement aims to offer developers and sysadmins a more detailed and gran
 
 ## Using the Process Tree
 
-The process tree is only available internally, to tracker's components, but, through the [datasource](../overview.md) mechanism, signatures are able to query the tree data using the data source process tree API.
+The process tree is only available internally, to tracee's components, but, through the [datasource](../overview.md) mechanism, signatures are able to query the tree data using the data source process tree API.
 
 ### Accessing the Process Tree Data Source
 
@@ -105,9 +107,9 @@ type e2eProcessTreeDataSource struct {
 func (sig *e2eProcessTreeDataSource) Init(ctx detect.SignatureContext) error {
     sig.cb = ctx.Callback
 
-    processTreeDataSource, ok := ctx.GetDataSource("tracker", "process_tree")
+    processTreeDataSource, ok := ctx.GetDataSource("tracee", "process_tree")
     if !ok {
-        return fmt.Errorf("data source tracker/process_tree is not registered")
+        return fmt.Errorf("data source tracee/process_tree is not registered")
     }
 
     sig.processTreeDS = processTreeDataSource
@@ -159,7 +161,7 @@ Where the `check()` method will either be:
 - checkThread()
 - checkLineage()
 
-> You can check related data structures directly in the [source code](https://github.com/khulnasoft/tracker/blob/7b095a8d9a11cbd11ac61d3eec4b0a0f77f66dd9/pkg/proctree/datasource.go#L59) for more information. Below you will find easy to understand examples.
+> You can check related data structures directly in the [source code](https://github.com/aquasecurity/tracee/blob/7b095a8d9a11cbd11ac61d3eec4b0a0f77f66dd9/pkg/proctree/datasource.go#L59) for more information. Below you will find easy to understand examples.
 
 ### Processes Information Retrieval
 

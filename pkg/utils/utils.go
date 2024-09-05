@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
 // Cloner is a generic interface for objects that can clone themselves.

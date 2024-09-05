@@ -1,13 +1,13 @@
 package derive
 
 import (
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/cgroup"
+	"github.com/aquasecurity/tracee/pkg/containers"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/parse"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // ContainerCreate receives a containers as a closure argument to track it's containers.
@@ -47,7 +47,7 @@ func deriveContainerCreateArgs(cts *containers.Containers) func(event trace.Even
 }
 
 // isCgroupEventInHid checks if cgroup event is relevant for deriving container event in its hierarchy id.
-// in tracker we only care about containers inside the cpuset controller, as such other hierarchy ids will lead
+// in tracee we only care about containers inside the cpuset controller, as such other hierarchy ids will lead
 // to a failed query.
 func isCgroupEventInHid(event *trace.Event, cts *containers.Containers) (bool, error) {
 	if cts.GetCgroupVersion() == cgroup.CgroupVersion2 {

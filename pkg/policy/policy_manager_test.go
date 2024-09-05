@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events"
 )
 
 func TestPolicyManagerEnableRule(t *testing.T) {
@@ -22,17 +22,22 @@ func TestPolicyManagerEnableRule(t *testing.T) {
 	assert.False(t, policyManager.IsRuleEnabled(policy2Mached, events.SecurityBPF))
 	assert.False(t, policyManager.IsRuleEnabled(policy1And2Mached, events.SecurityBPF))
 
-	policyManager.EnableRule(1, events.SecurityBPF)
+	err := policyManager.EnableRule(1, events.SecurityBPF)
+	assert.NoError(t, err)
 
 	assert.True(t, policyManager.IsRuleEnabled(policy1Mached, events.SecurityBPF))
 	assert.False(t, policyManager.IsRuleEnabled(policy2Mached, events.SecurityBPF))
 	assert.True(t, policyManager.IsRuleEnabled(policy1And2Mached, events.SecurityBPF))
 
-	policyManager.EnableRule(2, events.SecurityBPF)
+	err = policyManager.EnableRule(2, events.SecurityBPF)
+	assert.NoError(t, err)
 
 	assert.True(t, policyManager.IsRuleEnabled(policy1Mached, events.SecurityBPF))
 	assert.True(t, policyManager.IsRuleEnabled(policy2Mached, events.SecurityBPF))
 	assert.True(t, policyManager.IsRuleEnabled(policy1And2Mached, events.SecurityBPF))
+
+	err = policyManager.EnableRule(-1, events.SecurityBPF)
+	assert.Error(t, err)
 }
 
 func TestPolicyManagerDisableRule(t *testing.T) {
@@ -44,17 +49,22 @@ func TestPolicyManagerDisableRule(t *testing.T) {
 	policy2Mached := uint64(0b100)
 	policy1And2Mached := uint64(0b110)
 
-	policyManager.EnableRule(1, events.SecurityBPF)
+	err := policyManager.EnableRule(1, events.SecurityBPF)
+	assert.NoError(t, err)
 
 	assert.True(t, policyManager.IsRuleEnabled(policy1Mached, events.SecurityBPF))
 	assert.False(t, policyManager.IsRuleEnabled(policy2Mached, events.SecurityBPF))
 	assert.True(t, policyManager.IsRuleEnabled(policy1And2Mached, events.SecurityBPF))
 
-	policyManager.DisableRule(1, events.SecurityBPF)
+	err = policyManager.DisableRule(1, events.SecurityBPF)
+	assert.NoError(t, err)
 
 	assert.False(t, policyManager.IsRuleEnabled(policy1Mached, events.SecurityBPF))
 	assert.False(t, policyManager.IsRuleEnabled(policy2Mached, events.SecurityBPF))
 	assert.False(t, policyManager.IsRuleEnabled(policy1And2Mached, events.SecurityBPF))
+
+	err = policyManager.DisableRule(-1, events.SecurityBPF)
+	assert.Error(t, err)
 }
 
 func TestPolicyManagerEnableAndDisableRuleConcurrent(t *testing.T) {

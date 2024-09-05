@@ -4,16 +4,32 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type IllegitimateShell struct {
 	cb                     detect.SignatureHandler
 	shellNames             []string
 	webServersProcessNames []string
+}
+
+var illegitimateShellMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1016",
+	Version:     "1",
+	Name:        "Web server spawned a shell",
+	EventName:   "illegitimate_shell",
+	Description: "A web-server program on your server spawned a shell program. Shell is the linux command-line program, web servers usually don't run shell programs, so this alert might indicate an adversary is exploiting a web server program to gain command execution on the server.",
+	Properties: map[string]interface{}{
+		"Severity":             2,
+		"Category":             "initial-access",
+		"Technique":            "Exploit Public-Facing Application",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--3f886f2a-874f-4333-b794-aa6075009b1c",
+		"external_id":          "T1190",
+	},
 }
 
 func (sig *IllegitimateShell) Init(ctx detect.SignatureContext) error {
@@ -24,26 +40,12 @@ func (sig *IllegitimateShell) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *IllegitimateShell) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1016",
-		Version:     "1",
-		Name:        "Web server spawned a shell",
-		EventName:   "illegitimate_shell",
-		Description: "A web-server program on your server spawned a shell program. Shell is the linux command-line program, web servers usually don't run shell programs, so this alert might indicate an adversary is exploiting a web server program to gain command execution on the server.",
-		Properties: map[string]interface{}{
-			"Severity":             2,
-			"Category":             "initial-access",
-			"Technique":            "Exploit Public-Facing Application",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--3f886f2a-874f-4333-b794-aa6075009b1c",
-			"external_id":          "T1190",
-		},
-	}, nil
+	return illegitimateShellMetadata, nil
 }
 
 func (sig *IllegitimateShell) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_bprm_check", Origin: "*"},
+		{Source: "tracee", Name: "security_bprm_check", Origin: "*"},
 	}, nil
 }
 
@@ -57,7 +59,7 @@ func (sig *IllegitimateShell) OnEvent(event protocol.Event) error {
 	case "security_bprm_check":
 		for _, webServersProcessName := range sig.webServersProcessNames {
 			if webServersProcessName == eventObj.ProcessName {
-				pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+				pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 				if err != nil {
 					return err
 				}

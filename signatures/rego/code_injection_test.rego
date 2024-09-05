@@ -1,7 +1,7 @@
-package tracker.TRC_3
+package tracee.TRC_3
 
 test_match_1 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "ptrace",
 		"argsNum": 1,
 		"args": [{
@@ -12,7 +12,7 @@ test_match_1 {
 }
 
 test_match_2 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "security_file_open",
 		"argsNum": 4,
 		"args": [
@@ -37,7 +37,7 @@ test_match_2 {
 }
 
 test_match_3 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "process_vm_writev",
 		"processId": 109,
 		"argsNum": 1,
@@ -49,7 +49,7 @@ test_match_3 {
 }
 
 test_match_wrong_request {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "ptrace",
 		"argsNum": 1,
 		"args": [{
@@ -60,7 +60,7 @@ test_match_wrong_request {
 }
 
 test_match_wrong_pathname {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "security_file_open",
 		"argsNum": 4,
 		"args": [
@@ -85,7 +85,7 @@ test_match_wrong_pathname {
 }
 
 test_match_pid {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "process_vm_writev",
 		"processId": 101,
 		"argsNum": 1,

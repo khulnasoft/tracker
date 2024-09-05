@@ -3,39 +3,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tracker-operator.fullname" . }}
+  name: {{ include "tracee-operator.fullname" . }}
   labels:
-    {{- include "tracker.labels" . | nindent 4 }}
+    {{- include "tracee.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "tracker-operator.fullname" . }}
+      app: {{ include "tracee-operator.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ include "tracker-operator.fullname" . }}
+        app: {{ include "tracee-operator.fullname" . }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tracker-operator.serviceAccountName" . }}
+      serviceAccountName: {{ include "tracee-operator.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      - name: tracker-operator
+      - name: tracee-operator
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-          - /tracker/tracker-operator
+          - /tracee/tracee-operator
         args:
           - --health-probe-bind-address
           - {{ .Values.operator.healthProbeBindAddress }}
         env:
-          - name: TRACKER_NAME
-            value: {{ include "tracker.fullname" . }}
-          - name: TRACKER_NAMESPACE
+          - name: TRACEE_NAME
+            value: {{ include "tracee.fullname" . }}
+          - name: TRACEE_NAMESPACE
             value: {{ .Release.Namespace }}
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

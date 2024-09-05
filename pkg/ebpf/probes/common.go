@@ -1,9 +1,9 @@
 package probes
 
 import (
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
 )
 
 // enableDisableAutoload enables or disables an eBPF program automatic attachment to/from its hook.

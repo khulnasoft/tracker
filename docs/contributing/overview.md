@@ -1,31 +1,31 @@
 ## Contributing
 
-Thank you for taking interest in contributing to Tracker! This document covers our working practices and conventions.
+Thank you for taking interest in contributing to Tracee! This document covers our working practices and conventions.
 
 ## Issues and Discussions
 
 We encourage open discussion and collaboration using both GitHub Issues and Discussions.  
 
-- [Discussions](https://github.com/khulnasoft/tracker/discussions) are free-style conversational tool, we use them for conversations.
-- [Issues](https://github.com/khulnasoft/tracker/issues) are project management tool, we use them to keep track on who's working on what and plan ahead.
+- [Discussions](https://github.com/aquasecurity/tracee/discussions) are free-style conversational tool, we use them for conversations.
+- [Issues](https://github.com/aquasecurity/tracee/issues) are project management tool, we use them to keep track on who's working on what and plan ahead.
 
 If you have a suggestion, question, or a general comment - please use Discussions. If there's a clear work item (including bugs) - you can open an Issue.
 
 ### Discussions:
 
 - We have the following discussion topics: 
-    1. [Announcements](https://github.com/khulnasoft/tracker/discussions/categories/announcements): One way communication from the team to the community. Consider this like our mini blog
-    1. [Questions and Help](https://github.com/khulnasoft/tracker/discussions/categories/questions-and-help): For help and support. Consider this similar to StackOverflow.
-    1. [Development](https://github.com/khulnasoft/tracker/discussions/categories/development): For discussing potential features, and collaborating on their design.
+    1. [Announcements](https://github.com/aquasecurity/tracee/discussions/categories/announcements): One way communication from the team to the community. Consider this like our mini blog
+    1. [Questions and Help](https://github.com/aquasecurity/tracee/discussions/categories/questions-and-help): For help and support. Consider this similar to StackOverflow.
+    1. [Development](https://github.com/aquasecurity/tracee/discussions/categories/development): For discussing potential features, and collaborating on their design.
 
 ### Issues:
 
 1. Every issue needs to be actionable and assignable. Consider the scope of the issue if assigned to one person, and break down if necessary.
 1. Be clear and definitive when composing issues. For bug reports, include detailed error messages and environment description. For features, include a clear scope and acceptance criteria.
 1. Since we have different projects under the same monorepo, use labels to denote areas that the issue relates to:
-    1. `tracker`
-    1. `tracker-ebpf`
-    1. `tracker-rules`
+    1. `tracee`
+    1. `tracee-ebpf`
+    1. `tracee-rules`
     1. `signatures`
     1.  If non of the labels is relevant don't add any (usually for top-level issues)
 1. We use the following labels to describe the type of issue:

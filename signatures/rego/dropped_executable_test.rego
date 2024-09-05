@@ -1,7 +1,7 @@
-package tracker.TRC_9
+package tracee.TRC_9
 
 test_match_1 {
-	tracker_match == {"file path": "new_file"} with input as {
+	tracee_match == {"file path": "new_file"} with input as {
 		"eventName": "magic_write",
 		"args": [
 			{
@@ -17,7 +17,7 @@ test_match_1 {
 }
 
 test_match_wrong_request {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "magic_write",
 		"args": [{
 			"name": "bytes",

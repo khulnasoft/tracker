@@ -3,14 +3,30 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type ProcessVmWriteCodeInjection struct {
 	cb detect.SignatureHandler
+}
+
+var processVmWriteCodeInjectionMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1025",
+	Version:     "1",
+	Name:        "Code injection detected using process_vm_writev syscall",
+	EventName:   "process_vm_write_inject",
+	Description: "Possible code injection into another process was detected. Code injection is an exploitation technique used to run malicious code, adversaries may use it in order to execute their malware.",
+	Properties: map[string]interface{}{
+		"Severity":             3,
+		"Category":             "defense-evasion",
+		"Technique":            "Process Injection",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--43e7dc91-05b2-474c-b9ac-2ed4fe101f4d",
+		"external_id":          "T1055",
+	},
 }
 
 func (sig *ProcessVmWriteCodeInjection) Init(ctx detect.SignatureContext) error {
@@ -20,26 +36,12 @@ func (sig *ProcessVmWriteCodeInjection) Init(ctx detect.SignatureContext) error 
 }
 
 func (sig *ProcessVmWriteCodeInjection) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1025",
-		Version:     "1",
-		Name:        "Code injection detected using process_vm_writev syscall",
-		EventName:   "process_vm_write_inject",
-		Description: "Possible code injection into another process was detected. Code injection is an exploitation technique used to run malicious code, adversaries may use it in order to execute their malware.",
-		Properties: map[string]interface{}{
-			"Severity":             3,
-			"Category":             "defense-evasion",
-			"Technique":            "Process Injection",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--43e7dc91-05b2-474c-b9ac-2ed4fe101f4d",
-			"external_id":          "T1055",
-		},
-	}, nil
+	return processVmWriteCodeInjectionMetadata, nil
 }
 
 func (sig *ProcessVmWriteCodeInjection) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "process_vm_writev", Origin: "*"},
+		{Source: "tracee", Name: "process_vm_writev", Origin: "*"},
 	}, nil
 }
 
@@ -51,7 +53,7 @@ func (sig *ProcessVmWriteCodeInjection) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "process_vm_writev":
-		dstPid, err := helpers.GetTrackerIntArgumentByName(eventObj, "pid")
+		dstPid, err := helpers.GetTraceeIntArgumentByName(eventObj, "pid")
 		if err != nil {
 			return err
 		}

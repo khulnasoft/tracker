@@ -3,7 +3,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
 )
 
 // PolicyEventMap maps policy id to its pre-parsed event flag fields

@@ -4,16 +4,32 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type LdPreload struct {
 	cb          detect.SignatureHandler
 	preloadEnvs []string
 	preloadPath string
+}
+
+var ldPreloadMetadata = detect.SignatureMetadata{
+	ID:          "TRC-107",
+	Version:     "1",
+	Name:        "LD_PRELOAD code injection detected",
+	EventName:   "ld_preload",
+	Description: "LD_PRELOAD usage was detected. LD_PRELOAD lets you load your library before any other library, allowing you to hook functions in a process. Adversaries may use this technique to change your applications' behavior or load their own programs.",
+	Properties: map[string]interface{}{
+		"Severity":             2,
+		"Category":             "persistence",
+		"Technique":            "Hijack Execution Flow",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--aedfca76-3b30-4866-b2aa-0f1d7fd1e4b6",
+		"external_id":          "T1574",
+	},
 }
 
 func (sig *LdPreload) Init(ctx detect.SignatureContext) error {
@@ -24,28 +40,14 @@ func (sig *LdPreload) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *LdPreload) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-107",
-		Version:     "1",
-		Name:        "LD_PRELOAD code injection detected",
-		EventName:   "ld_preload",
-		Description: "LD_PRELOAD usage was detected. LD_PRELOAD lets you load your library before any other library, allowing you to hook functions in a process. Adversaries may use this technique to change your applications' behavior or load their own programs.",
-		Properties: map[string]interface{}{
-			"Severity":             2,
-			"Category":             "persistence",
-			"Technique":            "Hijack Execution Flow",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--aedfca76-3b30-4866-b2aa-0f1d7fd1e4b6",
-			"external_id":          "T1574",
-		},
-	}, nil
+	return ldPreloadMetadata, nil
 }
 
 func (sig *LdPreload) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "sched_process_exec", Origin: "*"},
-		{Source: "tracker", Name: "security_file_open", Origin: "*"},
-		{Source: "tracker", Name: "security_inode_rename", Origin: "*"},
+		{Source: "tracee", Name: "sched_process_exec", Origin: "*"},
+		{Source: "tracee", Name: "security_file_open", Origin: "*"},
+		{Source: "tracee", Name: "security_inode_rename", Origin: "*"},
 	}, nil
 }
 
@@ -57,7 +59,7 @@ func (sig *LdPreload) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "sched_process_exec":
-		envVars, err := helpers.GetTrackerSliceStringArgumentByName(eventObj, "env")
+		envVars, err := helpers.GetTraceeSliceStringArgumentByName(eventObj, "env")
 		if err != nil {
 			return nil
 		}
@@ -80,12 +82,12 @@ func (sig *LdPreload) OnEvent(event protocol.Event) error {
 			}
 		}
 	case "security_file_open":
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
@@ -102,7 +104,7 @@ func (sig *LdPreload) OnEvent(event protocol.Event) error {
 			})
 		}
 	case "security_inode_rename":
-		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}

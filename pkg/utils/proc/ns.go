@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 // GetMountNSFirstProcesses return mapping between mount NS to its first process

@@ -15,13 +15,13 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/khulnasoft-lab/libbpfgo"
+	"github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	cruntime "github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/k8s"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/cgroup"
+	cruntime "github.com/aquasecurity/tracee/pkg/containers/runtime"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/k8s"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 // Containers contains information about running containers in the host.
@@ -317,7 +317,7 @@ func getContainerIdFromCgroup(cgroupPath string) (string, cruntime.RuntimeId, bo
 		}
 
 		// Special case: Garden. Garden doesn't have a container enricher implemented,
-		// but, still, tracker needs to identify garden containers ids in the events.
+		// but, still, tracee needs to identify garden containers ids in the events.
 		if matched := gardenContainerIdFromCgroupRegex.MatchString(id); matched {
 			runtime = cruntime.Garden
 			return id, runtime, i == len(cgroupParts)-1
@@ -415,7 +415,7 @@ func (c *Containers) FindContainerCgroupID32LSB(containerID string) ([]uint32, e
 // GetCgroupInfo returns the contents of the Containers struct cgroupInfo data of a given cgroupId.
 func (c *Containers) GetCgroupInfo(cgroupId uint64) CgroupInfo {
 	if !c.CgroupExists(cgroupId) {
-		// There should be a cgroupInfo for the given cgroupId but there isn't. Tracker
+		// There should be a cgroupInfo for the given cgroupId but there isn't. Tracee
 		// might be processing an event for an already created container before the
 		// CgroupMkdirEventID logic was executed, for example.
 

@@ -1,4 +1,4 @@
-// Package protocol includes the "API" of events the rule-engine can consume. All producers who intend to add support for tracker need to support this protocol.
+// Package protocol includes the "API" of events the rule-engine can consume. All producers who intend to add support for tracee need to support this protocol.
 package protocol
 
 // EventHeaders are headers attached to the Event struct, used to send metadata about the payload
@@ -16,7 +16,7 @@ type Selector struct {
 	Name string
 	// Origin indicates where the event was generated (host, container, pod), this may be empty depending on Source
 	Origin string
-	// Source indicates the producer of the Event (example: tracker, CNDR, K8SAuditLog...)
+	// Source indicates the producer of the Event (example: tracee, CNDR, K8SAuditLog...)
 	Source string
 }
 

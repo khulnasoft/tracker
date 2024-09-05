@@ -1,8 +1,8 @@
 # Rules
 
-Rules are part of the Tracker Policy, which defines which events to trace. The events that are part of a specific policy are recorded in the `rules` section of the Tracker Policy. It is possible to define multiple events within each policy. The [events](../events/index.md) section provides further information on the type of events that Tracker can track.
+Rules are part of the Tracee Policy, which defines which events to trace. The events that are part of a specific policy are recorded in the `rules` section of the Tracee Policy. It is possible to define multiple events within each policy. The [events](../events/index.md) section provides further information on the type of events that Tracee can track.
 
-Below are several examples on configuring events in the Tracker Policy.
+Below are several examples on configuring events in the Tracee Policy.
 
 ## Events
 
@@ -52,7 +52,7 @@ spec:
 
 **[Any of our extra events](../events/builtin/extra/bpf_attach.md)**
 
-Any of the extra events listed in the Tracker documentation can be listed in the Tracker Policy.
+Any of the extra events listed in the Tracee documentation can be listed in the Tracee Policy.
 
 For instance, to specify the [do_sigaction](../events/builtin/extra/do_sigaction.md) event, provide the name in the YAML manifest:
 
@@ -69,7 +69,7 @@ spec:
 Further refinement of the policy's scope is achievable through the application of scope filters:
 
 ```yaml
-apiVersion: tracker.khulnasoft.com/v1beta1
+apiVersion: tracee.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: sample-scope-filter
@@ -244,7 +244,7 @@ filters:
 Events contain data that can be filtered.
 
 ```yaml
-apiVersion: tracker.khulnasoft.com/v1beta1
+apiVersion: tracee.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: sample-data-filter
@@ -259,12 +259,12 @@ spec:
 		- data.pathname=/tmp*
 ```
 
-Data fields can be found on the respective event definition, in this case [security_file_open](https://github.com/khulnasoft/tracker/blob/656eb976fbb66aba54c5f306019258e436d4814a/pkg/events/core.go#L11502-L11533) - be aware of possible changes to the definition linked above, so always check the main branch.
+Data fields can be found on the respective event definition, in this case [security_file_open](https://github.com/aquasecurity/tracee/blob/656eb976fbb66aba54c5f306019258e436d4814a/pkg/events/core.go#L11502-L11533) - be aware of possible changes to the definition linked above, so always check the main branch.
 
  Or the user can test the event output in CLI before defining a policy, e.g:
 
 ```console
-tracker -e security_file_open --output json
+tracee -e security_file_open --output json
 ```
 
 ```json
@@ -276,7 +276,7 @@ tracker -e security_file_open --output json
 Return values can also be filtered.
 
 ```yaml
-apiVersion: tracker.khulnasoft.com/v1beta1
+apiVersion: tracee.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
 	name: sample-return-value

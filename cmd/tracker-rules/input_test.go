@@ -9,33 +9,33 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
-func TestParseTrackerInputOptions(t *testing.T) {
+func TestParseTraceeInputOptions(t *testing.T) {
 	testCases := []struct {
 		testName              string
 		optionStringSlice     []string
-		expectedResultOptions *trackerInputOptions
+		expectedResultOptions *traceeInputOptions
 		expectedError         error
 	}{
 		{
 			testName:              "no options specified",
 			optionStringSlice:     []string{},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("no tracker input options specified"),
+			expectedError:         errors.New("no tracee input options specified"),
 		},
 		{
 			testName:              "non-existent file specified",
 			optionStringSlice:     []string{"file:/iabxfdoabs22do2b"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid Tracker input file: /iabxfdoabs22do2b"),
+			expectedError:         errors.New("invalid Tracee input file: /iabxfdoabs22do2b"),
 		},
 		{
 			testName:              "non-existent file specified",
 			optionStringSlice:     []string{"file:/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid Tracker input file: /AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+			expectedError:         errors.New("invalid Tracee input file: /AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
 		},
 		{
 			testName:              "non-existent file specified",
@@ -47,13 +47,13 @@ func TestParseTrackerInputOptions(t *testing.T) {
 			testName:              "invalid file format specified",
 			optionStringSlice:     []string{"format:xml"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid tracker input format specified: XML"),
+			expectedError:         errors.New("invalid tracee input format specified: XML"),
 		},
 		{
 			testName:              "invalid input option specified",
 			optionStringSlice:     []string{"shmoo:hallo"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid input-tracker option key: shmoo"),
+			expectedError:         errors.New("invalid input-tracee option key: shmoo"),
 		},
 		{
 			testName:              "invalid input option specified",
@@ -65,32 +65,32 @@ func TestParseTrackerInputOptions(t *testing.T) {
 			testName:              "invalid input option specified",
 			optionStringSlice:     []string{"A"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid input-tracker option: A"),
+			expectedError:         errors.New("invalid input-tracee option: A"),
 		},
 		{
 			testName:              "invalid input option specified",
 			optionStringSlice:     []string{"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid input-tracker option: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+			expectedError:         errors.New("invalid input-tracee option: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
 		},
 		{
 			testName:              "invalid input option specified",
 			optionStringSlice:     []string{"3O$B@4420**@!;;;go.fmt@!3h;^!#!@841083n1"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid input-tracker option: 3O$B@4420**@!;;;go.fmt@!3h;^!#!@841083n1"),
+			expectedError:         errors.New("invalid input-tracee option: 3O$B@4420**@!;;;go.fmt@!3h;^!#!@841083n1"),
 		},
 	}
 
 	for _, testcase := range testCases {
 		t.Run(testcase.testName, func(t *testing.T) {
-			opt, err := parseTrackerInputOptions(testcase.optionStringSlice)
+			opt, err := parseTraceeInputOptions(testcase.optionStringSlice)
 			assert.ErrorContains(t, err, testcase.expectedError.Error())
 			assert.Equal(t, testcase.expectedResultOptions, opt)
 		})
 	}
 }
 
-func TestSetupTrackerJSONInputSource(t *testing.T) {
+func TestSetupTraceeJSONInputSource(t *testing.T) {
 	testCases := []struct {
 		testName      string
 		events        []trace.Event
@@ -121,8 +121,8 @@ func TestSetupTrackerJSONInputSource(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.testName, func(t *testing.T) {
-			// Setup temp file that tracker-rules reads from
-			f, err := os.CreateTemp("", "TestSetupTrackerJSONInputSource-")
+			// Setup temp file that tracee-rules reads from
+			f, err := os.CreateTemp("", "TestSetupTraceeJSONInputSource-")
 			if err != nil {
 				t.Error(err)
 			}
@@ -146,16 +146,16 @@ func TestSetupTrackerJSONInputSource(t *testing.T) {
 			}
 
 			// Set up reading from the file
-			opts := &trackerInputOptions{inputFile: f, inputFormat: jsonInputFormat}
-			eventsChan, err := setupTrackerJSONInputSource(opts)
+			opts := &traceeInputOptions{inputFile: f, inputFormat: jsonInputFormat}
+			eventsChan, err := setupTraceeJSONInputSource(opts)
 			assert.Equal(t, testCase.expectedError, err)
 
 			readEvents := []trace.Event{}
 
 			for e := range eventsChan {
-				trackerEvt, ok := e.Payload.(trace.Event)
+				traceeEvt, ok := e.Payload.(trace.Event)
 				require.True(t, ok)
-				readEvents = append(readEvents, trackerEvt)
+				readEvents = append(readEvents, traceeEvt)
 			}
 
 			assert.Equal(t, testCase.events, readEvents)

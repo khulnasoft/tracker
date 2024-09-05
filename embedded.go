@@ -1,4 +1,4 @@
-package tracker
+package tracee
 
 import (
 	_ "embed"

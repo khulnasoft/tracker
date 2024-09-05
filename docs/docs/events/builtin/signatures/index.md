@@ -1,13 +1,13 @@
 
 # Security Events
 
-## Understanding Signatures in Tracker
+## Understanding Signatures in Tracee
 
-In Tracker, a signature is a set of criteria designed to detect specific system
+In Tracee, a signature is a set of criteria designed to detect specific system
 activities based on events such as syscalls, network interactions, and LSM hook
 occurrences. When these foundational system events align with the conditions set
-by a signature, Tracker generates a corresponding "security event." This process
-enables Tracker to actively monitor and report potential security concerns
+by a signature, Tracee generates a corresponding "security event." This process
+enables Tracee to actively monitor and report potential security concerns
 arising from observed system interactions.
 
 ## Functionality and Scope of Signatures
@@ -16,22 +16,22 @@ The signatures documented herein focus on key system operations. For instance,
 one signature identifies attempts to manipulate the syscall tables or the
 `/proc` filesystem, operations that are indicative of rootkit behaviors. Another
 detects the dynamic introduction of new executables into the system, flagging
-potential security issues. Upon a match, these signatures prompt Tracker to
+potential security issues. Upon a match, these signatures prompt Tracee to
 produce a security event, capturing the specifics of the underlying event and
 any associated implications.
 
-## The Role of Security Events in Tracker
+## The Role of Security Events in Tracee
 
 Security events play a critical role in maintaining system integrity. They
 provide an analytical layer, translating raw events like syscalls into
 actionable insights about potential threats or anomalies. With the power of
-eBPF, Tracker efficiently monitors system activities in real-time, generating
+eBPF, Tracee efficiently monitors system activities in real-time, generating
 security events that equip users with the information they need to assess and
 respond to the state of their digital environments.
 
 ## Be Prepared!
 
-For optimal utilization of Tracker and effective response to potential threats,
+For optimal utilization of Tracee and effective response to potential threats,
 we strongly recommend readers to meticulously review each security event
 documentation page.
 

@@ -3,26 +3,26 @@ package ebpf
 import (
 	"context"
 
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/containers"
+	"github.com/aquasecurity/tracee/pkg/dnscache"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/proctree"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // engineEvents stage in the pipeline allows signatures detection to be executed in the pipeline
-func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-chan *trace.Event, <-chan error) {
-	out := make(chan *trace.Event)
+func (t *Tracee) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-chan *trace.Event, <-chan error) {
+	out := make(chan *trace.Event, t.config.PipelineChannelSize)
 	errc := make(chan error, 1)
 
 	engineOutput := make(chan *detect.Finding, 10000)
 	engineInput := make(chan protocol.Event, 10000)
-	engineOutputEvents := make(chan *trace.Event, 10000)
-	source := engine.EventSources{Tracker: engineInput}
+	engineOutputEvents := make(chan *trace.Event, t.config.PipelineChannelSize)
+	source := engine.EventSources{Tracee: engineInput}
 
 	// Prepare built in data sources
 	t.config.EngineConfig.DataSources = append(t.config.EngineConfig.DataSources, t.PrepareBuiltinDataSources()...)
@@ -136,8 +136,8 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 	return out, errc
 }
 
-// PrepareBuiltinDataSources returns a list of all data sources tracker makes available built-in
-func (t *Tracker) PrepareBuiltinDataSources() []detect.DataSource {
+// PrepareBuiltinDataSources returns a list of all data sources tracee makes available built-in
+func (t *Tracee) PrepareBuiltinDataSources() []detect.DataSource {
 	datasources := []detect.DataSource{}
 
 	// Containers Data Source

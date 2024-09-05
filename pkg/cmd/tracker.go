@@ -6,18 +6,18 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/printer"
-	"github.com/khulnasoft/tracker/pkg/config"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/server/grpc"
-	"github.com/khulnasoft/tracker/pkg/server/http"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/aquasecurity/tracee/pkg/cmd/printer"
+	"github.com/aquasecurity/tracee/pkg/config"
+	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/server/grpc"
+	"github.com/aquasecurity/tracee/pkg/server/http"
+	"github.com/aquasecurity/tracee/pkg/utils"
 )
 
 type Runner struct {
-	TrackerConfig config.Config
+	TraceeConfig config.Config
 	Printer      printer.EventPrinter
 	InstallPath  string
 	HTTPServer   *http.Server
@@ -25,20 +25,20 @@ type Runner struct {
 }
 
 func (r Runner) Run(ctx context.Context) error {
-	// Create Tracker Singleton
+	// Create Tracee Singleton
 
-	t, err := tracker.New(r.TrackerConfig)
+	t, err := tracee.New(r.TraceeConfig)
 	if err != nil {
-		return errfmt.Errorf("error creating Tracker: %v", err)
+		return errfmt.Errorf("error creating Tracee: %v", err)
 	}
 
-	// Readiness Callback: Tracker is ready to receive events
+	// Readiness Callback: Tracee is ready to receive events
 	t.AddReadyCallback(
 		func(ctx context.Context) {
-			logger.Debugw("Tracker is ready callback")
+			logger.Debugw("Tracee is ready callback")
 			if r.HTTPServer != nil {
 				if r.HTTPServer.MetricsEndpointEnabled() {
-					r.TrackerConfig.MetricsEnabled = true // TODO: is this needed ?
+					r.TraceeConfig.MetricsEnabled = true // TODO: is this needed ?
 					if err := t.Stats().RegisterPrometheus(); err != nil {
 						logger.Errorw("Registering prometheus metrics", "error", err)
 					}
@@ -53,11 +53,15 @@ func (r Runner) Run(ctx context.Context) error {
 		},
 	)
 
-	// Initialize tracker
+	// Need to force nil to allow the garbage
+	// collector to free the BPF object
+	r.TraceeConfig.BPFObjBytes = nil
+
+	// Initialize tracee
 
 	err = t.Init(ctx)
 	if err != nil {
-		return errfmt.Errorf("error initializing Tracker: %v", err)
+		return errfmt.Errorf("error initializing Tracee: %v", err)
 	}
 
 	// Manage PID file
@@ -67,7 +71,7 @@ func (r Runner) Run(ctx context.Context) error {
 	}
 	installPathDir, err := utils.OpenExistingDir(r.InstallPath)
 	if err != nil {
-		return errfmt.Errorf("error initializing Tracker: error opening installation path: %v", err)
+		return errfmt.Errorf("error initializing Tracee: error opening installation path: %v", err)
 	}
 	defer func() {
 		err := installPathDir.Close()
@@ -108,7 +112,7 @@ func (r Runner) Run(ctx context.Context) error {
 	err = t.Run(ctx)
 
 	// Drain remaininig channel events (sent during shutdown),
-	// the channel is closed by the tracker when it's done
+	// the channel is closed by the tracee when it's done
 	for event := range stream.ReceiveEvents() {
 		r.Printer.Print(event)
 	}
@@ -134,7 +138,7 @@ func GetContainerMode(containerFilterEnabled, noContainersEnrich bool) config.Co
 	return config.ContainerModeEnriched
 }
 
-const pidFileName = "tracker.pid"
+const pidFileName = "tracee.pid"
 
 // Initialize PID file
 func writePidFile(dir *os.File) error {

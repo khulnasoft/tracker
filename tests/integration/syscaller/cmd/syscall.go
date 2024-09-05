@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events"
 )
 
 // sysArgs is a struct containing the arguments to be passed to a syscall
@@ -20,7 +20,7 @@ type sysArgs struct {
 // syscallMap is a map of syscall numbers to the arguments they should be
 // called with. If the syscall number is not found in the map, the syscall
 // is called with arguments set to 0
-// Some events.ID are internal to tracker and are not syscall numbers, so they
+// Some events.ID are internal to tracee and are not syscall numbers, so they
 // need further processing before being passed to the syscall
 var syscallMap = map[events.ID]sysArgs{
 	events.Read: {0, 0, 0, 0, 0, 0},

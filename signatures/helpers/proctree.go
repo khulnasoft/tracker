@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/khulnasoft/tracker/types/datasource"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/datasource"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // ProcessTreeDS is an envelope to the process tree datasource API, to make it intuitive and easy
@@ -24,14 +24,14 @@ func InitProcessTreeDS(ds detect.DataSource) *ProcessTreeDS {
 // are initialized with.
 // This is the recommended way to initialize an instance, as it simpler to use.
 func GetProcessTreeDataSource(ctx detect.SignatureContext) (*ProcessTreeDS, error) {
-	processTreeDataSource, ok := ctx.GetDataSource("tracker", "process_tree")
+	processTreeDataSource, ok := ctx.GetDataSource("tracee", "process_tree")
 	if !ok {
-		return nil, fmt.Errorf("data source tracker/process_tree is not registered")
+		return nil, fmt.Errorf("data source tracee/process_tree is not registered")
 	}
 
 	if processTreeDataSource.Version() > 1 {
 		return nil, fmt.Errorf(
-			"data source tracker/process_tree version %d is not supported",
+			"data source tracee/process_tree version %d is not supported",
 			processTreeDataSource.Version(),
 		)
 	}

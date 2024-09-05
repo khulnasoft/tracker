@@ -5,7 +5,7 @@ import (
 )
 
 // PolicyInterface is the interface of the policy object,
-// it is used to allow tracker to support policies coming from kubernetes,
+// it is used to allow tracee to support policies coming from kubernetes,
 // or directly from the filesystem.
 type PolicyInterface interface {
 	GetName() string
@@ -20,7 +20,7 @@ type PolicyInterface interface {
 type Policy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata"`
-	// tracker policy spec
+	// tracee policy spec
 	Spec PolicySpec `json:"spec"`
 }
 

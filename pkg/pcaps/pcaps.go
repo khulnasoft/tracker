@@ -3,17 +3,17 @@ package pcaps
 import (
 	"os"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
 // This is a big Pcaps struct holding caches for different types of Pcap files
 // to be managed (pcap files per process, per containers and per commands). It
-// would be hard to keep all possible pcap files open forever (as tracker might
+// would be hard to keep all possible pcap files open forever (as tracee might
 // trace tons of processes, containers or commands).
 //
 // That is what the PcapCache struct is for. It keeps Pcap files and maintain

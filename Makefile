@@ -1,5 +1,5 @@
 .PHONY: all | env
-all: tracker-ebpf tracker-rules signatures tracker
+all: tracee-ebpf tracee-rules signatures tracee
 
 #
 # make
@@ -11,6 +11,15 @@ SHELL = /bin/sh
 PARALLEL = $(shell $(CMD_GREP) -c ^processor /proc/cpuinfo)
 MAKE = make
 MAKEFLAGS += --no-print-directory
+
+#
+# env
+#
+
+GOENV_MK = goenv.mk
+
+# load Go environment variables
+-include $(GOENV_MK)
 
 #
 # tools
@@ -221,8 +230,8 @@ env:
 	@echo "STATIC                   $(STATIC)"
 	@echo ---------------------------------------
 	@echo "BPF_VCPU                 $(BPF_VCPU)"
-	@echo "TRACKER_EBPF_OBJ_SRC      $(TRACKER_EBPF_OBJ_SRC)"
-	@echo "TRACKER_EBPF_OBJ_HEADERS  $(TRACKER_EBPF_OBJ_HEADERS)"
+	@echo "TRACEE_EBPF_OBJ_SRC      $(TRACEE_EBPF_OBJ_SRC)"
+	@echo "TRACEE_EBPF_OBJ_HEADERS  $(TRACEE_EBPF_OBJ_HEADERS)"
 	@echo ---------------------------------------
 	@echo "GO_ARCH                  $(GO_ARCH)"
 	@echo "GO_TAGS_EBPF             $(GO_TAGS_EBPF)"
@@ -237,19 +246,18 @@ env:
 	@echo "CGO_EXT_LDFLAGS_RULES    $(CGO_EXT_LDFLAGS_RULES)"
 	@echo ---------------------------------------
 	@echo "GO_ENV_EBPF              $(GO_ENV_EBPF)"
-	@echo "GO_ENV_RULES             $(GO_ENV_RULES)"
 	@echo ---------------------------------------
-	@echo "TRACKER_SRC               $(TRACKER_SRC)"
-	@echo "TRACKER_SRC_DIRS          $(TRACKER_SRC_DIRS)"
+	@echo "TRACEE_SRC               $(TRACEE_SRC)"
+	@echo "TRACEE_SRC_DIRS          $(TRACEE_SRC_DIRS)"
 	@echo ---------------------------------------
-	@echo "TRACKER_RULES_SRC_DIRS    $(TRACKER_RULES_SRC_DIRS)"
-	@echo "TRACKER_RULES_SRC         $(TRACKER_RULES_SRC)"
+	@echo "TRACEE_RULES_SRC_DIRS    $(TRACEE_RULES_SRC_DIRS)"
+	@echo "TRACEE_RULES_SRC         $(TRACEE_RULES_SRC)"
 	@echo ---------------------------------------
-	@echo "TRACKER_BENCH_SRC_DIRS    $(TRACKER_BENCH_SRC_DIRS)"
-	@echo "TRACKER_BENCH_SRC         $(TRACKER_BENCH_SRC)"
+	@echo "TRACEE_BENCH_SRC_DIRS    $(TRACEE_BENCH_SRC_DIRS)"
+	@echo "TRACEE_BENCH_SRC         $(TRACEE_BENCH_SRC)"
 	@echo ---------------------------------------
-	@echo "TRACKER_GPTDOCS_SRC_DIRS  $(TRACKER_GPTDOCS_SRC_DIRS)"
-	@echo "TRACKER_GPTDOCS_SRC       $(TRACKER_GPTDOCS_SRC)"
+	@echo "TRACEE_GPTDOCS_SRC_DIRS  $(TRACEE_GPTDOCS_SRC_DIRS)"
+	@echo "TRACEE_GPTDOCS_SRC       $(TRACEE_GPTDOCS_SRC)"
 	@echo ---------------------------------------
 	@echo "GOSIGNATURES_DIR         $(GOSIGNATURES_DIR)"
 	@echo "GOSIGNATURES_SRC         $(GOSIGNATURES_SRC)"
@@ -262,7 +270,7 @@ env:
 	@echo "E2E_INST_DIR             $(E2E_INST_DIR)"
 	@echo "E2E_INST_SRC             $(E2E_INST_SRC)"
 	@echo ---------------------------------------
-	@echo "TRACKER_PROTOS            $(TRACKER_PROTOS)"
+	@echo "TRACEE_PROTOS            $(TRACEE_PROTOS)"
 	@echo ---------------------------------------
 
 #
@@ -278,35 +286,35 @@ help:
 	@echo ""
 	@echo "# build"
 	@echo ""
-	@echo "    $$ make all                      # build tracker-ebpf, tracker-rules & signatures"
-	@echo "    $$ make bpf                      # build ./dist/tracker.bpf.o"
-	@echo "    $$ make tracker-ebpf              # build ./dist/tracker-ebpf"
-	@echo "    $$ make tracker-rules             # build ./dist/tracker-rules"
-	@echo "    $$ make tracker-bench             # build ./dist/tracker-bench"
-	@echo "    $$ make tracker-gptdocs           # build ./dist/tracker-gptdocs"
+	@echo "    $$ make all                      # build tracee-ebpf, tracee-rules & signatures"
+	@echo "    $$ make bpf                      # build ./dist/tracee.bpf.o"
+	@echo "    $$ make tracee-ebpf              # build ./dist/tracee-ebpf"
+	@echo "    $$ make tracee-rules             # build ./dist/tracee-rules"
+	@echo "    $$ make tracee-bench             # build ./dist/tracee-bench"
+	@echo "    $$ make tracee-gptdocs           # build ./dist/tracee-gptdocs"
 	@echo "    $$ make signatures               # build ./dist/signatures"
 	@echo "    $$ make e2e-net-signatures       # build ./dist/e2e-net-signatures"
 	@echo "    $$ make e2e-inst-signatures      # build ./dist/e2e-inst-signatures"
-	@echo "    $$ make tracker                   # build ./dist/tracker"
-	@echo "    $$ make tracker-operator          # build ./dist/tracker-operator"
+	@echo "    $$ make tracee                   # build ./dist/tracee"
+	@echo "    $$ make tracee-operator          # build ./dist/tracee-operator"
 	@echo ""
 	@echo "# clean"
 	@echo ""
 	@echo "    $$ make clean                    # wipe ./dist/"
-	@echo "    $$ make clean-bpf                # wipe ./dist/tracker.bpf.o"
-	@echo "    $$ make clean-tracker-ebpf        # wipe ./dist/tracker-ebpf"
-	@echo "    $$ make clean-tracker-rules       # wipe ./dist/tracker-rules"
-	@echo "    $$ make clean-tracker-bench       # wipe ./dist/tracker-bench"
+	@echo "    $$ make clean-bpf                # wipe ./dist/tracee.bpf.o"
+	@echo "    $$ make clean-tracee-ebpf        # wipe ./dist/tracee-ebpf"
+	@echo "    $$ make clean-tracee-rules       # wipe ./dist/tracee-rules"
+	@echo "    $$ make clean-tracee-bench       # wipe ./dist/tracee-bench"
 	@echo "    $$ make clean-signatures         # wipe ./dist/signatures"
-	@echo "    $$ make clean-tracker             # wipe ./dist/tracker"
-	@echo "    $$ make clean-tracker-operator    # wipe ./dist/tracker-operator"
+	@echo "    $$ make clean-tracee             # wipe ./dist/tracee"
+	@echo "    $$ make clean-tracee-operator    # wipe ./dist/tracee-operator"
 	@echo ""
 	@echo "# test"
 	@echo ""
 	@echo "    $$ make test-unit                # run unit tests"
 	@echo "    $$ make test-types               # run unit tests for types module"
 	@echo "    $$ make test-integration         # run integration tests"
-	@echo "    $$ make test-signatures          # opa test (tracker-rules)"
+	@echo "    $$ make test-signatures          # opa test (tracee-rules)"
 	@echo ""
 	@echo "# flags"
 	@echo ""
@@ -349,6 +357,7 @@ $(OUTPUT_DIR)/btfhub:
 LIBBPF_CFLAGS = "-fPIC"
 LIBBPF_LDFLAGS =
 LIBBPF_SRC = ./3rdparty/libbpf/src
+LIBBPF_INCLUDE_UAPI = $(abspath ./3rdparty/libbpf/include/uapi)
 LIBBPF_DESTDIR = $(OUTPUT_DIR)/libbpf
 LIBBPF_OBJDIR = $(LIBBPF_DESTDIR)/obj
 LIBBPF_OBJ = $(LIBBPF_OBJDIR)/libbpf.a
@@ -370,6 +379,27 @@ $(LIBBPF_OBJ): \
 		INCLUDEDIR= UAPIDIR= prefix= libdir= \
 		install install_uapi_headers
 
+.ONESHELL:
+.eval_goenv: $(LIBBPF_OBJ)
+#
+	@{
+ifeq ($(STATIC), 1)
+		$(eval GO_TAGS_EBPF := $(GO_TAGS_EBPF),netgo)
+		$(eval CGO_EXT_LDFLAGS_EBPF := $(CGO_EXT_LDFLAGS_EBPF) -static)
+		$(eval PKG_CONFIG_FLAG := --static)
+endif
+		$(eval GO_ENV_EBPF = )
+		$(eval GO_ENV_EBPF += GOOS=linux)
+		$(eval GO_ENV_EBPF += CC=$(CMD_CLANG))
+		$(eval GO_ENV_EBPF += GOARCH=$(GO_ARCH))
+		$(eval GO_ENV_EBPF += CGO_CFLAGS=$(CUSTOM_CGO_CFLAGS))
+		$(eval CUSTOM_CGO_LDFLAGS := "$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) $(CMD_PKGCONFIG) $(PKG_CONFIG_FLAG) --libs $(LIB_BPF))")
+		$(eval GO_ENV_EBPF := $(GO_ENV_EBPF) CGO_LDFLAGS=$(CUSTOM_CGO_LDFLAGS))
+		export GO_ENV_EBPF=$(GO_ENV_EBPF)
+		echo 'GO_ENV_EBPF := $(GO_ENV_EBPF)' > $(GOENV_MK)
+		$(CMD_TOUCH) $@
+	}
+
 $(LIBBPF_SRC): \
 	| .check_$(CMD_GIT)
 #
@@ -381,16 +411,16 @@ endif
 # ebpf object
 #
 
-TRACKER_EBPF_OBJ_SRC = ./pkg/ebpf/c/tracker.bpf.c
-TRACKER_EBPF_OBJ_HEADERS = $(shell find pkg/ebpf/c -name *.h)
+TRACEE_EBPF_OBJ_SRC = ./pkg/ebpf/c/tracee.bpf.c
+TRACEE_EBPF_OBJ_HEADERS = $(shell find pkg/ebpf/c -name *.h)
 
 .PHONY: bpf
-bpf: $(OUTPUT_DIR)/tracker.bpf.o
+bpf: $(OUTPUT_DIR)/tracee.bpf.o
 
-$(OUTPUT_DIR)/tracker.bpf.o: \
+$(OUTPUT_DIR)/tracee.bpf.o: \
 	$(LIBBPF_OBJ) \
-	$(TRACKER_EBPF_OBJ_SRC) \
-	$(TRACKER_EBPF_OBJ_HEADERS)
+	$(TRACEE_EBPF_OBJ_SRC) \
+	$(TRACEE_EBPF_OBJ_HEADERS)
 #
 	$(CMD_CLANG) \
 		-D__TARGET_ARCH_$(LINUX_ARCH) \
@@ -402,42 +432,28 @@ $(OUTPUT_DIR)/tracker.bpf.o: \
 		-target bpf \
 		-O2 -g \
 		-mcpu=$(BPF_VCPU) \
-		-c $(TRACKER_EBPF_OBJ_SRC) \
+		-c $(TRACEE_EBPF_OBJ_SRC) \
 		-o $@
 
 .PHONY: clean-bpf
 clean-bpf:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker.bpf.o
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee.bpf.o
 
 #
 # common variables
 #
 
 STATIC ?= 0
-TRACKER_SRC_DIRS = ./cmd/ ./pkg/ ./signatures/
-TRACKER_SRC = $(shell find $(TRACKER_SRC_DIRS) -type f -name '*.go' ! -name '*_test.go')
+TRACEE_SRC_DIRS = ./cmd/ ./pkg/ ./signatures/
+TRACEE_SRC = $(shell find $(TRACEE_SRC_DIRS) -type f -name '*.go' ! -name '*_test.go')
 GO_TAGS_EBPF = core,ebpf
 CGO_EXT_LDFLAGS_EBPF =
-CUSTOM_CGO_CFLAGS = "-I$(abspath $(OUTPUT_DIR)/libbpf)"
+CUSTOM_CGO_CFLAGS = "-I$(abspath $(OUTPUT_DIR)/libbpf) -I$(LIBBPF_INCLUDE_UAPI)"
 PKG_CONFIG_PATH = $(LIBBPF_OBJDIR)
 PKG_CONFIG_FLAG =
 
-ifeq ($(STATIC), 1)
-    GO_TAGS_EBPF := $(GO_TAGS_EBPF),netgo
-    CGO_EXT_LDFLAGS_EBPF += -static
-    PKG_CONFIG_FLAG = --static
-endif
-
-CUSTOM_CGO_LDFLAGS = "$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) $(CMD_PKGCONFIG) $(PKG_CONFIG_FLAG) --libs $(LIB_BPF))"
-GO_ENV_EBPF =
-GO_ENV_EBPF += GOOS=linux
-GO_ENV_EBPF += CC=$(CMD_CLANG)
-GO_ENV_EBPF += GOARCH=$(GO_ARCH)
-GO_ENV_EBPF += CGO_CFLAGS=$(CUSTOM_CGO_CFLAGS)
-GO_ENV_EBPF += CGO_LDFLAGS=$(CUSTOM_CGO_LDFLAGS)
-
-TRACKER_PROTOS = ./api/v1beta1/*.proto
+TRACEE_PROTOS = ./api/v1beta1/*.proto
 
 #
 # btfhub (expensive: only run if ebpf obj changed)
@@ -447,7 +463,7 @@ SH_BTFHUB = ./3rdparty/btfhub.sh
 
 .PHONY: btfhub
 btfhub: \
-	$(OUTPUT_DIR)/tracker.bpf.o \
+	$(OUTPUT_DIR)/tracee.bpf.o \
 	| .check_$(CMD_MD5)
 #
 ifeq ($(BTFHUB), 1)
@@ -463,16 +479,17 @@ ifeq ($(BTFHUB), 1)
 endif
 
 #
-# tracker (single binary)
+# tracee (single binary)
 #
 
-.PHONY: tracker
-tracker: $(OUTPUT_DIR)/tracker
+.PHONY: tracee
+tracee: $(OUTPUT_DIR)/tracee
 
-$(OUTPUT_DIR)/tracker: \
-	$(OUTPUT_DIR)/tracker.bpf.o \
-	$(TRACKER_SRC) \
-	| .checkver_$(CMD_GO) \
+$(OUTPUT_DIR)/tracee: \
+	$(OUTPUT_DIR)/tracee.bpf.o \
+	$(TRACEE_SRC) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
 	btfhub \
 	signatures
@@ -483,28 +500,29 @@ $(OUTPUT_DIR)/tracker: \
 		-tags $(GO_TAGS_EBPF) \
 		-ldflags="$(GO_DEBUG_FLAG) \
 			-extldflags \"$(CGO_EXT_LDFLAGS_EBPF)\" \
-			-X github.com/khulnasoft/tracker/pkg/version.version=$(VERSION) \
+			-X github.com/aquasecurity/tracee/pkg/version.version=$(VERSION) \
 			" \
 		-v -o $@ \
-		./cmd/tracker
+		./cmd/tracee
 
-.PHONY: clean-tracker
-clean-tracker:
+.PHONY: clean-tracee
+clean-tracee:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee
 	$(CMD_RM) -rf .*.md5
 
 #
-# tracker-ebpf (deprecated)
+# tracee-ebpf (deprecated)
 #
 
-.PHONY: tracker-ebpf
-tracker-ebpf: $(OUTPUT_DIR)/tracker-ebpf
+.PHONY: tracee-ebpf
+tracee-ebpf: $(OUTPUT_DIR)/tracee-ebpf
 
-$(OUTPUT_DIR)/tracker-ebpf: \
-	$(OUTPUT_DIR)/tracker.bpf.o \
-	$(TRACKER_SRC) \
-	| .checkver_$(CMD_GO) \
+$(OUTPUT_DIR)/tracee-ebpf: \
+	$(OUTPUT_DIR)/tracee.bpf.o \
+	$(TRACEE_SRC) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.checklib_$(LIB_BPF) \
 	btfhub
 #
@@ -517,58 +535,43 @@ $(OUTPUT_DIR)/tracker-ebpf: \
 			-X main.version=\"$(VERSION)\" \
 			" \
 		-v -o $@ \
-		./cmd/tracker-ebpf
+		./cmd/tracee-ebpf
 
-.PHONY: clean-tracker-ebpf
-clean-tracker-ebpf:
+.PHONY: clean-tracee-ebpf
+clean-tracee-ebpf:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-ebpf
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-ebpf
 	$(CMD_RM) -rf .*.md5
 
 #
-# tracker-rules (deprecated)
+# tracee-rules (deprecated)
 #
 
-STATIC ?= 0
-GO_TAGS_RULES =
-CGO_EXT_LDFLAGS_RULES =
+TRACEE_RULES_SRC_DIRS = ./cmd/tracee-rules/ ./pkg/signatures/
+TRACEE_RULES_SRC=$(shell find $(TRACEE_RULES_SRC_DIRS) -type f -name '*.go')
 
-ifeq ($(STATIC), 1)
-    CGO_EXT_LDFLAGS_RULES += -static
-    GO_TAGS_RULES := netgo
-endif
+.PHONY: tracee-rules
+tracee-rules: $(OUTPUT_DIR)/tracee-rules
 
-GO_ENV_RULES =
-GO_ENV_RULES += GOOS=linux
-GO_ENV_RULES += CC=$(CMD_CLANG)
-GO_ENV_RULES += GOARCH=$(GO_ARCH)
-GO_ENV_RULES += CGO_CFLAGS=
-GO_ENV_RULES += CGO_LDFLAGS=
-
-TRACKER_RULES_SRC_DIRS = ./cmd/tracker-rules/ ./pkg/signatures/
-TRACKER_RULES_SRC=$(shell find $(TRACKER_RULES_SRC_DIRS) -type f -name '*.go')
-
-.PHONY: tracker-rules
-tracker-rules: $(OUTPUT_DIR)/tracker-rules
-
-$(OUTPUT_DIR)/tracker-rules: \
-	$(TRACKER_RULES_SRC) \
-	| .checkver_$(CMD_GO) \
+$(OUTPUT_DIR)/tracee-rules: \
+	$(TRACEE_RULES_SRC) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	$(OUTPUT_DIR) \
 	signatures
 #
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		-tags $(GO_TAGS_RULES) \
 		-ldflags="$(GO_DEBUG_FLAG) \
 			-extldflags \"$(CGO_EXT_LDFLAGS_RULES)\" \
 			" \
 		-v -o $@ \
-		./cmd/tracker-rules
+		./cmd/tracee-rules
 
-.PHONY: clean-tracker-rules
-clean-tracker-rules:
+.PHONY: clean-tracee-rules
+clean-tracee-rules:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-rules
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-rules
 
 #
 # signatures
@@ -596,12 +599,13 @@ signatures: $(OUTPUT_DIR)/signatures
 $(OUTPUT_DIR)/signatures: \
 	$(GOSIGNATURES_SRC) \
 	$(REGO_SIGNATURES_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_INSTALL) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_MKDIR) -p $@
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		--buildmode=plugin \
 		-o $@/builtin.so \
 		$(GOSIGNATURES_SRC)
@@ -617,48 +621,49 @@ clean-signatures:
 # other commands
 #
 
-# tracker-bench
+# tracee-bench
 
-TRACKER_BENCH_SRC_DIRS = ./cmd/tracker-bench/
-TRACKER_BENCH_SRC = $(shell find $(TRACKER_BENCH_SRC_DIRS) \
+TRACEE_BENCH_SRC_DIRS = ./cmd/tracee-bench/
+TRACEE_BENCH_SRC = $(shell find $(TRACEE_BENCH_SRC_DIRS) \
 			-type f \
 			-name '*.go' \
 			! -name '*_test.go' \
 			)
 
-.PHONY: tracker-bench
-tracker-bench: $(OUTPUT_DIR)/tracker-bench
+.PHONY: tracee-bench
+tracee-bench: $(OUTPUT_DIR)/tracee-bench
 
-$(OUTPUT_DIR)/tracker-bench: \
-	$(TRACKER_BENCH_SRC) \
+$(OUTPUT_DIR)/tracee-bench: \
+	$(TRACEE_BENCH_SRC) \
 	| .checkver_$(CMD_GO) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_GO) build \
 		-v -o $@ \
-		./cmd/tracker-bench
+		./cmd/tracee-bench
 
-.PHONY: clean-tracker-bench
-clean-tracker-bench:
+.PHONY: clean-tracee-bench
+clean-tracee-bench:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-bench
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-bench
 
-# tracker-gptdocs
+# tracee-gptdocs
 
-TRACKER_GPTDOCS_SRC_DIRS = ./cmd/tracker-gptdocs/ ./pkg/cmd/
-TRACKER_GPTDOCS_SRC = $(shell find $(TRACKER_GPTDOCS_SRC_DIRS) \
+TRACEE_GPTDOCS_SRC_DIRS = ./cmd/tracee-gptdocs/ ./pkg/cmd/
+TRACEE_GPTDOCS_SRC = $(shell find $(TRACEE_GPTDOCS_SRC_DIRS) \
 			-type f \
 			-name '*.go' \
 			! -name '*_test.go' \
 			)
 
-.PHONY: tracker-gptdocs
-tracker-gptdocs: $(OUTPUT_DIR)/tracker-gptdocs
+.PHONY: tracee-gptdocs
+tracee-gptdocs: $(OUTPUT_DIR)/tracee-gptdocs
 
-$(OUTPUT_DIR)/tracker-gptdocs: \
-	$(TRACKER_GPTDOCS_SRC) \
-	$(LIBBPF_OBJ) \
-	| .checkver_$(CMD_GO) \
+$(OUTPUT_DIR)/tracee-gptdocs: \
+	$(TRACEE_GPTDOCS_SRC) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
+	.checklib_$(LIB_BPF) \
 	$(OUTPUT_DIR)
 #
 	$(MAKE) $(OUTPUT_DIR)/btfhub
@@ -670,12 +675,12 @@ $(OUTPUT_DIR)/tracker-gptdocs: \
 			-X main.version=\"$(VERSION)\" \
 			" \
 		-v -o $@ \
-		./cmd/tracker-gptdocs
+		./cmd/tracee-gptdocs
 
-.PHONY: clean-tracker-gptdocs
-clean-tracker-gptdocs:
+.PHONY: clean-tracee-gptdocs
+clean-tracee-gptdocs:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-gptdocs
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-gptdocs
 
 #
 # functional tests (using test signatures)
@@ -695,12 +700,13 @@ e2e-net-signatures: $(OUTPUT_DIR)/e2e-net-signatures
 
 $(OUTPUT_DIR)/e2e-net-signatures: \
 	$(E2E_NET_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_INSTALL) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_MKDIR) -p $@
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		--buildmode=plugin \
 		-o $@/builtin.so \
 		$(E2E_NET_SRC)
@@ -726,12 +732,13 @@ e2e-inst-signatures: $(OUTPUT_DIR)/e2e-inst-signatures
 
 $(OUTPUT_DIR)/e2e-inst-signatures: \
 	$(E2E_INST_SRC) \
-	| .checkver_$(CMD_GO) \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_INSTALL) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_MKDIR) -p $@
-	$(GO_ENV_RULES) $(CMD_GO) build \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		--buildmode=plugin \
 		-o $@/builtin.so \
 		$(E2E_INST_SRC)
@@ -747,9 +754,10 @@ clean-e2e-inst-signatures:
 
 .PHONY: test-unit
 test-unit: \
-	tracker-ebpf \
+	tracee-ebpf \
 	test-types \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) test \
@@ -782,8 +790,8 @@ test-types: \
 
 .PHONY: $(OUTPUT_DIR)/syscaller
 $(OUTPUT_DIR)/syscaller: \
-	$(LIBBPF_OBJ) \
-	| .check_$(CMD_GO)
+	| .eval_goenv \
+	.check_$(CMD_GO) \
 #
 	$(GO_ENV_EBPF) \
 	$(CMD_GO) build -o $(OUTPUT_DIR)/syscaller ./tests/integration/syscaller/cmd
@@ -791,8 +799,9 @@ $(OUTPUT_DIR)/syscaller: \
 .PHONY: test-integration
 test-integration: \
 	$(OUTPUT_DIR)/syscaller \
-	tracker \
-	| .checkver_$(CMD_GO)
+	tracee \
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) test \
@@ -816,7 +825,8 @@ test-signatures: \
 
 .PHONY: test-upstream-libbpfgo
 test-upstream-libbpfgo: \
-	| .checkver_$(CMD_GO)
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	./tests/libbpfgo.sh $(GO_ENV_EBPF)
 
@@ -826,8 +836,9 @@ test-upstream-libbpfgo: \
 
 .PHONY: test-performance
 test-performance: \
-	tracker \
-	| .checkver_$(CMD_GO)
+	tracee \
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) test \
@@ -864,15 +875,16 @@ check-lint::
 
 .PHONY: check-code
 check-code:: \
-	tracker-ebpf
+	tracee-ebpf
 #
 	@$(MAKE) -f builder/Makefile.checkers code-check
 
 
 .PHONY: check-vet
 check-vet: \
-	tracker-ebpf \
-	| .checkver_$(CMD_GO)
+	tracee-ebpf \
+	| .eval_goenv \
+	.checkver_$(CMD_GO)
 #
 	@$(GO_ENV_EBPF) \
 	$(CMD_GO) vet \
@@ -881,8 +893,9 @@ check-vet: \
 
 .PHONY: check-staticcheck
 check-staticcheck: \
-	tracker-ebpf \
-	| .checkver_$(CMD_GO) \
+	tracee-ebpf \
+	| .eval_goenv \
+	.checkver_$(CMD_GO) \
 	.check_$(CMD_STATICCHECK)
 #
 	@$(GO_ENV_EBPF) \
@@ -892,7 +905,7 @@ check-staticcheck: \
 
 .PHONY: check-err
 check-err: \
-	tracker-ebpf \
+	tracee-ebpf \
 	| .checkver_$(CMD_GO) \
 	.check_$(CMD_ERRCHECK)
 #
@@ -952,7 +965,7 @@ check-pr: \
 	format-pr
 
 #
-# tracker.proto
+# tracee.proto
 #
 
 .PHONY: protoc
@@ -963,35 +976,46 @@ protoc:
 		--go_opt=paths=source_relative \
 		--go-json_out=orig_name=true,paths=source_relative:. \
 		--go-grpc_out=. \
-		--go-grpc_opt=paths=source_relative $(TRACKER_PROTOS)
+		--go-grpc_opt=paths=source_relative $(TRACEE_PROTOS)
 
 #
 # man pages
 #
 
-MARKDOWN_DIR ?= ./docs/docs/flags
-MAN_DIR ?= ./docs/man
+MARKDOWN_DIR ?= docs/docs/flags
+MAN_DIR ?= docs/man
+OUTPUT_MAN_DIR := $(OUTPUT_DIR)/$(MAN_DIR)
 MARKDOW_FILES := $(shell find $(MARKDOWN_DIR) \
 					-type f \
 					-name '*.md' \
 				)
 MAN_FILES := $(patsubst $(MARKDOWN_DIR)/%.md,$(MAN_DIR)/%,$(MARKDOW_FILES))
 
+$(OUTPUT_MAN_DIR): \
+	| .check_$(CMD_MKDIR)
+#
+	$(CMD_MKDIR) -p $@
+
 $(MAN_DIR)/%: $(MARKDOWN_DIR)/%.md \
 	| .check_$(CMD_PANDOC) \
+	$(OUTPUT_MAN_DIR)
 #
-	@echo Generating $@
-	@$(CMD_PANDOC) \
+	@echo Generating $@ && \
+	$(CMD_PANDOC) \
 		--verbose \
 		--standalone \
 		--to man \
 		$< \
-		-o $@
+		-o $@ && \
+	echo Copying $@ to $(OUTPUT_MAN_DIR) && \
+	cp $@ $(OUTPUT_MAN_DIR)
 
 .PHONY: clean-man
 clean-man:
-	@echo Cleaning $(MAN_DIR)
-	@rm -f $(MAN_DIR)/*
+	@echo Cleaning $(MAN_DIR) && \
+	rm -f $(MAN_DIR)/* && \
+	echo Cleaning $(OUTPUT_MAN_DIR) && \
+	rm -rf $(OUTPUT_MAN_DIR)
 
 .PHONY: man
 man: clean-man $(MAN_FILES)
@@ -1002,36 +1026,39 @@ man: clean-man $(MAN_FILES)
 #
 
 .PHONY: clean
+.ONESHELL:
 clean:
 #
 	$(CMD_RM) -rf $(OUTPUT_DIR)
+	$(CMD_RM) -f $(GOENV_MK)
 	$(CMD_RM) -f .*.md5
 	$(CMD_RM) -f .check*
+	$(CMD_RM) -f .eval_*
 	$(CMD_RM) -f .*-pkgs*
 
-# tracker-operator
+# tracee-operator
 
-.PHONY: tracker-operator
-tracker-operator: $(OUTPUT_DIR)/tracker-operator
+.PHONY: tracee-operator
+tracee-operator: $(OUTPUT_DIR)/tracee-operator
 
-$(OUTPUT_DIR)/tracker-operator: \
+$(OUTPUT_DIR)/tracee-operator: \
 	| .checkver_$(CMD_GO) \
 	$(OUTPUT_DIR)
 #
 	$(CMD_GO) build \
 		-v -o $@ \
-		./cmd/tracker-operator
+		./cmd/tracee-operator
 
-.PHONY: clean-tracker-operator
-clean-tracker-operator:
+.PHONY: clean-tracee-operator
+clean-tracee-operator:
 #
-	$(CMD_RM) -rf $(OUTPUT_DIR)/tracker-operator
+	$(CMD_RM) -rf $(OUTPUT_DIR)/tracee-operator
 
 # kubernetes operator
 
 .PHONY: k8s-manifests
 k8s-manifests: ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CMD_CONTROLLER_GEN) rbac:roleName=tracker crd webhook paths="./pkg/k8s/..." output:crd:artifacts:config=deploy/helm/tracker/crds output:rbac:artifacts:config=deploy/helm/tracker/templates/
+	$(CMD_CONTROLLER_GEN) rbac:roleName=tracee crd webhook paths="./pkg/k8s/..." output:crd:artifacts:config=deploy/helm/tracee/crds output:rbac:artifacts:config=deploy/helm/tracee/templates/
 
 .PHONY: k8s-generate
 k8s-generate: ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.

@@ -3,25 +3,26 @@ package urfave
 import (
 	cli "github.com/urfave/cli/v2"
 
-	"github.com/khulnasoft/tracker/pkg/cmd"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/cmd/printer"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/pkg/cmd"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags/server"
+	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
+	"github.com/aquasecurity/tracee/pkg/cmd/printer"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
-func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
+func GetTraceeRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	var runner cmd.Runner
 
-	// Initialize a tracker config structure
+	// Initialize a tracee config structure
 	cfg := config.Config{
-		PerfBufferSize:     c.Int("perf-buffer-size"),
-		BlobPerfBufferSize: c.Int("blob-perf-buffer-size"),
-		NoContainersEnrich: c.Bool("no-containers"),
+		PerfBufferSize:      c.Int("perf-buffer-size"),
+		BlobPerfBufferSize:  c.Int("blob-perf-buffer-size"),
+		PipelineChannelSize: c.Int("pipeline-channel-size"),
+		NoContainersEnrich:  c.Bool("no-containers"),
 	}
 
 	// Output command line flags
@@ -29,12 +30,12 @@ func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	var err error
 	var output flags.PrepareOutputResult
 
-	output, err = flags.TrackerEbpfPrepareOutput(c.StringSlice("output"), false)
+	output, err = flags.TraceeEbpfPrepareOutput(c.StringSlice("output"), false)
 
 	if err != nil {
 		return runner, err
 	}
-	cfg.Output = output.TrackerConfig
+	cfg.Output = output.TraceeConfig
 
 	// Log command line flags
 
@@ -175,8 +176,8 @@ func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 
 	// Decide BTF & BPF files to use (based in the kconfig, release & environment info)
 
-	trackerInstallPath := c.String("install-path")
-	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, trackerInstallPath, version)
+	traceeInstallPath := c.String("install-path")
+	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, traceeInstallPath, version)
 	if err != nil {
 		return runner, errfmt.Errorf("failed preparing BPF object: %v", err)
 	}
@@ -194,9 +195,9 @@ func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	}
 
 	runner.HTTPServer = httpServer
-	runner.TrackerConfig = cfg
+	runner.TraceeConfig = cfg
 	runner.Printer = broadcast
-	runner.InstallPath = trackerInstallPath
+	runner.InstallPath = traceeInstallPath
 
 	return runner, nil
 }

@@ -7,18 +7,18 @@ Custom data sources are currently supported through the plugin mechanism.
     you consider all the problems that emerge from using it:
 
     1. **Can't use different go versions** (need to compile the go plugin
-        with the exact same version that was used to build Tracker).
+        with the exact same version that was used to build Tracee).
 
-    2. Both Tracker and your golang plugin data source must be built with the
+    2. Both Tracee and your golang plugin data source must be built with the
         **exact same GOPATH** or you will get a "plugin was built with a
         different version of package XXX" error.
 
     3. Any **dependency** you have in your plugin should be of the **same
-        version** with the dependencies of Tracker.
+        version** with the dependencies of Tracee.
 
-    4. Compiling tracker statically is sometimes useful to have a **complete
+    4. Compiling tracee statically is sometimes useful to have a **complete
         portable eBPF tracing/detection solution**. One good example when
-        statically compiling tracker is a good idea is to have a single
+        statically compiling tracee is a good idea is to have a single
         binary capable of running in GLIBC (most of them) and MUSL (Alpine)
         powered Linux distros.
 
@@ -29,7 +29,7 @@ Custom data sources are currently supported through the plugin mechanism.
 
 There are two main reasons to write your own data source:
 
-1. To provide a stable "tracker-native" querying API for some externally owned data you need in a signature (for example some DB access)
+1. To provide a stable "tracee-native" querying API for some externally owned data you need in a signature (for example some DB access)
 1. To provide an externally writable and internally readable data source in a data source (for example configuration)
 
 An example for an implementation of the latter is given [here](./write.md).

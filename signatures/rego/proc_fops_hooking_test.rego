@@ -1,7 +1,7 @@
-package tracker.TRC_16
+package tracee.TRC_16
 
 test_match_rootkit_output {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "hooked_proc_fops",
 		"argsNum": 1,
 		"args": [{
@@ -12,7 +12,7 @@ test_match_rootkit_output {
 }
 
 test_match_empty_array {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "hooked_proc_fops",
 		"argsNum": 1,
 		"args": [{

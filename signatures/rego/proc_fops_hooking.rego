@@ -1,6 +1,6 @@
-package tracker.TRC_16
+package tracee.TRC_16
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-16",
@@ -16,17 +16,17 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracker",
+	"source": "tracee",
 	"name": "hooked_proc_fops",
 }]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match = res {
+tracee_match = res {
 	input.eventName == "hooked_proc_fops"
-	hooked_proc_fops_arr := helpers.get_tracker_argument("hooked_fops_pointers")
+	hooked_proc_fops_arr := helpers.get_tracee_argument("hooked_fops_pointers")
 	c := count(hooked_proc_fops_arr)
 	c > 0
 	res := {"hooked file_operations": hooked_proc_fops_arr}

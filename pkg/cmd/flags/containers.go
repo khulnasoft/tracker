@@ -3,16 +3,16 @@ package flags
 import (
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/containers/runtime"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
 )
 
 func containersHelp() string {
 	return `Select which container runtimes to connect to for container events enrichment.
-By default, if no flag is passed, tracker will automatically detect installed runtimes by going through known runtime socket paths.
+By default, if no flag is passed, tracee will automatically detect installed runtimes by going through known runtime socket paths.
 
-Tracker will look for the following paths:
+Tracee will look for the following paths:
 1. Docker:     /var/run/docker.sock
 2. Containerd: /var/run/containerd/containerd.sock
 3. CRI-O:      /var/run/crio/crio.sock

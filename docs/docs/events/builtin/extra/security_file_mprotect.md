@@ -9,7 +9,7 @@ The event marks an attempt to change the access protection of some memory region
 The event is triggered by the permissions check for the operation, as LSM hook.
 The event gives insight on the new access protection, as well as information on the memory addresses the attempt
 operation is on.
-This is a useful event to tracker memory protection changes originated by a user.
+This is a useful event to tracee memory protection changes originated by a user.
 Notice that the change of protection is applied to the pages containing the address range given, not only for given
 range.
 

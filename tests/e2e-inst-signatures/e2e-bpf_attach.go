@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eBpfAttach struct {
 	cb detect.SignatureHandler
+}
+
+var e2eBpfAttachMetadata = detect.SignatureMetadata{
+	ID:          "BPF_ATTACH",
+	EventName:   "BPF_ATTACH",
+	Version:     "0.1.0",
+	Name:        "Bpf Attach Test",
+	Description: "Instrumentation events E2E Tests: Bpf Attach",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eBpfAttach) Init(ctx detect.SignatureContext) error {
@@ -19,19 +28,12 @@ func (sig *e2eBpfAttach) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eBpfAttach) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "BPF_ATTACH",
-		EventName:   "BPF_ATTACH",
-		Version:     "0.1.0",
-		Name:        "Bpf Attach Test",
-		Description: "Instrumentation events E2E Tests: Bpf Attach",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eBpfAttachMetadata, nil
 }
 
 func (sig *e2eBpfAttach) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "bpf_attach"},
+		{Source: "tracee", Name: "bpf_attach"},
 	}, nil
 }
 
@@ -43,12 +45,12 @@ func (sig *e2eBpfAttach) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "bpf_attach":
-		symbolName, err := helpers.GetTrackerStringArgumentByName(eventObj, "symbol_name")
+		symbolName, err := helpers.GetTraceeStringArgumentByName(eventObj, "symbol_name")
 		if err != nil {
 			return err
 		}
 
-		attachType, err := helpers.GetTrackerStringArgumentByName(eventObj, "attach_type")
+		attachType, err := helpers.GetTraceeStringArgumentByName(eventObj, "attach_type")
 		if err != nil {
 			return err
 		}

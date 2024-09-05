@@ -17,7 +17,7 @@ Detection of syscall hooking.
 The `hooked_syscall` event could be used as part of a broader system integrity monitoring solution. For example, a security engineer could use it to raise alerts or run further investigations if unexpected syscall hooking activities are detected. This could aid in the early detection and mitigation of malware or rootkit infections.
 
 ```console
-tracker -e hooked_syscall
+tracee -e hooked_syscall
 ```
 
 ## Issues

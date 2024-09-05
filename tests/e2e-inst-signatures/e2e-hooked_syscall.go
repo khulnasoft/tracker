@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eHookedSyscall struct {
 	cb detect.SignatureHandler
+}
+
+var e2eHookedSyscallMetadata = detect.SignatureMetadata{
+	ID:          "HOOKED_SYSCALL",
+	EventName:   "HOOKED_SYSCALL",
+	Version:     "0.1.0",
+	Name:        "Hooked Syscall Test",
+	Description: "Instrumentation events E2E Tests: Hooked Syscall",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eHookedSyscall) Init(ctx detect.SignatureContext) error {
@@ -19,19 +28,12 @@ func (sig *e2eHookedSyscall) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eHookedSyscall) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "HOOKED_SYSCALL",
-		EventName:   "HOOKED_SYSCALL",
-		Version:     "0.1.0",
-		Name:        "Hooked Syscall Test",
-		Description: "Instrumentation events E2E Tests: Hooked Syscall",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eHookedSyscallMetadata, nil
 }
 
 func (sig *e2eHookedSyscall) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "hooked_syscall"},
+		{Source: "tracee", Name: "hooked_syscall"},
 	}, nil
 }
 
@@ -43,11 +45,11 @@ func (sig *e2eHookedSyscall) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "hooked_syscall":
-		syscall, err := helpers.GetTrackerStringArgumentByName(eventObj, "syscall")
+		syscall, err := helpers.GetTraceeStringArgumentByName(eventObj, "syscall")
 		if err != nil {
 			return err
 		}
-		owner, err := helpers.GetTrackerStringArgumentByName(eventObj, "owner")
+		owner, err := helpers.GetTraceeStringArgumentByName(eventObj, "owner")
 		if err != nil {
 			return err
 		}

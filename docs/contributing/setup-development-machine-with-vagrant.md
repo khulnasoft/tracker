@@ -4,7 +4,7 @@
 all software requirements, packages, operating system configuration, and users
 to provide the same development environment for everyone.
 
-The [Vagrantfile] describes the type of machine required to build Tracker from
+The [Vagrantfile] describes the type of machine required to build Tracee from
 source and follow the [Getting Started](../index.md) guides. This allows
 developers involved in the project to check out the code, run `vagrant up`, and
 be on their way.
@@ -18,11 +18,11 @@ machine or [Parallels] on an arm64 M1 (Darwin) machine.
 
 ## Create Development Machine
 
-Clone and change directory to Tracker Git repository:
+Clone and change directory to Tracee Git repository:
 
 ```console
-git clone --branch {{ git.tag }} https://github.com/khulnasoft/tracker.git
-cd tracker
+git clone --branch {{ git.tag }} https://github.com/aquasecurity/tracee.git
+cd tracee
 ```
 
 Create and configure development machine according to the `Vagrantfile`:
@@ -51,9 +51,9 @@ vagrant@ubuntu-jammy:/vagrant$
 Synced folders enable Vagrant to sync a folder on the host machine to the
 development machine, allowing you to continue working on your project's files
 on your host machine, but use the resources in the development machine to
-compile or run Tracker.
+compile or run Tracee.
 
-By default, Vagrant will share Tracker project directory (the directory with the
+By default, Vagrant will share Tracee project directory (the directory with the
 `Vagrantfile`) to `/vagrant`. To get started list files:
 
 ```console
@@ -90,12 +90,12 @@ drwxr-xr-x 1 vagrant vagrant   4096 Mar 24 15:44 tests
 drwxr-xr-x 1 vagrant vagrant   4096 Mar 22 23:43 types
 ```
 
-As you can see the `/vagrant` directory contains source code of Tracker cloned
+As you can see the `/vagrant` directory contains source code of Tracee cloned
 from GitHub.
 
-## Build and Run Tracker
+## Build and Run Tracee
 
-To build **tracker** executable binary, run the
+To build **tracee** executable binary, run the
 default make target:
 
 ```console
@@ -113,14 +113,14 @@ total 161096
 drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:06 btfhub
 drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:06 libbpf
 drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:08 signatures
--rwxr-xr-x 1 vagrant vagrant 62619312 Mar 29 19:08 tracker
--rw-r--r-- 1 vagrant vagrant 10753624 Mar 29 19:06 tracker.bpf.o
+-rwxr-xr-x 1 vagrant vagrant 62619312 Mar 29 19:08 tracee
+-rw-r--r-- 1 vagrant vagrant 10753624 Mar 29 19:06 tracee.bpf.o
 ```
 
-You can now run Tracker and see events printed to the standard output in a tabular format:
+You can now run Tracee and see events printed to the standard output in a tabular format:
 
 ```console
-sudo ./dist/tracker
+sudo ./dist/tracee
 ```
 
 ```text
@@ -152,7 +152,7 @@ Vagrant.configure("2") do |config|
 ...
 ```
 
-Sometimes you may want to test Tracker with a non CO-RE distribution. You can do
+Sometimes you may want to test Tracee with a non CO-RE distribution. You can do
 that by editing the Vagrantfile and modifying the `config.vm.box` property. For
 example, you can switch to Ubuntu Linux 20.04 Focal Fossa as follows:
 
@@ -178,9 +178,9 @@ vagrant up
     non CO-RE kernels, make sure to use an older kernel that does not provide
     the `/sys/kernel/btf/vmlinux` file.
 
-## Deploy Tracker with Postee on Kubernetes
+## Deploy Tracee with Postee on Kubernetes
 
-The development machine described by Vagrantfile pre-installs [MicroK8s] Kubernetes cluster, which is suitable for testing Tracker.
+The development machine described by Vagrantfile pre-installs [MicroK8s] Kubernetes cluster, which is suitable for testing Tracee.
 
 ```console
 microk8s status
@@ -206,28 +206,28 @@ NAME           STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-
 ubuntu-jammy   Ready    <none>   40m   v1.26.1   10.0.2.15     <none>        Ubuntu 22.04.2 LTS   5.15.0-69-generic   containerd://1.6.8
 ```
 
-Create a new namespace called `tracker-system`:
+Create a new namespace called `tracee-system`:
 
 ```console
-kubectl create ns tracker-system
+kubectl create ns tracee-system
 ```
 
-Create Postee Persistent Volumes and StatefulSet in the `tracker-system`
+Create Postee Persistent Volumes and StatefulSet in the `tracee-system`
 namespace:
 
 ```console
-kubectl apply -n tracker-system \
-  -f https://raw.githubusercontent.com/khulnasoft/postee/v2.2.0/deploy/kubernetes/hostPath/postee-pv.yaml \
-  -f https://raw.githubusercontent.com/khulnasoft/postee/v2.2.0/deploy/kubernetes/postee.yaml
+kubectl apply -n tracee-system \
+  -f https://raw.githubusercontent.com/aquasecurity/postee/v2.2.0/deploy/kubernetes/hostPath/postee-pv.yaml \
+  -f https://raw.githubusercontent.com/aquasecurity/postee/v2.2.0/deploy/kubernetes/postee.yaml
 ```
 
-Create Tracker DaemonSet in the `tracker-system`, configuring it to send 
+Create Tracee DaemonSet in the `tracee-system`, configuring it to send 
 detections to the standard output and send them over to Postee webhook on
 http://postee-svc:8082:
 
 ```console
-helm install tracker ./deploy/helm/tracker \
-  --namespace tracker-system \
+helm install tracee ./deploy/helm/tracee \
+  --namespace tracee-system \
   --set hostPID=true \
   --set webhook=http://postee-svc:8082
 ```
@@ -235,31 +235,31 @@ helm install tracker ./deploy/helm/tracker \
 !!! tip
     To test code that hasn't been released yet do the following:
 
-    1. Build the `tracker:latest` container image from the current Git revision:
+    1. Build the `tracee:latest` container image from the current Git revision:
        ```console
-       make -f builder/Makefile.tracker-container build-tracker
+       make -f builder/Makefile.tracee-container build-tracee
        ```
     2. Import the container image to MicroK8s registry:
        ```console
-       docker image save -o /tmp/tracker-latest.tar tracker:latest
-       microk8s ctr images import /tmp/tracker-latest.tar
-       rm /tmp/tracker-latest.tar
+       docker image save -o /tmp/tracee-latest.tar tracee:latest
+       microk8s ctr images import /tmp/tracee-latest.tar
+       rm /tmp/tracee-latest.tar
        ```
-    3. Create Tracker DaemonSet using `tracker:latest` as container image:
+    3. Create Tracee DaemonSet using `tracee:latest` as container image:
        ```console
-       kubectl apply -n tracker-system -k deploy/kubernetes/tracker
+       kubectl apply -n tracee-system -k deploy/kubernetes/tracee
        ```
 
-While Tracker pod is running, run `strace ls` command and observe detection
+While Tracee pod is running, run `strace ls` command and observe detection
 printed to the standard output.
 
 ```console
-kubectl logs -n tracker-system -f daemonset/tracker
+kubectl logs -n tracee-system -f daemonset/tracee
 ```
 
 ```text
-INFO: probing tracker capabilities...
-INFO: starting tracker...
+INFO: probing tracee capabilities...
+INFO: starting tracee...
 {"timestamp":1680119087787203746,"threadStartTime":1680119087787109775,"processorId":0,"processId":95599,"cgroupId":9789,"threadId":95599,"parentProcessId":95597,"hostProcessId":95599,"hostThreadId":95599,"hostParentProcessId":95597,"userId":1000,"mountNamespace":4026531841,"pidNamespace":4026531836,"processName":"strace","hostName":"ubuntu-jammy","containerId":"","containerImage":"","containerName":"","podName":"","podNamespace":"","podUID":"","podSandbox":false,"eventId":"6018","eventName":"Anti-Debugging detected","matchedScopes":1,"argsNum":0,"returnValue":0,"syscall":"","stackAddresses":null,"contextFlags":{"containerStarted":false,"isCompat":false},"args":[],"metadata":{"Version":"1","Description":"A process used anti-debugging techniques to block a debugger. Malware use anti-debugging to stay invisible and inhibit analysis of their behavior.","Tags":null,"Properties":{"Category":"defense-evasion","Kubernetes_Technique":"","Severity":1,"Technique":"Debugger Evasion","external_id":"T1622","id":"attack-pattern--e4dc8c01-417f-458d-9ee0-bb0617c1b391","signatureID":"TRC-102","signatureName":"Anti-Debugging detected"}}}
 ```
 
@@ -267,7 +267,7 @@ If everything is configured properly, you can find the same detection in Postee
 logs:
 
 ```console
-kubectl -n tracker-system logs -f postee-0
+kubectl -n tracee-system logs -f postee-0
 ```
 
 ```text
@@ -300,7 +300,7 @@ Kubernetes Dashboard.
     Chrome you may allow insecure TLS connections at
     [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost).
 
-## Preview Tracker Documentation
+## Preview Tracee Documentation
 
 You can run [MkDocs] server and preview documentation on your host:
 
@@ -315,7 +315,7 @@ documentation pages.
 
 [Vagrant]: https://www.vagrantup.com/docs/installation
 [HashiCorp Vagrant]: https://www.vagrantup.com
-[Vagrantfile]: https://github.com/khulnasoft/tracker/blob/{{ git.tag }}/Vagrantfile
+[Vagrantfile]: https://github.com/aquasecurity/tracee/blob/{{ git.tag }}/Vagrantfile
 [Hypervisor]: https://www.vagrantup.com/docs/providers
 [VirtualBox]: https://www.virtualbox.org
 [Parallels]: https://www.parallels.com
@@ -323,6 +323,6 @@ documentation pages.
 [MicroK8s add-ons]: https://microk8s.io/docs/addons
 [kubectl]: https://kubernetes.io/docs/tasks/tools/#kubectl
 [Kubernetes Dashboard]: https://github.com/kubernetes/dashboard
-[Postee]: https://github.com/khulnasoft/postee
+[Postee]: https://github.com/aquasecurity/postee
 [Persistent Volumes]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
 [MkDocs]: https://www.mkdocs.org

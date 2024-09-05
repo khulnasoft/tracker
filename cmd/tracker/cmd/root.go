@@ -11,12 +11,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	cmdcobra "github.com/khulnasoft/tracker/pkg/cmd/cobra"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/version"
+	cmdcobra "github.com/aquasecurity/tracee/pkg/cmd/cobra"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags/server"
+	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/version"
 )
 
 var (
@@ -24,9 +24,9 @@ var (
 	helpFlag    bool
 
 	rootCmd = &cobra.Command{
-		Use:   "tracker",
+		Use:   "tracee",
 		Short: "Trace OS events and syscalls using eBPF",
-		Long: `Tracker uses eBPF technology to tap into your system and give you
+		Long: `Tracee uses eBPF technology to tap into your system and give you
 access to hundreds of events that help you understand how your system behaves.`,
 		DisableFlagParsing: true, // in order to have fine grained control over flags parsing
 		PreRun: func(cmd *cobra.Command, args []string) {
@@ -34,7 +34,7 @@ access to hundreds of events that help you understand how your system behaves.`,
 				// parse all flags
 				if err := cmd.Flags().Parse(args); err != nil {
 					fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-					fmt.Fprintf(os.Stderr, "Run 'tracker --help' for usage.\n")
+					fmt.Fprintf(os.Stderr, "Run 'tracee --help' for usage.\n")
 					os.Exit(1)
 				}
 
@@ -52,7 +52,7 @@ access to hundreds of events that help you understand how your system behaves.`,
 			logger.Init(logger.NewDefaultLoggingConfig())
 			initialize.SetLibbpfgoCallbacks()
 
-			runner, err := cmdcobra.GetTrackerRunner(cmd, version.GetVersion())
+			runner, err := cmdcobra.GetTraceeRunner(cmd, version.GetVersion())
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 				os.Exit(1)
@@ -63,7 +63,7 @@ access to hundreds of events that help you understand how your system behaves.`,
 
 			err = runner.Run(ctx)
 			if err != nil {
-				logger.Fatalw("Tracker runner failed", "error", err)
+				logger.Fatalw("Tracee runner failed", "error", err)
 				os.Exit(1)
 			}
 		},
@@ -76,7 +76,7 @@ func initCmd() error {
 	rootCmd.SetOut(os.Stdout)
 	rootCmd.SetErr(os.Stderr)
 
-	// disable default help command (./tracker help) overriding it with an empty command
+	// disable default help command (./tracee help) overriding it with an empty command
 	rootCmd.SetHelpCommand(&cobra.Command{})
 
 	// help is not bound to viper
@@ -212,6 +212,16 @@ func initCmd() error {
 		return errfmt.WrapError(err)
 	}
 
+	rootCmd.Flags().Int(
+		"pipeline-channel-size",
+		10000,
+		"<size>\t\t\t\tSize, in event objects, of each pipeline stage's output channel",
+	)
+	err = viper.BindPFlag("pipeline-channel-size", rootCmd.Flags().Lookup("pipeline-channel-size"))
+	if err != nil {
+		return errfmt.WrapError(err)
+	}
+
 	rootCmd.Flags().StringArrayP(
 		"cache",
 		"a",
@@ -303,7 +313,7 @@ func initCmd() error {
 	rootCmd.Flags().String(
 		server.GRPCListenEndpointFlag,
 		"", // disabled by default
-		"<protocol:addr>\t\t\tListening address of the grpc server eg: tcp:4466, unix:/tmp/tracker.sock (default: disabled)",
+		"<protocol:addr>\t\t\tListening address of the grpc server eg: tcp:4466, unix:/tmp/tracee.sock (default: disabled)",
 	)
 	err = viper.BindPFlag(server.GRPCListenEndpointFlag, rootCmd.Flags().Lookup(server.GRPCListenEndpointFlag))
 	if err != nil {
@@ -316,7 +326,7 @@ func initCmd() error {
 		"capabilities",
 		"C",
 		[]string{},
-		"[bypass|add|drop]\t\t\tDefine capabilities for tracker to run with",
+		"[bypass|add|drop]\t\t\tDefine capabilities for tracee to run with",
 	)
 	err = viper.BindPFlag("capabilities", rootCmd.Flags().Lookup("capabilities"))
 	if err != nil {
@@ -325,8 +335,8 @@ func initCmd() error {
 
 	rootCmd.Flags().String(
 		"install-path",
-		"/tmp/tracker",
-		"<dir>\t\t\t\tPath where tracker will install or lookup it's resources",
+		"/tmp/tracee",
+		"<dir>\t\t\t\tPath where tracee will install or lookup it's resources",
 	)
 	err = viper.BindPFlag("install-path", rootCmd.Flags().Lookup("install-path"))
 	if err != nil {

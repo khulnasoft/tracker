@@ -51,12 +51,12 @@ const (
 
 func main() {
 	app := cli.App{
-		Name:  "tracker-bench",
-		Usage: "A prometheus based performance probe for tracker",
+		Name:  "tracee-bench",
+		Usage: "A prometheus based performance probe for tracee",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  prometheusAddressFlag,
-				Usage: "address of a prometheus instance tracking tracker",
+				Usage: "address of a prometheus instance tracking tracee",
 				Value: "http://localhost:9090",
 			},
 			&cli.IntFlag{
@@ -74,7 +74,7 @@ func main() {
 			address := ctx.String(prometheusAddressFlag)
 
 			if address == "" {
-				return fmt.Errorf("prometheus address required for tracker-er")
+				return fmt.Errorf("prometheus address required for tracee-er")
 			}
 
 			client, err := api.NewClient(api.Config{
@@ -100,14 +100,14 @@ func main() {
 				queryName string
 				query     string
 			}{
-				eventspersec: {queryName: "average ebpf_events/sec", query: "rate(tracker_ebpf_events_total[1m])"},
-				lostpersec:   {queryName: "average ebpf_lostevents/sec", query: "rate(tracker_ebpf_lostevents_total[1m])"},
-				lostoverall:  {queryName: "lost events", query: "tracker_ebpf_lostevents_total"},
+				eventspersec: {queryName: "average ebpf_events/sec", query: "rate(tracee_ebpf_events_total[1m])"},
+				lostpersec:   {queryName: "average ebpf_lostevents/sec", query: "rate(tracee_ebpf_lostevents_total[1m])"},
+				lostoverall:  {queryName: "lost events", query: "tracee_ebpf_lostevents_total"},
 			}
 
 			outputMode := OutputMode(ctx.String(outputFlag))
 			if outputMode == prettyOutput {
-				fmt.Println("===================TRACKER-ER===================")
+				fmt.Println("===================TRACEE-ER===================")
 			}
 			go func() {
 				for {

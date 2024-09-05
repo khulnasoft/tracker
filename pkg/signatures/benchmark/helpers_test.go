@@ -4,9 +4,12 @@ import (
 	_ "embed"
 	"math/rand"
 
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var (
@@ -168,6 +171,23 @@ func ProduceEventsInMemoryRandom(n int, seed ...trace.Event) engine.EventSources
 
 	close(eventsCh)
 	return engine.EventSources{
-		Tracker: eventsCh,
+		Tracee: eventsCh,
 	}
+}
+
+func allocateEventIdsForSigs(startId events.ID, sigs []detect.Signature) map[string]int32 {
+	namesToIds := make(map[string]int32)
+	newEventDefID := startId
+	// First allocate event IDs to all signatures
+	for _, s := range sigs {
+		m, err := s.GetMetadata()
+		if err != nil {
+			logger.Warnw("Failed to allocate id for signature", "error", err)
+			continue
+		}
+
+		namesToIds[m.EventName] = int32(newEventDefID)
+		newEventDefID++
+	}
+	return namesToIds
 }

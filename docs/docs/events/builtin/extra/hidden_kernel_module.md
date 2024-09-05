@@ -18,7 +18,7 @@ Self-triggered hook by uprobing itself.
 ## Example Use Case
 
 ```console
-./tracker -e hidden_kernel_module
+./tracee -e hidden_kernel_module
 ```
 
 ## Issues

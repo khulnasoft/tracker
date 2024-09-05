@@ -1,9 +1,9 @@
-# Configuring Tracker
+# Configuring Tracee
 
-Tracker has many different options and settings that control how Tracker operates. 
-This section presents available configuration options. To learn about how to apply configuration to Tracker, please refer to the [CLI](./cli.md) or [Kubernetes](./kubernetes.md) specific guides.
+Tracee has many different options and settings that control how Tracee operates. 
+This section presents available configuration options. To learn about how to apply configuration to Tracee, please refer to the [CLI](./cli.md) or [Kubernetes](./kubernetes.md) specific guides.
 
-A complete config file with all available options can be found [here](https://github.com/khulnasoft/tracker/blob/main/examples/config/global_config.yaml). Most of the options are documented in different sections in the documentation.
+A complete config file with all available options can be found [here](https://github.com/aquasecurity/tracee/blob/main/examples/config/global_config.yaml). Most of the options are documented in different sections in the documentation.
 
 ```yaml
 blob-perf-buffer-size: 1024
@@ -16,6 +16,9 @@ proctree:
     cache:
         process: 8192
         thread: 4096
+    cache-ttl:
+        process: 60
+        thread: 60
 
 capabilities:
     bypass: false
@@ -34,7 +37,7 @@ cri:
         socket: /var/run/docker.sock
 
 healthz: false
-install-path: /tmp/tracker
+install-path: /tmp/tracee
 listen-addr: :3366
 log:
     level: info
@@ -100,14 +103,14 @@ output:
             password: pass
             host: 127.0.0.1
             port: 24224
-            tag: tracker1
+            tag: tracee1
         - forward2:
             protocol: udp
             user: user
             password: pass
             host: 127.0.0.1
             port: 24225
-            tag: tracker2
+            tag: tracee2
 
     webhook:
         - webhook1:

@@ -3,7 +3,7 @@ package dependencies
 import (
 	"slices"
 
-	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events"
 )
 
 // EventNode represent an event in the dependencies tree.

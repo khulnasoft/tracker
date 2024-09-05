@@ -1,23 +1,23 @@
 ---
-title: TRACKER-CAPTURE
+title: TRACEE-CAPTURE
 section: 1
-header: Tracker Capture Flag Manual
+header: Tracee Capture Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-capture** - Capture artifacts that were written, executed, or found to be suspicious
+tracee **\-\-capture** - Capture artifacts that were written, executed, or found to be suspicious
 
 ## SYNOPSIS
 
-tracker **\-\-capture** <[artifact:]capture-option[=value]\> ...
+tracee **\-\-capture** <[artifact:]capture-option[=value]\> ...
 
-tracker **\-\-capture** <network\> [**\-\-capture** [pcap:option1(,option2...)|pcap-options:option|pcap-snaplen:size]] ...
+tracee **\-\-capture** <network\> [**\-\-capture** [pcap:option1(,option2...)|pcap-options:option|pcap-snaplen:size]] ...
 
 ## DESCRIPTION
 
-The **\-\-capture** flag allows you to capture artifacts that were written, executed, or found to be suspicious during the execution of Tracker. The captured artifacts will appear in the 'output-path' directory.
+The **\-\-capture** flag allows you to capture artifacts that were written, executed, or found to be suspicious during the execution of Tracee. The captured artifacts will appear in the 'output-path' directory.
 
 Possible capture options:
 

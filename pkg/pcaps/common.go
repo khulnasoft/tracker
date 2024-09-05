@@ -2,22 +2,19 @@ package pcaps
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"strings"
 
-	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcapgo"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 var outputDirectory *os.File
-var fake pcapgo.NgInterface
 
 const (
 	pcapDir       string = "pcap/"
@@ -43,15 +40,6 @@ const AF_INET6 = 10
 
 func initializeGlobalVars(output *os.File) {
 	outputDirectory = output // where to save pcap files
-
-	// fake interface to be added to each pcap file (needed)
-	fake = pcapgo.NgInterface{ // https://www.tcpdump.org/linktypes.html
-		Name:        "tracker",
-		Comment:     "trace fake interface",
-		Description: "non-existing interface",
-		LinkType:    layers.LinkTypeNull, // layer2 is 4 bytes (or 32bit)
-		SnapLength:  uint32(math.MaxUint32),
-	}
 }
 
 // getItemIndexFromEvent returns correct trace.Event variable according to
@@ -207,9 +195,14 @@ func getPcapFileAndWriter(event *trace.Event, t PcapType) (
 
 	logger.Debugw("pcap file (re)opened", "filename", pcapFilePath)
 
+	iface, err := GenerateInterface(event, t)
+	if err != nil {
+		return nil, nil, errfmt.WrapError(err)
+	}
+
 	writer, err := pcapgo.NewNgWriterInterface(
 		file,
-		fake,
+		iface,
 		pcapgo.DefaultNgWriterOptions,
 	)
 	if err != nil {

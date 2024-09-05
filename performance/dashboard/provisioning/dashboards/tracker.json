@@ -116,7 +116,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(tracker_ebpf_events_total[$__rate_interval])",
+          "expr": "rate(tracee_ebpf_events_total[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -168,7 +168,7 @@
           "calcs": [
             "mean"
           ],
-          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "showThresholdLabels": true,
@@ -182,7 +182,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(tracker_ebpf_events_total{job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(tracee_ebpf_events_total{job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -245,7 +245,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "tracker_ebpf_events_total",
+          "expr": "tracee_ebpf_events_total",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -337,7 +337,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(tracker_ebpf_events_filtered[$__rate_interval])",
+          "expr": "rate(tracee_ebpf_events_filtered[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -389,7 +389,7 @@
           "calcs": [
             "mean"
           ],
-          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "showThresholdLabels": true,
@@ -403,7 +403,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(tracker_ebpf_events_filtered  {job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(tracee_ebpf_events_filtered  {job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -453,7 +453,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/^C \\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^C \\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "textMode": "auto"
@@ -466,7 +466,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "tracker_ebpf_events_total",
+          "expr": "tracee_ebpf_events_total",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -479,7 +479,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "tracker_ebpf_events_filtered",
+          "expr": "tracee_ebpf_events_filtered",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -583,7 +583,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(tracker_ebpf_lostevents_total[$__rate_interval])",
+          "expr": "rate(tracee_ebpf_lostevents_total[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -635,7 +635,7 @@
           "calcs": [
             "mean"
           ],
-          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "showThresholdLabels": true,
@@ -649,7 +649,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(tracker_ebpf_lostevents_total{job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(tracee_ebpf_lostevents_total{job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -699,7 +699,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/^C \\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^C \\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "textMode": "auto"
@@ -712,7 +712,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "tracker_ebpf_events_total",
+          "expr": "tracee_ebpf_events_total",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -724,7 +724,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "tracker_ebpf_lostevents_total",
+          "expr": "tracee_ebpf_lostevents_total",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -843,7 +843,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(go_memstats_mallocs_total{job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(go_memstats_mallocs_total{job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -895,7 +895,7 @@
           "calcs": [
             "mean"
           ],
-          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "showThresholdLabels": true,
@@ -909,7 +909,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(go_memstats_mallocs_total{job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(go_memstats_mallocs_total{job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -972,7 +972,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_mallocs_total{job=\"tracker\"}",
+          "expr": "go_memstats_mallocs_total{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1035,7 +1035,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_mallocs_total{job=\"tracker\"}",
+          "expr": "go_memstats_mallocs_total{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1047,7 +1047,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_frees_total{job=\"tracker\"}",
+          "expr": "go_memstats_frees_total{job=\"tracee\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -1156,7 +1156,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(go_memstats_frees_total{job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(go_memstats_frees_total{job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1208,7 +1208,7 @@
           "calcs": [
             "mean"
           ],
-          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracker\"\\}$/",
+          "fields": "/^\\{instance=\"localhost:3366\", job=\"tracee\"\\}$/",
           "values": false
         },
         "showThresholdLabels": true,
@@ -1222,7 +1222,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "rate(go_memstats_frees_total{job=\"tracker\"}[$__rate_interval])",
+          "expr": "rate(go_memstats_frees_total{job=\"tracee\"}[$__rate_interval])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1285,7 +1285,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_frees_total{job=\"tracker\"}",
+          "expr": "go_memstats_frees_total{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1380,7 +1380,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_heap_inuse_bytes{job=\"tracker\"}",
+          "expr": "go_memstats_heap_inuse_bytes{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "in use",
           "range": true,
@@ -1392,7 +1392,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_heap_alloc_bytes{job=\"tracker\"}",
+          "expr": "go_memstats_heap_alloc_bytes{job=\"tracee\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "alloc",
@@ -1405,7 +1405,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_heap_released_bytes{job=\"tracker\"}",
+          "expr": "go_memstats_heap_released_bytes{job=\"tracee\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "released",
@@ -1472,7 +1472,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_heap_inuse_bytes{job=\"tracker\"}",
+          "expr": "go_memstats_heap_inuse_bytes{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1567,7 +1567,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_heap_objects{job=\"tracker\"}",
+          "expr": "go_memstats_heap_objects{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1633,7 +1633,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_heap_objects{job=\"tracker\"}",
+          "expr": "go_memstats_heap_objects{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1741,7 +1741,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_next_gc_bytes{job=\"tracker\"}",
+          "expr": "go_memstats_next_gc_bytes{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1807,7 +1807,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "go_memstats_next_gc_bytes{job=\"tracker\"}",
+          "expr": "go_memstats_next_gc_bytes{job=\"tracee\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1902,7 +1902,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "sum(rate(go_gc_duration_seconds_sum{job=\"tracker\"}[$__rate_interval]))",
+          "expr": "sum(rate(go_gc_duration_seconds_sum{job=\"tracee\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1968,7 +1968,7 @@
             "uid": "PDC1078F23EBDF0E5"
           },
           "editorMode": "code",
-          "expr": "sum(rate(go_gc_duration_seconds_sum{job=\"tracker\"}[$__rate_interval]))",
+          "expr": "sum(rate(go_gc_duration_seconds_sum{job=\"tracee\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -2342,7 +2342,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "TRACKER",
+  "title": "TRACEE",
   "uid": "64305268-1aa8-4b02-bb2a-c338bb747159",
   "version": 1,
   "weekStart": ""

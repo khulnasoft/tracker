@@ -3,11 +3,11 @@ package initialize
 import (
 	"strconv"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/set"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils/set"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func CreateEventsFromSignatures(startId events.ID, sigs []detect.Signature) map[string]int32 {
@@ -35,11 +35,11 @@ func CreateEventsFromSignatures(startId events.ID, sigs []detect.Signature) map[
 		evtDependency := make([]events.ID, 0)
 
 		for _, s := range selectedEvents {
-			if s.Source != "tracker" {
+			if s.Source != "tracee" {
 				// A legacy solution we supported was for external sources to push events
 				// into signatures. They would declare their source to be a different name instead
-				// of  "tracker".
-				// As such, actual event dependencies should only be sourced from "tracker" selectors.
+				// of  "tracee".
+				// As such, actual event dependencies should only be sourced from "tracee" selectors.
 				continue
 			}
 			eventDefID, found := events.Core.GetDefinitionIDByName(s.Name)

@@ -4,7 +4,7 @@ package detect
 import (
 	"errors"
 
-	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/aquasecurity/tracee/types/protocol"
 )
 
 // Signature is the basic unit of business logic for the rule-engine

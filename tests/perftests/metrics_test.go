@@ -11,25 +11,25 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 
-	"github.com/khulnasoft/tracker/tests/testutils"
+	"github.com/aquasecurity/tracee/tests/testutils"
 )
 
 var metrics = []string{
-	"tracker_ebpf_bpf_logs_total",
-	"tracker_ebpf_errors_total",
-	"tracker_ebpf_events_filtered",
-	"tracker_ebpf_events_total",
-	"tracker_ebpf_lostevents_total",
-	"tracker_ebpf_network_capture_events_total",
-	"tracker_ebpf_network_capture_lostevents_total",
-	"tracker_ebpf_write_lostevents_total",
+	"tracee_ebpf_bpf_logs_total",
+	"tracee_ebpf_errors_total",
+	"tracee_ebpf_events_filtered",
+	"tracee_ebpf_events_total",
+	"tracee_ebpf_lostevents_total",
+	"tracee_ebpf_network_capture_events_total",
+	"tracee_ebpf_network_capture_lostevents_total",
+	"tracee_ebpf_write_lostevents_total",
 }
 
 // checkIfMetricsExist checks if all metrics exist in the metrics endpoint.
 func checkIfMetricsExist(metrics []string) error {
 	resp, err := http.Get(fmt.Sprintf("http://%s:%d/metrics",
-		testutils.TrackerHostname,
-		testutils.TrackerPort,
+		testutils.TraceeHostname,
+		testutils.TraceePort,
 	))
 	if err != nil {
 		fmt.Println("error making request:", err)
@@ -60,8 +60,8 @@ func checkIfMetricsExist(metrics []string) error {
 // checkIfPprofExist checks if all metrics exist in the metrics endpoint.
 func checkIfPprofExist() error {
 	resp, err := http.Get(fmt.Sprintf("http://%s:%d/debug/pprof/",
-		testutils.TrackerHostname,
-		testutils.TrackerPort,
+		testutils.TraceeHostname,
+		testutils.TraceePort,
 	))
 	if err != nil {
 		fmt.Println("error making request:", err)
@@ -98,7 +98,7 @@ func checkIfPprofExist() error {
 
 // TestMetricsExist tests if the metrics endpoint returns all metrics.
 func TestMetricsandPprofExist(t *testing.T) {
-	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
+	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -107,20 +107,20 @@ func TestMetricsandPprofExist(t *testing.T) {
 	}
 
 	cmd := "--output none --events=syslog --metrics --pprof"
-	running := testutils.NewRunningTracker(context.Background(), cmd)
+	running := testutils.NewRunningTracee(context.Background(), cmd)
 
-	// start tracker
-	ready, runErr := running.Start(testutils.TrackerDefaultStartupTimeout)
+	// start tracee
+	ready, runErr := running.Start(testutils.TraceeDefaultStartupTimeout)
 	require.NoError(t, runErr)
 
-	r := <-ready // block until tracker is ready (or not)
+	r := <-ready // block until tracee is ready (or not)
 	switch r {
-	case testutils.TrackerFailed:
-		t.Fatal("tracker failed to start")
-	case testutils.TrackerTimedout:
-		t.Fatal("tracker timedout to start")
-	case testutils.TrackerAlreadyRunning:
-		t.Fatal("tracker is already running")
+	case testutils.TraceeFailed:
+		t.Fatal("tracee failed to start")
+	case testutils.TraceeTimedout:
+		t.Fatal("tracee timedout to start")
+	case testutils.TraceeAlreadyRunning:
+		t.Fatal("tracee is already running")
 	}
 
 	// do the test
@@ -131,6 +131,6 @@ func TestMetricsandPprofExist(t *testing.T) {
 	require.NoError(t, metricsErr)
 	require.NoError(t, pprofErr)
 
-	cmdErrs := running.Stop() // stop tracker
+	cmdErrs := running.Stop() // stop tracee
 	require.Empty(t, cmdErrs)
 }

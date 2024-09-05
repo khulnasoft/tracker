@@ -1,7 +1,7 @@
-package tracker.TRC_2
+package tracee.TRC_2
 
 test_match_1 {
-	tracker_match with input as {
+	tracee_match with input as {
 		"eventName": "ptrace",
 		"argsNum": 1,
 		"args": [{
@@ -12,7 +12,7 @@ test_match_1 {
 }
 
 test_match_wrong_request {
-	not tracker_match with input as {
+	not tracee_match with input as {
 		"eventName": "ptrace",
 		"argsNum": 1,
 		"args": [{

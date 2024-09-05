@@ -61,7 +61,7 @@ help:
 		exit 1
 	fi
 
-PROTOC_CONTNAME = tracker-protoc:latest
+PROTOC_CONTNAME = tracee-protoc:latest
 
 .PHONY: protoc-build
 protoc-build: \
@@ -79,7 +79,7 @@ protoc-run: \
 	.check_tree
 #
 	$(CMD_DOCKER) run --rm \
-		-v $(shell pwd):/tracker \
+		-v $(shell pwd):/tracee \
 		$(PROTOC_CONTNAME) make protoc
 
 

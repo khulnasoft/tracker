@@ -72,12 +72,12 @@ func (e *failedToParseCmd) Error() string {
 	return fmt.Sprintf("failed to parse command '%s': %s", e.command, e.err)
 }
 
-// failedToStartTracker is returned when tracker fails to start.
-type failedToStartTracker struct {
+// failedToStartTracee is returned when tracee fails to start.
+type failedToStartTracee struct {
 	command string
 	err     error
 }
 
-func (e *failedToStartTracker) Error() string {
-	return fmt.Sprintf("failed to start tracker: %s", e.err)
+func (e *failedToStartTracee) Error() string {
+	return fmt.Sprintf("failed to start tracee: %s", e.err)
 }

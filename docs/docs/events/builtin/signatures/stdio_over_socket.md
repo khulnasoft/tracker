@@ -51,4 +51,4 @@ The signature responds to two primary events:
 1. `security_socket_connect` - Indicates when a socket connection is made.
 2. `socket_dup` - Denotes when a socket is duplicated.
 
-Both events are sourced from `tracker`.
+Both events are sourced from `tracee`.

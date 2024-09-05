@@ -1,6 +1,6 @@
-# Tracker Logs
+# Tracee Logs
 
-This section showcases how to configure diagnostics log. The information provided can then be used to troubleshoot Tracker. This is done through the Tracker configuration file. For more information, have a look at the respective section in the [installation guide.](../install/index.md)
+This section showcases how to configure diagnostics log. The information provided can then be used to troubleshoot Tracee. This is done through the Tracee configuration file. For more information, have a look at the respective section in the [installation guide.](../install/index.md)
 
 ## Log options
 
@@ -18,7 +18,7 @@ Note that the other log level are `info`, `warn`, `error` and `panic`.
 ```console
 log:
     level: debug
-    file: "/tmp/tracker.log"
+    file: "/tmp/tracee.log"
 ```
 
 **Logs can be aggregated for a given interval (default: 3s) to delay its output:**
@@ -31,7 +31,7 @@ log:
         flush-interval: "10s"
 ```
 
-The flush-interval defines how often the Tracker logs will be forwarded.
+The flush-interval defines how often the Tracee logs will be forwarded.
 
 **Filter logs which message contains specified words:**
 

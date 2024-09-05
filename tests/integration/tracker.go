@@ -10,16 +10,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/config"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	uproc "github.com/khulnasoft/tracker/pkg/utils/proc"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
+	"github.com/aquasecurity/tracee/pkg/config"
+	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
+	"github.com/aquasecurity/tracee/pkg/proctree"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	uproc "github.com/aquasecurity/tracee/pkg/utils/proc"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
-// eventBuffer is a thread-safe buffer for tracker events
+// eventBuffer is a thread-safe buffer for tracee events
 type eventBuffer struct {
 	mu     sync.RWMutex
 	events []trace.Event
@@ -66,8 +66,8 @@ func (b *eventBuffer) getCopy() []trace.Event {
 	return evts
 }
 
-// load tracker into memory with args
-func startTracker(ctx context.Context, t *testing.T, cfg config.Config, output *config.OutputConfig, capture *config.CaptureConfig) (*tracker.Tracker, error) {
+// load tracee into memory with args
+func startTracee(ctx context.Context, t *testing.T, cfg config.Config, output *config.OutputConfig, capture *config.CaptureConfig) (*tracee.Tracee, error) {
 	initialize.SetLibbpfgoCallbacks()
 
 	kernelConfig, err := initialize.KernelConfig()
@@ -82,7 +82,7 @@ func startTracker(ctx context.Context, t *testing.T, cfg config.Config, output *
 		return nil, err
 	}
 
-	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, "/tmp/tracker", "")
+	err = initialize.BpfObject(&cfg, kernelConfig, osInfo, "/tmp/tracee", "")
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +95,7 @@ func startTracker(ctx context.Context, t *testing.T, cfg config.Config, output *
 
 	cfg.PerfBufferSize = 1024
 	cfg.BlobPerfBufferSize = 1024
+	cfg.PipelineChannelSize = 10000
 
 	// No process tree in the integration tests
 	cfg.ProcTree = proctree.ProcTreeConfig{
@@ -124,7 +125,7 @@ func startTracker(ctx context.Context, t *testing.T, cfg config.Config, output *
 	cfg.Output = output
 	cfg.NoContainersEnrich = true
 
-	trc, err := tracker.New(cfg)
+	trc, err := tracee.New(cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -137,28 +138,28 @@ func startTracker(ctx context.Context, t *testing.T, cfg config.Config, output *
 	go func() {
 		err := trc.Run(ctx)
 		if err != nil {
-			errChan <- fmt.Errorf("error while running tracker: %s", err)
+			errChan <- fmt.Errorf("error while running tracee: %s", err)
 		}
 	}()
 
 	return trc, nil
 }
 
-// prepareCapture prepares a capture config for tracker
+// prepareCapture prepares a capture config for tracee
 func prepareCapture() *config.CaptureConfig {
-	// taken from tracker-rule github project, might have to adjust...
+	// taken from tracee-rule github project, might have to adjust...
 	// prepareCapture is called with nil input
 	return &config.CaptureConfig{
 		FileWrite: config.FileCaptureConfig{
 			PathFilter: []string{},
 		},
-		OutputPath: filepath.Join("/tmp/tracker", "out"),
+		OutputPath: filepath.Join("/tmp/tracee", "out"),
 	}
 }
 
-// wait for tracker to start (or timeout)
+// wait for tracee to start (or timeout)
 // in case of timeout, the test will fail
-func waitForTrackerStart(trc *tracker.Tracker) error {
+func waitForTraceeStart(trc *tracee.Tracee) error {
 	const timeout = 10 * time.Second
 
 	statusCheckTicker := time.NewTicker(1 * time.Second)
@@ -173,14 +174,14 @@ func waitForTrackerStart(trc *tracker.Tracker) error {
 				return nil
 			}
 		case <-timeoutTicker.C:
-			return fmt.Errorf("timed out on waiting for tracker to start")
+			return fmt.Errorf("timed out on waiting for tracee to start")
 		}
 	}
 }
 
-// wait for tracker to stop (or timeout)
+// wait for tracee to stop (or timeout)
 // in case of timeout, the test will continue since all tests already passed
-func waitForTrackerStop(trc *tracker.Tracker) error {
+func waitForTraceeStop(trc *tracee.Tracee) error {
 	const timeout = 10 * time.Second
 
 	statusCheckTicker := time.NewTicker(1 * time.Second)
@@ -195,14 +196,14 @@ func waitForTrackerStop(trc *tracker.Tracker) error {
 				return nil
 			}
 		case <-timeoutTicker.C:
-			return fmt.Errorf("timed out on stopping tracker")
+			return fmt.Errorf("timed out on stopping tracee")
 		}
 	}
 }
 
-// wait for tracker buffer to fill up with expected number of events (or timeout)
+// wait for tracee buffer to fill up with expected number of events (or timeout)
 // in case of timeout, the test will fail
-func waitForTrackerOutputEvents(t *testing.T, waitFor time.Duration, actual *eventBuffer, expectedEvts int, failOnTimeout bool) error {
+func waitForTraceeOutputEvents(t *testing.T, waitFor time.Duration, actual *eventBuffer, expectedEvts int, failOnTimeout bool) error {
 	if waitFor > 0 {
 		t.Logf("  . waiting events collection for %s", waitFor.String())
 		time.Sleep(waitFor)

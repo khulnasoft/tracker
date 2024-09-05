@@ -1,21 +1,21 @@
 ---
-title: TRACKER-CRI
+title: TRACEE-CRI
 section: 1
-header: Tracker CRI Flag Manual
+header: Tracee CRI Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-cri** - Select container runtimes to connect to for container events enrichment
+tracee **\-\-cri** - Select container runtimes to connect to for container events enrichment
 
 ## SYNOPSIS
 
-tracker **\-\-cri** <[crio|containerd|docker|podman]:socket\> [**\-\-cri** ...] ...
+tracee **\-\-cri** <[crio|containerd|docker|podman]:socket\> [**\-\-cri** ...] ...
 
 ## DESCRIPTION
 
-By default, if no flag is passed, Tracker will automatically detect installed runtimes by going through known runtime socket paths, looking for the following paths:
+By default, if no flag is passed, Tracee will automatically detect installed runtimes by going through known runtime socket paths, looking for the following paths:
 
 1. **Docker**:     `/var/run/docker.sock`
 2. **Containerd**: `/var/run/containerd/containerd.sock`

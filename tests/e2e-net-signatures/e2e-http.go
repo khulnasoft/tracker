@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -21,25 +21,27 @@ type e2eHTTP struct {
 	cb detect.SignatureHandler
 }
 
+var e2eHTTPMetadata = detect.SignatureMetadata{
+	ID:          "HTTP",
+	EventName:   "HTTP",
+	Version:     "0.1.0",
+	Name:        "Network HTTP Test",
+	Description: "Network E2E Tests: HTTP",
+	Tags:        []string{"e2e", "network"},
+}
+
 func (sig *e2eHTTP) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
 	return nil
 }
 
 func (sig *e2eHTTP) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "HTTP",
-		EventName:   "HTTP",
-		Version:     "0.1.0",
-		Name:        "Network HTTP Test",
-		Description: "Network E2E Tests: HTTP",
-		Tags:        []string{"e2e", "network"},
-	}, nil
+	return e2eHTTPMetadata, nil
 }
 
 func (sig *e2eHTTP) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "net_packet_http"},
+		{Source: "tracee", Name: "net_packet_http"},
 	}, nil
 }
 

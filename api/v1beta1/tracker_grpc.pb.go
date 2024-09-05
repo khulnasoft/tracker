@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.23.4
-// source: api/v1beta1/tracker.proto
+// source: api/v1beta1/tracee.proto
 
 package v1beta1
 
@@ -18,40 +18,40 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// TrackerServiceClient is the client API for TrackerService service.
+// TraceeServiceClient is the client API for TraceeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type TrackerServiceClient interface {
+type TraceeServiceClient interface {
 	GetEventDefinitions(ctx context.Context, in *GetEventDefinitionsRequest, opts ...grpc.CallOption) (*GetEventDefinitionsResponse, error)
-	StreamEvents(ctx context.Context, in *StreamEventsRequest, opts ...grpc.CallOption) (TrackerService_StreamEventsClient, error)
+	StreamEvents(ctx context.Context, in *StreamEventsRequest, opts ...grpc.CallOption) (TraceeService_StreamEventsClient, error)
 	EnableEvent(ctx context.Context, in *EnableEventRequest, opts ...grpc.CallOption) (*EnableEventResponse, error)
 	DisableEvent(ctx context.Context, in *DisableEventRequest, opts ...grpc.CallOption) (*DisableEventResponse, error)
 	GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error)
 }
 
-type trackerServiceClient struct {
+type traceeServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewTrackerServiceClient(cc grpc.ClientConnInterface) TrackerServiceClient {
-	return &trackerServiceClient{cc}
+func NewTraceeServiceClient(cc grpc.ClientConnInterface) TraceeServiceClient {
+	return &traceeServiceClient{cc}
 }
 
-func (c *trackerServiceClient) GetEventDefinitions(ctx context.Context, in *GetEventDefinitionsRequest, opts ...grpc.CallOption) (*GetEventDefinitionsResponse, error) {
+func (c *traceeServiceClient) GetEventDefinitions(ctx context.Context, in *GetEventDefinitionsRequest, opts ...grpc.CallOption) (*GetEventDefinitionsResponse, error) {
 	out := new(GetEventDefinitionsResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/GetEventDefinitions", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TraceeService/GetEventDefinitions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *trackerServiceClient) StreamEvents(ctx context.Context, in *StreamEventsRequest, opts ...grpc.CallOption) (TrackerService_StreamEventsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &TrackerService_ServiceDesc.Streams[0], "/tracker.v1beta1.TrackerService/StreamEvents", opts...)
+func (c *traceeServiceClient) StreamEvents(ctx context.Context, in *StreamEventsRequest, opts ...grpc.CallOption) (TraceeService_StreamEventsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TraceeService_ServiceDesc.Streams[0], "/tracee.v1beta1.TraceeService/StreamEvents", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &trackerServiceStreamEventsClient{stream}
+	x := &traceeServiceStreamEventsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -61,16 +61,16 @@ func (c *trackerServiceClient) StreamEvents(ctx context.Context, in *StreamEvent
 	return x, nil
 }
 
-type TrackerService_StreamEventsClient interface {
+type TraceeService_StreamEventsClient interface {
 	Recv() (*StreamEventsResponse, error)
 	grpc.ClientStream
 }
 
-type trackerServiceStreamEventsClient struct {
+type traceeServiceStreamEventsClient struct {
 	grpc.ClientStream
 }
 
-func (x *trackerServiceStreamEventsClient) Recv() (*StreamEventsResponse, error) {
+func (x *traceeServiceStreamEventsClient) Recv() (*StreamEventsResponse, error) {
 	m := new(StreamEventsResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -78,200 +78,200 @@ func (x *trackerServiceStreamEventsClient) Recv() (*StreamEventsResponse, error)
 	return m, nil
 }
 
-func (c *trackerServiceClient) EnableEvent(ctx context.Context, in *EnableEventRequest, opts ...grpc.CallOption) (*EnableEventResponse, error) {
+func (c *traceeServiceClient) EnableEvent(ctx context.Context, in *EnableEventRequest, opts ...grpc.CallOption) (*EnableEventResponse, error) {
 	out := new(EnableEventResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/EnableEvent", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TraceeService/EnableEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *trackerServiceClient) DisableEvent(ctx context.Context, in *DisableEventRequest, opts ...grpc.CallOption) (*DisableEventResponse, error) {
+func (c *traceeServiceClient) DisableEvent(ctx context.Context, in *DisableEventRequest, opts ...grpc.CallOption) (*DisableEventResponse, error) {
 	out := new(DisableEventResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/DisableEvent", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TraceeService/DisableEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *trackerServiceClient) GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error) {
+func (c *traceeServiceClient) GetVersion(ctx context.Context, in *GetVersionRequest, opts ...grpc.CallOption) (*GetVersionResponse, error) {
 	out := new(GetVersionResponse)
-	err := c.cc.Invoke(ctx, "/tracker.v1beta1.TrackerService/GetVersion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tracee.v1beta1.TraceeService/GetVersion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// TrackerServiceServer is the server API for TrackerService service.
-// All implementations must embed UnimplementedTrackerServiceServer
+// TraceeServiceServer is the server API for TraceeService service.
+// All implementations must embed UnimplementedTraceeServiceServer
 // for forward compatibility
-type TrackerServiceServer interface {
+type TraceeServiceServer interface {
 	GetEventDefinitions(context.Context, *GetEventDefinitionsRequest) (*GetEventDefinitionsResponse, error)
-	StreamEvents(*StreamEventsRequest, TrackerService_StreamEventsServer) error
+	StreamEvents(*StreamEventsRequest, TraceeService_StreamEventsServer) error
 	EnableEvent(context.Context, *EnableEventRequest) (*EnableEventResponse, error)
 	DisableEvent(context.Context, *DisableEventRequest) (*DisableEventResponse, error)
 	GetVersion(context.Context, *GetVersionRequest) (*GetVersionResponse, error)
-	mustEmbedUnimplementedTrackerServiceServer()
+	mustEmbedUnimplementedTraceeServiceServer()
 }
 
-// UnimplementedTrackerServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedTrackerServiceServer struct {
+// UnimplementedTraceeServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedTraceeServiceServer struct {
 }
 
-func (UnimplementedTrackerServiceServer) GetEventDefinitions(context.Context, *GetEventDefinitionsRequest) (*GetEventDefinitionsResponse, error) {
+func (UnimplementedTraceeServiceServer) GetEventDefinitions(context.Context, *GetEventDefinitionsRequest) (*GetEventDefinitionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEventDefinitions not implemented")
 }
-func (UnimplementedTrackerServiceServer) StreamEvents(*StreamEventsRequest, TrackerService_StreamEventsServer) error {
+func (UnimplementedTraceeServiceServer) StreamEvents(*StreamEventsRequest, TraceeService_StreamEventsServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamEvents not implemented")
 }
-func (UnimplementedTrackerServiceServer) EnableEvent(context.Context, *EnableEventRequest) (*EnableEventResponse, error) {
+func (UnimplementedTraceeServiceServer) EnableEvent(context.Context, *EnableEventRequest) (*EnableEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnableEvent not implemented")
 }
-func (UnimplementedTrackerServiceServer) DisableEvent(context.Context, *DisableEventRequest) (*DisableEventResponse, error) {
+func (UnimplementedTraceeServiceServer) DisableEvent(context.Context, *DisableEventRequest) (*DisableEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableEvent not implemented")
 }
-func (UnimplementedTrackerServiceServer) GetVersion(context.Context, *GetVersionRequest) (*GetVersionResponse, error) {
+func (UnimplementedTraceeServiceServer) GetVersion(context.Context, *GetVersionRequest) (*GetVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVersion not implemented")
 }
-func (UnimplementedTrackerServiceServer) mustEmbedUnimplementedTrackerServiceServer() {}
+func (UnimplementedTraceeServiceServer) mustEmbedUnimplementedTraceeServiceServer() {}
 
-// UnsafeTrackerServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to TrackerServiceServer will
+// UnsafeTraceeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TraceeServiceServer will
 // result in compilation errors.
-type UnsafeTrackerServiceServer interface {
-	mustEmbedUnimplementedTrackerServiceServer()
+type UnsafeTraceeServiceServer interface {
+	mustEmbedUnimplementedTraceeServiceServer()
 }
 
-func RegisterTrackerServiceServer(s grpc.ServiceRegistrar, srv TrackerServiceServer) {
-	s.RegisterService(&TrackerService_ServiceDesc, srv)
+func RegisterTraceeServiceServer(s grpc.ServiceRegistrar, srv TraceeServiceServer) {
+	s.RegisterService(&TraceeService_ServiceDesc, srv)
 }
 
-func _TrackerService_GetEventDefinitions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _TraceeService_GetEventDefinitions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetEventDefinitionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TrackerServiceServer).GetEventDefinitions(ctx, in)
+		return srv.(TraceeServiceServer).GetEventDefinitions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.TrackerService/GetEventDefinitions",
+		FullMethod: "/tracee.v1beta1.TraceeService/GetEventDefinitions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrackerServiceServer).GetEventDefinitions(ctx, req.(*GetEventDefinitionsRequest))
+		return srv.(TraceeServiceServer).GetEventDefinitions(ctx, req.(*GetEventDefinitionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TrackerService_StreamEvents_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _TraceeService_StreamEvents_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(StreamEventsRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(TrackerServiceServer).StreamEvents(m, &trackerServiceStreamEventsServer{stream})
+	return srv.(TraceeServiceServer).StreamEvents(m, &traceeServiceStreamEventsServer{stream})
 }
 
-type TrackerService_StreamEventsServer interface {
+type TraceeService_StreamEventsServer interface {
 	Send(*StreamEventsResponse) error
 	grpc.ServerStream
 }
 
-type trackerServiceStreamEventsServer struct {
+type traceeServiceStreamEventsServer struct {
 	grpc.ServerStream
 }
 
-func (x *trackerServiceStreamEventsServer) Send(m *StreamEventsResponse) error {
+func (x *traceeServiceStreamEventsServer) Send(m *StreamEventsResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _TrackerService_EnableEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _TraceeService_EnableEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EnableEventRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TrackerServiceServer).EnableEvent(ctx, in)
+		return srv.(TraceeServiceServer).EnableEvent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.TrackerService/EnableEvent",
+		FullMethod: "/tracee.v1beta1.TraceeService/EnableEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrackerServiceServer).EnableEvent(ctx, req.(*EnableEventRequest))
+		return srv.(TraceeServiceServer).EnableEvent(ctx, req.(*EnableEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TrackerService_DisableEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _TraceeService_DisableEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DisableEventRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TrackerServiceServer).DisableEvent(ctx, in)
+		return srv.(TraceeServiceServer).DisableEvent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.TrackerService/DisableEvent",
+		FullMethod: "/tracee.v1beta1.TraceeService/DisableEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrackerServiceServer).DisableEvent(ctx, req.(*DisableEventRequest))
+		return srv.(TraceeServiceServer).DisableEvent(ctx, req.(*DisableEventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TrackerService_GetVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _TraceeService_GetVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetVersionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TrackerServiceServer).GetVersion(ctx, in)
+		return srv.(TraceeServiceServer).GetVersion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tracker.v1beta1.TrackerService/GetVersion",
+		FullMethod: "/tracee.v1beta1.TraceeService/GetVersion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrackerServiceServer).GetVersion(ctx, req.(*GetVersionRequest))
+		return srv.(TraceeServiceServer).GetVersion(ctx, req.(*GetVersionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// TrackerService_ServiceDesc is the grpc.ServiceDesc for TrackerService service.
+// TraceeService_ServiceDesc is the grpc.ServiceDesc for TraceeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var TrackerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "tracker.v1beta1.TrackerService",
-	HandlerType: (*TrackerServiceServer)(nil),
+var TraceeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "tracee.v1beta1.TraceeService",
+	HandlerType: (*TraceeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetEventDefinitions",
-			Handler:    _TrackerService_GetEventDefinitions_Handler,
+			Handler:    _TraceeService_GetEventDefinitions_Handler,
 		},
 		{
 			MethodName: "EnableEvent",
-			Handler:    _TrackerService_EnableEvent_Handler,
+			Handler:    _TraceeService_EnableEvent_Handler,
 		},
 		{
 			MethodName: "DisableEvent",
-			Handler:    _TrackerService_DisableEvent_Handler,
+			Handler:    _TraceeService_DisableEvent_Handler,
 		},
 		{
 			MethodName: "GetVersion",
-			Handler:    _TrackerService_GetVersion_Handler,
+			Handler:    _TraceeService_GetVersion_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "StreamEvents",
-			Handler:       _TrackerService_StreamEvents_Handler,
+			Handler:       _TraceeService_StreamEvents_Handler,
 			ServerStreams: true,
 		},
 	},
-	Metadata: "api/v1beta1/tracker.proto",
+	Metadata: "api/v1beta1/tracee.proto",
 }

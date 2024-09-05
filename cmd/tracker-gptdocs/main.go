@@ -10,7 +10,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/khulnasoft/tracker/pkg/cmd"
+	"github.com/aquasecurity/tracee/pkg/cmd"
 )
 
 const (
@@ -22,8 +22,8 @@ const (
 
 func main() {
 	app := cli.App{
-		Name:  "tracker-gptdocs",
-		Usage: "Automated event documentation for tracker",
+		Name:  "tracee-gptdocs",
+		Usage: "Automated event documentation for tracee",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  openAIKey,

@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eFtraceHook struct {
 	cb detect.SignatureHandler
+}
+
+var e2eFtraceHookMetadata = detect.SignatureMetadata{
+	ID:          "FTRACE_HOOK",
+	EventName:   "FTRACE_HOOK",
+	Version:     "0.1.0",
+	Name:        "ftrace_hook Test",
+	Description: "Instrumentation events E2E Tests: ftrace_hook",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eFtraceHook) Init(ctx detect.SignatureContext) error {
@@ -19,19 +28,12 @@ func (sig *e2eFtraceHook) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eFtraceHook) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "FTRACE_HOOK",
-		EventName:   "FTRACE_HOOK",
-		Version:     "0.1.0",
-		Name:        "ftrace_hook Test",
-		Description: "Instrumentation events E2E Tests: ftrace_hook",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eFtraceHookMetadata, nil
 }
 
 func (sig *e2eFtraceHook) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "ftrace_hook"},
+		{Source: "tracee", Name: "ftrace_hook"},
 	}, nil
 }
 
@@ -43,7 +45,7 @@ func (sig *e2eFtraceHook) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "ftrace_hook":
-		symbolName, err := helpers.GetTrackerStringArgumentByName(eventObj, "symbol")
+		symbolName, err := helpers.GetTraceeStringArgumentByName(eventObj, "symbol")
 		if err != nil {
 			return err
 		}

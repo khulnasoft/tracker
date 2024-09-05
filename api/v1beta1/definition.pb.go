@@ -216,13 +216,13 @@ func file_api_v1beta1_definition_proto_rawDescGZIP() []byte {
 
 var file_api_v1beta1_definition_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_api_v1beta1_definition_proto_goTypes = []interface{}{
-	(*EventDefinition)(nil), // 0: tracker.v1beta1.EventDefinition
-	(*Version)(nil),         // 1: tracker.v1beta1.Version
-	(*Threat)(nil),          // 2: tracker.v1beta1.Threat
+	(*EventDefinition)(nil), // 0: tracee.v1beta1.EventDefinition
+	(*Version)(nil),         // 1: tracee.v1beta1.Version
+	(*Threat)(nil),          // 2: tracee.v1beta1.Threat
 }
 var file_api_v1beta1_definition_proto_depIdxs = []int32{
-	1, // 0: tracker.v1beta1.EventDefinition.version:type_name -> tracker.v1beta1.Version
-	2, // 1: tracker.v1beta1.EventDefinition.threat:type_name -> tracker.v1beta1.Threat
+	1, // 0: tracee.v1beta1.EventDefinition.version:type_name -> tracee.v1beta1.Version
+	2, // 1: tracee.v1beta1.EventDefinition.threat:type_name -> tracee.v1beta1.Threat
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

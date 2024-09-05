@@ -1,17 +1,17 @@
 ---
-title: TRACKER-SCOPE
+title: TRACEE-SCOPE
 section: 1
-header: Tracker Scope Flag Manual
+header: Tracee Scope Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-scope** - Select the scope for tracing events
+tracee **\-\-scope** - Select the scope for tracing events
 
 ## SYNOPSIS
 
-tracker **\-\-scope** [<[uid|pid][=|!=|<|\>|<=|\>=]value1(,value2...)\> | <[mntns|pidns|tree][=|!=]value1(,value2...)\> | <[uts|comm|container|[executable|exec|binary|bin]][=|!=]value1(,value2...)\>] | <not-container\> | <container[=|!=]value\> | <[container|pid]=new\> | <follow\>]  ...
+tracee **\-\-scope** [<[uid|pid][=|!=|<|\>|<=|\>=]value1(,value2...)\> | <[mntns|pidns|tree][=|!=]value1(,value2...)\> | <[uts|comm|container|[executable|exec|binary|bin]][=|!=]value1(,value2...)\>] | <not-container\> | <container[=|!=]value\> | <[container|pid]=new\> | <follow\>]  ...
 
 ## DESCRIPTION
 

@@ -1,7 +1,7 @@
 package probes
 
 import (
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 )
 
 //
@@ -149,6 +149,19 @@ const (
 	ExecuteFinishedCompatARM
 	ExecuteAtFinishedCompatARM
 	SecurityTaskSetrlimit
+	SecuritySettime64
+	Ptrace
+	PtraceRet
+	ProcessVmWritev
+	ProcessVmWritevRet
+	ArchPrctl
+	ArchPrctlRet
+	Dup
+	DupRet
+	Dup2
+	Dup2Ret
+	Dup3
+	Dup3Ret
 )
 
 // Test probe handles

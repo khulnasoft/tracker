@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/server/http"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/server/http"
 )
 
 const (
@@ -15,11 +15,11 @@ const (
 	PyroscopeAgentFlag     = "pyroscope"
 )
 
-// TODO: this should be extract to be under 'pkg/cmd/flags' once we remove the binary tracker-rules.
-// The reason why we have a specific pkg for it `pkg/cmd/flags/server` is because tracker rules uses
+// TODO: this should be extract to be under 'pkg/cmd/flags' once we remove the binary tracee-rules.
+// The reason why we have a specific pkg for it `pkg/cmd/flags/server` is because tracee rules uses
 // this code, and doesn't compile libbpfgo and isn't dependant on libbpf go, if we import
 // 'pkf/cmd/flags' directly libbpfgo becomes a dependency and we need to compile it with
-// tracker-rules.
+// tracee-rules.
 
 func PrepareHTTPServer(listenAddr string, metrics, healthz, pprof, pyro bool) (*http.Server, error) {
 	if len(listenAddr) == 0 {

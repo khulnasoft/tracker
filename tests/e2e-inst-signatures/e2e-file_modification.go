@@ -4,14 +4,23 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eFileModification struct {
 	cb detect.SignatureHandler
+}
+
+var e2eFileModificationMetadata = detect.SignatureMetadata{
+	ID:          "FILE_MODIFICATION",
+	EventName:   "FILE_MODIFICATION",
+	Version:     "0.1.0",
+	Name:        "File Modification Test",
+	Description: "Instrumentation events E2E Tests: File Modification",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eFileModification) Init(ctx detect.SignatureContext) error {
@@ -20,19 +29,12 @@ func (sig *e2eFileModification) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eFileModification) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "FILE_MODIFICATION",
-		EventName:   "FILE_MODIFICATION",
-		Version:     "0.1.0",
-		Name:        "File Modification Test",
-		Description: "Instrumentation events E2E Tests: File Modification",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eFileModificationMetadata, nil
 }
 
 func (sig *e2eFileModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "file_modification"},
+		{Source: "tracee", Name: "file_modification"},
 	}, nil
 }
 
@@ -44,7 +46,7 @@ func (sig *e2eFileModification) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "file_modification":
-		filePath, err := helpers.GetTrackerStringArgumentByName(eventObj, "file_path")
+		filePath, err := helpers.GetTraceeStringArgumentByName(eventObj, "file_path")
 		if err != nil {
 			return err
 		}

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/bucketscache"
+	"github.com/aquasecurity/tracee/pkg/bucketscache"
 )
 
 func TestBucketsCache(t *testing.T) {

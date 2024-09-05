@@ -1,6 +1,6 @@
-package tracker.TRC_14
+package tracee.TRC_14
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-14",
@@ -15,22 +15,22 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracker",
+	"source": "tracee",
 	"name": "security_file_open",
 	"origin": "container",
 }]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match = res {
+tracee_match = res {
 	input.eventName == "security_file_open"
-	flags = helpers.get_tracker_argument("flags")
+	flags = helpers.get_tracee_argument("flags")
 
 	helpers.is_file_write(flags)
 
-	pathname := helpers.get_tracker_argument("pathname")
+	pathname := helpers.get_tracee_argument("pathname")
 
 	endswith(pathname, "/release_agent")
 

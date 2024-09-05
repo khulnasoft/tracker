@@ -16,11 +16,11 @@ import (
 	forward "github.com/IBM/fluent-forward-go/fluent/client"
 	"github.com/Masterminds/sprig/v3"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/metrics"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/metrics"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type EventPrinter interface {
@@ -428,7 +428,7 @@ type forwardEventPrinter struct {
 	url     *url.URL
 	client  *forward.Client
 	// These parameters can be set up from the URL
-	tag string `default:"tracker"`
+	tag string `default:"tracee"`
 }
 
 func getParameterValue(parameters url.Values, key string, defaultValue string) string {
@@ -452,7 +452,7 @@ func (p *forwardEventPrinter) Init() error {
 	parameters, _ := url.ParseQuery(p.url.RawQuery)
 
 	// Check if we have a tag set or default it
-	p.tag = getParameterValue(parameters, "tag", "tracker")
+	p.tag = getParameterValue(parameters, "tag", "tracee")
 
 	// Do we want to enable requireAck?
 	requireAckString := getParameterValue(parameters, "requireAck", "false")

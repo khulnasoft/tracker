@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/config"
 )
 
 func TestPrepareCapture(t *testing.T) {
@@ -67,7 +67,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture mem",
 				captureSlice: []string{"mem"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Mem:        true,
 				},
 			},
@@ -75,7 +75,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture exec",
 				captureSlice: []string{"exec"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Exec:       true,
 				},
 			},
@@ -83,7 +83,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture module",
 				captureSlice: []string{"module"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Module:     true,
 				},
 			},
@@ -91,7 +91,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture write",
 				captureSlice: []string{"write"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileWrite: config.FileCaptureConfig{
 						Capture: true,
 					},
@@ -101,7 +101,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture network with default pcap type",
 				captureSlice: []string{"network"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Net: config.PcapsConfig{
 						CaptureSingle: true,
 						CaptureLength: 96,
@@ -112,7 +112,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture network with all pcap types",
 				captureSlice: []string{"network", "pcap:process,command,container"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Net: config.PcapsConfig{
 						CaptureSingle:    false,
 						CaptureProcess:   true,
@@ -126,7 +126,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture network with multiple pcap types",
 				captureSlice: []string{"network", "pcap:command,container"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Net: config.PcapsConfig{
 						CaptureSingle:    false,
 						CaptureProcess:   false,
@@ -140,7 +140,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture network with multiple pcap types and snaplen",
 				captureSlice: []string{"network", "pcap:command,container", "pcap-snaplen:120b"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Net: config.PcapsConfig{
 						CaptureSingle:    false,
 						CaptureProcess:   false,
@@ -154,7 +154,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture bpf",
 				captureSlice: []string{"bpf"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					Bpf:        true,
 				},
 				expectedError: nil,
@@ -163,7 +163,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture write filtered",
 				captureSlice: []string{"write=/tmp*"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileWrite: config.FileCaptureConfig{
 						Capture:    true,
 						PathFilter: []string{"/tmp"},
@@ -174,7 +174,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture read",
 				captureSlice: []string{"read"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileRead: config.FileCaptureConfig{
 						Capture: true,
 					},
@@ -184,7 +184,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture read filtered by path",
 				captureSlice: []string{"read:path=/tmp*"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileRead: config.FileCaptureConfig{
 						Capture:    true,
 						PathFilter: []string{"/tmp"},
@@ -195,7 +195,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture read filtered by type",
 				captureSlice: []string{"read:type=pipe"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileRead: config.FileCaptureConfig{
 						Capture:    true,
 						TypeFilter: config.CapturePipeFiles,
@@ -206,7 +206,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "capture read filtered by fd",
 				captureSlice: []string{"read:fd=stdin"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileRead: config.FileCaptureConfig{
 						Capture:    true,
 						TypeFilter: config.CaptureStdinFiles,
@@ -217,7 +217,7 @@ func TestPrepareCapture(t *testing.T) {
 				testName:     "multiple capture options",
 				captureSlice: []string{"write", "exec", "mem", "module", "bpf"},
 				expectedCapture: config.CaptureConfig{
-					OutputPath: "/tmp/tracker/out",
+					OutputPath: "/tmp/tracee/out",
 					FileWrite:  config.FileCaptureConfig{Capture: true},
 					Mem:        true,
 					Exec:       true,

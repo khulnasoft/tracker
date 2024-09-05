@@ -22,7 +22,7 @@ PS: DO NOT JUMP THE CHECKLIST. GO BACK AND READ, ALWAYS!
 ### 2. Explain how to test it
 
 <!--
-Maintainer will review the code, and test the fix/feature, how to run Tracker ?
+Maintainer will review the code, and test the fix/feature, how to run Tracee ?
 Give a full command line example and what to look for.
 -->
 

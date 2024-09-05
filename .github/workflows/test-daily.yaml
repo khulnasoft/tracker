@@ -9,7 +9,7 @@ on:
     - cron: "0 3 * * *"
   workflow_call:
 jobs:
-  compile-tracker:
+  compile-tracee:
     name: Test Latest libbpfgo
     runs-on: ubuntu-latest
     steps:
@@ -19,6 +19,6 @@ jobs:
           submodules: true
       - name: Install Dependencies
         uses: ./.github/actions/build-dependencies
-      - name: Compile Tracker
+      - name: Compile Tracee
         run: |
           make test-upstream-libbpfgo

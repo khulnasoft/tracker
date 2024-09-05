@@ -1,6 +1,6 @@
-package tracker.TRC_3
+package tracee.TRC_3
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
     "id": "TRC-3",
@@ -16,37 +16,37 @@ __rego_metadoc__ := {
 
 eventSelectors := [
     {
-        "source": "tracker",
+        "source": "tracee",
         "name": "ptrace"
     },
     {
-        "source": "tracker",
+        "source": "tracee",
         "name": "security_file_open"
     },
     {
-        "source": "tracker",
+        "source": "tracee",
         "name": "process_vm_writev"
     }
 ]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
 
-tracker_match {
+tracee_match {
     input.eventName == "ptrace"
-    arg_value = helpers.get_tracker_argument("request")
+    arg_value = helpers.get_tracee_argument("request")
     arg_value == "PTRACE_POKETEXT"
 }
 
-tracker_match = res {
+tracee_match = res {
     input.eventName == "security_file_open"
-    flags = helpers.get_tracker_argument("flags")
+    flags = helpers.get_tracee_argument("flags")
 
     helpers.is_file_write(flags)
 
-    pathname := helpers.get_tracker_argument("pathname")
+    pathname := helpers.get_tracee_argument("pathname")
 
     regex.match(`/proc/(?:\d.+|self)/mem`, pathname)
 
@@ -56,8 +56,8 @@ tracker_match = res {
     }
 }
 
-tracker_match {
+tracee_match {
     input.eventName == "process_vm_writev"
-    dst_pid = helpers.get_tracker_argument("pid")
+    dst_pid = helpers.get_tracee_argument("pid")
     dst_pid != input.processId
 }

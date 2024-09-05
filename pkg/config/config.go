@@ -3,39 +3,40 @@ package config
 import (
 	"io"
 
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events/queue"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/pkg/containers/runtime"
+	"github.com/aquasecurity/tracee/pkg/dnscache"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events/queue"
+	"github.com/aquasecurity/tracee/pkg/policy"
+	"github.com/aquasecurity/tracee/pkg/proctree"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
-// Config is a struct containing user defined configuration to initialize Tracker
+// Config is a struct containing user defined configuration to initialize Tracee
 //
-// NOTE: In the future, Tracker config will be changed at run time and will require
+// NOTE: In the future, Tracee config will be changed at run time and will require
 // proper management.
 type Config struct {
-	InitialPolicies    []*policy.Policy
-	Capture            *CaptureConfig
-	Capabilities       *CapabilitiesConfig
-	Output             *OutputConfig
-	Cache              queue.CacheConfig
-	ProcTree           proctree.ProcTreeConfig
-	PerfBufferSize     int
-	BlobPerfBufferSize int
-	MaxPidsCache       int // maximum number of pids to cache per mnt ns (in Tracker.pidsInMntns)
-	BTFObjPath         string
-	BPFObjBytes        []byte
-	KernelConfig       *environment.KernelConfig
-	OSInfo             *environment.OSInfo
-	Sockets            runtime.Sockets
-	NoContainersEnrich bool
-	EngineConfig       engine.Config
-	MetricsEnabled     bool
-	DNSCacheConfig     dnscache.Config
+	InitialPolicies     []*policy.Policy
+	Capture             *CaptureConfig
+	Capabilities        *CapabilitiesConfig
+	Output              *OutputConfig
+	Cache               queue.CacheConfig
+	ProcTree            proctree.ProcTreeConfig
+	PerfBufferSize      int
+	BlobPerfBufferSize  int
+	PipelineChannelSize int
+	MaxPidsCache        int // maximum number of pids to cache per mnt ns (in Tracee.pidsInMntns)
+	BTFObjPath          string
+	BPFObjBytes         []byte
+	KernelConfig        *environment.KernelConfig
+	OSInfo              *environment.OSInfo
+	Sockets             runtime.Sockets
+	NoContainersEnrich  bool
+	EngineConfig        engine.Config
+	MetricsEnabled      bool
+	DNSCacheConfig      dnscache.Config
 }
 
 // Validate does static validation of the configuration

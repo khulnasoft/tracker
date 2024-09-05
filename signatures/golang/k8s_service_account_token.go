@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type K8SServiceAccountToken struct {
@@ -15,6 +15,22 @@ type K8SServiceAccountToken struct {
 	legitProcs       []string
 	tokenPathPattern string
 	compiledRegex    *regexp.Regexp
+}
+
+var k8SServiceAccountTokenMetadata = detect.SignatureMetadata{
+	ID:          "TRC-108",
+	Version:     "1",
+	Name:        "K8s service account token file read",
+	EventName:   "k8s_service_account_token",
+	Description: "The Kubernetes service account token file was read on your container. This token is used to communicate with the Kubernetes API Server. Adversaries may try to communicate with the API Server to steal information and/or credentials, or even run more containers and laterally extend their grip on the systems.",
+	Properties: map[string]interface{}{
+		"Severity":             0,
+		"Category":             "credential-access",
+		"Technique":            "Exploitation for Credential Access",
+		"Kubernetes_Technique": "Container service account",
+		"id":                   "attack-pattern--9c306d8d-cde7-4b4c-b6e8-d0bb16caca36",
+		"external_id":          "T1212",
+	},
 }
 
 func (sig *K8SServiceAccountToken) Init(ctx detect.SignatureContext) error {
@@ -27,26 +43,12 @@ func (sig *K8SServiceAccountToken) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *K8SServiceAccountToken) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-108",
-		Version:     "1",
-		Name:        "K8s service account token file read",
-		EventName:   "k8s_service_account_token",
-		Description: "The Kubernetes service account token file was read on your container. This token is used to communicate with the Kubernetes API Server. Adversaries may try to communicate with the API Server to steal information and/or credentials, or even run more containers and laterally extend their grip on the systems.",
-		Properties: map[string]interface{}{
-			"Severity":             0,
-			"Category":             "credential-access",
-			"Technique":            "Exploitation for Credential Access",
-			"Kubernetes_Technique": "Container service account",
-			"id":                   "attack-pattern--9c306d8d-cde7-4b4c-b6e8-d0bb16caca36",
-			"external_id":          "T1212",
-		},
-	}, nil
+	return k8SServiceAccountTokenMetadata, nil
 }
 
 func (sig *K8SServiceAccountToken) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_file_open", Origin: "container"},
+		{Source: "tracee", Name: "security_file_open", Origin: "container"},
 	}, nil
 }
 
@@ -65,12 +67,12 @@ func (sig *K8SServiceAccountToken) OnEvent(event protocol.Event) error {
 			}
 		}
 
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}

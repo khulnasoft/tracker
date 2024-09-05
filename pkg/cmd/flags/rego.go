@@ -5,8 +5,8 @@ import (
 
 	"github.com/open-policy-agent/opa/compile"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/signatures/rego"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/signatures/rego"
 )
 
 func regoHelp() string {
@@ -41,7 +41,7 @@ func PrepareRego(regoSlice []string) (rego.Config, error) {
 			c.AIO = true
 		default:
 			// TODO: build man page
-			// return rego.Config{}, errfmt.Errorf("invalid rego option specified, see 'tracker-rego' man page for more info")
+			// return rego.Config{}, errfmt.Errorf("invalid rego option specified, see 'tracee-rego' man page for more info")
 			return rego.Config{}, errfmt.Errorf("invalid rego option specified, use '--help' for more info")
 		}
 	}

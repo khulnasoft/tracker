@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // this usecase implements EventQueue interface with a memory stored queue (FIFO)

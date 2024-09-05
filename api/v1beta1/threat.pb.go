@@ -82,7 +82,7 @@ type Threat struct {
 
 	Description string            `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Mitre       *Mitre            `protobuf:"bytes,2,opt,name=mitre,proto3" json:"mitre,omitempty"`
-	Severity    Severity          `protobuf:"varint,3,opt,name=severity,proto3,enum=tracker.v1beta1.Severity" json:"severity,omitempty"`
+	Severity    Severity          `protobuf:"varint,3,opt,name=severity,proto3,enum=tracee.v1beta1.Severity" json:"severity,omitempty"`
 	Name        string            `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	Properties  map[string]string `protobuf:"bytes,5,rep,name=properties,proto3" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
@@ -374,19 +374,19 @@ func file_api_v1beta1_threat_proto_rawDescGZIP() []byte {
 var file_api_v1beta1_threat_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_v1beta1_threat_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_api_v1beta1_threat_proto_goTypes = []interface{}{
-	(Severity)(0),          // 0: tracker.v1beta1.Severity
-	(*Threat)(nil),         // 1: tracker.v1beta1.Threat
-	(*Mitre)(nil),          // 2: tracker.v1beta1.Mitre
-	(*MitreTactic)(nil),    // 3: tracker.v1beta1.MitreTactic
-	(*MitreTechnique)(nil), // 4: tracker.v1beta1.MitreTechnique
-	nil,                    // 5: tracker.v1beta1.Threat.PropertiesEntry
+	(Severity)(0),          // 0: tracee.v1beta1.Severity
+	(*Threat)(nil),         // 1: tracee.v1beta1.Threat
+	(*Mitre)(nil),          // 2: tracee.v1beta1.Mitre
+	(*MitreTactic)(nil),    // 3: tracee.v1beta1.MitreTactic
+	(*MitreTechnique)(nil), // 4: tracee.v1beta1.MitreTechnique
+	nil,                    // 5: tracee.v1beta1.Threat.PropertiesEntry
 }
 var file_api_v1beta1_threat_proto_depIdxs = []int32{
-	2, // 0: tracker.v1beta1.Threat.mitre:type_name -> tracker.v1beta1.Mitre
-	0, // 1: tracker.v1beta1.Threat.severity:type_name -> tracker.v1beta1.Severity
-	5, // 2: tracker.v1beta1.Threat.properties:type_name -> tracker.v1beta1.Threat.PropertiesEntry
-	3, // 3: tracker.v1beta1.Mitre.tactic:type_name -> tracker.v1beta1.MitreTactic
-	4, // 4: tracker.v1beta1.Mitre.technique:type_name -> tracker.v1beta1.MitreTechnique
+	2, // 0: tracee.v1beta1.Threat.mitre:type_name -> tracee.v1beta1.Mitre
+	0, // 1: tracee.v1beta1.Threat.severity:type_name -> tracee.v1beta1.Severity
+	5, // 2: tracee.v1beta1.Threat.properties:type_name -> tracee.v1beta1.Threat.PropertiesEntry
+	3, // 3: tracee.v1beta1.Mitre.tactic:type_name -> tracee.v1beta1.MitreTactic
+	4, // 4: tracee.v1beta1.Mitre.technique:type_name -> tracee.v1beta1.MitreTechnique
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name

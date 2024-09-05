@@ -67,7 +67,7 @@ help:
 		exit 1
 	fi
 
-K8S_CONTNAME = tracker-k8s:latest
+K8S_CONTNAME = tracee-k8s:latest
 
 .PHONY: build
 build: \
@@ -85,7 +85,7 @@ manifests: \
 	.check_tree
 #
 	$(CMD_DOCKER) run --rm \
-		-v $(shell pwd):/tracker \
+		-v $(shell pwd):/tracee \
 		$(K8S_CONTNAME) make k8s-manifests
 
 .PHONY: generate
@@ -94,7 +94,7 @@ generate: \
 	.check_tree
 #
 	$(CMD_DOCKER) run --rm \
-		-v $(shell pwd):/tracker \
+		-v $(shell pwd):/tracee \
 		$(K8S_CONTNAME) make k8s-generate
 
 #

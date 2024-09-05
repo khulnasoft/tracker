@@ -23,5 +23,5 @@ tracing the kallsyms_lookup_name event
 ## Example Use Case
 
 ```console
-./dist/tracker -e kallsyms_lookup_name
+./dist/tracee -e kallsyms_lookup_name
 ```

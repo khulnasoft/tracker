@@ -11,11 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func TestEngine_ConsumeSources(t *testing.T) {
@@ -50,7 +50,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 					return []detect.SignatureEventSelector{
 						{
 							Name:   "test_event",
-							Source: "tracker",
+							Source: "tracee",
 						},
 					}, nil
 				},
@@ -71,7 +71,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 					return []detect.SignatureEventSelector{
 						{
 							Name:   "not execve",
-							Source: "tracker",
+							Source: "tracee",
 						},
 					}, nil
 				},
@@ -88,7 +88,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 					return []detect.SignatureEventSelector{
 						{
 							Name:   "*",
-							Source: "tracker",
+							Source: "tracee",
 						},
 					}, nil
 				},
@@ -105,7 +105,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 				FakeGetSelectedEvents: func() ([]detect.SignatureEventSelector, error) {
 					return []detect.SignatureEventSelector{
 						{
-							Source: "tracker",
+							Source: "tracee",
 						},
 					}, nil
 				},
@@ -136,7 +136,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 					return []detect.SignatureEventSelector{
 						{
 							Name:   "test_event",
-							Source: "tracker",
+							Source: "tracee",
 							Origin: "container",
 						},
 					}, nil
@@ -171,7 +171,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 					return []detect.SignatureEventSelector{
 						{
 							Name:   "test_event",
-							Source: "tracker",
+							Source: "tracee",
 							Origin: "host",
 						},
 					}, nil
@@ -201,7 +201,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 					return []detect.SignatureEventSelector{
 						{
 							Name:   "test_event",
-							Source: "tracker",
+							Source: "tracee",
 							Origin: "host",
 						},
 					}, nil
@@ -255,7 +255,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 			expectedError: "error getting metadata: getMetadata error",
 		},
 		{
-			name: "happy path - signature receives a non tracker event",
+			name: "happy path - signature receives a non tracee event",
 			inputEvent: protocol.Event{
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
@@ -281,7 +281,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 			expectedEvent:     "a great payload",
 		},
 		{
-			name: "happy path - signature with partial selector and non tracker source",
+			name: "happy path - signature with partial selector and non tracee source",
 			inputEvent: protocol.Event{
 				Headers: protocol.EventHeaders{
 					Selector: protocol.Selector{
@@ -312,7 +312,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			inputs := EventSources{}
-			inputs.Tracker = make(chan protocol.Event, 1)
+			inputs.Tracee = make(chan protocol.Event, 1)
 			outputChan := make(chan *detect.Finding, 1)
 
 			defer func() {
@@ -323,7 +323,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 				time.Sleep(1 * time.Second)
 
 				// cleanup
-				close(inputs.Tracker)
+				close(inputs.Tracee)
 				close(outputChan)
 			}()
 
@@ -366,7 +366,7 @@ func TestEngine_ConsumeSources(t *testing.T) {
 			go e.Start(ctx)
 
 			// send a test event
-			e.inputs.Tracker <- tc.inputEvent
+			e.inputs.Tracee <- tc.inputEvent
 
 			// assert
 			var gotEvent protocol.Event
@@ -396,11 +396,11 @@ func TestEngine_GetSelectedEvents(t *testing.T) {
 				return []detect.SignatureEventSelector{
 					{
 						Name:   "test_event",
-						Source: "tracker",
+						Source: "tracee",
 					},
 					{
 						Name:   "test_event2",
-						Source: "tracker",
+						Source: "tracee",
 					},
 				}, nil
 			},
@@ -410,12 +410,12 @@ func TestEngine_GetSelectedEvents(t *testing.T) {
 				return []detect.SignatureEventSelector{
 					{
 						Name:   "test_event",
-						Source: "tracker",
+						Source: "tracee",
 						Origin: "host",
 					},
 					{
 						Name:   "test_event2",
-						Source: "tracker",
+						Source: "tracee",
 					},
 				}, nil
 			},
@@ -423,7 +423,7 @@ func TestEngine_GetSelectedEvents(t *testing.T) {
 	}
 
 	config := Config{Signatures: sigs}
-	e, err := NewEngine(config, EventSources{Tracker: make(chan protocol.Event)}, make(chan *detect.Finding))
+	e, err := NewEngine(config, EventSources{Tracee: make(chan protocol.Event)}, make(chan *detect.Finding))
 	require.NoError(t, err, "constructing engine")
 
 	err = e.Init()
@@ -433,17 +433,17 @@ func TestEngine_GetSelectedEvents(t *testing.T) {
 	expected := []detect.SignatureEventSelector{
 		{
 			Name:   "test_event",
-			Source: "tracker",
+			Source: "tracee",
 			Origin: "*",
 		},
 		{
 			Name:   "test_event2",
-			Source: "tracker",
+			Source: "tracee",
 			Origin: "*",
 		},
 		{
 			Name:   "test_event",
-			Source: "tracker",
+			Source: "tracee",
 			Origin: "host",
 		},
 	}
@@ -474,7 +474,7 @@ func TestEngine_LoadSignature(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			input := make(chan protocol.Event)
 			source := EventSources{
-				Tracker: input,
+				Tracee: input,
 			}
 			output := make(chan *detect.Finding)
 			engine, err := NewEngine(Config{}, source, output)

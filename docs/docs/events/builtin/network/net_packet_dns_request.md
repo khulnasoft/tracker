@@ -36,7 +36,7 @@ arguments showing important data about the query being made.
 Example:
 
 ```console
-$ tracker --output json --events net_packet_dns_request
+$ tracee --output json --events net_packet_dns_request
 ```
 
 ```json

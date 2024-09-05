@@ -85,7 +85,7 @@ for the default run"). As arguments for this event you will find: `src`, `dst`,
 Example:
 
 ```
-$ tracker --output json --events net_packet_dns
+$ tracee --output json --events net_packet_dns
 ```
 
 ```json

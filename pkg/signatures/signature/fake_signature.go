@@ -1,8 +1,8 @@
 package signature
 
 import (
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
 )
 
 // FakeSignature is a mock for the detect.Signature interface,

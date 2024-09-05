@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/signatures/regosig"
-	"github.com/khulnasoft/tracker/signatures/signaturestest"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/signatures/regosig"
+	"github.com/aquasecurity/tracee/signatures/signaturestest"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func TestAio_GetMetadata(t *testing.T) {
@@ -54,11 +54,11 @@ func TestAio_GetSelectedEvents(t *testing.T) {
 
 	assert.Equal(t, map[detect.SignatureEventSelector]bool{
 		{
-			Source: "tracker",
+			Source: "tracee",
 			Name:   "ptrace",
 		}: true,
 		{
-			Source: "tracker",
+			Source: "tracee",
 			Name:   "execve",
 		}: true,
 	}, eventsSet)

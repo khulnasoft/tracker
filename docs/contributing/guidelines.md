@@ -1,6 +1,6 @@
 ## Style Guide for Contributors
 
-For those willing to contribute to Tracker, this repository has code formatting
+For those willing to contribute to Tracee, this repository has code formatting
 guidelines being enforced. It is recommended that, before committing your
 changes, you run the following command:
 
@@ -31,11 +31,11 @@ changes, you run the following command:
     Fixing C and eBPF files and headers formatting...
     Formatting ./pkg/ebpf/c/missing_definitions.h
     Formatting ./pkg/ebpf/c/struct_flavors.h
-    Formatting ./pkg/ebpf/c/tracker.bpf.c
+    Formatting ./pkg/ebpf/c/tracee.bpf.c
     Formatting ./pkg/ebpf/c/vmlinux.h
     
     Fixing golang files formatting...
-    patching file pkg/ebpf/tracker.go
+    patching file pkg/ebpf/tracee.go
     ```
 
     ```console
@@ -47,7 +47,7 @@ changes, you run the following command:
      M builder/Makefile.checkers
      M pkg/ebpf/c/missing_definitions.h
      M pkg/ebpf/c/struct_flavors.h
-     M pkg/ebpf/c/tracker.bpf.c
+     M pkg/ebpf/c/tracee.bpf.c
      M pkg/ebpf/c/vmlinux.h
     ```
 
@@ -63,14 +63,14 @@ changes, you run the following command:
     ```text
     Checking Golang vet...
     make[2]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
-    GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS="-I/home/rafaeldtinoco/work/ebpf/tracker-review/dist/libbpf" CGO_LDFLAGS="-lelf -lz /home/rafaeldtinoco/work/ebpf/tracker-review/dist/libbpf/libbpf.a" \
+    GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS="-I/home/rafaeldtinoco/work/ebpf/tracee-review/dist/libbpf" CGO_LDFLAGS="-lelf -lz /home/rafaeldtinoco/work/ebpf/tracee-review/dist/libbpf/libbpf.a" \
     go vet \
     	-tags core,ebpf \
     	./...
     
     Checking Golang with StaticChecker...
     make[2]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
-    GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS="-I/home/rafaeldtinoco/work/ebpf/tracker-review/dist/libbpf" CGO_LDFLAGS="-lelf -lz /home/rafaeldtinoco/work/ebpf/tracker-review/dist/libbpf/libbpf.a" \
+    GOOS=linux CC=clang GOARCH=amd64 CGO_CFLAGS="-I/home/rafaeldtinoco/work/ebpf/tracee-review/dist/libbpf" CGO_LDFLAGS="-lelf -lz /home/rafaeldtinoco/work/ebpf/tracee-review/dist/libbpf/libbpf.a" \
     staticcheck -f stylish \
     	-tags core,ebpf \
     	./...

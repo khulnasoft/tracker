@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -25,6 +25,15 @@ type e2eDNS struct {
 	cb       detect.SignatureHandler
 }
 
+var e2eDNSMetadata = detect.SignatureMetadata{
+	ID:          "DNS",
+	EventName:   "DNS",
+	Version:     "0.1.0",
+	Name:        "Network DNS Test",
+	Description: "Network E2E Tests: DNS",
+	Tags:        []string{"e2e", "network"},
+}
+
 func (sig *e2eDNS) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
 	sig.foundMX = false  // proforma
@@ -34,19 +43,12 @@ func (sig *e2eDNS) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eDNS) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "DNS",
-		EventName:   "DNS",
-		Version:     "0.1.0",
-		Name:        "Network DNS Test",
-		Description: "Network E2E Tests: DNS",
-		Tags:        []string{"e2e", "network"},
-	}, nil
+	return e2eDNSMetadata, nil
 }
 
 func (sig *e2eDNS) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "net_packet_dns"},
+		{Source: "tracee", Name: "net_packet_dns"},
 	}, nil
 }
 

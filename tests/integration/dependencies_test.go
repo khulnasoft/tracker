@@ -11,17 +11,17 @@ import (
 
 	"go.uber.org/goleak"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/tests/testutils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/tests/testutils"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func Test_EventsDependencies(t *testing.T) {
 	assureIsRoot(t)
 
-	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
+	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -117,7 +117,7 @@ func Test_EventsDependencies(t *testing.T) {
 
 	for _, testCaseInst := range testCases {
 		t.Run(testCaseInst.name, func(t *testing.T) {
-			// prepare tracker config
+			// prepare tracee config
 			testConfig := config.Config{
 				Capabilities: &config.CapabilitiesConfig{
 					BypassCaps: true,
@@ -132,14 +132,14 @@ func Test_EventsDependencies(t *testing.T) {
 			logOutChan, restoreLogger := testutils.SetTestLogger(t, logger.DebugLevel)
 			logsResultChan := testutils.TestLogs(t, testCaseInst.expectedLogs, logOutChan, logsDone)
 
-			// start tracker
-			trc, err := startTracker(ctx, t, testConfig, nil, nil)
+			// start tracee
+			trc, err := startTracee(ctx, t, testConfig, nil, nil)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
 			}
-			t.Logf("  --- started tracker ---")
-			err = waitForTrackerStart(trc)
+			t.Logf("  --- started tracee ---")
+			err = waitForTraceeStart(trc)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
@@ -167,11 +167,10 @@ func Test_EventsDependencies(t *testing.T) {
 			// test kprobes
 			err = testAttachedKprobes(testCaseInst.expectedKprobes, testCaseInst.unexpectedKprobes)
 			if err != nil {
-    if err != nil {
-        t.Logf("Test %s failed: %v", t.Name(), err)
-        failed = true
-        defer cleanup()
-    }
+				t.Logf("Test %s failed: %v", t.Name(), err)
+				failed = true
+				goto cleanup
+			}
 
 			// test events
 			testCmdEvents = createCmdEvents(testCaseInst.expectedEvents, testCaseInst.unexpectedEvents)
@@ -196,12 +195,12 @@ func Test_EventsDependencies(t *testing.T) {
 			}
 			restoreLogger()
 			cancel()
-			errStop := waitForTrackerStop(trc)
+			errStop := waitForTraceeStop(trc)
 			if errStop != nil {
 				t.Log(errStop)
 				failed = true
 			} else {
-				t.Logf("  --- stopped tracker ---")
+				t.Logf("  --- stopped tracee ---")
 			}
 
 			if failed {

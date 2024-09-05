@@ -10,20 +10,20 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/filehash"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/containers"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/parse"
+	"github.com/aquasecurity/tracee/pkg/filehash"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // processWriteEvent processes a write event by indexing the written file.
-func (t *Tracker) processWriteEvent(event *trace.Event) error {
+func (t *Tracee) processWriteEvent(event *trace.Event) error {
 	// only capture written files
 	if !t.config.Capture.FileWrite.Capture {
 		return nil
@@ -62,7 +62,7 @@ func (t *Tracker) processWriteEvent(event *trace.Event) error {
 }
 
 // processReadEvent processes a read event by indexing the read file.
-func (t *Tracker) processReadEvent(event *trace.Event) error {
+func (t *Tracee) processReadEvent(event *trace.Event) error {
 	// only capture read files
 	if !t.config.Capture.FileRead.Capture {
 		return nil
@@ -116,7 +116,7 @@ func processKernelReadFile(event *trace.Event) error {
 }
 
 // processSchedProcessExec processes a sched_process_exec event by capturing the executed file.
-func (t *Tracker) processSchedProcessExec(event *trace.Event) error {
+func (t *Tracee) processSchedProcessExec(event *trace.Event) error {
 	// cache this pid by it's mnt ns
 	if event.ProcessID == 1 {
 		t.pidsInMntns.ForceAddBucketItem(uint32(event.MountNS), uint32(event.HostProcessID))
@@ -212,7 +212,7 @@ func (t *Tracker) processSchedProcessExec(event *trace.Event) error {
 }
 
 // processDoFinitModule handles a do_finit_module event and triggers other hooking detection logic.
-func (t *Tracker) processDoInitModule(event *trace.Event) error {
+func (t *Tracee) processDoInitModule(event *trace.Event) error {
 	// Check if related events are being traced.
 	_, okSyscalls := t.eventsState[events.HookedSyscall]
 	_, okSeqOps := t.eventsState[events.HookedSeqOps]
@@ -263,7 +263,7 @@ const (
 )
 
 // processHookedProcFops processes a hooked_proc_fops event.
-func (t *Tracker) processHookedProcFops(event *trace.Event) error {
+func (t *Tracee) processHookedProcFops(event *trace.Event) error {
 	const hookedFopsPointersArgName = "hooked_fops_pointers"
 	fopsAddresses, err := parse.ArgVal[[]uint64](event.Args, hookedFopsPointersArgName)
 	if err != nil || fopsAddresses == nil {
@@ -295,7 +295,7 @@ func (t *Tracker) processHookedProcFops(event *trace.Event) error {
 }
 
 // processTriggeredEvent processes a triggered event (e.g. print_syscall_table, print_net_seq_ops).
-func (t *Tracker) processTriggeredEvent(event *trace.Event) error {
+func (t *Tracee) processTriggeredEvent(event *trace.Event) error {
 	// Initial event - no need to process
 	if event.Timestamp == 0 {
 		return nil
@@ -312,7 +312,7 @@ func (t *Tracker) processTriggeredEvent(event *trace.Event) error {
 }
 
 // processPrintSyscallTable processes a print_syscall_table event.
-func (t *Tracker) processPrintMemDump(event *trace.Event) error {
+func (t *Tracee) processPrintMemDump(event *trace.Event) error {
 	address, err := parse.ArgVal[uintptr](event.Args, "address")
 	if err != nil || address == 0 {
 		return errfmt.Errorf("error parsing print_mem_dump args: %v", err)
@@ -345,55 +345,28 @@ func (t *Tracker) processPrintMemDump(event *trace.Event) error {
 // Timing related functions
 //
 
-// normalizeEventCtxTimes normalizes the event context timings to be relative to tracker start time
+// normalizeEventCtxTimes normalizes the event context timings to be relative to tracee start time
 // or current time in nanoseconds.
-func (t *Tracker) normalizeEventCtxTimes(event *trace.Event) error {
+func (t *Tracee) normalizeEventCtxTimes(event *trace.Event) error {
 	eventId := events.ID(event.EventID)
 	if eventId > events.MaxCommonID && eventId < events.MaxUserSpace {
 		// derived events are normalized from their base event, skip the processing
 		return nil
 	}
-
-	//
-	// Currently, the timestamp received from the bpf code is of the monotonic clock.
-	//
-	// TODO: The monotonic clock doesn't take into account system sleep time.
-	// Starting from kernel 5.7, we can get the timestamp relative to the system boot time
-	// instead which is preferable.
-
-	if t.config.Output.RelativeTime {
-		// monotonic time since tracker started: timestamp - tracker starttime
-		event.Timestamp = event.Timestamp - int(t.startTime)
-		event.ThreadStartTime = event.ThreadStartTime - int(t.startTime)
-	} else {
-		// current ("wall") time: add boot time to timestamp
-		event.Timestamp = event.Timestamp + int(t.bootTime)
-		event.ThreadStartTime = event.ThreadStartTime + int(t.bootTime)
-	}
+	event.Timestamp = t.timeNormalizer.NormalizeTime(event.Timestamp)
+	event.ThreadStartTime = t.timeNormalizer.NormalizeTime(event.ThreadStartTime)
 
 	return nil
 }
 
-// getOrigEvtTimestamp returns the original timestamp of the event.
-// To be used only when the event timestamp was normalized via normalizeEventCtxTimes.
-func (t *Tracker) getOrigEvtTimestamp(event *trace.Event) int {
-	if t.config.Output.RelativeTime {
-		// if the time was normalized relative to tracker start time, add the start time back
-		return event.Timestamp + int(t.startTime)
-	}
-
-	// if the time was normalized to "wall" time, subtract the boot time
-	return event.Timestamp - int(t.bootTime)
-}
-
 // processSchedProcessFork processes a sched_process_fork event by normalizing the start time.
-func (t *Tracker) processSchedProcessFork(event *trace.Event) error {
+func (t *Tracee) processSchedProcessFork(event *trace.Event) error {
 	return t.normalizeEventArgTime(event, "start_time")
 }
 
-// normalizeEventArgTime normalizes the event arg time to be relative to tracker start time or
+// normalizeEventArgTime normalizes the event arg time to be relative to tracee start time or
 // current time.
-func (t *Tracker) normalizeEventArgTime(event *trace.Event, argName string) error {
+func (t *Tracee) normalizeEventArgTime(event *trace.Event, argName string) error {
 	arg := events.GetArg(event, argName)
 	if arg == nil {
 		return errfmt.Errorf("couldn't find argument %s of event %s", argName, event.EventName)
@@ -402,19 +375,13 @@ func (t *Tracker) normalizeEventArgTime(event *trace.Event, argName string) erro
 	if !ok {
 		return errfmt.Errorf("argument %s of event %s is not of type uint64", argName, event.EventName)
 	}
-	if t.config.Output.RelativeTime {
-		// monotonic time since tracker started: timestamp - tracker starttime
-		arg.Value = argTime - t.startTime
-	} else {
-		// current ("wall") time: add boot time to timestamp
-		arg.Value = argTime + t.bootTime
-	}
+	arg.Value = t.timeNormalizer.NormalizeTime(int(argTime))
 	return nil
 }
 
 // addHashArg calculate file hash (in a best-effort efficiency manner) and add it as an argument
-func (t *Tracker) addHashArg(event *trace.Event, fileKey *filehash.Key) error {
-	// Currently Tracker does not support hash calculation of memfd files
+func (t *Tracee) addHashArg(event *trace.Event, fileKey *filehash.Key) error {
+	// Currently Tracee does not support hash calculation of memfd files
 	if strings.HasPrefix(fileKey.Pathname(), "memfd") {
 		return nil
 	}
@@ -443,7 +410,7 @@ func (t *Tracker) addHashArg(event *trace.Event, fileKey *filehash.Key) error {
 	return err
 }
 
-func (t *Tracker) processSharedObjectLoaded(event *trace.Event) error {
+func (t *Tracee) processSharedObjectLoaded(event *trace.Event) error {
 	filePath, err := parse.ArgVal[string](event.Args, "pathname")
 	if err != nil {
 		logger.Debugw("Error parsing argument", "error", err)

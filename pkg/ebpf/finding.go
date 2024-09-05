@@ -1,10 +1,10 @@
 package ebpf
 
 import (
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // FindingToEvent converts a detect.Finding into a trace.Event
@@ -183,7 +183,7 @@ func getMetadataFromSignatureMetadata(sigMetadata detect.SignatureMetadata) *tra
 
 	// This is temporary, we passing all the signatures metadata,
 	// so we can create the Threat in the protobuf for the grpc API,
-	// once we refactor tracker to use the new event structure,
+	// once we refactor tracee to use the new event structure,
 	// we will create the Threat here, or maybe return it from the rule engine
 	metadata.Properties["Severity"] = sigMetadata.Properties["Severity"]
 	metadata.Properties["Category"] = sigMetadata.Properties["Category"]

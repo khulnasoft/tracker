@@ -3,10 +3,10 @@ package golang
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type antiDebugging struct {
@@ -39,7 +39,7 @@ func (sig *antiDebugging) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *antiDebugging) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "ptrace"},
+		{Source: "tracee", Name: "ptrace"},
 	}, nil
 }
 
@@ -52,7 +52,7 @@ func (sig *antiDebugging) OnEvent(event protocol.Event) error {
 	if ee.EventName != "ptrace" {
 		return nil
 	}
-	request, err := helpers.GetTrackerArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
+	request, err := helpers.GetTraceeArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return err
 	}

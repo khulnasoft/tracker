@@ -5,17 +5,26 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eProcessExecuteFailed struct {
 	cb                    detect.SignatureHandler
 	osInfo                *environment.OSInfo
 	markUnsupportedKernel sync.Once
+}
+
+var e2eProcessExecuteFailedMetadata = detect.SignatureMetadata{
+	ID:          "PROCESS_EXECUTE_FAILED",
+	EventName:   "PROCESS_EXECUTE_FAILED",
+	Version:     "0.1.0",
+	Name:        "Process Execute Failed Test",
+	Description: "Instrumentation events E2E Tests: Process Execute Failed",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eProcessExecuteFailed) Init(ctx detect.SignatureContext) error {
@@ -29,20 +38,13 @@ func (sig *e2eProcessExecuteFailed) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eProcessExecuteFailed) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "PROCESS_EXECUTE_FAILED",
-		EventName:   "PROCESS_EXECUTE_FAILED",
-		Version:     "0.1.0",
-		Name:        "Process Execute Failed Test",
-		Description: "Instrumentation events E2E Tests: Process Execute Failed",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eProcessExecuteFailedMetadata, nil
 }
 
 func (sig *e2eProcessExecuteFailed) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "process_execute_failed"},
-		{Source: "tracker", Name: "init_namespaces"},
+		{Source: "tracee", Name: "process_execute_failed"},
+		{Source: "tracee", Name: "init_namespaces"},
 	}, nil
 }
 
@@ -78,7 +80,7 @@ func (sig *e2eProcessExecuteFailed) OnEvent(event protocol.Event) error {
 			return err
 		}
 	case "process_execute_failed":
-		filePath, err := helpers.GetTrackerStringArgumentByName(eventObj, "path")
+		filePath, err := helpers.GetTraceeStringArgumentByName(eventObj, "path")
 		if err != nil {
 			return err
 		}

@@ -49,8 +49,8 @@ help:
 	@echo "    $$ make -f builder/Makefile.performance dashboard-start"
 	@echo "    $$ make -f builder/Makefile.performance dashboard-stop"
 	@echo ""
-	@echo "Note: tracker should BE RUNNING before starting dashboard."
-	@echo "Note: run tracker with --pyroscope cmd line option."
+	@echo "Note: tracee should BE RUNNING before starting dashboard."
+	@echo "Note: run tracee with --pyroscope cmd line option."
 	@echo ""
 
 #
@@ -79,15 +79,15 @@ dashboard-start: | \
 	.check_$(CMD_DOCKER)
 #
 	@if [ $(shell $(CMD_PS) -axho comm | grep [t]racee | wc -l) -eq 0 ]; then
-		echo "tracker is NOT RUNNING"
+		echo "tracee is NOT RUNNING"
 		exit 0
 	fi
 	if [ $(shell $(CMD_PS) -axho args | grep -- "-[p]yroscope" | wc -l) -eq 0 ]; then
-		echo "tracker is NOT RUNNING with --pyroscope"
+		echo "tracee is NOT RUNNING with --pyroscope"
 		exit 0
 	fi
 	if [ $(shell $(CMD_PS) -axho args | grep -- "-[p]prof" | wc -l) -eq 0 ]; then
-		echo "tracker is NOT RUNNING with --pprof"
+		echo "tracee is NOT RUNNING with --pprof"
 		exit 0
 	fi
 	echo ""
@@ -97,7 +97,7 @@ dashboard-start: | \
 	$(CMD_DOCKER) compose up -d
 	echo ""
 	echo "You may now access the DASHBOARD at: http://localhost:3000/"
-	echo "You may also access the PYROSCOPE at: http://localhost:4040/?query=tracker.cpu"
+	echo "You may also access the PYROSCOPE at: http://localhost:4040/?query=tracee.cpu"
 	echo ""
 
 .PHONY: dashboard-stop
@@ -105,12 +105,12 @@ dashboard-stop: | \
 	.check_tree \
 	.check_$(CMD_DOCKER)
 #
-	@if [ $(shell $(CMD_DOCKER) ps -q -f 'name=tracker' | wc -l) -eq 0 ]; then
+	@if [ $(shell $(CMD_DOCKER) ps -q -f 'name=tracee' | wc -l) -eq 0 ]; then
 		echo "dashboard already STOPPED"
 		exit 0
 	fi
 	echo "STOPPING Node Exporter, Prometheus, Grafana and Pyroscope"
-	$(CMD_DOCKER) ps -q -f 'name=tracker' | xargs docker rm -f
+	$(CMD_DOCKER) ps -q -f 'name=tracee' | xargs docker rm -f
 #
 # clean
 #

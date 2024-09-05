@@ -3,15 +3,31 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type DynamicCodeLoading struct {
 	cb        detect.SignatureHandler
 	alertText string
+}
+
+var dynamicCodeLoadingMetadata = detect.SignatureMetadata{
+	ID:          "TRC-104",
+	Version:     "1",
+	Name:        "Dynamic code loading detected",
+	EventName:   "dynamic_code_loading",
+	Description: "Possible dynamic code loading was detected as the binary's memory is both writable and executable. Writing to an executable allocated memory region could be a technique used by adversaries to run code undetected and without dropping executables.",
+	Properties: map[string]interface{}{
+		"Severity":             2,
+		"Category":             "defense-evasion",
+		"Technique":            "Software Packing",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--deb98323-e13f-4b0c-8d94-175379069062",
+		"external_id":          "T1027.002",
+	},
 }
 
 func (sig *DynamicCodeLoading) Init(ctx detect.SignatureContext) error {
@@ -21,26 +37,12 @@ func (sig *DynamicCodeLoading) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *DynamicCodeLoading) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-104",
-		Version:     "1",
-		Name:        "Dynamic code loading detected",
-		EventName:   "dynamic_code_loading",
-		Description: "Possible dynamic code loading was detected as the binary's memory is both writable and executable. Writing to an executable allocated memory region could be a technique used by adversaries to run code undetected and without dropping executables.",
-		Properties: map[string]interface{}{
-			"Severity":             2,
-			"Category":             "defense-evasion",
-			"Technique":            "Software Packing",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--deb98323-e13f-4b0c-8d94-175379069062",
-			"external_id":          "T1027.002",
-		},
-	}, nil
+	return dynamicCodeLoadingMetadata, nil
 }
 
 func (sig *DynamicCodeLoading) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "mem_prot_alert", Origin: "*"},
+		{Source: "tracee", Name: "mem_prot_alert", Origin: "*"},
 	}, nil
 }
 
@@ -52,7 +54,7 @@ func (sig *DynamicCodeLoading) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "mem_prot_alert":
-		alert, err := helpers.GetTrackerStringArgumentByName(eventObj, "alert")
+		alert, err := helpers.GetTraceeStringArgumentByName(eventObj, "alert")
 		if err != nil {
 			return err
 		}

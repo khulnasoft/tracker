@@ -4,14 +4,23 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eSecurityInodeRename struct {
 	cb detect.SignatureHandler
+}
+
+var e2eSecurityInodeRenameMetadata = detect.SignatureMetadata{
+	ID:          "SECURITY_INODE_RENAME",
+	EventName:   "SECURITY_INODE_RENAME",
+	Version:     "0.1.0",
+	Name:        "security_inode_rename Test",
+	Description: "Instrumentation events E2E Tests: security_inode_rename",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eSecurityInodeRename) Init(ctx detect.SignatureContext) error {
@@ -20,19 +29,12 @@ func (sig *e2eSecurityInodeRename) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eSecurityInodeRename) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "SECURITY_INODE_RENAME",
-		EventName:   "SECURITY_INODE_RENAME",
-		Version:     "0.1.0",
-		Name:        "security_inode_rename Test",
-		Description: "Instrumentation events E2E Tests: security_inode_rename",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eSecurityInodeRenameMetadata, nil
 }
 
 func (sig *e2eSecurityInodeRename) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_inode_rename"},
+		{Source: "tracee", Name: "security_inode_rename"},
 	}, nil
 }
 
@@ -44,12 +46,12 @@ func (sig *e2eSecurityInodeRename) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_inode_rename":
-		oldPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "old_path")
+		oldPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "old_path")
 		if err != nil {
 			return err
 		}
 
-		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}

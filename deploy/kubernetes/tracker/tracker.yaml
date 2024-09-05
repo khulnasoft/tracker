@@ -1,38 +1,38 @@
 ---
-# Source: tracker/templates/serviceaccount.yaml
+# Source: tracee/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: tracker
+  name: tracee
   labels:
-    helm.sh/chart: tracker-0.21.0
-    app.kubernetes.io/name: tracker
-    app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.21.0"
+    helm.sh/chart: tracee-0.22.0
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/instance: tracee
+    app.kubernetes.io/version: "0.22.0"
     app.kubernetes.io/managed-by: Helm
 ---
-# Source: tracker/templates/serviceaccount.yaml
+# Source: tracee/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: tracker-operator
+  name: tracee-operator
   labels:
-    helm.sh/chart: tracker-0.21.0
-    app.kubernetes.io/name: tracker
-    app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.21.0"
+    helm.sh/chart: tracee-0.22.0
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/instance: tracee
+    app.kubernetes.io/version: "0.22.0"
     app.kubernetes.io/managed-by: Helm
 ---
-# Source: tracker/templates/tracker-config.yaml
+# Source: tracee/templates/tracee-config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tracker-config
+  name: tracee-config
   labels:
-    helm.sh/chart: tracker-0.21.0
-    app.kubernetes.io/name: tracker
-    app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.21.0"
+    helm.sh/chart: tracee-0.22.0
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/instance: tracee
+    app.kubernetes.io/version: "0.22.0"
     app.kubernetes.io/managed-by: Helm
 data:
   config.yaml: |-
@@ -59,11 +59,11 @@ data:
             exec-hash: dev-inode
             sort-events: false
 ---
-# Source: tracker/templates/role.yaml
+# Source: tracee/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: tracker
+  name: tracee
 rules:
 - apiGroups:
   - apps
@@ -76,7 +76,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - tracker.khulnasoft.com
+  - tracee.khulnasoft.com
   resources:
   - policies
   verbs:
@@ -84,69 +84,69 @@ rules:
   - list
   - watch
 ---
-# Source: tracker/templates/clusterrolebinding.yaml
+# Source: tracee/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tracker
+  name: tracee
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tracker
+  name: tracee
 subjects:
   - kind: ServiceAccount
-    name: tracker
+    name: tracee
     namespace: default
 ---
-# Source: tracker/templates/clusterrolebinding.yaml
+# Source: tracee/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: tracker-operator
+  name: tracee-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: tracker
+  name: tracee
 subjects:
   - kind: ServiceAccount
-    name: tracker-operator
+    name: tracee-operator
     namespace: default
 ---
-# Source: tracker/templates/daemonset.yaml
+# Source: tracee/templates/daemonset.yaml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: tracker
+  name: tracee
   labels:
-    helm.sh/chart: tracker-0.21.0
-    app.kubernetes.io/name: tracker
-    app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.21.0"
+    helm.sh/chart: tracee-0.22.0
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/instance: tracee
+    app.kubernetes.io/version: "0.22.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: tracker
-      app.kubernetes.io/instance: tracker
+      app.kubernetes.io/name: tracee
+      app.kubernetes.io/instance: tracee
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: tracker
-        app.kubernetes.io/instance: tracker
+        app.kubernetes.io/name: tracee
+        app.kubernetes.io/instance: tracee
     spec:
-      serviceAccountName: tracker
+      serviceAccountName: tracee
       hostPID: true
       securityContext:
         {}
       containers:
-        - name: tracker
-          image: "docker.io/khulnasoft/tracker:0.21.0"
+        - name: tracee
+          image: "docker.io/aquasec/tracee:0.22.0"
           imagePullPolicy: IfNotPresent
           command:
-            - /tracker/tracker
+            - /tracee/tracee
           args:
             - --config
-            - /tracker/config.yaml
+            - /tracee/config.yaml
           env:
             - name: LIBBPFGO_OSRELEASE_FILE
               value: /etc/os-release-host
@@ -161,8 +161,8 @@ spec:
               path: /healthz
               port: 3366
           volumeMounts:
-            - name: tmp-tracker
-              mountPath: /tmp/tracker
+            - name: tmp-tracee
+              mountPath: /tmp/tracee
             - name: etc-os-release
               mountPath: /etc/os-release-host
               readOnly: true
@@ -178,9 +178,9 @@ spec:
             - mountPath: /var/run/podman/podman.sock
               name: podman-sock
               readOnly: true
-            - name: tracker-config
+            - name: tracee-config
               readOnly: true
-              mountPath: /tracker/config.yaml
+              mountPath: /tracee/config.yaml
               subPath: config.yaml
           resources:
             {}
@@ -190,9 +190,9 @@ spec:
         - effect: NoExecute
           operator: Exists
       volumes:
-        - name: tmp-tracker
+        - name: tmp-tracee
           hostPath:
-            path: /tmp/tracker
+            path: /tmp/tracee
         - name: etc-os-release
           hostPath:
             path: /etc/os-release
@@ -208,47 +208,47 @@ spec:
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
-        - name: tracker-config
+        - name: tracee-config
           configMap:
-            name: tracker-config
+            name: tracee-config
 ---
-# Source: tracker/templates/deploy.yaml
+# Source: tracee/templates/deploy.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tracker-operator
+  name: tracee-operator
   labels:
-    helm.sh/chart: tracker-0.21.0
-    app.kubernetes.io/name: tracker
-    app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.21.0"
+    helm.sh/chart: tracee-0.22.0
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/instance: tracee
+    app.kubernetes.io/version: "0.22.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tracker-operator
+      app: tracee-operator
   template:
     metadata:
       labels:
-        app: tracker-operator
+        app: tracee-operator
     spec:
-      serviceAccountName: tracker-operator
+      serviceAccountName: tracee-operator
       securityContext:
         {}
       containers:
-      - name: tracker-operator
-        image: "docker.io/khulnasoft/tracker:0.21.0"
+      - name: tracee-operator
+        image: "docker.io/aquasec/tracee:0.22.0"
         imagePullPolicy: IfNotPresent
         command:
-          - /tracker/tracker-operator
+          - /tracee/tracee-operator
         args:
           - --health-probe-bind-address
           - :8081
         env:
-          - name: TRACKER_NAME
-            value: tracker
-          - name: TRACKER_NAMESPACE
+          - name: TRACEE_NAME
+            value: tracee
+          - name: TRACEE_NAMESPACE
             value: default
         securityContext:
             privileged: true
@@ -257,8 +257,8 @@ spec:
             path: /healthz
             port: 8081
 ---
-# Source: tracker/templates/default-policy.yaml
-apiVersion: tracker.khulnasoft.com/v1beta1
+# Source: tracee/templates/default-policy.yaml
+apiVersion: tracee.khulnasoft.com/v1beta1
 kind: Policy
 metadata:
   name: default-policy

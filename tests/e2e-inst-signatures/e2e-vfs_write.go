@@ -4,14 +4,23 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eVfsWrite struct {
 	cb detect.SignatureHandler
+}
+
+var e2eVfsWriteMetadata = detect.SignatureMetadata{
+	ID:          "VFS_WRITE",
+	EventName:   "VFS_WRITE",
+	Version:     "0.1.0",
+	Name:        "Vfs Write Test",
+	Description: "Instrumentation events E2E Tests: Vfs Write",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eVfsWrite) Init(ctx detect.SignatureContext) error {
@@ -20,19 +29,12 @@ func (sig *e2eVfsWrite) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eVfsWrite) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "VFS_WRITE",
-		EventName:   "VFS_WRITE",
-		Version:     "0.1.0",
-		Name:        "Vfs Write Test",
-		Description: "Instrumentation events E2E Tests: Vfs Write",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eVfsWriteMetadata, nil
 }
 
 func (sig *e2eVfsWrite) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "vfs_write"},
+		{Source: "tracee", Name: "vfs_write"},
 	}, nil
 }
 
@@ -44,7 +46,7 @@ func (sig *e2eVfsWrite) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "vfs_write":
-		filePath, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		filePath, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

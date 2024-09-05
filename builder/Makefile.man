@@ -61,7 +61,7 @@ help:
 		exit 1
 	fi
 
-MAN_CONTNAME = tracker-man:latest
+MAN_CONTNAME = tracee-man:latest
 
 .PHONY: man-build
 man-build: \
@@ -79,7 +79,8 @@ man-run: \
 	.check_tree
 #
 	$(CMD_DOCKER) run --rm \
-		-v $(shell pwd):/tracker \
+		--user 1000:1000 \
+		-v $(shell pwd):/tracee \
 		$(MAN_CONTNAME) make man
 
 #

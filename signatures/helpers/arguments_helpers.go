@@ -4,7 +4,7 @@ import (
 	b64 "encoding/base64"
 	"fmt"
 
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func ArgVal[T any](args []trace.Argument, argName string) (T, error) {
@@ -31,8 +31,8 @@ type GetArgOps struct {
 	DefaultArgs bool // Receive default args value (value equals 'nil'). If set to false, will return error if arg not initialized.
 }
 
-// GetTrackerArgumentByName fetches the argument in event with `Name` that matches argName
-func GetTrackerArgumentByName(event trace.Event, argName string, opts GetArgOps) (trace.Argument, error) {
+// GetTraceeArgumentByName fetches the argument in event with `Name` that matches argName
+func GetTraceeArgumentByName(event trace.Event, argName string, opts GetArgOps) (trace.Argument, error) {
 	for _, arg := range event.Args {
 		if arg.Name == argName {
 			if !opts.DefaultArgs && arg.Value == nil {
@@ -44,9 +44,9 @@ func GetTrackerArgumentByName(event trace.Event, argName string, opts GetArgOps)
 	return trace.Argument{}, fmt.Errorf("argument %s not found", argName)
 }
 
-// GetTrackerStringArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as string.
-func GetTrackerStringArgumentByName(event trace.Event, argName string) (string, error) {
-	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+// GetTraceeStringArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as string.
+func GetTraceeStringArgumentByName(event trace.Event, argName string) (string, error) {
+	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return "", err
 	}
@@ -58,9 +58,9 @@ func GetTrackerStringArgumentByName(event trace.Event, argName string) (string, 
 	return "", fmt.Errorf("can't convert argument %v to string", argName)
 }
 
-// GetTrackerIntArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as int.
-func GetTrackerIntArgumentByName(event trace.Event, argName string) (int, error) {
-	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+// GetTraceeIntArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as int.
+func GetTraceeIntArgumentByName(event trace.Event, argName string) (int, error) {
+	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return 0, err
 	}
@@ -72,9 +72,9 @@ func GetTrackerIntArgumentByName(event trace.Event, argName string) (int, error)
 	return 0, fmt.Errorf("can't convert argument %v to int", argName)
 }
 
-// GetTrackerSliceStringArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as []string.
-func GetTrackerSliceStringArgumentByName(event trace.Event, argName string) ([]string, error) {
-	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+// GetTraceeSliceStringArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as []string.
+func GetTraceeSliceStringArgumentByName(event trace.Event, argName string) ([]string, error) {
+	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return nil, err
 	}
@@ -86,9 +86,9 @@ func GetTrackerSliceStringArgumentByName(event trace.Event, argName string) ([]s
 	return nil, fmt.Errorf("can't convert argument %v to slice of strings", argName)
 }
 
-// GetTrackerBytesSliceArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as []byte.
-func GetTrackerBytesSliceArgumentByName(event trace.Event, argName string) ([]byte, error) {
-	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+// GetTraceeBytesSliceArgumentByName gets the argument matching the "argName" given from the event "argv" field, casted as []byte.
+func GetTraceeBytesSliceArgumentByName(event trace.Event, argName string) ([]byte, error) {
+	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func GetTrackerBytesSliceArgumentByName(event trace.Event, argName string) ([]by
 
 // GetRawAddrArgumentByName returns map[string]string of addr argument
 func GetRawAddrArgumentByName(event trace.Event, argName string) (map[string]string, error) {
-	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return nil, err
 	}
@@ -134,9 +134,9 @@ func GetRawAddrArgumentByName(event trace.Event, argName string) (map[string]str
 	return addr, nil
 }
 
-// GetTrackerHookedSymbolDataArgumentByName returns []trace.HookedSymbolData of hooked symbols for arg
-func GetTrackerHookedSymbolDataArgumentByName(event trace.Event, argName string) ([]trace.HookedSymbolData, error) {
-	hookedSymbolsPtr, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+// GetTraceeHookedSymbolDataArgumentByName returns []trace.HookedSymbolData of hooked symbols for arg
+func GetTraceeHookedSymbolDataArgumentByName(event trace.Event, argName string) ([]trace.HookedSymbolData, error) {
+	hookedSymbolsPtr, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return []trace.HookedSymbolData{}, err
 	}

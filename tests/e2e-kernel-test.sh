@@ -4,11 +4,11 @@
 # This test is executed by github workflows inside the action runners
 #
 
-TRACKER_STARTUP_TIMEOUT=60
-TRACKER_SHUTDOWN_TIMEOUT=60
-#TRACKER_RUN_TIMEOUT=60
+TRACEE_STARTUP_TIMEOUT=60
+TRACEE_SHUTDOWN_TIMEOUT=60
+#TRACEE_RUN_TIMEOUT=60
 SCRIPT_TMP_DIR=/tmp
-TRACKER_TMP_DIR=/tmp/tracker
+TRACEE_TMP_DIR=/tmp/tracee
 
 info_exit() {
     echo -n "INFO: "
@@ -32,16 +32,16 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 if [[ ! -d ./signatures ]]; then
-    error_exit "need to be in tracker root directory"
+    error_exit "need to be in tracee root directory"
 fi
 
-DOCKER_IMAGE=ghcr.io/khulnasoft/tracker-tester:latest
+DOCKER_IMAGE=ghcr.io/aquasecurity/tracee-tester:latest
 
 # run CO-RE TRC-102 test only by default
 TESTS=${TESTS:=TRC-102}
 
 # startup needs
-rm -rf $TRACKER_TMP_DIR/* || error_exit "could not delete $TRACKER_TMP_DIR"
+rm -rf $TRACEE_TMP_DIR/* || error_exit "could not delete $TRACEE_TMP_DIR"
 git config --global --add safe.directory "*"
 
 info
@@ -55,14 +55,14 @@ info "= PULLING CONTAINER IMAGE ====================================="
 info
 docker image pull $DOCKER_IMAGE
 info
-info "= COMPILING TRACKER ============================================"
+info "= COMPILING TRACEE ============================================"
 info
 # make clean # if you want to be extra cautious
 set -e
 make -j$(nproc) all
 set +e
-if [[ ! -x ./dist/tracker ]]; then
-    error_exit "could not find tracker executable"
+if [[ ! -x ./dist/tracee ]]; then
+    error_exit "could not find tracee executable"
 fi
 
 # if any test has failed
@@ -77,34 +77,34 @@ for TEST in $TESTS; do
 
     rm -f $SCRIPT_TMP_DIR/build-$$
 
-    ./dist/tracker \
-        --install-path $TRACKER_TMP_DIR \
+    ./dist/tracee \
+        --install-path $TRACEE_TMP_DIR \
         --cache cache-type=mem \
         --cache mem-cache-size=512 \
         --output json \
         --scope container=new 2>&1 \
         | tee "$SCRIPT_TMP_DIR/build-$$" &
 
-    # wait tracker to be started (30 sec most)
+    # wait tracee to be started (30 sec most)
     times=0
     timedout=0
     while true; do
         times=$(($times + 1))
         sleep 1
-        if [[ -f $TRACKER_TMP_DIR/tracker.pid ]]; then
+        if [[ -f $TRACEE_TMP_DIR/tracee.pid ]]; then
             info
             info "UP AND RUNNING"
             info
             break
         fi
 
-        if [[ $times -gt $TRACKER_STARTUP_TIMEOUT ]]; then
+        if [[ $times -gt $TRACEE_STARTUP_TIMEOUT ]]; then
             timedout=1
             break
         fi
     done
 
-    # tracker-ebpf could not start for some reason, check stderr
+    # tracee-ebpf could not start for some reason, check stderr
     if [[ $timedout -eq 1 ]]; then
         info
         info "$TEST: FAILED. ERRORS:"
@@ -126,10 +126,10 @@ for TEST in $TESTS; do
     *) ;;
     esac
 
-    # give some time for tracker to settle
+    # give some time for tracee to settle
     sleep 5
 
-    # run tracker-tester (triggering the signature)
+    # run tracee-tester (triggering the signature)
     docker run $docker_extra_arg --rm $DOCKER_IMAGE $TEST >/dev/null 2>&1
 
     # so event can be processed and detected
@@ -144,7 +144,7 @@ for TEST in $TESTS; do
         info "$TEST: SUCCESS"
     else
         anyerror="${anyerror}$TEST,"
-        info "$TEST: FAILED, stderr from tracker:"
+        info "$TEST: FAILED, stderr from tracee:"
         cat $SCRIPT_TMP_DIR/build-$$
         info
     fi
@@ -152,21 +152,21 @@ for TEST in $TESTS; do
 
     rm -f $SCRIPT_TMP_DIR/build-$$
 
-    tracker_pid=$(pidof tracker)
+    tracee_pid=$(pidof tracee)
 
-    # cleanup tracker with SIGINT
-    kill -SIGINT $tracker_pid
+    # cleanup tracee with SIGINT
+    kill -SIGINT $tracee_pid
 
-    sleep $TRACKER_SHUTDOWN_TIMEOUT
+    sleep $TRACEE_SHUTDOWN_TIMEOUT
 
-    # make sure tracker is exited with SIGKILL
-    kill -SIGKILL $tracker_pid >/dev/null 2>&1
+    # make sure tracee is exited with SIGKILL
+    kill -SIGKILL $tracee_pid >/dev/null 2>&1
 
     # give a little break for OS noise to reduce
     sleep 3
 
     # cleanup leftovers
-    rm -rf $TRACKER_TMP_DIR
+    rm -rf $TRACEE_TMP_DIR
 done
 
 info

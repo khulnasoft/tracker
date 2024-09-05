@@ -6,6 +6,7 @@
 #include <common/logging.h>
 #include <common/task.h>
 #include <common/cgroups.h>
+#include <common/common.h>
 
 // PROTOTYPES
 
@@ -24,21 +25,21 @@ statfunc void reset_event_args_buf(event_data_t *);
 
 statfunc int init_task_context(task_context_t *tsk_ctx, struct task_struct *task, u32 options)
 {
-    // NOTE: parent is always a real process, not a potential thread group leader
+    // NOTE: parent process is always a real process, not a potential thread group leader
     struct task_struct *leader = get_leader_task(task);
-    struct task_struct *up_parent = get_leader_task(get_parent_task(leader));
+    struct task_struct *parent_process = get_leader_task(get_parent_task(leader));
 
     // Task Info on Host
-    tsk_ctx->host_ppid = get_task_pid(up_parent); // always a real process (not a lwp)
+    tsk_ctx->host_ppid = get_task_pid(parent_process); // always a real process (not a lwp)
     // Namespaces Info
     tsk_ctx->tid = get_task_ns_pid(task);
     tsk_ctx->pid = get_task_ns_tgid(task);
 
     u32 task_pidns_id = get_task_pid_ns_id(task);
-    u32 up_parent_pidns_id = get_task_pid_ns_id(up_parent);
+    u32 parent_process_pidns_id = get_task_pid_ns_id(parent_process);
 
-    if (task_pidns_id == up_parent_pidns_id)
-        tsk_ctx->ppid = get_task_ns_pid(up_parent); // e.g: pid 1 will have nsppid 0
+    if (task_pidns_id == parent_process_pidns_id)
+        tsk_ctx->ppid = get_task_ns_pid(parent_process); // e.g: pid 1 will have nsppid 0
 
     tsk_ctx->pid_id = task_pidns_id;
     tsk_ctx->mnt_id = get_task_mnt_ns_id(task);
@@ -47,7 +48,7 @@ statfunc int init_task_context(task_context_t *tsk_ctx, struct task_struct *task
     // Times
     tsk_ctx->start_time = get_task_start_time(task);
     tsk_ctx->leader_start_time = get_task_start_time(leader);
-    tsk_ctx->parent_start_time = get_task_start_time(up_parent);
+    tsk_ctx->parent_start_time = get_task_start_time(parent_process);
 
     if (is_compat(task))
         tsk_ctx->flags |= IS_COMPAT_FLAG;
@@ -137,9 +138,9 @@ statfunc int init_program_data(program_data_t *p, void *ctx, u32 event_id)
     p->event->context.task.host_tid = id;
     p->event->context.task.host_pid = id >> 32;
     p->event->context.eventid = event_id;
-    p->event->context.ts = bpf_ktime_get_ns();
+    p->event->context.ts = get_current_time_in_ns();
     p->event->context.processor_id = (u16) bpf_get_smp_processor_id();
-    p->event->context.syscall = get_task_syscall_id(p->event->task);
+    p->event->context.syscall = get_current_task_syscall_id();
 
     u32 host_pid = p->event->context.task.host_pid;
     p->proc_info = bpf_map_lookup_elem(&proc_info_map, &host_pid);
@@ -190,6 +191,7 @@ statfunc int init_program_data(program_data_t *p, void *ctx, u32 event_id)
     p->event->config.submit_for_policies = ~0ULL;
 
     if (event_id != NO_EVENT_SUBMIT) {
+        p->event->config.submit_for_policies = 0;
         event_config_t *event_config = get_event_config(event_id, p->event->context.policies_version);
         if (event_config != NULL) {
             p->event->config.param_types = event_config->param_types;

@@ -12,16 +12,16 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/cmd/flags"
+	"github.com/aquasecurity/tracee/pkg/cmd/initialize"
+	tracee "github.com/aquasecurity/tracee/pkg/ebpf"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/signatures/engine"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func init() {
@@ -66,11 +66,11 @@ var analyze = &cobra.Command{
 	Short:   "Analyze past events with signature events [Experimental]",
 	Long: `Analyze allow you to explore signature events with past events.
 
-Tracker can be used to collect events and store it in a file. This file can be used as input to analyze.
+Tracee can be used to collect events and store it in a file. This file can be used as input to analyze.
 
 eg:
-tracker --events ptrace --output=json:events.json
-tracker analyze --events anti_debugging events.json`,
+tracee --events ptrace --output=json:events.json
+tracee analyze --events anti_debugging events.json`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		bindViperFlag(cmd, "events")
 		bindViperFlag(cmd, "log")
@@ -141,7 +141,7 @@ tracker analyze --events anti_debugging events.json`,
 		engineOutput := make(chan *detect.Finding)
 		engineInput := make(chan protocol.Event)
 
-		source := engine.EventSources{Tracker: engineInput}
+		source := engine.EventSources{Tracee: engineInput}
 		sigEngine, err := engine.NewEngine(engineConfig, source, engineOutput)
 		if err != nil {
 			logger.Fatalw("Failed to create engine", "err", err)
@@ -212,7 +212,7 @@ func produce(ctx context.Context, inputFile *os.File, engineInput chan protocol.
 }
 
 func process(finding *detect.Finding) {
-	event, err := tracker.FindingToEvent(finding)
+	event, err := tracee.FindingToEvent(finding)
 	if err != nil {
 		logger.Fatalw("Failed to convert finding to event", "err", err)
 	}

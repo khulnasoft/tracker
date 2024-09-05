@@ -12,14 +12,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/goleak"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/events"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/policy/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/tests/testutils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/config"
+	"github.com/aquasecurity/tracee/pkg/events"
+	k8s "github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
+	"github.com/aquasecurity/tracee/pkg/policy/v1beta1"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/tests/testutils"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // Test_EventFilters tests a variety of trace event filters
@@ -27,7 +27,7 @@ import (
 func Test_EventFilters(t *testing.T) {
 	assureIsRoot(t)
 
-	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
+	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -1708,7 +1708,7 @@ func Test_EventFilters(t *testing.T) {
 			// wait for the previous test to cool down
 			coolDown(t, tc.coolDown)
 
-			// prepare tracker config
+			// prepare tracee config
 			config := config.Config{
 				Capabilities: &config.CapabilitiesConfig{
 					BypassCaps: true,
@@ -1718,15 +1718,15 @@ func Test_EventFilters(t *testing.T) {
 
 			ctx, cancel := context.WithCancel(context.Background())
 
-			// start tracker
-			trc, err := startTracker(ctx, t, config, nil, nil)
+			// start tracee
+			trc, err := startTracee(ctx, t, config, nil, nil)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
 			}
 
-			t.Logf("  --- started tracker ---")
-			err = waitForTrackerStart(trc)
+			t.Logf("  --- started tracee ---")
+			err = waitForTraceeStart(trc)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
@@ -1757,12 +1757,12 @@ func Test_EventFilters(t *testing.T) {
 			}
 
 			cancel()
-			errStop := waitForTrackerStop(trc)
+			errStop := waitForTraceeStop(trc)
 			if errStop != nil {
 				t.Log(errStop)
 				failed = true
 			} else {
-				t.Logf("  --- stopped tracker ---")
+				t.Logf("  --- stopped tracee ---")
 			}
 
 			if failed {
@@ -1892,7 +1892,7 @@ func runCmd(t *testing.T, cmd cmdEvents, expectedEvts int, actual *eventBuffer, 
 		return proc{}, err
 	}
 
-	err = waitForTrackerOutputEvents(t, cmd.waitFor, actual, expectedEvts, failOnTimeout)
+	err = waitForTraceeOutputEvents(t, cmd.waitFor, actual, expectedEvts, failOnTimeout)
 	if err != nil {
 		return proc{}, err
 	}
@@ -1936,7 +1936,7 @@ func runCmds(t *testing.T, cmdEvents []cmdEvents, actual *eventBuffer, useSyscal
 		waitForAverage /= time.Duration(len(cmdEvents))
 	}
 
-	err := waitForTrackerOutputEvents(t, waitForAverage, actual, expectedEvts, failOnTimeout)
+	err := waitForTraceeOutputEvents(t, waitForAverage, actual, expectedEvts, failOnTimeout)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -2129,7 +2129,7 @@ func ExpectAtLeastOneForEach(t *testing.T, cmdEvents []cmdEvents, actual *eventB
 
 				// check args
 				for _, expArg := range expEvt.Args {
-					actArg, err := helpers.GetTrackerArgumentByName(
+					actArg, err := helpers.GetTraceeArgumentByName(
 						actEvt,
 						expArg.Name,
 						helpers.GetArgOps{DefaultArgs: false},
@@ -2299,7 +2299,7 @@ func ExpectAnyOfEvts(t *testing.T, cmdEvents []cmdEvents, actual *eventBuffer, u
 
 				// check args
 				for _, expArg := range expEvt.Args {
-					actArg, err := helpers.GetTrackerArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
+					actArg, err := helpers.GetTraceeArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
 					if err != nil {
 						return err
 					}
@@ -2421,7 +2421,7 @@ func ExpectAllEvtsEqualToOne(t *testing.T, cmdEvents []cmdEvents, actual *eventB
 
 				// check args
 				for _, expArg := range expEvt.Args {
-					actArg, err := helpers.GetTrackerArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
+					actArg, err := helpers.GetTraceeArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
 					if err != nil {
 						return err
 					}
@@ -2523,7 +2523,7 @@ func ExpectAllInOrderSequentially(t *testing.T, cmdEvents []cmdEvents, actual *e
 
 			// check args
 			for _, expArg := range expEvt.Args {
-				actArg, err := helpers.GetTrackerArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
+				actArg, err := helpers.GetTraceeArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
 				if err != nil {
 					return err
 				}

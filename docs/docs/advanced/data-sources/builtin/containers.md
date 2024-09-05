@@ -1,6 +1,6 @@
 # Containers Data Source
 
-The [container enrichment](../../../install/container-engines.md) feature gives Tracker the ability to extract details about active containers and link this information to the events it captures.
+The [container enrichment](../../../install/container-engines.md) feature gives Tracee the ability to extract details about active containers and link this information to the events it captures.
 
 The [data source](../overview.md) feature makes the information gathered from active containers accessible to signatures. When an event is captured and triggers a signature, that signature can retrieve information about the container using its container ID, which is bundled with the event being analyzed by the signature.
 
@@ -40,7 +40,7 @@ type e2eContainersDataSource struct {
 
 func (sig *e2eContainersDataSource) Init(ctx detect.SignatureContext) error {
     sig.cb = ctx.Callback
-    containersData, ok := ctx.GetDataSource("tracker", "containers")
+    containersData, ok := ctx.GetDataSource("tracee", "containers")
     if !ok {
         return fmt.Errorf("containers data source not registered")
     }

@@ -4,16 +4,32 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type SudoersModification struct {
 	cb           detect.SignatureHandler
 	sudoersFiles []string
 	sudoersDirs  []string
+}
+
+var sudoersModificationMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1028",
+	Version:     "1",
+	Name:        "Sudoers file modification detected",
+	EventName:   "sudoers_modification",
+	Description: "The sudoers file was modified. The sudoers file is a configuration file which controls the permissions and options of the sudo feature. Adversaries may alter the sudoers file to elevate privileges, execute commands as other users or spawn processes with higher privileges.",
+	Properties: map[string]interface{}{
+		"Severity":             2,
+		"Category":             "privilege-escalation",
+		"Technique":            "Sudo and Sudo Caching",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--1365fe3b-0f50-455d-b4da-266ce31c23b0",
+		"external_id":          "T1548.003",
+	},
 }
 
 func (sig *SudoersModification) Init(ctx detect.SignatureContext) error {
@@ -24,27 +40,13 @@ func (sig *SudoersModification) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *SudoersModification) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1028",
-		Version:     "1",
-		Name:        "Sudoers file modification detected",
-		EventName:   "sudoers_modification",
-		Description: "The sudoers file was modified. The sudoers file is a configuration file which controls the permissions and options of the sudo feature. Adversaries may alter the sudoers file to elevate privileges, execute commands as other users or spawn processes with higher privileges.",
-		Properties: map[string]interface{}{
-			"Severity":             2,
-			"Category":             "privilege-escalation",
-			"Technique":            "Sudo and Sudo Caching",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--1365fe3b-0f50-455d-b4da-266ce31c23b0",
-			"external_id":          "T1548.003",
-		},
-	}, nil
+	return sudoersModificationMetadata, nil
 }
 
 func (sig *SudoersModification) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_file_open", Origin: "*"},
-		{Source: "tracker", Name: "security_inode_rename", Origin: "*"},
+		{Source: "tracee", Name: "security_file_open", Origin: "*"},
+		{Source: "tracee", Name: "security_inode_rename", Origin: "*"},
 	}, nil
 }
 
@@ -59,13 +61,13 @@ func (sig *SudoersModification) OnEvent(event protocol.Event) error {
 	switch eventObj.EventName {
 	case "security_file_open":
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
 
 		if helpers.IsFileWrite(flags) {
-			pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+			pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 			if err != nil {
 				return err
 			}
@@ -73,7 +75,7 @@ func (sig *SudoersModification) OnEvent(event protocol.Event) error {
 			path = pathname
 		}
 	case "security_inode_rename":
-		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}

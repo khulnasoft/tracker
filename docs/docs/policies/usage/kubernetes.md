@@ -2,12 +2,12 @@
 
 ## Custom Resource Definition
 
-Tracker policies can be seamlessly integrated into Kubernetes using Custom Resource Definitions (CRDs). When Tracker is installed, the CRD is automatically applied, including a default policy. One can interact with Tracker policies as follows:
+Tracee policies can be seamlessly integrated into Kubernetes using Custom Resource Definitions (CRDs). When Tracee is installed, the CRD is automatically applied, including a default policy. One can interact with Tracee policies as follows:
 
-To view existing Tracker policies, use the following command:
+To view existing Tracee policies, use the following command:
 
 ```shell
-kubectl get policies.tracker.khulnasoft.com
+kubectl get policies.tracee.khulnasoft.com
 ```
 
 One can manage policies using standard kubectl commands. For example, to create, update, or delete a policy:
@@ -21,21 +21,21 @@ kubectl apply -f your-policy.yaml
 Update: Modify an existing policy using the kubectl edit command.
 
 ```shell
-kubectl edit policies.tracker.khulnasoft.com <policy-name>
+kubectl edit policies.tracee.khulnasoft.com <policy-name>
 ```
 
 Delete: Remove a policy using the kubectl delete command.
 
 ```shell
-kubectl delete policies.tracker.khulnasoft.com <policy-name>
+kubectl delete policies.tracee.khulnasoft.com <policy-name>
 ```
 
 ## Operator
 
-The Tracker Kubernetes Operator is a custom controller designed to manage Tracker policies as Custom Resource Definitions (CRDs) within a Kubernetes cluster. The Tracker Kubernetes Operator continually monitors changes to Tracker policies within the cluster. When a new policy is created, modified, or deleted, the operator automatically triggers a rolling restart of the Tracker DaemonSet. This ensures that Tracker is always running with the most up-to-date policies, providing enhanced security and compliance for your applications.
+The Tracee Kubernetes Operator is a custom controller designed to manage Tracee policies as Custom Resource Definitions (CRDs) within a Kubernetes cluster. The Tracee Kubernetes Operator continually monitors changes to Tracee policies within the cluster. When a new policy is created, modified, or deleted, the operator automatically triggers a rolling restart of the Tracee DaemonSet. This ensures that Tracee is always running with the most up-to-date policies, providing enhanced security and compliance for your applications.
 
 ## Video Content 
 
- Tracking Kubernetes activity with eBPF and Tracker Policies 
+ Tracking Kubernetes activity with eBPF and Tracee Policies 
 
- [![Watch the video](../../../images/trackerpolicies.png)](https://youtu.be/VneWxs9Jpu0?si=eAnRDJVZShhg_td0)
+ [![Watch the video](../../../images/traceepolicies.png)](https://youtu.be/VneWxs9Jpu0?si=eAnRDJVZShhg_td0)

@@ -2,7 +2,7 @@
 // sequences and the user-defined structs.
 //
 // The package favors efficiency over flexibility. The provided API
-// allows fast decoding of byte sequence sent by the Tracker eBPF program from
+// allows fast decoding of byte sequence sent by the Tracee eBPF program from
 // kernel-space to user-space.
 package bufferdecoder
 
@@ -10,10 +10,10 @@ import (
 	"encoding/binary"
 	"errors"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type EbpfDecoder struct {
@@ -26,7 +26,7 @@ var ErrBufferTooShort = errors.New("can't read context from buffer: buffer too s
 // New creates and initializes a new EbpfDecoder using rawBuffer as its initial content.
 // The EbpfDecoder takes ownership of rawBuffer, and the caller should not use rawBuffer after this call.
 // New is intended to prepare a buffer to read existing data from it, translating it to protocol defined structs.
-// The protocol is specific between the Trace eBPF program and the Tracker-eBPF user space application.
+// The protocol is specific between the Trace eBPF program and the Tracee-eBPF user space application.
 func New(rawBuffer []byte) *EbpfDecoder {
 	return &EbpfDecoder{
 		buffer: rawBuffer,

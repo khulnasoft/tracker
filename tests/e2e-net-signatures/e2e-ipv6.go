@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eIPv6 struct {
 	cb detect.SignatureHandler
+}
+
+var e2eIPv6Metadata = detect.SignatureMetadata{
+	ID:          "IPv6",
+	EventName:   "IPv6",
+	Version:     "0.1.0",
+	Name:        "Network IPv6 Test",
+	Description: "Network E2E Tests: IPv6",
+	Tags:        []string{"e2e", "network"},
 }
 
 func (sig *e2eIPv6) Init(ctx detect.SignatureContext) error {
@@ -19,19 +28,12 @@ func (sig *e2eIPv6) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eIPv6) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "IPv6",
-		EventName:   "IPv6",
-		Version:     "0.1.0",
-		Name:        "Network IPv6 Test",
-		Description: "Network E2E Tests: IPv6",
-		Tags:        []string{"e2e", "network"},
-	}, nil
+	return e2eIPv6Metadata, nil
 }
 
 func (sig *e2eIPv6) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "net_packet_ipv6"},
+		{Source: "tracee", Name: "net_packet_ipv6"},
 	}, nil
 }
 
@@ -48,12 +50,12 @@ func (sig *e2eIPv6) OnEvent(event protocol.Event) error {
 			return nil
 		}
 
-		src, err := helpers.GetTrackerStringArgumentByName(eventObj, "src")
+		src, err := helpers.GetTraceeStringArgumentByName(eventObj, "src")
 		if err != nil {
 			return err
 		}
 
-		dst, err := helpers.GetTrackerStringArgumentByName(eventObj, "dst")
+		dst, err := helpers.GetTraceeStringArgumentByName(eventObj, "dst")
 		if err != nil {
 			return err
 		}

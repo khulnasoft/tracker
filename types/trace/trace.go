@@ -1,4 +1,4 @@
-// Package trace defines the public types exported through the EBPF code and produced outwards from tracker-ebpf
+// Package trace defines the public types exported through the EBPF code and produced outwards from tracee-ebpf
 package trace
 
 import (
@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/aquasecurity/tracee/types/protocol"
 )
 
-// Event is a single result of an ebpf event process. It is used as a payload later delivered to tracker-rules.
+// Event is a single result of an ebpf event process. It is used as a payload later delivered to tracee-rules.
 type Event struct {
 	Timestamp             int          `json:"timestamp"`
 	ThreadStartTime       int          `json:"threadStartTime"`
@@ -51,7 +51,7 @@ type Event struct {
 	Metadata              *Metadata    `json:"metadata,omitempty"`
 }
 
-// (*) For an OS task to be uniquely identified, tracker builds a hash consisting of:
+// (*) For an OS task to be uniquely identified, tracee builds a hash consisting of:
 //
 // u64: task start time (from event context)
 // u32: task thread id (from event context)
@@ -111,7 +111,7 @@ func (e Event) Origin() EventOrigin {
 }
 
 const (
-	EventSource = "tracker"
+	EventSource = "tracee"
 )
 
 // Converts a trace.Event into a protocol.Event that the rules engine can consume
@@ -121,7 +121,7 @@ func (e Event) ToProtocol() protocol.Event {
 			Selector: protocol.Selector{
 				Name:   e.EventName,
 				Origin: string(e.Origin()),
-				Source: "tracker",
+				Source: "tracee",
 			},
 		},
 		Payload: e,

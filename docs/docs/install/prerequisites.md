@@ -1,6 +1,6 @@
-# Prerequisites for running Tracker
+# Prerequisites for running Tracee
 
-Tracker is heavily dependent on Linux and does not support any other operating system.
+Tracee is heavily dependent on Linux and does not support any other operating system.
 
 <!--
 every section should roughly cover:
@@ -35,12 +35,12 @@ every section should roughly cover:
     - Minikube, Microk8s and other development environments
 
 > This list is based on capabilities those versions provide and not necessarily
-in tracker having all its features tested on each of them. Please provide
+in tracee having all its features tested on each of them. Please provide
 feedback if you face any issues in one of those environments.
 
 ## Kernel version
 
-To run Tracker a modern longterm supported kernel is needed: 5.4, 5.10, 5.15, 6.2, 6.5  
+To run Tracee a modern longterm supported kernel is needed: 5.4, 5.10, 5.15, 6.2, 6.5  
 
 You can check [kernel.org](https://kernel.org) for current supported kernels. In
 addition to upstream kernels, most distributions long-term supported kernels are
@@ -48,7 +48,7 @@ supported as well, including CentOS8 4.18 kernel.
 
 ## BTF
 
-Tracker needs low-level type information about the running kernel. Most modern
+Tracee needs low-level type information about the running kernel. Most modern
 Linux distributions ship with the [BTF](https://www.kernel.org/doc/html/latest/bpf/btf.html)
 feature that exposes this information.  
 
@@ -58,7 +58,7 @@ newer OS version, or contact your OS provider.
 
 ## Kernel symbols
 
-Certain Tracker events require access to the Kernel Symbols Table, a feature
+Certain Tracee events require access to the Kernel Symbols Table, a feature
 present in many Linux distributions.
 
 To test if this feature is enabled in your environment, check if
@@ -78,7 +78,7 @@ For more information and help about kernel symbols, please see [here](../advance
 
 ## OS information
 
-Tracker will try to probe the running OS and kernel to detect available
+Tracee will try to probe the running OS and kernel to detect available
 capabilities. For this, it needs access to some standard informative files:
 
 - For OS information please make sure the file `/etc/os-release` is available.
@@ -88,10 +88,10 @@ For more information and help about OS info files, please see [here](../advanced
 
 ## Process capabilities
 
-Tracker needs non-trivial capabilities to instrument the kernel. The easiest way
-is run Tracker as "privileged" or "root".  
+Tracee needs non-trivial capabilities to instrument the kernel. The easiest way
+is run Tracee as "privileged" or "root".  
 
-If you want to run Tracker with "least privileges", here are the required
+If you want to run Tracee with "least privileges", here are the required
 capabilities and justifications:
 
 - Manage eBPF maps limits (`CAP_SYS_RESOURCE`)
@@ -103,11 +103,11 @@ capabilities and justifications:
 - `CAP_SETPCAP` (if given - used to reduce bounding set capabilities)
 - `CAP_SYSLOG` (to access kernel symbols through /proc/kallsyms)
 - On some environments (e.g. Ubuntu) `CAP_IPC_LOCK` might be required as well.
-- On cgroup v1 environments, `CAP_SYS_ADMIN` is recommended if running from a container in order to allow tracker to mount the cpuset cgroup controller.
+- On cgroup v1 environments, `CAP_SYS_ADMIN` is recommended if running from a container in order to allow tracee to mount the cpuset cgroup controller.
 
 For more information and help about process capabilities, please see
 [here](../advanced/dropping-capabilities.md).
 
 ## Processor architecture
 
-Tracker supports x86 and arm64 processors.
+Tracee supports x86 and arm64 processors.

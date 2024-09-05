@@ -3,10 +3,10 @@ package events
 import (
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	"github.com/khulnasoft/tracker/pkg/ebpf/probes"
-	"github.com/khulnasoft/tracker/pkg/events/trigger"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/ebpf/probes"
+	"github.com/aquasecurity/tracee/pkg/events/trigger"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 const (
@@ -145,7 +145,7 @@ const (
 	SymbolsCollision
 	HiddenKernelModule
 	FtraceHook
-	TrackerInfo
+	TraceeInfo
 	MaxUserSpace
 )
 
@@ -11846,10 +11846,10 @@ var CoreEvents = map[ID]Definition{
 			{Type: "u32", Name: "uts"},
 		},
 	},
-	TrackerInfo: {
-		id:           TrackerInfo,
+	TraceeInfo: {
+		id:           TraceeInfo,
 		id32Bit:      Sys32Undefined,
-		name:         "tracker_info",
+		name:         "tracee_info",
 		version:      NewVersion(1, 0, 0),
 		sets:         []string{},
 		dependencies: Dependencies{},
@@ -12692,7 +12692,7 @@ var CoreEvents = map[ID]Definition{
 			},
 			kSymbols: []KSymbol{
 				// Special case for this event: Single symbol, common to all kernel versions. Placed
-				// here so the ksymbols engine is always enabled, during tracker startup. The symbols
+				// here so the ksymbols engine is always enabled, during tracee startup. The symbols
 				// are resolved dynamically, during runtime depending on the arguments passed to
 				// the event.
 				{symbol: "_stext", required: true},

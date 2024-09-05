@@ -7,8 +7,8 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 func PrintEventList(includeSigs bool, wideOutput bool) {
@@ -54,7 +54,7 @@ func PrintEventList(includeSigs bool, wideOutput bool) {
 		}
 	}
 
-	fmt.Printf("Tracker supports the following events (use --wide for wider output):\n")
+	fmt.Printf("Tracee supports the following events (use --wide for wider output):\n")
 	table := newTable()
 
 	// Signature Events

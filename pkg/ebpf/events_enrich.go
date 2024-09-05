@@ -4,14 +4,14 @@ import (
 	gocontext "context"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/cgroup"
+	"github.com/aquasecurity/tracee/pkg/containers"
+	"github.com/aquasecurity/tracee/pkg/containers/runtime"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/parse"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 //
@@ -49,7 +49,7 @@ import (
 //
 
 // enrichContainerEvents is a pipeline stage that enriches container events with metadata.
-func (t *Tracker) enrichContainerEvents(ctx gocontext.Context, in <-chan *trace.Event,
+func (t *Tracee) enrichContainerEvents(ctx gocontext.Context, in <-chan *trace.Event,
 ) (
 	chan *trace.Event, chan error,
 ) {
@@ -70,7 +70,7 @@ func (t *Tracker) enrichContainerEvents(ctx gocontext.Context, in <-chan *trace.
 	// big lock
 	bLock := sync.RWMutex{}
 	// pipeline channels
-	out := make(chan *trace.Event, 10000)
+	out := make(chan *trace.Event, t.config.PipelineChannelSize)
 	errc := make(chan error, 1)
 	// state machine for enrichment
 	enrichDone := make(map[uint64]bool)
@@ -253,7 +253,7 @@ func enrichEvent(evt *trace.Event, enrichData runtime.ContainerMetadata) {
 }
 
 // isCgroupEventInHid checks if cgroup event is relevant for deriving container event in its hierarchy id.
-// in tracker we only care about containers inside the cpuset controller, as such other hierarchy ids will lead
+// in tracee we only care about containers inside the cpuset controller, as such other hierarchy ids will lead
 // to a failed query.
 func isCgroupEventInHid(event *trace.Event, cts *containers.Containers) (bool, error) {
 	if cts.GetCgroupVersion() == cgroup.CgroupVersion2 {

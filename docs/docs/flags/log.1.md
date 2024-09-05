@@ -1,17 +1,17 @@
 ---
-title: TRACKER-LOG
+title: TRACEE-LOG
 section: 1
-header: Tracker Log Flag Manual
+header: Tracee Log Flag Manual
 date: 2024/06
 ...
 
 ## NAME
 
-tracker **\-\-log** - Control logger options - aggregation and level priority
+tracee **\-\-log** - Control logger options - aggregation and level priority
 
 ## SYNOPSIS
 
-tracker **\-\-log** aggregate[:flush-interval] | <debug|info|warn|error|panic\> | file:/path/to/file | filter:[msg=<value,...\>;regex=<value,...\>;pkg=<value,...\>;file=<value,...\>;lvl=<value,...\>;libbpf] | filter-out:[msg=<value,...\>;regex=<value,...\>;pkg=<value,...\>;file=<value,...\>;lvl=<value,...\>;libbpf]
+tracee **\-\-log** aggregate[:flush-interval] | <debug|info|warn|error|panic\> | file:/path/to/file | filter:[msg=<value,...\>;regex=<value,...\>;pkg=<value,...\>;file=<value,...\>;lvl=<value,...\>;libbpf] | filter-out:[msg=<value,...\>;regex=<value,...\>;pkg=<value,...\>;file=<value,...\>;lvl=<value,...\>;libbpf]
 
 ## DESCRIPTION
 
@@ -63,10 +63,10 @@ Filter options:
   --log aggregate:5s
   ```
 
-- To output debug level logs to `/tmp/tracker.log`, use the following flag:
+- To output debug level logs to `/tmp/tracee.log`, use the following flag:
 
   ```console
-  --log debug --log file:/tmp/tracker.log
+  --log debug --log file:/tmp/tracee.log
   ```
 
 - To filter in logs that have either 'foo' or 'bar' in the message, are from the 'core' package, and are of 'error' level, use the following flag:

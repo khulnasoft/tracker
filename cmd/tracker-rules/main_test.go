@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
+	"github.com/aquasecurity/tracee/pkg/signatures/signature"
+	"github.com/aquasecurity/tracee/types/detect"
 )
 
 func Test_listSigs(t *testing.T) {
@@ -63,12 +63,12 @@ func Test_listEvents(t *testing.T) {
 			FakeGetSelectedEvents: func() ([]detect.SignatureEventSelector, error) {
 				return []detect.SignatureEventSelector{
 					{
-						Source: "tracker",
+						Source: "tracee",
 						Name:   "execve",
 						Origin: "foobar",
 					},
 					{
-						Source: "tracker",
+						Source: "tracee",
 						Name:   "ptrace",
 						Origin: "bazfoo",
 					},

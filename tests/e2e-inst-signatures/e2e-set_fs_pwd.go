@@ -4,16 +4,25 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eSetFsPwd struct {
 	cb          detect.SignatureHandler
 	hasReadUser bool
+}
+
+var e2eSetFsPwdMetadata = detect.SignatureMetadata{
+	ID:          "SET_FS_PWD",
+	EventName:   "SET_FS_PWD",
+	Version:     "0.1.0",
+	Name:        "set_fs_pwd Test",
+	Description: "Instrumentation events E2E Tests: set_fs_pwd",
+	Tags:        []string{"e2e", "instrumentation"},
 }
 
 func (sig *e2eSetFsPwd) Init(ctx detect.SignatureContext) error {
@@ -36,19 +45,12 @@ func (sig *e2eSetFsPwd) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eSetFsPwd) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "SET_FS_PWD",
-		EventName:   "SET_FS_PWD",
-		Version:     "0.1.0",
-		Name:        "set_fs_pwd Test",
-		Description: "Instrumentation events E2E Tests: set_fs_pwd",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eSetFsPwdMetadata, nil
 }
 
 func (sig *e2eSetFsPwd) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "set_fs_pwd"},
+		{Source: "tracee", Name: "set_fs_pwd"},
 	}, nil
 }
 
@@ -60,12 +62,12 @@ func (sig *e2eSetFsPwd) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "set_fs_pwd":
-		unresolvedPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "unresolved_path")
+		unresolvedPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "unresolved_path")
 		if sig.hasReadUser && err != nil {
 			return err
 		}
 
-		resolvedPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "resolved_path")
+		resolvedPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "resolved_path")
 		if err != nil {
 			return err
 		}

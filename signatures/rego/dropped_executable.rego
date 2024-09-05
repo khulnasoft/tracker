@@ -1,6 +1,6 @@
-package tracker.TRC_9
+package tracee.TRC_9
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-9",
@@ -16,21 +16,21 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracker",
+	"source": "tracee",
 	"name": "magic_write",
 	"origin": "container",
 }]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match = res {
+tracee_match = res {
 	input.eventName == "magic_write"
 
-	file_header := helpers.get_tracker_argument("bytes")
+	file_header := helpers.get_tracee_argument("bytes")
 	helpers.is_elf_file(file_header)
 
-	pathname := helpers.get_tracker_argument("pathname")
+	pathname := helpers.get_tracee_argument("pathname")
 	res := {"file path": pathname}
 }

@@ -36,7 +36,7 @@ RUN rm -f /usr/bin/cc /usr/bin/clang /usr/bin/clang++ /usr/bin/llc /usr/bin/lld 
 
 # install bpftool from btfhub
 RUN cd /tmp && \
-    git clone https://github.com/khulnasoft/btfhub.git && \
+    git clone https://github.com/aquasecurity/btfhub.git && \
     cd ./btfhub && \
     ./3rdparty/bpftool.sh
 
@@ -83,36 +83,36 @@ FROM go-setup AS user-setup
 LABEL AS=user-setup
 USER root
 
-# allow TRACKER* and LIBBPFGO* environment variables through sudo
+# allow TRACEE* and LIBBPFGO* environment variables through sudo
 ARG uid=1000
 ARG gid=1000
 
 RUN echo "Defaults env_keep += \"LANG LC_* HOME EDITOR PAGER GIT_PAGER MAN_PAGER\"" > /etc/sudoers && \
-    echo "Defaults env_keep += \"LIBBPFGO* TRACKER*\"" >> /etc/sudoers && \
+    echo "Defaults env_keep += \"LIBBPFGO* TRACEE*\"" >> /etc/sudoers && \
     echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    echo "tracker ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    echo "tracee ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     chmod 0440 /etc/sudoers
 
-# prepare tracker user to be $UID:$GID host equivalent
+# prepare tracee user to be $UID:$GID host equivalent
 RUN export uid=$uid gid=$gid && \
-    mkdir -p /home/tracker && \
-    echo "tracker:x:${uid}:${gid}:Tracker,,,:/home/tracker:/bin/bash" >> /etc/passwd && \
-    echo "tracker:x:${gid}:" >> /etc/group && \
-    echo "tracker::99999:0:99999:7:::" >> /etc/shadow && \
-    chown ${uid}:${gid} -R /home/tracker && \
-    echo "export PS1=\"\u@\h[\w]$ \"" > /home/tracker/.bashrc && \
-    echo "alias ls=\"ls --color\"" >> /home/tracker/.bashrc && \
-    echo "set -o vi" >> /home/tracker/.bashrc && \
-    ln -s /home/tracker/.bashrc /home/tracker/.profile
+    mkdir -p /home/tracee && \
+    echo "tracee:x:${uid}:${gid}:Tracee,,,:/home/tracee:/bin/bash" >> /etc/passwd && \
+    echo "tracee:x:${gid}:" >> /etc/group && \
+    echo "tracee::99999:0:99999:7:::" >> /etc/shadow && \
+    chown ${uid}:${gid} -R /home/tracee && \
+    echo "export PS1=\"\u@\h[\w]$ \"" > /home/tracee/.bashrc && \
+    echo "alias ls=\"ls --color\"" >> /home/tracee/.bashrc && \
+    echo "set -o vi" >> /home/tracee/.bashrc && \
+    ln -s /home/tracee/.bashrc /home/tracee/.profile
 
 # adjust permissions
-RUN chown -R tracker:tracker ${GOPATH}
+RUN chown -R tracee:tracee ${GOPATH}
 
 #
-# tracker-env: last stage for tracker building environment
+# tracee-env: last stage for tracee building environment
 #
 
-FROM user-setup AS tracker-env
-USER tracker
-ENV HOME=/home/tracker
-WORKDIR /tracker
+FROM user-setup AS tracee-env
+USER tracee
+ENV HOME=/home/tracee
+WORKDIR /tracee

@@ -4,14 +4,14 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BENCHMARK_POLICY="$SCRIPT_DIR/../common/bench.yaml"
 LOADGENERATOR_YAML="$SCRIPT_DIR/manifests/loadgenerator.yaml"
 MICROSVCS_YAML="$SCRIPT_DIR/manifests/microservices.yaml"
-TRACKER_YAML="$SCRIPT_DIR/../common/tracker.yaml"
+TRACEE_YAML="$SCRIPT_DIR/../common/tracee.yaml"
 
 Cleanup() {
     kubectl delete \
     -f $BENCHMARK_POLICY \
     -f $LOADGENERATOR_YAML \
     -f $MICROSVCS_YAML \
-    -f $TRACKER_YAML
+    -f $TRACEE_YAML
 }
 
 CleanupOnError() {
@@ -21,10 +21,10 @@ CleanupOnError() {
 
 # arguments
 
-TRACKER_IMAGE=${1:-"docker.io/khulnasoft/tracker:0.20.0"}
+TRACEE_IMAGE=${1:-"docker.io/aquasec/tracee:0.20.0"}
 BENCH_OUTPUT=${2:-"bench_output.json"}
 BENCH_TIME=${3:-900}
-BENCHMARK_NAME="tracker_network_benchmark"
+BENCHMARK_NAME="tracee_network_benchmark"
 
 
 # add cleanup procedure
@@ -36,10 +36,10 @@ trap CleanupOnError SIGINT SIGTERM SIGTSTP ERR
 benchmark_node=$(kubectl get nodes -l type=bench,benchmark-test=boutique-msvc | awk '{print $1}' | tail -n 1)
 base_node=$(kubectl get nodes -l type=base,benchmark-test=boutique-msvc | awk '{print $1}' | tail -n 1)
 
-kubectl apply -f $BENCHMARK_POLICY -f $MICROSVCS_YAML -f $TRACKER_YAML
-kubectl patch daemonset tracker -p '{"spec":{"template":{"spec":{"containers":[{"name":"tracker","image":'\"$TRACKER_IMAGE\"'}]}}}}'
+kubectl apply -f $BENCHMARK_POLICY -f $MICROSVCS_YAML -f $TRACEE_YAML
+kubectl patch daemonset tracee -p '{"spec":{"template":{"spec":{"containers":[{"name":"tracee","image":'\"$TRACEE_IMAGE\"'}]}}}}'
 
-daemonsets=("adservice" "cartservice" "checkoutservice" "currencyservice" "emailservice" "frontend" "paymentservice" "productcatalogservice" "recommendationservice" "redis-cart" "shippingservice" "tracker")
+daemonsets=("adservice" "cartservice" "checkoutservice" "currencyservice" "emailservice" "frontend" "paymentservice" "productcatalogservice" "recommendationservice" "redis-cart" "shippingservice" "tracee")
 
 # stabilize...
 

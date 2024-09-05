@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
-func GetTrackerArgumentByName(event trace.Event, argName string) (trace.Argument, error) {
+func GetTraceeArgumentByName(event trace.Event, argName string) (trace.Argument, error) {
 	for _, arg := range event.Args {
 		if arg.Name == argName {
 			return arg, nil

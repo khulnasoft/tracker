@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type codeInjection struct {
@@ -46,10 +46,10 @@ func (sig *codeInjection) GetMetadata() (detect.SignatureMetadata, error) {
 
 func (sig *codeInjection) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "ptrace"},
-		{Source: "tracker", Name: "open"},
-		{Source: "tracker", Name: "openat"},
-		{Source: "tracker", Name: "execve"},
+		{Source: "tracee", Name: "ptrace"},
+		{Source: "tracee", Name: "open"},
+		{Source: "tracee", Name: "openat"},
+		{Source: "tracee", Name: "execve"},
 	}, nil
 }
 
@@ -65,12 +65,12 @@ func (sig *codeInjection) OnEvent(event protocol.Event) error {
 	}
 	switch ee.EventName {
 	case "open", "openat":
-		flags, err := helpers.GetTrackerArgumentByName(ee, "flags", helpers.GetArgOps{DefaultArgs: false})
+		flags, err := helpers.GetTraceeArgumentByName(ee, "flags", helpers.GetArgOps{DefaultArgs: false})
 		if err != nil {
 			return fmt.Errorf("%v %#v", err, ee)
 		}
 		if helpers.IsFileWrite(flags.Value.(string)) {
-			pathname, err := helpers.GetTrackerArgumentByName(ee, "pathname", helpers.GetArgOps{DefaultArgs: false})
+			pathname, err := helpers.GetTraceeArgumentByName(ee, "pathname", helpers.GetArgOps{DefaultArgs: false})
 			if err != nil {
 				return err
 			}
@@ -87,7 +87,7 @@ func (sig *codeInjection) OnEvent(event protocol.Event) error {
 			}
 		}
 	case "ptrace":
-		request, err := helpers.GetTrackerArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
+		request, err := helpers.GetTraceeArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
 		if err != nil {
 			return err
 		}
@@ -110,14 +110,14 @@ func (sig *codeInjection) OnEvent(event protocol.Event) error {
 		// TODO Commenting out the execve case to make it equivalent to Rego signature
 		//
 		// case "execve":
-		//	envs, err := helpers.GetTrackerArgumentByName(ee, "envp", helpers.GetArgOps{DefaultArgs: false})
+		//	envs, err := helpers.GetTraceeArgumentByName(ee, "envp", helpers.GetArgOps{DefaultArgs: false})
 		//	if err != nil {
 		//		break
 		//	}
 		//	envsSlice := envs.Value.([]string)
 		//	for _, env := range envsSlice {
 		//		if strings.HasPrefix(env, "LD_PRELOAD") || strings.HasPrefix(env, "LD_LIBRARY_PATH") {
-		//			cmd, err := helpers.GetTrackerArgumentByName(ee, "argv", helpers.GetArgOps{DefaultArgs: false})
+		//			cmd, err := helpers.GetTraceeArgumentByName(ee, "argv", helpers.GetArgOps{DefaultArgs: false})
 		//			if err != nil {
 		//				return err
 		//			}

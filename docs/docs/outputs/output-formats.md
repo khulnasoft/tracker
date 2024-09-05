@@ -1,12 +1,12 @@
 # Tracing Output Formats
 
-It is possible to define how the events that Tracker collects should be displayed. This is done through the Tracker configuration. You can read more on configuration in the [Tracker installation guide.](../install/index.md)
+It is possible to define how the events that Tracee collects should be displayed. This is done through the Tracee configuration. You can read more on configuration in the [Tracee installation guide.](../install/index.md)
 
-Note that only one output format can be used in the Tracker configuration.
+Note that only one output format can be used in the Tracee configuration.
 
 ## Available Formats
 
-The following examples will have to be added into a Tracker configuration file.
+The following examples will have to be added into a Tracee configuration file.
 
 ### JSON
 
@@ -22,14 +22,14 @@ output:
 Note: the `files: key` must also be defined, even if it's just for stdout. This is mandatory for the parser.
 
 !!! Tip
-    A good tip is to pipe **tracker** json output to [jq](https://jqlang.github.io/jq/) tool, this way
+    A good tip is to pipe **tracee** json output to [jq](https://jqlang.github.io/jq/) tool, this way
     you can select fields, rename them, filter values, and much more!
 
 ### Webhook
 
 This sends events in json format to the webhook url
 
-Below is an example for configuring webhooks in the Tracker output section:
+Below is an example for configuring webhooks in the Tracee output section:
 
 ```
 output:
@@ -56,7 +56,7 @@ Note: Please ensure that the respective fields will have to be uncommented.
 
 This sends events to a FluentBit receiver. More information on FluentBit can be found in the [official documentation.](https://fluentbit.io/)
 
-Below is an example for forwarding Tracker output: 
+Below is an example for forwarding Tracee output: 
 
 ```
 output:
@@ -67,14 +67,14 @@ output:
     #         password: pass
     #         host: 127.0.0.1
     #         port: 24224
-    #         tag: tracker1
+    #         tag: tracee1
     #     - forward2:
     #         protocol: udp
     #         user: user
     #         password: pass
     #         host: 127.0.0.1
     #         port: 24225
-    #         tag: tracker2
+    #         tag: tracee2
 ```
 
 Note: Please ensure that the respective fields will have to be uncommented.
@@ -109,11 +109,11 @@ Note: the `files: key` must also be defined, even if it's just for stdout. This 
 
 ### GOTEMPLATE
 
-When authoring a Go template the data source is Tracker's `trace.Event` struct, which is defined in `https://github.com/khulnasoft/tracker/blob/main/types/trace/trace.go#L15`.
+When authoring a Go template the data source is Tracee's `trace.Event` struct, which is defined in `https://github.com/aquasecurity/tracee/blob/main/types/trace/trace.go#L15`.
 
 Go template can utilize helper functions from [Sprig](http://masterminds.github.io/sprig/).
 
-For example templates, see [tracker/cmd/tracker-rules/templates](https://github.com/khulnasoft/tracker/tree/main/cmd/tracker-rules/templates).
+For example templates, see [tracee/cmd/tracee-rules/templates](https://github.com/aquasecurity/tracee/tree/main/cmd/tracee-rules/templates).
 
 The following sections can be specified as part of go templates:
 

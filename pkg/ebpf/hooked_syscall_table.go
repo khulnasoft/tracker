@@ -7,21 +7,21 @@ import (
 	"time"
 	"unsafe"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/aquasecurity/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/derive"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/pkg/capabilities"
+	"github.com/aquasecurity/tracee/pkg/events"
+	"github.com/aquasecurity/tracee/pkg/events/derive"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
 var expectedSyscallTableInit = false
 
 // hookedSyscallTableRoutine the main routine that checks if there's a hooked syscall in the syscall table.
-// It runs on tracker's startup and from time to time.
-func (t *Tracker) hookedSyscallTableRoutine(ctx gocontext.Context) {
+// It runs on tracee's startup and from time to time.
+func (t *Tracee) hookedSyscallTableRoutine(ctx gocontext.Context) {
 	logger.Debugw("Starting hookedSyscallTable goroutine")
 	defer logger.Debugw("Stopped hookedSyscallTable goroutine")
 
@@ -72,7 +72,7 @@ func (t *Tracker) hookedSyscallTableRoutine(ctx gocontext.Context) {
 }
 
 // isAboveSatisfied is 'above' requirement satisfied
-func (t *Tracker) isAboveSatisfied(aboveRequirement string) (bool, error) {
+func (t *Tracee) isAboveSatisfied(aboveRequirement string) (bool, error) {
 	kerVerCmpAbove, err := t.config.OSInfo.CompareOSBaseKernelRelease(aboveRequirement)
 	if err != nil {
 		return false, err
@@ -86,7 +86,7 @@ func (t *Tracker) isAboveSatisfied(aboveRequirement string) (bool, error) {
 }
 
 // isBelowSatisfied is 'below' requirement satisfied
-func (t *Tracker) isBelowSatisfied(belowRequirement string) (bool, error) {
+func (t *Tracee) isBelowSatisfied(belowRequirement string) (bool, error) {
 	kerVerCmpBelow, err := t.config.OSInfo.CompareOSBaseKernelRelease(belowRequirement)
 	if err != nil {
 		return false, err
@@ -103,7 +103,7 @@ func (t *Tracker) isBelowSatisfied(belowRequirement string) (bool, error) {
 // in comparison with the current running kernel.
 // 'below' requirement is exclusive, 'above' is inclusive.
 // For example, for running kernel 6.2, 'below'==6.2 is NOT a match, whereas 'above'==6.2 is a match.
-func (t *Tracker) getSyscallNameByKerVer(restrictions []events.KernelRestrictions) string {
+func (t *Tracee) getSyscallNameByKerVer(restrictions []events.KernelRestrictions) string {
 	for _, restriction := range restrictions {
 		below := restriction.Below
 		above := restriction.Above
@@ -157,7 +157,7 @@ func (t *Tracker) getSyscallNameByKerVer(restrictions []events.KernelRestriction
 }
 
 // populateExpectedSyscallTableArray fills the expected values of the syscall table
-func (t *Tracker) populateExpectedSyscallTableArray(tableMap *bpf.BPFMap) error {
+func (t *Tracee) populateExpectedSyscallTableArray(tableMap *bpf.BPFMap) error {
 	// Get address to the function that defines the not implemented sys call
 	niSyscallSymbol, err := t.kernelSymbols.GetSymbolByOwnerAndName("system", events.SyscallPrefix+"ni_syscall")
 	if err != nil {
@@ -204,5 +204,5 @@ func (t *Tracker) populateExpectedSyscallTableArray(tableMap *bpf.BPFMap) error 
 }
 
 //go:noinline
-func (t *Tracker) triggerSyscallTableIntegrityCheckCall() {
+func (t *Tracee) triggerSyscallTableIntegrityCheckCall() {
 }

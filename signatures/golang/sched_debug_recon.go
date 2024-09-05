@@ -3,15 +3,31 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type SchedDebugRecon struct {
 	cb              detect.SignatureHandler
 	schedDebugPaths []string
+}
+
+var schedDebugReconMetadata = detect.SignatureMetadata{
+	ID:          "TRC-1029",
+	Version:     "1",
+	Name:        "sched_debug CPU file was read",
+	EventName:   "sched_debug_recon",
+	Description: "The sched_debug file was read. This file contains information about your CPU and processes. Adversaries may read this file in order to gather that information for their use.",
+	Properties: map[string]interface{}{
+		"Severity":             1,
+		"Category":             "discovery",
+		"Technique":            "Container and Resource Discovery",
+		"Kubernetes_Technique": "",
+		"id":                   "attack-pattern--0470e792-32f8-46b0-a351-652bc35e9336",
+		"external_id":          "T1613",
+	},
 }
 
 func (sig *SchedDebugRecon) Init(ctx detect.SignatureContext) error {
@@ -21,26 +37,12 @@ func (sig *SchedDebugRecon) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *SchedDebugRecon) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "TRC-1029",
-		Version:     "1",
-		Name:        "sched_debug CPU file was read",
-		EventName:   "sched_debug_recon",
-		Description: "The sched_debug file was read. This file contains information about your CPU and processes. Adversaries may read this file in order to gather that information for their use.",
-		Properties: map[string]interface{}{
-			"Severity":             1,
-			"Category":             "discovery",
-			"Technique":            "Container and Resource Discovery",
-			"Kubernetes_Technique": "",
-			"id":                   "attack-pattern--0470e792-32f8-46b0-a351-652bc35e9336",
-			"external_id":          "T1613",
-		},
-	}, nil
+	return schedDebugReconMetadata, nil
 }
 
 func (sig *SchedDebugRecon) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "security_file_open", Origin: "container"},
+		{Source: "tracee", Name: "security_file_open", Origin: "container"},
 	}, nil
 }
 
@@ -52,12 +54,12 @@ func (sig *SchedDebugRecon) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_file_open":
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}

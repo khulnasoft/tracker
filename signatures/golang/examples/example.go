@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // lint:ignore U1000 This is an example file with no real usage
@@ -37,7 +37,7 @@ func (sig *counter) GetMetadata() (detect.SignatureMetadata, error) {
 // GetSelectedEvents implements the Signature interface by declaring which events this signature subscribes to
 func (sig *counter) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{{
-		Source: "tracker",
+		Source: "tracee",
 		// Name:   "execve",
 	}}, nil
 }
@@ -71,7 +71,7 @@ func (sig *counter) OnEvent(event protocol.Event) error {
 // OnSignal implements the Signature interface by handling lifecycle events of the signature
 func (sig *counter) OnSignal(signal detect.Signal) error {
 	source, sigcomplete := signal.(detect.SignalSourceComplete)
-	if sigcomplete && source == "tracker" {
+	if sigcomplete && source == "tracee" {
 		sig.cb(&detect.Finding{
 			Data: map[string]interface{}{
 				"message": "done",

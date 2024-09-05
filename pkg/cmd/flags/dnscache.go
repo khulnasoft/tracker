@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/dnscache"
+	"github.com/aquasecurity/tracee/pkg/dnscache"
 )
 
 func dnsCacheHelp() string {

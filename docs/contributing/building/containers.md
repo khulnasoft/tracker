@@ -1,15 +1,15 @@
-# Creating Tracker Container Images
+# Creating Tracee Container Images
 
-> These instructions are meant to describe how to build the official tracker
+> These instructions are meant to describe how to build the official tracee
 > container image, instead of just downloading it from the
-> [Docker Hub](https://hub.docker.com/r/khulnasoft/tracker).
+> [Docker Hub](https://hub.docker.com/r/aquasec/tracee).
 >
 > If you would like to have a local building and execution environment,
 > [read this](./environment.md) instead.
 
-## Using Tracker Container Image from Docker Hub
+## Using Tracee Container Image from Docker Hub
 
-Before moving on to how to build Tracker container, it is important to know the
+Before moving on to how to build Tracee container, it is important to know the
 published container images and their tag meanings. Here is the current list of
 docker container images being published during a release (or a snapshot
 release):
@@ -20,54 +20,54 @@ release):
      latest daily built container images (based on the version currently being
      developed).
 
-     - **khulnasoft/tracker:dev**
+     - **aquasec/tracee:dev**
 
 2. **RELEASE (official versions) container images:**
 
      Preferable alias for latest released image:
 
-     - **khulnasoft/tracker:latest**
+     - **aquasec/tracee:latest**
 
-     And the container images for each released version of Tracker:
+     And the container images for each released version of Tracee:
 
-     - **khulnasoft/tracker:VERSION**
+     - **aquasec/tracee:VERSION**
 
-## Generating Tracker Container Images
+## Generating Tracee Container Images
 
-1. **tracker:latest**
+1. **tracee:latest**
 
     Contains an executable binary with an embedded and CO-RE enabled eBPF object
     that makes it portable against multiple Linux and kernel versions.
 
     ```console
-    make -f builder/Makefile.tracker-container build-tracker
+    make -f builder/Makefile.tracee-container build-tracee
     ```
 
     !!! Note
-        `BTFHUB=1` adds support to some [older kernels](https://github.com/khulnasoft/btfhub/blob/main/docs/supported-distros.md).
+        `BTFHUB=1` adds support to some [older kernels](https://github.com/aquasecurity/btfhub/blob/main/docs/supported-distros.md).
 
         ```console
-        BTFHUB=1 make -f builder/Makefile.tracker-container build-tracker
+        BTFHUB=1 make -f builder/Makefile.tracee-container build-tracee
         ```
 
-## Running Generated Tracker Container Image
+## Running Generated Tracee Container Image
 
-Tracker container is supposed to be executed through docker cmdline directly,
+Tracee container is supposed to be executed through docker cmdline directly,
 from the official built images. Nevertheless, during the image building process,
 it may be useful to execute the recently generated container image with correct
 arguments, mostly to see if the image is working.
 
-User may execute built containers through `Makefile.tracker-container` file with
+User may execute built containers through `Makefile.tracee-container` file with
 the "run" targets:
 
-1. To run recently generated **tracker:latest** container:
+1. To run recently generated **tracee:latest** container:
 
     ```console
-    make -f builder/Makefile.tracker-container run-tracker
+    make -f builder/Makefile.tracee-container run-tracee
     ```
 
     !!! note
-        Tracker arguments are passed through the `ARG` variable:
+        Tracee arguments are passed through the `ARG` variable:
         ```console
-        make -f builder/Makefile.tracker-container run-tracker ARG="--help"
+        make -f builder/Makefile.tracee-container run-tracee ARG="--help"
         ```

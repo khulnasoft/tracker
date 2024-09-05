@@ -105,10 +105,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/pkg/errfmt"
+	"github.com/aquasecurity/tracee/pkg/logger"
+	"github.com/aquasecurity/tracee/pkg/utils/environment"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 // The minimum time of delay before sending events forward.
@@ -142,9 +142,9 @@ func InitEventSorter() (*EventsChronologicalSorter, error) {
 	return &newSorter, nil
 }
 
-func (sorter *EventsChronologicalSorter) StartPipeline(ctx gocontext.Context, in <-chan *trace.Event) (
+func (sorter *EventsChronologicalSorter) StartPipeline(ctx gocontext.Context, in <-chan *trace.Event, outChanSize int) (
 	chan *trace.Event, chan error) {
-	out := make(chan *trace.Event, 10000)
+	out := make(chan *trace.Event, outChanSize)
 	errc := make(chan error, 1)
 	go sorter.Start(in, out, ctx, errc)
 	return out, errc

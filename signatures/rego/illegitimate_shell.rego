@@ -1,6 +1,6 @@
-package tracker.TRC_12
+package tracee.TRC_12
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-12",
@@ -16,19 +16,19 @@ __rego_metadoc__ := {
 }
 
 eventSelectors := [{
-	"source": "tracker",
+	"source": "tracee",
 	"name": "security_bprm_check",
 	"origin": "*",
 }]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "security_bprm_check"
 
-	pathname := helpers.get_tracker_argument("pathname")
+	pathname := helpers.get_tracee_argument("pathname")
 	binary_names = ["/ash", "/bash", "/csh", "/ksh", "/sh", "/tcsh", "/zsh", "/dash"]
 	binary := binary_names[_]
 	endswith(pathname, binary)

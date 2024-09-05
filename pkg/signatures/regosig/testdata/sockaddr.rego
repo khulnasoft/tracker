@@ -1,4 +1,4 @@
-package tracker.SOCKADDR
+package tracee.SOCKADDR
 
 __rego_metadoc__ := {
 	"id": "CEL-SOCKADDR",
@@ -7,15 +7,15 @@ __rego_metadoc__ := {
 	"tags": ["linux", "container"],
 }
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := {
-		"source": "tracker",
+		"source": "tracee",
 		"name": "connect",
 		"origin": "*",
 	}
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "connect"
 	arg := input.args[_]
 	arg.name == "addr"

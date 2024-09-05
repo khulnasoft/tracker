@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/aquasecurity/tracee/signatures/helpers"
+	"github.com/aquasecurity/tracee/types/detect"
+	"github.com/aquasecurity/tracee/types/protocol"
+	"github.com/aquasecurity/tracee/types/trace"
 )
 
 type e2eContainersDataSource struct {
@@ -14,9 +14,18 @@ type e2eContainersDataSource struct {
 	containersData detect.DataSource
 }
 
+var e2eContainersDataSourceMetadata = detect.SignatureMetadata{
+	ID:          "CONTAINERS_DATA_SOURCE",
+	EventName:   "CONTAINERS_DATA_SOURCE",
+	Version:     "0.1.0",
+	Name:        "Containers Data Source Test",
+	Description: "Instrumentation events E2E Tests: Containers Data Source Test",
+	Tags:        []string{"e2e", "instrumentation"},
+}
+
 func (sig *e2eContainersDataSource) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	containersData, ok := ctx.GetDataSource("tracker", "containers")
+	containersData, ok := ctx.GetDataSource("tracee", "containers")
 	if !ok {
 		return fmt.Errorf("containers data source not registered")
 	}
@@ -28,19 +37,12 @@ func (sig *e2eContainersDataSource) Init(ctx detect.SignatureContext) error {
 }
 
 func (sig *e2eContainersDataSource) GetMetadata() (detect.SignatureMetadata, error) {
-	return detect.SignatureMetadata{
-		ID:          "CONTAINERS_DATA_SOURCE",
-		EventName:   "CONTAINERS_DATA_SOURCE",
-		Version:     "0.1.0",
-		Name:        "Containers Data Source Test",
-		Description: "Instrumentation events E2E Tests: Containers Data Source Test",
-		Tags:        []string{"e2e", "instrumentation"},
-	}, nil
+	return e2eContainersDataSourceMetadata, nil
 }
 
 func (sig *e2eContainersDataSource) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
 	return []detect.SignatureEventSelector{
-		{Source: "tracker", Name: "sched_process_exec", Origin: "container"},
+		{Source: "tracee", Name: "sched_process_exec", Origin: "container"},
 	}, nil
 }
 
@@ -52,7 +54,7 @@ func (sig *e2eContainersDataSource) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "sched_process_exec":
-		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

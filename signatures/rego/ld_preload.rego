@@ -1,6 +1,6 @@
-package tracker.TRC_7
+package tracee.TRC_7
 
-import data.tracker.helpers
+import data.tracee.helpers
 
 __rego_metadoc__ := {
 	"id": "TRC-7",
@@ -17,42 +17,42 @@ __rego_metadoc__ := {
 
 eventSelectors := [
 	{
-		"source": "tracker",
+		"source": "tracee",
 		"name": "execve",
 	},
 	{
-		"source": "tracker",
+		"source": "tracee",
 		"name": "security_file_open",
 	},
 ]
 
-tracker_selected_events[eventSelector] {
+tracee_selected_events[eventSelector] {
 	eventSelector := eventSelectors[_]
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "execve"
-	envp = helpers.get_tracker_argument("envp")
+	envp = helpers.get_tracee_argument("envp")
 
 	envvar := envp[_]
 	startswith(envvar, "LD_PRELOAD")
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "execve"
-	envp = helpers.get_tracker_argument("envp")
+	envp = helpers.get_tracee_argument("envp")
 
 	envvar := envp[_]
 	startswith(envvar, "LD_LIBRARY_PATH")
 }
 
-tracker_match {
+tracee_match {
 	input.eventName == "security_file_open"
-	flags = helpers.get_tracker_argument("flags")
+	flags = helpers.get_tracee_argument("flags")
 
 	helpers.is_file_write(flags)
 
-	pathname := helpers.get_tracker_argument("pathname")
+	pathname := helpers.get_tracee_argument("pathname")
 
 	pathname == "/etc/ld.so.preload"
 }

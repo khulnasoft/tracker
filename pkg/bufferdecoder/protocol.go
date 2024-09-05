@@ -1,8 +1,8 @@
 // Package bufferdecoder implements the structs (protocol indeed) used in the communication
-// between code eBPF running in the Kernel and the Tracker-eBPF user-space application.
+// between code eBPF running in the Kernel and the Tracee-eBPF user-space application.
 package bufferdecoder
 
-import "github.com/khulnasoft/tracker/pkg/events"
+import "github.com/aquasecurity/tracee/pkg/events"
 
 // BinType is an enum that specifies the type of binary data sent in the file perf map
 // binary types should match defined values in ebpf code

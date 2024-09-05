@@ -2,13 +2,13 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "tracker.fullname" . }}
+  name: {{ include "tracee.fullname" . }}
   labels:
-    {{- include "tracker.labels" . | nindent 4 }}
+    {{- include "tracee.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "tracker.selectorLabels" . | nindent 6 }}
+      {{- include "tracee.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,25 +16,25 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tracker.selectorLabels" . | nindent 8 }}
+        {{- include "tracee.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tracker.serviceAccountName" . }}
+      serviceAccountName: {{ include "tracee.serviceAccountName" . }}
       hostPID: {{ .Values.hostPID }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: tracker
+        - name: tracee
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - /tracker/tracker
+            - /tracee/tracee
           args:
             - --config
-            - /tracker/config.yaml
+            - /tracee/config.yaml
           {{- if .Values.webhook }}
             - --output
             - webhook:{{ .Values.webhook }}
@@ -55,8 +55,8 @@ spec:
               port: {{ trimPrefix ":" .Values.config.listenAddr }}
           {{- end }}
           volumeMounts:
-            - name: tmp-tracker
-              mountPath: /tmp/tracker
+            - name: tmp-tracee
+              mountPath: /tmp/tracee
             - name: etc-os-release
               mountPath: /etc/os-release-host
               readOnly: true
@@ -72,14 +72,14 @@ spec:
             - mountPath: /var/run/podman/podman.sock
               name: podman-sock
               readOnly: true
-            - name: tracker-config
+            - name: tracee-config
               readOnly: true
-              mountPath: /tracker/config.yaml
+              mountPath: /tracee/config.yaml
               subPath: config.yaml
             {{- range .Values.extraWebhookTemplates }}
-            - name: tracker-templates
+            - name: tracee-templates
               readonly: true
-              mountPath: "/tracker/templates/{{ .name }}"
+              mountPath: "/tracee/templates/{{ .name }}"
               subPath: {{ .name }}
             {{- end }}
           resources:
@@ -97,9 +97,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: tmp-tracker
+        - name: tmp-tracee
           hostPath:
-            path: /tmp/tracker
+            path: /tmp/tracee
         - name: etc-os-release
           hostPath:
             path: /etc/os-release
@@ -115,11 +115,11 @@ spec:
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
-        - name: tracker-config
+        - name: tracee-config
           configMap:
-            name: tracker-config
+            name: tracee-config
         {{- if .Values.extraWebhookTemplates }}
-        - name: "tracker-templates"
+        - name: "tracee-templates"
           configMap:
-            name: tracker-templates
+            name: tracee-templates
         {{- end }}
