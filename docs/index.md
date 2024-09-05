@@ -27,7 +27,7 @@ Tracker is a runtime security and observability tool that helps you understand h
 It is using [eBPF technology](https://ebpf.io/what-is-ebpf/) to tap into your system and expose that information as events that you can consume.  
 Events range from factual system activity events to sophisticated security events that detect suspicious behavioral patterns.
 
-To learn more about Tracker, check out the [documentation](https://aquasecurity.github.io/tracker/). 
+To learn more about Tracker, check out the [documentation](https://khulnasoft.github.io/tracker/). 
 
 ## Quickstart
 
@@ -49,7 +49,7 @@ For a complete walkthrough please see the [Docker getting started guide][docker-
 ### On Kubernetes
 
 ```shell
-helm repo add aqua https://aquasecurity.github.io/helm-charts/
+helm repo add aqua https://khulnasoft.github.io/helm-charts/
 helm repo update
 helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```

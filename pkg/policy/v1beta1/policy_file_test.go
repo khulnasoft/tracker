@@ -55,7 +55,7 @@ func TestPolicyValidate(t *testing.T) {
 		{
 			testName: "invalid API",
 			policy: PolicyFile{
-				APIVersion: "aquasecurity.github.io/test",
+				APIVersion: "khulnasoft.github.io/test",
 				Metadata:   Metadata{Name: "invalid-api"},
 			},
 			expectedError: errors.New("policy invalid-api, apiVersion not supported"),
