@@ -129,7 +129,7 @@
     ...
     ```
 
-7. Build a **static binary** with [BTFHUB Support](https://github.com/aquasecurity/btfhub)
+7. Build a **static binary** with [BTFHUB Support](https://github.com/khulnasoft/btfhub)
 
     ```console
     BTFHUB=1 STATIC=1 make all

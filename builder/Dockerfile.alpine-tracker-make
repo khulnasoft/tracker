@@ -36,7 +36,7 @@ RUN rm -f /usr/bin/cc /usr/bin/clang /usr/bin/clang++ /usr/bin/llc /usr/bin/lld 
 
 # install bpftool from btfhub
 RUN cd /tmp && \
-    git clone https://github.com/aquasecurity/btfhub.git && \
+    git clone https://github.com/khulnasoft/btfhub.git && \
     cd ./btfhub && \
     ./3rdparty/bpftool.sh
 

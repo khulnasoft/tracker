@@ -32,7 +32,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # install bpftool from btfhub
 
 RUN cd /tmp && \
-    git clone https://github.com/aquasecurity/btfhub.git && \
+    git clone https://github.com/khulnasoft/btfhub.git && \
     cd ./btfhub && \
     ./3rdparty/bpftool.sh
 
