@@ -112,6 +112,7 @@ const (
 	ExecuteFinished
 	SecurityBprmCredsForExec
 	SecurityTaskSetrlimit
+	SecuritySettime64
 	MaxCommonID
 )
 
@@ -1005,14 +1006,8 @@ var CoreEvents = map[ID]Definition{
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Dup)}},
-				{"sys_enter_submit_tail", "sys_enter_submit", []uint32{uint32(Dup)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(Dup)}},
-				{"sys_exit_submit_tail", "sys_exit_submit", []uint32{uint32(Dup)}},
+				{handle: probes.Dup, required: true},
+				{handle: probes.DupRet, required: true},
 			},
 		},
 	},
@@ -1029,14 +1024,8 @@ var CoreEvents = map[ID]Definition{
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Dup2)}},
-				{"sys_enter_submit_tail", "sys_enter_submit", []uint32{uint32(Dup2)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(Dup2)}},
-				{"sys_exit_submit_tail", "sys_exit_submit", []uint32{uint32(Dup2)}},
+				{handle: probes.Dup2, required: true},
+				{handle: probes.Dup2Ret, required: true},
 			},
 		},
 	},
@@ -2689,14 +2678,8 @@ var CoreEvents = map[ID]Definition{
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Ptrace)}},
-				{"sys_enter_submit_tail", "sys_enter_submit", []uint32{uint32(Ptrace)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(Ptrace)}},
-				{"sys_exit_submit_tail", "sys_exit_submit", []uint32{uint32(Ptrace)}},
+				{handle: probes.Ptrace, required: true},
+				{handle: probes.PtraceRet, required: true},
 			},
 		},
 	},
@@ -4031,14 +4014,8 @@ var CoreEvents = map[ID]Definition{
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(ArchPrctl)}},
-				{"sys_enter_submit_tail", "sys_enter_submit", []uint32{uint32(ArchPrctl)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(ArchPrctl)}},
-				{"sys_exit_submit_tail", "sys_exit_submit", []uint32{uint32(ArchPrctl)}},
+				{handle: probes.ArchPrctl, required: true},
+				{handle: probes.ArchPrctlRet, required: true},
 			},
 		},
 	},
@@ -7336,14 +7313,8 @@ var CoreEvents = map[ID]Definition{
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Dup3)}},
-				{"sys_enter_submit_tail", "sys_enter_submit", []uint32{uint32(Dup3)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(Dup3)}},
-				{"sys_exit_submit_tail", "sys_exit_submit", []uint32{uint32(Dup3)}},
+				{handle: probes.Dup3, required: true},
+				{handle: probes.Dup3Ret, required: true},
 			},
 		},
 	},
@@ -7824,14 +7795,8 @@ var CoreEvents = map[ID]Definition{
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(ProcessVmWritev)}},
-				{"sys_enter_submit_tail", "sys_enter_submit", []uint32{uint32(ProcessVmWritev)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(ProcessVmWritev)}},
-				{"sys_exit_submit_tail", "sys_exit_submit", []uint32{uint32(ProcessVmWritev)}},
+				{handle: probes.ProcessVmWritev, required: true},
+				{handle: probes.ProcessVmWritevRet, required: true},
 			},
 		},
 	},
@@ -11172,13 +11137,12 @@ var CoreEvents = map[ID]Definition{
 			{Type: "int", Name: "child_ns_pid"},
 			{Type: "unsigned long", Name: "start_time"}, // child_start_time
 			// Arguments set by OPT_PROCESS_FORK (when process tree source is enabled for fork events).
-			// These arguments are always removed after process tree processing.
-			// Up Parent (Up in hierarchy until parent is a process and not a lwp)
-			{Type: "int", Name: "up_parent_tid"},
-			{Type: "int", Name: "up_parent_ns_tid"},
-			{Type: "int", Name: "up_parent_pid"},
-			{Type: "int", Name: "up_parent_ns_pid"},
-			{Type: "unsigned long", Name: "up_parent_start_time"},
+			// Parent Process (Go up in hierarchy until parent is a process and not a lwp)
+			{Type: "int", Name: "parent_process_tid"},
+			{Type: "int", Name: "parent_process_ns_tid"},
+			{Type: "int", Name: "parent_process_pid"},
+			{Type: "int", Name: "parent_process_ns_pid"},
+			{Type: "unsigned long", Name: "parent_process_start_time"},
 			// Thread Group Leader
 			{Type: "int", Name: "leader_tid"},
 			{Type: "int", Name: "leader_ns_tid"},
@@ -11229,6 +11193,7 @@ var CoreEvents = map[ID]Definition{
 			{Type: "umode_t", Name: "stdin_type"},
 			{Type: "char*", Name: "stdin_path"},
 			{Type: "int", Name: "invoked_from_kernel"},
+			{Type: "const char*", Name: "prev_comm"},
 			{Type: "const char**", Name: "env"},
 		},
 	},
@@ -11346,14 +11311,6 @@ var CoreEvents = map[ID]Definition{
 			probes: []Probe{
 				{handle: probes.SecurityMmapAddr, required: true},
 				{handle: probes.SecurityFileMProtect, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{
-					"sys_enter_init_tail",
-					"sys_enter_init",
-					[]uint32{uint32(Mmap), uint32(Mprotect), uint32(PkeyMprotect)},
-				},
 			},
 		},
 		sets: []string{},
@@ -11518,18 +11475,6 @@ var CoreEvents = map[ID]Definition{
 		dependencies: Dependencies{
 			probes: []Probe{
 				{handle: probes.SecurityFileOpen, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{
-					"sys_enter_init_tail",
-					"sys_enter_init",
-					[]uint32{
-						uint32(Open), uint32(Openat), uint32(Openat2),
-						uint32(OpenByHandleAt), uint32(Execve),
-						uint32(Execveat),
-					},
-				},
 			},
 		},
 		sets: []string{"lsm_hooks", "fs", "fs_file_ops"},
@@ -11607,10 +11552,6 @@ var CoreEvents = map[ID]Definition{
 		dependencies: Dependencies{
 			probes: []Probe{
 				{handle: probes.SecuritySocketConnect, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Connect)}},
 			},
 		},
 		sets: []string{"default", "lsm_hooks", "net", "net_sock"},
@@ -11645,10 +11586,6 @@ var CoreEvents = map[ID]Definition{
 		dependencies: Dependencies{
 			probes: []Probe{
 				{handle: probes.SecuritySocketAccept, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Accept), uint32(Accept4)}},
 			},
 		},
 		sets: []string{"default", "lsm_hooks", "net", "net_sock"},
@@ -11666,10 +11603,6 @@ var CoreEvents = map[ID]Definition{
 		dependencies: Dependencies{
 			probes: []Probe{
 				{handle: probes.SecuritySocketBind, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Bind)}},
 			},
 		},
 		sets: []string{"default", "lsm_hooks", "net", "net_sock"},
@@ -11687,10 +11620,6 @@ var CoreEvents = map[ID]Definition{
 		dependencies: Dependencies{
 			probes: []Probe{
 				{handle: probes.SecuritySocketSetsockopt, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Setsockopt)}},
 			},
 		},
 		sets: []string{"lsm_hooks", "net", "net_sock"},
@@ -11937,13 +11866,15 @@ var CoreEvents = map[ID]Definition{
 		version: NewVersion(1, 0, 0),
 		dependencies: Dependencies{
 			probes: []Probe{
-				{handle: probes.SyscallEnter__Internal, required: true},
-				{handle: probes.SyscallExit__Internal, required: true},
+				{handle: probes.Dup, required: true},
+				{handle: probes.DupRet, required: true},
+				{handle: probes.Dup2, required: false},
+				{handle: probes.Dup2Ret, required: false},
+				{handle: probes.Dup3, required: true},
+				{handle: probes.Dup3Ret, required: true},
 			},
 			tailCalls: []TailCall{
-				{"sys_enter_init_tail", "sys_enter_init", []uint32{uint32(Dup), uint32(Dup2), uint32(Dup3)}},
-				{"sys_exit_init_tail", "sys_exit_init", []uint32{uint32(Dup), uint32(Dup2), uint32(Dup3)}},
-				{"sys_exit_tails", "sys_dup_exit_tail", []uint32{uint32(Dup), uint32(Dup2), uint32(Dup3)}},
+				{"generic_sys_exit_tails", "sys_dup_exit_tail", []uint32{uint32(Dup), uint32(Dup2), uint32(Dup3)}},
 			},
 		},
 		sets: []string{},
@@ -12502,6 +12433,10 @@ var CoreEvents = map[ID]Definition{
 			{Type: "const char*", Name: "name"},
 			{Type: "const char*", Name: "version"},
 			{Type: "const char*", Name: "src_version"},
+			{Type: "const char*", Name: "pathname"},
+			{Type: "dev_t", Name: "dev"},
+			{Type: "unsigned long", Name: "inode"},
+			{Type: "u64", Name: "ctime"},
 		},
 	},
 	ModuleFree: {
@@ -13052,19 +12987,9 @@ var CoreEvents = map[ID]Definition{
 		dependencies: Dependencies{
 			probes: []Probe{
 				{handle: probes.SetFsPwd, required: true},
-				{handle: probes.SyscallEnter__Internal, required: true},
-			},
-			tailCalls: []TailCall{
-				{
-					"sys_enter_init_tail",
-					"sys_enter_init",
-					[]uint32{
-						uint32(Chdir),
-					},
-				},
 			},
 		},
-		sets: []string{"syscalls"},
+		sets: []string{},
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "unresolved_path"},
 			{Type: "const char*", Name: "resolved_path"},
@@ -13085,6 +13010,23 @@ var CoreEvents = map[ID]Definition{
 			{Type: "int", Name: "resource"},
 			{Type: "u64", Name: "new_rlim_cur"},
 			{Type: "u64", Name: "new_rlim_max"},
+		},
+	},
+	SecuritySettime64: {
+		id:      SecuritySettime64,
+		id32Bit: Sys32Undefined,
+		name:    "security_settime64",
+		dependencies: Dependencies{
+			probes: []Probe{
+				{handle: probes.SecuritySettime64, required: true},
+			},
+		},
+		sets: []string{"lsm"},
+		params: []trace.ArgMeta{
+			{Type: "u64", Name: "tv_sec"},
+			{Type: "u64", Name: "tv_nsec"},
+			{Type: "int", Name: "tz_minuteswest"},
+			{Type: "int", Name: "tz_dsttime"},
 		},
 	},
 	//
@@ -13149,12 +13091,12 @@ var CoreEvents = map[ID]Definition{
 			{Type: "int", Name: "child_pid"},
 			{Type: "int", Name: "child_ns_pid"},
 			{Type: "unsigned long", Name: "start_time"}, // child_start_time
-			// Up Parent (Up in hierarchy until parent is a process and not a lwp)
-			{Type: "int", Name: "up_parent_tid"},
-			{Type: "int", Name: "up_parent_ns_tid"},
-			{Type: "int", Name: "up_parent_pid"},
-			{Type: "int", Name: "up_parent_ns_pid"},
-			{Type: "unsigned long", Name: "up_parent_start_time"},
+			// Parent Process (Go up in hierarchy until parent is a process and not a lwp)
+			{Type: "int", Name: "parent_process_tid"},
+			{Type: "int", Name: "parent_process_ns_tid"},
+			{Type: "int", Name: "parent_process_pid"},
+			{Type: "int", Name: "parent_process_ns_pid"},
+			{Type: "unsigned long", Name: "parent_process_start_time"},
 			// Thread Group Leader
 			{Type: "int", Name: "leader_tid"},
 			{Type: "int", Name: "leader_ns_tid"},
