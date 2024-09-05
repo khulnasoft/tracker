@@ -45,12 +45,12 @@ func (sig *e2eBpfAttach) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "bpf_attach":
-		symbolName, err := helpers.GetTraceeStringArgumentByName(eventObj, "symbol_name")
+		symbolName, err := helpers.GetTrackerStringArgumentByName(eventObj, "symbol_name")
 		if err != nil {
 			return err
 		}
 
-		attachType, err := helpers.GetTraceeStringArgumentByName(eventObj, "attach_type")
+		attachType, err := helpers.GetTrackerStringArgumentByName(eventObj, "attach_type")
 		if err != nil {
 			return err
 		}

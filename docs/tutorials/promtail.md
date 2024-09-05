@@ -1,12 +1,12 @@
-# Using Promtail, Loki and Grafana to access Tracee Logs
+# Using Promtail, Loki and Grafana to access Tracker Logs
 
-By default, Tracee is emitting events to stdout. Users can then configure logging solutions to collect, store, and manage Tracee logs. 
+By default, Tracker is emitting events to stdout. Users can then configure logging solutions to collect, store, and manage Tracker logs. 
 
-This tutorial will showcase how to install and configure Promtail, Loki, Grafana and Prometheus to then access Tracee logs from the cluster in Grafana.
+This tutorial will showcase how to install and configure Promtail, Loki, Grafana and Prometheus to then access Tracker logs from the cluster in Grafana.
 
 If you prefer the video tutorial, check out the tutorial below on the Aqua Open Source YouTube channel:
 
- Grafana Loki to access Tracee logs 
+ Grafana Loki to access Tracker logs 
   [![Watch the video](../images/lokitut.png)](https://youtu.be/mMC9-yzbgpE?si=6C0emOEJJ5K4ACqB)
 
 
@@ -23,14 +23,14 @@ Additionally, you might have the following Obserability Stack already installed 
 * [Loki and Promtail](https://grafana.com/oss/loki/)
 * [Grafana](https://grafana.com/oss/)
 
-Alternatively, this tutorial showcases after the Tracee Installation section how to get an observability stack running with the above tools.
+Alternatively, this tutorial showcases after the Tracker Installation section how to get an observability stack running with the above tools.
 
-## Installing the Tracee Helm Chart and accessing logs
+## Installing the Tracker Helm Chart and accessing logs
 
 Right now, we cannot access any logs from our cluster since we do not have any application that actively produces logs.
-Thus, we will install Tracee inside our cluster through the Tracee Helm Chart.
+Thus, we will install Tracker inside our cluster through the Tracker Helm Chart.
 
-Add the Tracee Helm Chart:
+Add the Tracker Helm Chart:
 
 ```console
 helm repo add aqua https://aquasecurity.github.io/helm-charts/
@@ -42,7 +42,7 @@ Update the repository list on Helm:
 helm repo update
 ```
 
-Install the Tracee Helm Chart inside your Kubernetes cluster:
+Install the Tracker Helm Chart inside your Kubernetes cluster:
 
 ```console
 helm install tracee aqua/tracee \
@@ -50,17 +50,17 @@ helm install tracee aqua/tracee \
         --set hostPID=true
 ```
 
-Now, ensure that Tracee is running inside the `tracee-system` namespace:
+Now, ensure that Tracker is running inside the `tracee-system` namespace:
 
 ```console
 kubectl get all -n tracee-system
 ```
 
-Similar to Promtail, also for Tracee one pod should run on each node of the Kubernetes cluster.
+Similar to Promtail, also for Tracker one pod should run on each node of the Kubernetes cluster.
 
-### Accessing Tracee Logs
+### Accessing Tracker Logs
 
-Generally, it is possible to access logs from the Tracee pods directly through kubectl:
+Generally, it is possible to access logs from the Tracker pods directly through kubectl:
 
 ```console
 kubectl logs -f daemonset/tracee -n tracee-system
@@ -68,9 +68,9 @@ kubectl logs -f daemonset/tracee -n tracee-system
 
 Next, open the Grafana Dashboard, on the left, go to "Explore". There, you should be able to select Loki as a Datasource.
 
-Now, you can write log queries in LogQL to access the logs that are stored in the Tracee pods:
+Now, you can write log queries in LogQL to access the logs that are stored in the Tracker pods:
 
-![Screenshot from Grafana, accessing Tracee logs through Loki](../images/loki.png)
+![Screenshot from Grafana, accessing Tracker logs through Loki](../images/loki.png)
 
 ## Installation of Observability Tools
 

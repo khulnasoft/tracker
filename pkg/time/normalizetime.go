@@ -15,7 +15,7 @@ func CreateTimeNormalizerByConfig(relative bool, startTime uint64, bootTime uint
 	return NewAbsoluteTimeNormalizer(int(bootTime))
 }
 
-// RelativeTimeNormalizer normalize the time to be relative to Tracee start time
+// RelativeTimeNormalizer normalize the time to be relative to Tracker start time
 type RelativeTimeNormalizer struct {
 	startTime int
 }

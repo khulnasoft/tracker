@@ -169,7 +169,7 @@ func GetPacketMetadata(
 	argName string) (
 	trace.PacketMetadata,
 	error) {
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.PacketMetadata{}, err
 	}
@@ -207,7 +207,7 @@ func GetProtoIPv4ByName(
 	// }
 	//
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoIPv4{}, err
 	}
@@ -240,7 +240,7 @@ func GetProtoIPv6ByName(
 	// 	DstIP        string `json:"dstIP"`
 	// }
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoIPv6{}, err
 	}
@@ -267,7 +267,7 @@ func GetProtoUDPByName(
 	// 	Checksum uint16 `json:"checksum"`
 	// }
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoUDP{}, err
 	}
@@ -307,7 +307,7 @@ func GetProtoTCPByName(
 	// Urgent     uint16 `json:"urgent"`
 	// }
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoTCP{}, err
 	}
@@ -334,7 +334,7 @@ func GetProtoICMPByName(
 	// 	Seq      uint16 `json:"seq"`
 	// }
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoICMP{}, err
 	}
@@ -361,7 +361,7 @@ func GetProtoICMPv6ByName(
 	// 	Checksum uint16 `json:"checksum"`
 	// }
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoICMPv6{}, err
 	}
@@ -404,7 +404,7 @@ func GetProtoDNSByName(
 	// 	Additionals  []ProtoDNSResourceRecord `json:"additionals"`
 	// }
 
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoDNS{}, err
 	}
@@ -423,7 +423,7 @@ func GetProtoHTTPByName(
 ) (
 	trace.ProtoHTTP, error,
 ) {
-	arg, err := GetTraceeArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
+	arg, err := GetTrackerArgumentByName(event, argName, GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return trace.ProtoHTTP{}, err
 	}

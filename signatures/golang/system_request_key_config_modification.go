@@ -54,13 +54,13 @@ func (sig *SystemRequestKeyConfigModification) OnEvent(event protocol.Event) err
 
 	switch eventObj.EventName {
 	case "security_file_open":
-		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
 
 		if helpers.IsFileWrite(flags) {
-			pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+			pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 			if err != nil {
 				return err
 			}

@@ -49,7 +49,7 @@ func (sig *e2eSecurityPathNotify) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_path_notify":
-		pathName, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathName, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

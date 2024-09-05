@@ -1,6 +1,6 @@
 # Process Tree Data
 
-The `Process Tree` feature offers a structured view of processes and threads active in the system where Tracee is deployed. This setup facilitates quick access, updates, and tracking of processes, child processes, and related threads. All relationship and metadata data points for processes and threads are versioned, so you can pull data snapshots from a precise timestamp.
+The `Process Tree` feature offers a structured view of processes and threads active in the system where Tracker is deployed. This setup facilitates quick access, updates, and tracking of processes, child processes, and related threads. All relationship and metadata data points for processes and threads are versioned, so you can pull data snapshots from a precise timestamp.
 
 ## Enabling the Feature
 
@@ -75,7 +75,7 @@ Every entity in the `Process Tree`, be it a process or thread, is indexed using 
 
 ## Process Tree Artifacts
 
-In an upcoming update, the process tree will be enhanced with the addition of `artifacts`. Each process within the tree will be augmented with these "artifacts" to denote a task's various interactions and operations within the system. These artifacts, sourced from the tracing events provided by Tracee, offer a detailed depiction of a process's activities at the system level. Potential artifacts encompass:
+In an upcoming update, the process tree will be enhanced with the addition of `artifacts`. Each process within the tree will be augmented with these "artifacts" to denote a task's various interactions and operations within the system. These artifacts, sourced from the tracing events provided by Tracker, offer a detailed depiction of a process's activities at the system level. Potential artifacts encompass:
 
 - **File Operations**: Opened files, read/write activities, file deletion, and attribute changes.
 - **Network Activities**: Sockets created, inbound/outbound connections, transmitted/received data packets, and protocol-specific operations (like TCP handshakes or UDP transmissions).

@@ -12,13 +12,13 @@ Signatures should opt for data sources when they need access to data beyond what
 is provided by the events they process.
 
 For instance, a signature may need access to data about the container where the
-event being processed was generated. With Tracee's integrated container data
+event being processed was generated. With Tracker's integrated container data
 source, this can be achieved without the signature having to separately monitor
 container lifecycle events.
 
 ## What data sources can I use
 
-Tracee offer three built-in data sources out of the box.
+Tracker offer three built-in data sources out of the box.
 There is also support for plugging in external data sources through the golang 
 plugin mechanism, similar to how signatures are currently supplied (see [here](../../events/custom/golang.md)). 
 However, there are known technical limitation to this approach, and the aim is to replace it
@@ -55,7 +55,7 @@ func (sig *mySig) Init(ctx detect.SignatureContext) error {
 As you can see, access to the data source has been requested using two keys: a
 namespace and a data source ID. Namespaces are employed to prevent name
 conflicts in the future when integrating custom data sources. All built-in data
-sources from Tracee will be available under the "tracee" namespace.
+sources from Tracker will be available under the "tracee" namespace.
 
 After verifying the data source's availability, it's suggested to include a
 version check against the data source. This approach ensures that outdated

@@ -15,7 +15,7 @@ import (
 var maxKsymNameLen = 64 // Most match the constant in the bpf code
 var globalSymbolOwner = "system"
 
-func (t *Tracee) UpdateKallsyms() error {
+func (t *Tracker) UpdateKallsyms() error {
 	// NOTE: Make sure to refresh the kernel symbols table before updating the eBPF map.
 
 	// Find the eBPF map.

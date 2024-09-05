@@ -29,7 +29,7 @@ const (
 	familyIpv6
 )
 
-func (t *Tracee) handleNetCaptureEvents(ctx context.Context) {
+func (t *Tracker) handleNetCaptureEvents(ctx context.Context) {
 	logger.Debugw("Starting handleNetCaptureEvents goroutine")
 	defer logger.Debugw("Stopped handleNetCaptureEvents goroutine")
 
@@ -49,7 +49,7 @@ func (t *Tracee) handleNetCaptureEvents(ctx context.Context) {
 	}
 }
 
-func (t *Tracee) processNetCapEvents(ctx context.Context, in <-chan *trace.Event) <-chan error {
+func (t *Tracker) processNetCapEvents(ctx context.Context, in <-chan *trace.Event) <-chan error {
 	errc := make(chan error, 1)
 
 	go func() {
@@ -89,7 +89,7 @@ func (t *Tracee) processNetCapEvents(ctx context.Context, in <-chan *trace.Event
 // TODO: usually networking parsing functions are big, still, this might need
 // some refactoring to make it smaller (code reuse might not be a key for the
 // refactor).
-func (t *Tracee) processNetCapEvent(event *trace.Event) {
+func (t *Tracker) processNetCapEvent(event *trace.Event) {
 	eventId := events.ID(event.EventID)
 
 	switch eventId {
@@ -162,7 +162,7 @@ func (t *Tracee) processNetCapEvent(event *trace.Event) {
 		//
 		// 1) Fake Layer 2:
 		//
-		// Tracee captures L3 packets only, but pcap needs a L2 header, as it
+		// Tracker captures L3 packets only, but pcap needs a L2 header, as it
 		// mixes IPv4 and IPv6 packets in the same pcap file.
 		//
 		// The easiest link type is "Null", which emulates a BSD loopback

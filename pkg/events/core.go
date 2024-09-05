@@ -145,7 +145,7 @@ const (
 	SymbolsCollision
 	HiddenKernelModule
 	FtraceHook
-	TraceeInfo
+	TrackerInfo
 	MaxUserSpace
 )
 
@@ -11846,8 +11846,8 @@ var CoreEvents = map[ID]Definition{
 			{Type: "u32", Name: "uts"},
 		},
 	},
-	TraceeInfo: {
-		id:           TraceeInfo,
+	TrackerInfo: {
+		id:           TrackerInfo,
 		id32Bit:      Sys32Undefined,
 		name:         "tracee_info",
 		version:      NewVersion(1, 0, 0),

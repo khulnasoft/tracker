@@ -94,7 +94,7 @@ func ExecPinnedCmdWithTimeout(command string, timeout time.Duration) (int, error
 }
 
 // ExecCmdBgWithSudoAndCtx executes a command with sudo in the background, and returns the PID of
-// the process and a channel to wait for the command to exit (Check RunningTracee object about how
+// the process and a channel to wait for the command to exit (Check RunningTracker object about how
 // to use this).
 // The function will return an error if the command execution fails
 func ExecCmdBgWithSudoAndCtx(ctx context.Context, command string) (int, chan error, error) {

@@ -24,7 +24,7 @@ This event is relevant for each syscall related to signal handling - `rt_sigacti
 
 ### Handle Method
 In the kernel, the handle method and the handler are united to one field.
-To make it more accessible to the user, Tracee split the two apart.
+To make it more accessible to the user, Tracker split the two apart.
 Normally, the value can be one of the following: `SIG_DFL`(0), `SIG_IGN`(1) or pointer to user-mode handler function.
 To deal with the case of a user-mode handler, the value `SIG_HND`(2) is created to specify that the method is by handler.
 

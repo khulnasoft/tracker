@@ -1,6 +1,6 @@
 ## Style Guide for Contributors
 
-For those willing to contribute to Tracee, this repository has code formatting
+For those willing to contribute to Tracker, this repository has code formatting
 guidelines being enforced. It is recommended that, before committing your
 changes, you run the following command:
 

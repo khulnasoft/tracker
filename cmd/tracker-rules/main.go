@@ -118,7 +118,7 @@ func main() {
 
 			var inputs engine.EventSources
 
-			opts, err := parseTraceeInputOptions(c.StringSlice("input-tracee"))
+			opts, err := parseTrackerInputOptions(c.StringSlice("input-tracee"))
 			if err == errHelp {
 				printHelp()
 				return nil
@@ -127,7 +127,7 @@ func main() {
 				return err
 			}
 
-			inputs.Tracee, err = setupTraceeInputSource(opts)
+			inputs.Tracker, err = setupTrackerInputSource(opts)
 			if err != nil {
 				return err
 			}

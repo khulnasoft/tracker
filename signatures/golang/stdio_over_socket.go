@@ -58,12 +58,12 @@ func (sig *StdioOverSocket) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_socket_connect":
-		sockfd, err = helpers.GetTraceeIntArgumentByName(eventObj, "sockfd")
+		sockfd, err = helpers.GetTrackerIntArgumentByName(eventObj, "sockfd")
 		if err != nil {
 			return err
 		}
 	case "socket_dup":
-		sockfd, err = helpers.GetTraceeIntArgumentByName(eventObj, "newfd")
+		sockfd, err = helpers.GetTrackerIntArgumentByName(eventObj, "newfd")
 		if err != nil {
 			return err
 		}

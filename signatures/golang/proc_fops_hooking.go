@@ -52,7 +52,7 @@ func (sig *ProcFopsHooking) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "hooked_proc_fops":
-		hookedSymbolSlice, err := helpers.GetTraceeHookedSymbolDataArgumentByName(eventObj, "hooked_fops_pointers")
+		hookedSymbolSlice, err := helpers.GetTrackerHookedSymbolDataArgumentByName(eventObj, "hooked_fops_pointers")
 		if err != nil {
 			return err
 		}

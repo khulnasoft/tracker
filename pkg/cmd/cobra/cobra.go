@@ -23,7 +23,7 @@ import (
 	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
-func GetTraceeRunner(c *cobra.Command, version string) (cmd.Runner, error) {
+func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	var runner cmd.Runner
 
 	// Log command line flags
@@ -244,7 +244,7 @@ func GetTraceeRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	if err != nil {
 		return runner, err
 	}
-	cfg.Output = output.TraceeConfig
+	cfg.Output = output.TrackerConfig
 
 	// Create printer
 
@@ -323,14 +323,14 @@ func GetTraceeRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	runner.HTTPServer = httpServer
 	runner.GRPCServer = grpcServer
-	runner.TraceeConfig = cfg
+	runner.TrackerConfig = cfg
 	runner.Printer = p
 	runner.InstallPath = traceeInstallPath
 
 	// parse arguments must be enabled if the rule engine is part of the pipeline
-	runner.TraceeConfig.Output.ParseArguments = true
+	runner.TrackerConfig.Output.ParseArguments = true
 
-	runner.TraceeConfig.EngineConfig = engine.Config{
+	runner.TrackerConfig.EngineConfig = engine.Config{
 		Enabled:          true,
 		SigNameToEventID: sigNameToEventId,
 		Signatures:       sigs,

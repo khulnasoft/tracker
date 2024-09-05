@@ -1,9 +1,9 @@
-# Access Tracee Metrics in Prometheus and Grafana
+# Access Tracker Metrics in Prometheus and Grafana
 
-Tracee exposes a metrics endpoint. 
-This makes it possible to monitor Tracee like other cloud native workloads.
+Tracker exposes a metrics endpoint. 
+This makes it possible to monitor Tracker like other cloud native workloads.
 
-In this tutorial, we will showcase how to access Tracee metrics through Prometheus and Grafana running through docker containers.
+In this tutorial, we will showcase how to access Tracker metrics through Prometheus and Grafana running through docker containers.
 The tutorial can easily adapted to Kubernetes workloads with the configuration provided.
 
 ## Tutorial Overview
@@ -16,14 +16,14 @@ Since version 0.7.0, tracee exports useful runtime metrics to Prometheus.
 By using Grafana and the new metrics from tracee, we can deploy a simple
 dashboard which tracks the tracee instance performance and outputs.
 
-There are two options for accessing Tracee metrics:
+There are two options for accessing Tracker metrics:
 
-* Running the Tracee Docker Container Image -- Shown in this tutorial
-* Running the Tracee Helm Chart -- Detailed as part of the [Promtail-Tracee](./promtail.md) tutorial
+* Running the Tracker Docker Container Image -- Shown in this tutorial
+* Running the Tracker Helm Chart -- Detailed as part of the [Promtail-Tracker](./promtail.md) tutorial
 
 ![Dashboard Image](../images/tracee-grafana-dashboard.png)
 
-## Tracee Docker Container Image
+## Tracker Docker Container Image
 
 These metrics exports are enabled by default in all docker images and can be
 enabled using the `--metrics` flag.
@@ -35,15 +35,15 @@ enabled using the `--metrics` flag.
 The following tools must be available for use, they can all be installed either
 through docker or installed/built on your machine. Note that you need to be on a Linux machine to follow the Docker tutorial.
 Alternative, on a MacBook it is possible to use Vagrant with Parallels as detailed in the following tutorial:
-[Running Tracee on Mac with Parallels and Vagrant](./tracee-vagrant.md)
+[Running Tracker on Mac with Parallels and Vagrant](./tracee-vagrant.md)
 
-- [Tracee](https://github.com/aquasecurity/tracee/)
+- [Tracker](https://github.com/aquasecurity/tracee/)
 - [Prometheus](https://prometheus.io/download/)
 - [Grafana](https://grafana.com/docs/grafana/latest/getting-started/getting-started)
 
-### Run Tracee with Metrics Enabled -- The Docker Command
+### Run Tracker with Metrics Enabled -- The Docker Command
 
-Tracee can be most easily deployed with metrics enabled by default and port
+Tracker can be most easily deployed with metrics enabled by default and port
 forwarded through the following commands:
 
 ```shell
@@ -59,17 +59,17 @@ docker run --name tracee -it --rm \
 Of course, the forwarded metrics ports can be changed, but you should note that
 some of the later instructions depend on these ports.
 
-If running Tracee locally through built binaries, the metrics address may be
+If running Tracker locally through built binaries, the metrics address may be
 overrides with the `--listen-addr` flag.
 
-### Run Prometheus and Configure it to Scrape Tracee
+### Run Prometheus and Configure it to Scrape Tracker
 
 Install Prometheus or pull it's Docker image. Then create the following
-configuration file, call it `prometheus.yml` to scrape Tracee:
+configuration file, call it `prometheus.yml` to scrape Tracker:
 
 ```yaml
 # A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Tracee.
+# Here it's Tracker.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'tracee'
@@ -104,14 +104,14 @@ docker run \
     prom/prometheus
 ```
 
-Ensure that prometheus can scrape the Tracee target: Open the Prometheus UI at `http://localhost:9090`
+Ensure that prometheus can scrape the Tracker target: Open the Prometheus UI at `http://localhost:9090`
 Under Status < Targets will be the scrape targets listed.
 
 If successful, move to the next step, otherwise consult with the Prometheus documentation.
 
-## Run Grafana to display Tracee's Prometheus Metrics
+## Run Grafana to display Tracker's Prometheus Metrics
 
-After successfully deploying Tracee and Prometheus we may now run Grafana to
+After successfully deploying Tracker and Prometheus we may now run Grafana to
 visualize it's metrics.
 
 Install Grafana using the Grafana container image:
@@ -136,7 +136,7 @@ Note that you might have to use your local IP address again instead of `localhos
 
 You may now either create your own Dashboard or import our default dashboard.
 
-### Import Tracee's Default Dashboard
+### Import Tracker's Default Dashboard
 
 First download our Grafana Dashboard's json [here].
 

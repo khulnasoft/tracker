@@ -14,7 +14,7 @@ import (
 	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
-func GetTraceeRunner(c *cli.Context, version string) (cmd.Runner, error) {
+func GetTrackerRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	var runner cmd.Runner
 
 	// Initialize a tracee config structure
@@ -30,12 +30,12 @@ func GetTraceeRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	var err error
 	var output flags.PrepareOutputResult
 
-	output, err = flags.TraceeEbpfPrepareOutput(c.StringSlice("output"), false)
+	output, err = flags.TrackerEbpfPrepareOutput(c.StringSlice("output"), false)
 
 	if err != nil {
 		return runner, err
 	}
-	cfg.Output = output.TraceeConfig
+	cfg.Output = output.TrackerConfig
 
 	// Log command line flags
 
@@ -195,7 +195,7 @@ func GetTraceeRunner(c *cli.Context, version string) (cmd.Runner, error) {
 	}
 
 	runner.HTTPServer = httpServer
-	runner.TraceeConfig = cfg
+	runner.TrackerConfig = cfg
 	runner.Printer = broadcast
 	runner.InstallPath = traceeInstallPath
 

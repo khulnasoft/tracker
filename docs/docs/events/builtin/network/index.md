@@ -1,4 +1,4 @@
-Tracee offers a set of network events that makes it easy to trace network
+Tracker offers a set of network events that makes it easy to trace network
 activity in common protocols.
 
 ## Available network events
@@ -59,7 +59,7 @@ tracee --output json --events net_packet_dns.data.src=8.8.8.8
 It is possible to create Golang (or Rego) signatures for the network events. If you haven't read about how to create signatures, do it [HERE](../../custom/golang.md).
 
 !!! Examples Note
-    Below is an example of how to create a signature for the `net_packet_dns` event. This same example is used by Tracee CI/CD tests and can be found at the [GitHub repository](https://github.com/aquasecurity/tracee/tree/main/tests/e2e-net-signatures), together with some other signatures for the network events.
+    Below is an example of how to create a signature for the `net_packet_dns` event. This same example is used by Tracker CI/CD tests and can be found at the [GitHub repository](https://github.com/aquasecurity/tracee/tree/main/tests/e2e-net-signatures), together with some other signatures for the network events.
 
 1. **net_packet_dns** signature example
 

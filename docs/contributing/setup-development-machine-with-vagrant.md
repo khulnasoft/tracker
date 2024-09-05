@@ -4,7 +4,7 @@
 all software requirements, packages, operating system configuration, and users
 to provide the same development environment for everyone.
 
-The [Vagrantfile] describes the type of machine required to build Tracee from
+The [Vagrantfile] describes the type of machine required to build Tracker from
 source and follow the [Getting Started](../index.md) guides. This allows
 developers involved in the project to check out the code, run `vagrant up`, and
 be on their way.
@@ -18,7 +18,7 @@ machine or [Parallels] on an arm64 M1 (Darwin) machine.
 
 ## Create Development Machine
 
-Clone and change directory to Tracee Git repository:
+Clone and change directory to Tracker Git repository:
 
 ```console
 git clone --branch {{ git.tag }} https://github.com/aquasecurity/tracee.git
@@ -51,9 +51,9 @@ vagrant@ubuntu-jammy:/vagrant$
 Synced folders enable Vagrant to sync a folder on the host machine to the
 development machine, allowing you to continue working on your project's files
 on your host machine, but use the resources in the development machine to
-compile or run Tracee.
+compile or run Tracker.
 
-By default, Vagrant will share Tracee project directory (the directory with the
+By default, Vagrant will share Tracker project directory (the directory with the
 `Vagrantfile`) to `/vagrant`. To get started list files:
 
 ```console
@@ -90,10 +90,10 @@ drwxr-xr-x 1 vagrant vagrant   4096 Mar 24 15:44 tests
 drwxr-xr-x 1 vagrant vagrant   4096 Mar 22 23:43 types
 ```
 
-As you can see the `/vagrant` directory contains source code of Tracee cloned
+As you can see the `/vagrant` directory contains source code of Tracker cloned
 from GitHub.
 
-## Build and Run Tracee
+## Build and Run Tracker
 
 To build **tracee** executable binary, run the
 default make target:
@@ -117,7 +117,7 @@ drwxr-xr-x 1 vagrant vagrant     4096 Mar 29 19:08 signatures
 -rw-r--r-- 1 vagrant vagrant 10753624 Mar 29 19:06 tracee.bpf.o
 ```
 
-You can now run Tracee and see events printed to the standard output in a tabular format:
+You can now run Tracker and see events printed to the standard output in a tabular format:
 
 ```console
 sudo ./dist/tracee
@@ -152,7 +152,7 @@ Vagrant.configure("2") do |config|
 ...
 ```
 
-Sometimes you may want to test Tracee with a non CO-RE distribution. You can do
+Sometimes you may want to test Tracker with a non CO-RE distribution. You can do
 that by editing the Vagrantfile and modifying the `config.vm.box` property. For
 example, you can switch to Ubuntu Linux 20.04 Focal Fossa as follows:
 
@@ -178,9 +178,9 @@ vagrant up
     non CO-RE kernels, make sure to use an older kernel that does not provide
     the `/sys/kernel/btf/vmlinux` file.
 
-## Deploy Tracee with Postee on Kubernetes
+## Deploy Tracker with Postee on Kubernetes
 
-The development machine described by Vagrantfile pre-installs [MicroK8s] Kubernetes cluster, which is suitable for testing Tracee.
+The development machine described by Vagrantfile pre-installs [MicroK8s] Kubernetes cluster, which is suitable for testing Tracker.
 
 ```console
 microk8s status
@@ -221,7 +221,7 @@ kubectl apply -n tracee-system \
   -f https://raw.githubusercontent.com/aquasecurity/postee/v2.2.0/deploy/kubernetes/postee.yaml
 ```
 
-Create Tracee DaemonSet in the `tracee-system`, configuring it to send 
+Create Tracker DaemonSet in the `tracee-system`, configuring it to send 
 detections to the standard output and send them over to Postee webhook on
 http://postee-svc:8082:
 
@@ -245,12 +245,12 @@ helm install tracee ./deploy/helm/tracee \
        microk8s ctr images import /tmp/tracee-latest.tar
        rm /tmp/tracee-latest.tar
        ```
-    3. Create Tracee DaemonSet using `tracee:latest` as container image:
+    3. Create Tracker DaemonSet using `tracee:latest` as container image:
        ```console
        kubectl apply -n tracee-system -k deploy/kubernetes/tracee
        ```
 
-While Tracee pod is running, run `strace ls` command and observe detection
+While Tracker pod is running, run `strace ls` command and observe detection
 printed to the standard output.
 
 ```console
@@ -300,7 +300,7 @@ Kubernetes Dashboard.
     Chrome you may allow insecure TLS connections at
     [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost).
 
-## Preview Tracee Documentation
+## Preview Tracker Documentation
 
 You can run [MkDocs] server and preview documentation on your host:
 

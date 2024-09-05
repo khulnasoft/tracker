@@ -45,7 +45,7 @@ func (sig *e2eFtraceHook) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "ftrace_hook":
-		symbolName, err := helpers.GetTraceeStringArgumentByName(eventObj, "symbol")
+		symbolName, err := helpers.GetTrackerStringArgumentByName(eventObj, "symbol")
 		if err != nil {
 			return err
 		}

@@ -16,7 +16,7 @@ import (
 //
 
 // procTreeForkProcessor handles process fork events.
-func (t *Tracee) procTreeForkProcessor(event *trace.Event) error {
+func (t *Tracker) procTreeForkProcessor(event *trace.Event) error {
 	var errs []error
 
 	if t.processTree == nil {
@@ -99,7 +99,7 @@ func (t *Tracee) procTreeForkProcessor(event *trace.Event) error {
 }
 
 // procTreeExecProcessor handles process exec events.
-func (t *Tracee) procTreeExecProcessor(event *trace.Event) error {
+func (t *Tracker) procTreeExecProcessor(event *trace.Event) error {
 	var errs []error
 
 	if t.processTree == nil {
@@ -176,7 +176,7 @@ func (t *Tracee) procTreeExecProcessor(event *trace.Event) error {
 }
 
 // procTreeExitProcessor handles process exit events.
-func (t *Tracee) procTreeExitProcessor(event *trace.Event) error {
+func (t *Tracker) procTreeExitProcessor(event *trace.Event) error {
 	var errs []error
 
 	if t.processTree == nil {
@@ -219,7 +219,7 @@ func (t *Tracee) procTreeExitProcessor(event *trace.Event) error {
 //
 
 // procTreeAddBinInfo enriches the event with processes information from the process tree.
-func (t *Tracee) procTreeAddBinInfo(event *trace.Event) error {
+func (t *Tracker) procTreeAddBinInfo(event *trace.Event) error {
 	currentProcess, procOk := t.processTree.GetProcessByHash(event.ProcessEntityId)
 	if !procOk {
 		_, threadOk := t.processTree.GetThreadByHash(event.ProcessEntityId)

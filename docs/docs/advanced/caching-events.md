@@ -1,6 +1,6 @@
 # Special: Caching Events
 
-Tracee has an events caching (in-memory) mechanism. In order to check latest
+Tracker has an events caching (in-memory) mechanism. In order to check latest
 caching options you may execute:
 
 ```console
@@ -9,7 +9,7 @@ caching options you may execute:
 
 <!-- TODO: reference the architecture page again-->
 
-![Tracee Cache](../../images/tracee-cache.png)
+![Tracker Cache](../../images/tracee-cache.png)
 
 The caching happens in userland, it is an in-memory caching, and it helps with
 workload bursts: if kernel produces more events than userland is capable of

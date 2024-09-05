@@ -30,8 +30,8 @@ func init() {
 type Config struct {
 	MetricsAddr          string
 	ProbeAddr            string
-	TraceeNamespace      string
-	TraceeName           string
+	TrackerNamespace      string
+	TrackerName           string
 	EnableLeaderElection bool
 	LoggingOpts          zap.Options
 }
@@ -63,8 +63,8 @@ func main() {
 	reconciler := &controller.PolicyReconciler{
 		Client:          mgr.GetClient(),
 		Scheme:          mgr.GetScheme(),
-		TraceeNamespace: config.TraceeNamespace,
-		TraceeName:      config.TraceeName,
+		TrackerNamespace: config.TrackerNamespace,
+		TrackerName:      config.TrackerName,
 	}
 	if err := reconciler.SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "PolicyReconciler")
@@ -98,8 +98,8 @@ func parseConfig() Config {
 
 	flag.StringVar(&cfg.MetricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&cfg.ProbeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
-	flag.StringVar(&cfg.TraceeNamespace, "tracee-namespace", "tracee-system", "The namespace where Tracee is installed.")
-	flag.StringVar(&cfg.TraceeName, "tracee-name", "tracee", "The name of the Tracee DaemonSet.")
+	flag.StringVar(&cfg.TrackerNamespace, "tracee-namespace", "tracee-system", "The namespace where Tracker is installed.")
+	flag.StringVar(&cfg.TrackerName, "tracee-name", "tracee", "The name of the Tracker DaemonSet.")
 	flag.BoolVar(&cfg.EnableLeaderElection, "leader-elect", false, "Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
 	cfg.LoggingOpts = zap.Options{
 		Development: true,
@@ -109,10 +109,10 @@ func parseConfig() Config {
 	flag.Parse()
 
 	if namespace := os.Getenv("TRACEE_NAMESPACE"); namespace != "" {
-		cfg.TraceeNamespace = namespace
+		cfg.TrackerNamespace = namespace
 	}
 	if name := os.Getenv("TRACEE_NAME"); name != "" {
-		cfg.TraceeName = name
+		cfg.TrackerName = name
 	}
 
 	return cfg

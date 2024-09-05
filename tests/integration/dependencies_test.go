@@ -21,7 +21,7 @@ import (
 func Test_EventsDependencies(t *testing.T) {
 	assureIsRoot(t)
 
-	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
+	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -133,13 +133,13 @@ func Test_EventsDependencies(t *testing.T) {
 			logsResultChan := testutils.TestLogs(t, testCaseInst.expectedLogs, logOutChan, logsDone)
 
 			// start tracee
-			trc, err := startTracee(ctx, t, testConfig, nil, nil)
+			trc, err := startTracker(ctx, t, testConfig, nil, nil)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
 			}
 			t.Logf("  --- started tracee ---")
-			err = waitForTraceeStart(trc)
+			err = waitForTrackerStart(trc)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
@@ -195,7 +195,7 @@ func Test_EventsDependencies(t *testing.T) {
 			}
 			restoreLogger()
 			cancel()
-			errStop := waitForTraceeStop(trc)
+			errStop := waitForTrackerStop(trc)
 			if errStop != nil {
 				t.Log(errStop)
 				failed = true

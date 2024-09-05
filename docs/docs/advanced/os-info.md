@@ -1,8 +1,8 @@
 # Special: Overriding OS needed files
 
-Tracee supports eBPF CO-RE (Compile Once - Run Everywhere) technology and,
+Tracker supports eBPF CO-RE (Compile Once - Run Everywhere) technology and,
 because of that, it might need some information about the Linux OS it is
-running at. Tracee, through libbpfgo, must have access to /etc/os-release file
+running at. Tracker, through libbpfgo, must have access to /etc/os-release file
 AND either /boot/config-$(uname-r) OR /proc/config.gz files (KernelConfig API
 at helpers/kernel_config).
 
@@ -11,7 +11,7 @@ at helpers/kernel_config).
 
 ## OS-RELEASE
 
-Tracee will show you collected information about the running Linux OS with the
+Tracker will show you collected information about the running Linux OS with the
 `--log debug` argument:
 
 ```console
@@ -70,13 +70,13 @@ sudo LIBBPFGO_OSRELEASE_FILE=/etc/os-release.orig ./dist/tracee --scope uid=1000
 
 ## KCONFIG
 
-Tracee needs access to kconfig file (/proc/config.gz OR /boot/config-$(uname -r)) in order to:
+Tracker needs access to kconfig file (/proc/config.gz OR /boot/config-$(uname -r)) in order to:
 
 1. Check if the kernel of your running environment supports needed eBPF features
 2. Provide kconfig variables to its eBPF counter-part (so eBPF program take decisions)
 
 !!! Warning
-    Tracee **should NOT fail** when it cannot find a kconfig file or needed options:
+    Tracker **should NOT fail** when it cannot find a kconfig file or needed options:
     
     - **missing kconfig file**
 

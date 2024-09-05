@@ -11,7 +11,7 @@ import (
 	"github.com/aquasecurity/tracee/pkg/config"
 )
 
-func TestTraceeEbpfPrepareOutputPrinterConfig(t *testing.T) {
+func TestTrackerEbpfPrepareOutputPrinterConfig(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -67,7 +67,7 @@ func TestTraceeEbpfPrepareOutputPrinterConfig(t *testing.T) {
 		t.Run(testcase.testName, func(t *testing.T) {
 			t.Parallel()
 
-			outputConfig, err := flags.TraceeEbpfPrepareOutput(testcase.outputSlice, false)
+			outputConfig, err := flags.TrackerEbpfPrepareOutput(testcase.outputSlice, false)
 			if err != nil {
 				assert.ErrorContains(t, err, testcase.expectedError.Error())
 			} else {

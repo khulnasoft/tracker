@@ -58,13 +58,13 @@ func (sig *CgroupReleaseAgentModification) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_file_open":
-		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
 
 		if helpers.IsFileWrite(flags) {
-			pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+			pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 			if err != nil {
 				return err
 			}
@@ -72,7 +72,7 @@ func (sig *CgroupReleaseAgentModification) OnEvent(event protocol.Event) error {
 			basename = path.Base(pathname)
 		}
 	case "security_inode_rename":
-		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}

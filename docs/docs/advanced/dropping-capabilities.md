@@ -35,7 +35,7 @@ permission checks for the thread.
 * Bounding: The capability bounding set is a mechanism that can be used to limit
 the capabilities that are gained during execve(2).
 
-## Tracee and capabilities
+## Tracker and capabilities
 
 **tracee** tries to reduce its capabilities during its execution. The way it
 does is through different "execution protection rings":

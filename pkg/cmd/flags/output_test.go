@@ -55,7 +55,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -67,7 +67,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -79,7 +79,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "/tmp/table"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -92,7 +92,7 @@ func TestPrepareOutput(t *testing.T) {
 					{Kind: "table", OutPath: "stdout"},
 					{Kind: "table", OutPath: "/tmp/table"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -104,7 +104,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "json", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		{
@@ -115,7 +115,7 @@ func TestPrepareOutput(t *testing.T) {
 					{Kind: "json", OutPath: "/tmp/json"},
 					{Kind: "json", OutPath: "/tmp/json2"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		{
@@ -125,7 +125,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table-verbose", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		{
@@ -135,7 +135,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "gotemplate=template.tmpl", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		{
@@ -146,7 +146,7 @@ func TestPrepareOutput(t *testing.T) {
 					{Kind: "gotemplate=template.tmpl", OutPath: "/tmp/gotemplate1"},
 					{Kind: "gotemplate=template.tmpl", OutPath: "/tmp/gotemplate2"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		{
@@ -163,7 +163,7 @@ func TestPrepareOutput(t *testing.T) {
 					{Kind: "json", OutPath: "/tmp/json2"},
 					{Kind: "gotemplate=template.tmpl", OutPath: "/tmp/gotemplate1"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -190,7 +190,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "ignore", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		{
@@ -226,7 +226,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "forward", OutPath: "tcp://localhost:1234"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		// webhook
@@ -252,7 +252,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "webhook", OutPath: "http://localhost:8080"},
 				},
-				TraceeConfig: &config.OutputConfig{},
+				TrackerConfig: &config.OutputConfig{},
 			},
 		},
 		// options
@@ -263,7 +263,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					StackAddresses: true,
 					ParseArguments: true,
 				},
@@ -276,7 +276,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ExecEnv:        true,
 					ParseArguments: true,
 				},
@@ -289,7 +289,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "json", OutPath: "stdout", RelativeTS: true},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					RelativeTime: true,
 				},
 			},
@@ -301,7 +301,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					CalcHashes:     config.CalcHashesDevInode,
 					ParseArguments: true,
 				},
@@ -314,7 +314,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					CalcHashes:     config.CalcHashesInode,
 					ParseArguments: true,
 				},
@@ -337,7 +337,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "json", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -349,7 +349,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "json", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments:    true,
 					ParseArgumentsFDs: true,
 				},
@@ -362,7 +362,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "table", OutPath: "stdout"},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 					EventsSorting:  true,
 				},
@@ -384,7 +384,7 @@ func TestPrepareOutput(t *testing.T) {
 				PrinterConfigs: []config.PrinterConfig{
 					{Kind: "json", OutPath: "stdout", RelativeTS: true},
 				},
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					StackAddresses:    true,
 					ExecEnv:           true,
 					RelativeTime:      true,
@@ -415,7 +415,7 @@ func TestPrepareOutput(t *testing.T) {
 				require.NotNil(t, testcase.expectedError)
 				assert.Contains(t, err.Error(), testcase.expectedError.Error())
 			} else {
-				assert.Equal(t, testcase.expectedOutput.TraceeConfig, output.TraceeConfig)
+				assert.Equal(t, testcase.expectedOutput.TrackerConfig, output.TrackerConfig)
 
 				assertPrinterConfigs(t, testcase.expectedOutput.PrinterConfigs, output.PrinterConfigs)
 			}

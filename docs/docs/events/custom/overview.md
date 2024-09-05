@@ -1,6 +1,6 @@
 # Custom Events
 
-Tracee comes with lots of events, but you can extend it with events specific to your use case. There are two ways to extend Tracee with your own events:
+Tracker comes with lots of events, but you can extend it with events specific to your use case. There are two ways to extend Tracker with your own events:
 
 1. [Go](./golang.md)
 2. [Rego](./rego.md)
@@ -12,7 +12,7 @@ tracee --signatures-dir=/tmp/myevents
 ```
 
 !!! Tip
-    Tracee also uses the custom events to add a few events, if you pass your own directory
+    Tracker also uses the custom events to add a few events, if you pass your own directory
     for `signatures-dir` you will not load the tracee [signatures](../builtin/signatures/index.md),
     to avoid such problems, you can either place your own events under the same directory of the tracee custom events,
     or pass multiple directories for example:

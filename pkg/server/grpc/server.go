@@ -34,7 +34,7 @@ func New(protocol, listenAddr string) (*Server, error) {
 	return &Server{listener: lis, protocol: protocol, listenAddr: listenAddr}, nil
 }
 
-func (s *Server) Start(ctx context.Context, t *tracee.Tracee, e *engine.Engine) {
+func (s *Server) Start(ctx context.Context, t *tracee.Tracker, e *engine.Engine) {
 	srvCtx, srvCancel := context.WithCancel(ctx)
 	defer srvCancel()
 
@@ -46,7 +46,7 @@ func (s *Server) Start(ctx context.Context, t *tracee.Tracee, e *engine.Engine) 
 
 	grpcServer := grpc.NewServer(grpc.KeepaliveParams(keepaliveParams))
 	s.server = grpcServer
-	pb.RegisterTraceeServiceServer(grpcServer, &TraceeService{tracee: t})
+	pb.RegisterTrackerServiceServer(grpcServer, &TrackerService{tracee: t})
 	pb.RegisterDiagnosticServiceServer(grpcServer, &DiagnosticService{tracee: t})
 	pb.RegisterDataSourceServiceServer(grpcServer, &DataSourceService{sigEngine: e})
 

@@ -1,4 +1,4 @@
-# Creating Tracee Container Images
+# Creating Tracker Container Images
 
 > These instructions are meant to describe how to build the official tracee
 > container image, instead of just downloading it from the
@@ -7,9 +7,9 @@
 > If you would like to have a local building and execution environment,
 > [read this](./environment.md) instead.
 
-## Using Tracee Container Image from Docker Hub
+## Using Tracker Container Image from Docker Hub
 
-Before moving on to how to build Tracee container, it is important to know the
+Before moving on to how to build Tracker container, it is important to know the
 published container images and their tag meanings. Here is the current list of
 docker container images being published during a release (or a snapshot
 release):
@@ -28,11 +28,11 @@ release):
 
      - **aquasec/tracee:latest**
 
-     And the container images for each released version of Tracee:
+     And the container images for each released version of Tracker:
 
      - **aquasec/tracee:VERSION**
 
-## Generating Tracee Container Images
+## Generating Tracker Container Images
 
 1. **tracee:latest**
 
@@ -50,9 +50,9 @@ release):
         BTFHUB=1 make -f builder/Makefile.tracee-container build-tracee
         ```
 
-## Running Generated Tracee Container Image
+## Running Generated Tracker Container Image
 
-Tracee container is supposed to be executed through docker cmdline directly,
+Tracker container is supposed to be executed through docker cmdline directly,
 from the official built images. Nevertheless, during the image building process,
 it may be useful to execute the recently generated container image with correct
 arguments, mostly to see if the image is working.
@@ -67,7 +67,7 @@ the "run" targets:
     ```
 
     !!! note
-        Tracee arguments are passed through the `ARG` variable:
+        Tracker arguments are passed through the `ARG` variable:
         ```console
         make -f builder/Makefile.tracee-container run-tracee ARG="--help"
         ```

@@ -49,7 +49,7 @@ import (
 //
 
 // enrichContainerEvents is a pipeline stage that enriches container events with metadata.
-func (t *Tracee) enrichContainerEvents(ctx gocontext.Context, in <-chan *trace.Event,
+func (t *Tracker) enrichContainerEvents(ctx gocontext.Context, in <-chan *trace.Event,
 ) (
 	chan *trace.Event, chan error,
 ) {

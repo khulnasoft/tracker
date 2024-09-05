@@ -136,7 +136,7 @@ func (c *Capabilities) initialize(cfg Config) error {
 
 	if paranoid > 2 {
 		logger.Debugw("Paranoid: Value in /proc/sys/kernel/perf_event_paranoid is > 2")
-		logger.Debugw("Paranoid: Tracee needs CAP_SYS_ADMIN instead of CAP_BPF + CAP_PERFMON")
+		logger.Debugw("Paranoid: Tracker needs CAP_SYS_ADMIN instead of CAP_BPF + CAP_PERFMON")
 		logger.Debugw("Paranoid: To change that behavior set perf_event_paranoid to 2 or less.")
 		if err != nil {
 			logger.Fatalw("Requiring capabilities", "error", err)

@@ -45,11 +45,11 @@ func (sig *e2eHookedSyscall) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "hooked_syscall":
-		syscall, err := helpers.GetTraceeStringArgumentByName(eventObj, "syscall")
+		syscall, err := helpers.GetTrackerStringArgumentByName(eventObj, "syscall")
 		if err != nil {
 			return err
 		}
-		owner, err := helpers.GetTraceeStringArgumentByName(eventObj, "owner")
+		owner, err := helpers.GetTrackerStringArgumentByName(eventObj, "owner")
 		if err != nil {
 			return err
 		}

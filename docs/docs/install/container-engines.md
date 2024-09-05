@@ -1,15 +1,15 @@
-# Tracee Events Container Enrichment
+# Tracker Events Container Enrichment
 
-Tracee events provide context about where the collected events originated from, including information about the originating container if available. To gather this information, Tracee needs to communicate with the relevant container runtime.
+Tracker events provide context about where the collected events originated from, including information about the originating container if available. To gather this information, Tracker needs to communicate with the relevant container runtime.
 
 ## Detecting container runtime
 
-Tracee will automatically search for known supported runtimes by looking for their socket files in known locations.  
-You may track if Tracee was able to find the container runtime socket by running Tracee with `debug` log level. There will be a line to each known runtime engine socket and a message sharing it's status.
+Tracker will automatically search for known supported runtimes by looking for their socket files in known locations.  
+You may track if Tracker was able to find the container runtime socket by running Tracker with `debug` log level. There will be a line to each known runtime engine socket and a message sharing it's status.
 
-When running Tracee in a container, the runtime sockets must be mounted to be available for Tracee.
+When running Tracker in a container, the runtime sockets must be mounted to be available for Tracker.
 
-For example, if running Tracee using Docker, and ContainerD runtime:
+For example, if running Tracker using Docker, and ContainerD runtime:
 
 ```shell
 docker run --name tracee -it --rm \
@@ -23,7 +23,7 @@ Most container runtimes have their sockets installed by default in `/var/run`, s
 
 ## Supported Container Runtime Engines
 
-Tracee supports the following container runtimes and will look in the following paths for their socket files:
+Tracker supports the following container runtimes and will look in the following paths for their socket files:
 
 1. Docker: `/var/run/docker.sock`
 2. Containerd: `/var/run/containerd/containerd.sock`

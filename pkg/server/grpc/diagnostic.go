@@ -11,7 +11,7 @@ import (
 
 type DiagnosticService struct {
 	pb.UnimplementedDiagnosticServiceServer
-	tracee *tracee.Tracee
+	tracee *tracee.Tracker
 }
 
 func (s *DiagnosticService) GetMetrics(ctx context.Context, in *pb.GetMetricsRequest) (*pb.GetMetricsResponse, error) {

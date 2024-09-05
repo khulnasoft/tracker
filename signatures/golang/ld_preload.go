@@ -59,7 +59,7 @@ func (sig *LdPreload) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "sched_process_exec":
-		envVars, err := helpers.GetTraceeSliceStringArgumentByName(eventObj, "env")
+		envVars, err := helpers.GetTrackerSliceStringArgumentByName(eventObj, "env")
 		if err != nil {
 			return nil
 		}
@@ -82,12 +82,12 @@ func (sig *LdPreload) OnEvent(event protocol.Event) error {
 			}
 		}
 	case "security_file_open":
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
@@ -104,7 +104,7 @@ func (sig *LdPreload) OnEvent(event protocol.Event) error {
 			})
 		}
 	case "security_inode_rename":
-		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}

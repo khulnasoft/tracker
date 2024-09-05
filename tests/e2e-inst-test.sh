@@ -164,7 +164,7 @@ for TEST in $TESTS; do
         fi
     done
 
-    # Tracee failed to start
+    # Tracker failed to start
 
     if [[ $timedout -eq 1 ]]; then
         info

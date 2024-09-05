@@ -27,7 +27,7 @@ import (
 func Test_EventFilters(t *testing.T) {
 	assureIsRoot(t)
 
-	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
+	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -1719,14 +1719,14 @@ func Test_EventFilters(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 
 			// start tracee
-			trc, err := startTracee(ctx, t, config, nil, nil)
+			trc, err := startTracker(ctx, t, config, nil, nil)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
 			}
 
 			t.Logf("  --- started tracee ---")
-			err = waitForTraceeStart(trc)
+			err = waitForTrackerStart(trc)
 			if err != nil {
 				cancel()
 				t.Fatal(err)
@@ -1757,7 +1757,7 @@ func Test_EventFilters(t *testing.T) {
 			}
 
 			cancel()
-			errStop := waitForTraceeStop(trc)
+			errStop := waitForTrackerStop(trc)
 			if errStop != nil {
 				t.Log(errStop)
 				failed = true
@@ -1892,7 +1892,7 @@ func runCmd(t *testing.T, cmd cmdEvents, expectedEvts int, actual *eventBuffer, 
 		return proc{}, err
 	}
 
-	err = waitForTraceeOutputEvents(t, cmd.waitFor, actual, expectedEvts, failOnTimeout)
+	err = waitForTrackerOutputEvents(t, cmd.waitFor, actual, expectedEvts, failOnTimeout)
 	if err != nil {
 		return proc{}, err
 	}
@@ -1936,7 +1936,7 @@ func runCmds(t *testing.T, cmdEvents []cmdEvents, actual *eventBuffer, useSyscal
 		waitForAverage /= time.Duration(len(cmdEvents))
 	}
 
-	err := waitForTraceeOutputEvents(t, waitForAverage, actual, expectedEvts, failOnTimeout)
+	err := waitForTrackerOutputEvents(t, waitForAverage, actual, expectedEvts, failOnTimeout)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -2129,7 +2129,7 @@ func ExpectAtLeastOneForEach(t *testing.T, cmdEvents []cmdEvents, actual *eventB
 
 				// check args
 				for _, expArg := range expEvt.Args {
-					actArg, err := helpers.GetTraceeArgumentByName(
+					actArg, err := helpers.GetTrackerArgumentByName(
 						actEvt,
 						expArg.Name,
 						helpers.GetArgOps{DefaultArgs: false},
@@ -2299,7 +2299,7 @@ func ExpectAnyOfEvts(t *testing.T, cmdEvents []cmdEvents, actual *eventBuffer, u
 
 				// check args
 				for _, expArg := range expEvt.Args {
-					actArg, err := helpers.GetTraceeArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
+					actArg, err := helpers.GetTrackerArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
 					if err != nil {
 						return err
 					}
@@ -2421,7 +2421,7 @@ func ExpectAllEvtsEqualToOne(t *testing.T, cmdEvents []cmdEvents, actual *eventB
 
 				// check args
 				for _, expArg := range expEvt.Args {
-					actArg, err := helpers.GetTraceeArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
+					actArg, err := helpers.GetTrackerArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
 					if err != nil {
 						return err
 					}
@@ -2523,7 +2523,7 @@ func ExpectAllInOrderSequentially(t *testing.T, cmdEvents []cmdEvents, actual *e
 
 			// check args
 			for _, expArg := range expEvt.Args {
-				actArg, err := helpers.GetTraceeArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
+				actArg, err := helpers.GetTrackerArgumentByName(actEvt, expArg.Name, helpers.GetArgOps{DefaultArgs: false})
 				if err != nil {
 					return err
 				}

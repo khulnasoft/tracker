@@ -28,8 +28,8 @@ var metrics = []string{
 // checkIfMetricsExist checks if all metrics exist in the metrics endpoint.
 func checkIfMetricsExist(metrics []string) error {
 	resp, err := http.Get(fmt.Sprintf("http://%s:%d/metrics",
-		testutils.TraceeHostname,
-		testutils.TraceePort,
+		testutils.TrackerHostname,
+		testutils.TrackerPort,
 	))
 	if err != nil {
 		fmt.Println("error making request:", err)
@@ -60,8 +60,8 @@ func checkIfMetricsExist(metrics []string) error {
 // checkIfPprofExist checks if all metrics exist in the metrics endpoint.
 func checkIfPprofExist() error {
 	resp, err := http.Get(fmt.Sprintf("http://%s:%d/debug/pprof/",
-		testutils.TraceeHostname,
-		testutils.TraceePort,
+		testutils.TrackerHostname,
+		testutils.TrackerPort,
 	))
 	if err != nil {
 		fmt.Println("error making request:", err)
@@ -98,7 +98,7 @@ func checkIfPprofExist() error {
 
 // TestMetricsExist tests if the metrics endpoint returns all metrics.
 func TestMetricsandPprofExist(t *testing.T) {
-	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
+	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -107,19 +107,19 @@ func TestMetricsandPprofExist(t *testing.T) {
 	}
 
 	cmd := "--output none --events=syslog --metrics --pprof"
-	running := testutils.NewRunningTracee(context.Background(), cmd)
+	running := testutils.NewRunningTracker(context.Background(), cmd)
 
 	// start tracee
-	ready, runErr := running.Start(testutils.TraceeDefaultStartupTimeout)
+	ready, runErr := running.Start(testutils.TrackerDefaultStartupTimeout)
 	require.NoError(t, runErr)
 
 	r := <-ready // block until tracee is ready (or not)
 	switch r {
-	case testutils.TraceeFailed:
+	case testutils.TrackerFailed:
 		t.Fatal("tracee failed to start")
-	case testutils.TraceeTimedout:
+	case testutils.TrackerTimedout:
 		t.Fatal("tracee timedout to start")
-	case testutils.TraceeAlreadyRunning:
+	case testutils.TrackerAlreadyRunning:
 		t.Fatal("tracee is already running")
 	}
 

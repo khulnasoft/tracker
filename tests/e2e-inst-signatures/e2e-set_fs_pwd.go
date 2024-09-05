@@ -62,12 +62,12 @@ func (sig *e2eSetFsPwd) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "set_fs_pwd":
-		unresolvedPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "unresolved_path")
+		unresolvedPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "unresolved_path")
 		if sig.hasReadUser && err != nil {
 			return err
 		}
 
-		resolvedPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "resolved_path")
+		resolvedPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "resolved_path")
 		if err != nil {
 			return err
 		}

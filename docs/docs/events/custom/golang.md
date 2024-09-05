@@ -6,7 +6,7 @@ There are 2 ways you can get your own golang signatures working with tracee.
 
     !!! Tip
         This is the preferred way to get your own golang signatures integrated
-        into Tracee, as you will find in the next part of this page, but it
+        into Tracker, as you will find in the next part of this page, but it
         needs a better end-user experience (being worked).
 
     In order to get your golang signature compiled with tracee, you can create
@@ -70,7 +70,7 @@ There are 2 ways you can get your own golang signatures working with tracee.
 
                 switch e.EventName {
                 case "openat", "execve":
-                    arg, err := helpers.GetTraceeArgumentByName(e, "pathname", helpers.GetArgOps{DefaultArgs: false})
+                    arg, err := helpers.GetTrackerArgumentByName(e, "pathname", helpers.GetArgOps{DefaultArgs: false})
                     if err != nil {
                         return err
                     }
@@ -111,7 +111,7 @@ There are 2 ways you can get your own golang signatures working with tracee.
     }
     ```
 
-    Follow instructions on [how to build Tracee] and you will get your new signature
+    Follow instructions on [how to build Tracker] and you will get your new signature
     available to use. You may even select only the signatures you created:
 
     ```console
@@ -129,7 +129,7 @@ There are 2 ways you can get your own golang signatures working with tracee.
     a cached external data-source and return a positive detection for cases A,
     B or C.
 
-    [how to build Tracee]: ../../../contributing/building/building.md
+    [how to build Tracker]: ../../../contributing/building/building.md
 
 2. Create a golang signature plugin and dynamically load it during runtime
 
@@ -138,14 +138,14 @@ There are 2 ways you can get your own golang signatures working with tracee.
         you consider all the problems that emerge from using it:
 
         1. **Can't use different go versions** (need to compile the go plugin
-           with the exact same version that was used to build Tracee).
+           with the exact same version that was used to build Tracker).
 
-        2. Both Tracee and your golang plugin signature must be built with the
+        2. Both Tracker and your golang plugin signature must be built with the
            **exact same GOPATH** or you will get a "plugin was built with a
            different version of package XXX" error.
 
         3. Any **dependency** you have in your plugin should be of the **same
-           version** with the dependencies of Tracee.
+           version** with the dependencies of Tracker.
 
         4. Compiling tracee statically is sometimes useful to have a **complete
            portable eBPF tracing/detection solution**. One good example when

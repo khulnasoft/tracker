@@ -55,12 +55,12 @@ func (sig *HiddenFileCreated) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "magic_write":
-		bytes, err := helpers.GetTraceeBytesSliceArgumentByName(eventObj, "bytes")
+		bytes, err := helpers.GetTrackerBytesSliceArgumentByName(eventObj, "bytes")
 		if err != nil {
 			return err
 		}
 
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

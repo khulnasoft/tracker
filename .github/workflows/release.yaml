@@ -1,5 +1,5 @@
 #
-# When tag vXXX is pushed: Release Tracee
+# When tag vXXX is pushed: Release Tracker
 #
 name: Release
 on:

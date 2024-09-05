@@ -1,6 +1,6 @@
 # Output Options
 
-Tracee supports different output options for customizing the way events are printed. For a complete list of available options.
+Tracker supports different output options for customizing the way events are printed. For a complete list of available options.
 
 Available options:
 
@@ -63,7 +63,7 @@ Available options:
 
 6. **sort-events**
 
-    This makes it possible to sort the events as they happened. Especially in systems where Tracee tracks lots of events, it can happen that they are received unordered. More information is provided in the [deep-dive](../deep-dive/ordering-events.md) section of the documentation.
+    This makes it possible to sort the events as they happened. Especially in systems where Tracker tracks lots of events, it can happen that they are received unordered. More information is provided in the [deep-dive](../deep-dive/ordering-events.md) section of the documentation.
 
     ```
     output:

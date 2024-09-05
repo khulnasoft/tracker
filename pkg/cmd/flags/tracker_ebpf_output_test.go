@@ -9,7 +9,7 @@ import (
 	"github.com/aquasecurity/tracee/pkg/config"
 )
 
-func TestPrepareTraceeEbpfOutput(t *testing.T) {
+func TestPrepareTrackerEbpfOutput(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -43,7 +43,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "default format",
 			outputSlice: []string{},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -52,7 +52,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "table format always parse arguments",
 			outputSlice: []string{"table"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -61,7 +61,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option stack-addresses",
 			outputSlice: []string{"option:stack-addresses"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					StackAddresses: true,
 					ParseArguments: true,
 				},
@@ -71,7 +71,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option exec-env",
 			outputSlice: []string{"option:exec-env"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ExecEnv:        true,
 					ParseArguments: true,
 				},
@@ -81,7 +81,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option relative-time",
 			outputSlice: []string{"json", "option:relative-time"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					RelativeTime: true,
 				},
 			},
@@ -90,7 +90,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option exec-hash=inode",
 			outputSlice: []string{"option:exec-hash=inode"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					CalcHashes:     config.CalcHashesInode,
 					ParseArguments: true,
 				},
@@ -100,7 +100,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option parse-arguments",
 			outputSlice: []string{"json", "option:parse-arguments"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 				},
 			},
@@ -109,7 +109,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option parse-arguments-fds",
 			outputSlice: []string{"json", "option:parse-arguments-fds"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments:    true,
 					ParseArgumentsFDs: true,
 				},
@@ -119,7 +119,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 			testName:    "option sort-events",
 			outputSlice: []string{"option:sort-events"},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					ParseArguments: true,
 					EventsSorting:  true,
 				},
@@ -138,7 +138,7 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 				"option:sort-events",
 			},
 			expectedOutput: PrepareOutputResult{
-				TraceeConfig: &config.OutputConfig{
+				TrackerConfig: &config.OutputConfig{
 					StackAddresses:    true,
 					ExecEnv:           true,
 					RelativeTime:      true,
@@ -156,11 +156,11 @@ func TestPrepareTraceeEbpfOutput(t *testing.T) {
 		t.Run(testcase.testName, func(t *testing.T) {
 			t.Parallel()
 
-			output, err := TraceeEbpfPrepareOutput(testcase.outputSlice, false)
+			output, err := TrackerEbpfPrepareOutput(testcase.outputSlice, false)
 			if err != nil {
 				assert.ErrorContains(t, err, testcase.expectedError.Error())
 			} else {
-				assert.Equal(t, testcase.expectedOutput.TraceeConfig, output.TraceeConfig)
+				assert.Equal(t, testcase.expectedOutput.TrackerConfig, output.TrackerConfig)
 			}
 		})
 	}

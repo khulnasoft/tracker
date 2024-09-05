@@ -19,6 +19,6 @@ jobs:
           submodules: true
       - name: Install Dependencies
         uses: ./.github/actions/build-dependencies
-      - name: Compile Tracee
+      - name: Compile Tracker
         run: |
           make test-upstream-libbpfgo

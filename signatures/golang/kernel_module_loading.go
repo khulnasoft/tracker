@@ -63,7 +63,7 @@ func (sig *KernelModuleLoading) OnEvent(event protocol.Event) error {
 			Data:        nil,
 		})
 	case "security_kernel_read_file":
-		loadedType, err := helpers.GetTraceeStringArgumentByName(eventObj, "type")
+		loadedType, err := helpers.GetTrackerStringArgumentByName(eventObj, "type")
 		if err != nil {
 			return err
 		}

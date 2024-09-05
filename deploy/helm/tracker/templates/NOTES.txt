@@ -1,4 +1,4 @@
-Tracee has been successfully installed as a set of pods scheduled on each Kubernetes cluster
+Tracker has been successfully installed as a set of pods scheduled on each Kubernetes cluster
 node controlled by the `{{ include "tracee.fullname" . }}` DaemonSet in the `{{ .Release.Namespace}}` namespace.
 By default, threat detections are printed to the standard output of each pod:
 

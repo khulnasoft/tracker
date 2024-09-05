@@ -21,7 +21,7 @@ func init() {
 }
 
 // processEvent processes an event by passing it through all registered event processors.
-func (t *Tracee) processEvent(event *trace.Event) []error {
+func (t *Tracker) processEvent(event *trace.Event) []error {
 	var errs []error
 
 	processors := t.eventProcessor[events.ID(event.EventID)]         // this event processors
@@ -39,7 +39,7 @@ func (t *Tracee) processEvent(event *trace.Event) []error {
 }
 
 // processLost handles lost events in a separate goroutine.
-func (t *Tracee) processLostEvents() {
+func (t *Tracker) processLostEvents() {
 	logger.Debugw("Starting processLostEvents goroutine")
 	defer logger.Debugw("Stopped processLostEvents goroutine")
 
@@ -58,7 +58,7 @@ func (t *Tracee) processLostEvents() {
 			}
 			logger.Warnw(fmt.Sprintf("Lost %d events", lost))
 
-		// internal done channel is closed when Tracee is stopped via Tracee.Close()
+		// internal done channel is closed when Tracker is stopped via Tracker.Close()
 		case <-t.done:
 			return
 		}
@@ -66,7 +66,7 @@ func (t *Tracee) processLostEvents() {
 }
 
 // RegisterEventProcessor registers a new event processor for a specific event id.
-func (t *Tracee) RegisterEventProcessor(id events.ID, proc func(evt *trace.Event) error) {
+func (t *Tracker) RegisterEventProcessor(id events.ID, proc func(evt *trace.Event) error) {
 	if t.eventProcessor == nil {
 		t.eventProcessor = make(map[events.ID][]func(evt *trace.Event) error)
 	}
@@ -77,7 +77,7 @@ func (t *Tracee) RegisterEventProcessor(id events.ID, proc func(evt *trace.Event
 }
 
 // registerEventProcessors registers all event processors, each to a specific event id.
-func (t *Tracee) registerEventProcessors() {
+func (t *Tracker) registerEventProcessors() {
 	//
 	// Process Tree Processors
 	//

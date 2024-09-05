@@ -1,17 +1,17 @@
 # Contributing to the documentation
 
-We welcome contributions to the Tracee documentation.
+We welcome contributions to the Tracker documentation.
 
 Our documentation aims to follow the [Diátaxis documentation framework](https://diataxis.fr/) which includes:
 
 1. A getting started section -- Installation Guidelines and simple scenarios
 2. Tutorials -- End-to-end tutorials that have real-world use cases
-3. Reference Material -- How to use Tracee
+3. Reference Material -- How to use Tracker
 4. Contribution Guidelines
 
 To contribute to the documentation please
 
-1. Clone the Tracee GitHub repository
+1. Clone the Tracker GitHub repository
 2. Make changes in the `./docs` directory in the root folder
 3. Remember to edit the index in `mkdocs.yml` in the root folder if you add or move existing files or directories
 4. Test your changes to the documentation

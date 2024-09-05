@@ -101,7 +101,7 @@ func BenchmarkEngineWithCodeInjectionSignature(b *testing.B) {
 				b.StartTimer()
 
 				// Start signatures engine and wait until all events are processed
-				e.Start(waitForEventsProcessed(inputs.Tracee))
+				e.Start(waitForEventsProcessed(inputs.Tracker))
 
 				// Set engine to nil to help with garbage collection
 				e = nil
@@ -154,7 +154,7 @@ func BenchmarkEngineWithMultipleSignatures(b *testing.B) {
 				b.StartTimer()
 
 				// Start signatures engine and wait until all events are processed
-				e.Start(waitForEventsProcessed(inputs.Tracee))
+				e.Start(waitForEventsProcessed(inputs.Tracker))
 
 				// Set engine to nil to help with garbage collection
 				e = nil
@@ -220,7 +220,7 @@ func BenchmarkEngineWithNSignatures(b *testing.B) {
 					b.StartTimer()
 
 					// Start signatures engine and wait until all events are processed
-					e.Start(waitForEventsProcessed(inputs.Tracee))
+					e.Start(waitForEventsProcessed(inputs.Tracker))
 
 					// Set engine to nil to help with garbage collection
 					e = nil
@@ -272,7 +272,7 @@ func BenchmarkEngineMultipleMethodsGetMetadata(b *testing.B) {
 				b.StartTimer()
 
 				// Start signatures engine and wait until all events are processed
-				e.Start(waitForEventsProcessed(inputs.Tracee))
+				e.Start(waitForEventsProcessed(inputs.Tracker))
 
 				b.StopTimer()
 

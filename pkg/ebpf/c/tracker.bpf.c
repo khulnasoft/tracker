@@ -5198,7 +5198,7 @@ int BPF_KPROBE(trace_security_settime64)
 // this approach uses a technique of kprobing the function responsible for
 // calling the cgroup/skb programs.
 
-// Tracee utilizes a technique of kprobing the function responsible for calling
+// Tracker utilizes a technique of kprobing the function responsible for calling
 // the cgroup/skb programs in order to perform the tasks which cgroup skb
 // programs would usually accomplish. Through this method, all the data needed
 // by the cgroup/skb programs is already stored in a map.

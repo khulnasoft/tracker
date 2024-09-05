@@ -1,7 +1,7 @@
 ---
 title: TRACEE-REGO
 section: 1
-header: Tracee Rego Flag Manual
+header: Tracker Rego Flag Manual
 date: 2024/06
 ...
 
@@ -15,7 +15,7 @@ tracee **\-\-rego** <config-option\>
 
 ## DESCRIPTION
 
-The **\-\-rego** flag allows you to configure rego settings for Tracee.
+The **\-\-rego** flag allows you to configure rego settings for Tracker.
 
 Possible configuration options:
 

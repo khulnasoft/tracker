@@ -22,8 +22,8 @@ import (
 	"github.com/aquasecurity/tracee/tests/testutils"
 )
 
-func Test_TraceeCapture(t *testing.T) {
-	// Make sure we don't leak any goroutines since we run Tracee many times in this test.
+func Test_TrackerCapture(t *testing.T) {
+	// Make sure we don't leak any goroutines since we run Tracker many times in this test.
 	// If a test case fails, ignore the leak since it's probably caused by the aborted test.
 	defer goleak.VerifyNone(t)
 
@@ -84,7 +84,7 @@ func Test_TraceeCapture(t *testing.T) {
 			for _, filter := range tc.captureFilters {
 				cmd = fmt.Sprintf("%s -c %s", cmd, filter)
 			}
-			running := testutils.NewRunningTracee(context.Background(), cmd)
+			running := testutils.NewRunningTracker(context.Background(), cmd)
 
 			// start tracee
 			ready, runErr := running.Start(20 * time.Second)
@@ -92,13 +92,13 @@ func Test_TraceeCapture(t *testing.T) {
 
 			r := <-ready // block until tracee is ready (or not)
 			switch r {
-			case testutils.TraceeStarted:
+			case testutils.TrackerStarted:
 				t.Logf("  --- started tracee ---")
-			case testutils.TraceeFailed:
+			case testutils.TrackerFailed:
 				t.Fatal("tracee failed to start")
-			case testutils.TraceeTimedout:
+			case testutils.TrackerTimedout:
 				t.Fatal("tracee timedout to start")
-			case testutils.TraceeAlreadyRunning:
+			case testutils.TrackerAlreadyRunning:
 				t.Fatal("tracee is already running")
 			}
 

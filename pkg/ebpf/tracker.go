@@ -55,8 +55,8 @@ const (
 	maxMemDumpLength = 127
 )
 
-// Tracee traces system calls and system events using eBPF
-type Tracee struct {
+// Tracker traces system calls and system events using eBPF
+type Tracker struct {
 	config    config.Config
 	bootTime  uint64
 	startTime uint64
@@ -122,7 +122,7 @@ type Tracee struct {
 	streamsManager *streams.StreamsManager
 	// policyManager manages policy state
 	policyManager *policy.PolicyManager
-	// The dependencies of events used by Tracee
+	// The dependencies of events used by Tracker
 	eventsDependencies *dependencies.Manager
 	// Ksymbols needed to be kept alive in table.
 	// This does not mean they are required for tracee to function.
@@ -132,11 +132,11 @@ type Tracee struct {
 	timeNormalizer traceetime.TimeNormalizer
 }
 
-func (t *Tracee) Stats() *metrics.Stats {
+func (t *Tracker) Stats() *metrics.Stats {
 	return &t.stats
 }
 
-func (t *Tracee) Engine() *engine.Engine {
+func (t *Tracker) Engine() *engine.Engine {
 	return t.sigEngine
 }
 
@@ -173,14 +173,14 @@ func GetCaptureEventsList(cfg config.Config) map[events.ID]events.EventState {
 	return captureEvents
 }
 
-func (t *Tracee) addEventState(eventID events.ID, chosenState events.EventState) {
+func (t *Tracker) addEventState(eventID events.ID, chosenState events.EventState) {
 	currentState := t.eventsState[eventID]
 	currentState.Submit |= chosenState.Submit
 	currentState.Emit |= chosenState.Emit
 	t.eventsState[eventID] = currentState
 }
 
-func (t *Tracee) addDependenciesToStateRecursive(eventNode *dependencies.EventNode) {
+func (t *Tracker) addDependenciesToStateRecursive(eventNode *dependencies.EventNode) {
 	eventID := eventNode.GetID()
 	for _, dependencyEventID := range eventNode.GetDependencies().GetIDs() {
 		t.addDependencyEventToState(dependencyEventID, []events.ID{eventID})
@@ -191,7 +191,7 @@ func (t *Tracee) addDependenciesToStateRecursive(eventNode *dependencies.EventNo
 	}
 }
 
-func (t *Tracee) selectEvent(eventID events.ID, chosenState events.EventState) {
+func (t *Tracker) selectEvent(eventID events.ID, chosenState events.EventState) {
 	t.addEventState(eventID, chosenState)
 	eventNode, err := t.eventsDependencies.SelectEvent(eventID)
 	if err != nil {
@@ -204,7 +204,7 @@ func (t *Tracee) selectEvent(eventID events.ID, chosenState events.EventState) {
 
 // addDependencyEventToState adds to tracee's state an event that is a dependency of other events.
 // The difference from chosen events is that it doesn't affect its eviction.
-func (t *Tracee) addDependencyEventToState(evtID events.ID, dependentEvts []events.ID) {
+func (t *Tracker) addDependencyEventToState(evtID events.ID, dependentEvts []events.ID) {
 	newState := events.EventState{}
 	for _, dependentEvent := range dependentEvts {
 		newState.Submit |= t.eventsState[dependentEvent].Submit
@@ -215,23 +215,23 @@ func (t *Tracee) addDependencyEventToState(evtID events.ID, dependentEvts []even
 	}
 }
 
-func (t *Tracee) removeEventFromState(evtID events.ID) {
+func (t *Tracker) removeEventFromState(evtID events.ID) {
 	logger.Debugw("Remove event from state", "event", events.Core.GetDefinitionByID(evtID).GetName())
 	delete(t.eventsState, evtID)
 	delete(t.eventSignatures, evtID)
 }
 
-// New creates a new Tracee instance based on a given valid Config. It is expected that it won't
+// New creates a new Tracker instance based on a given valid Config. It is expected that it won't
 // cause external system side effects (reads, writes, etc).
-func New(cfg config.Config) (*Tracee, error) {
+func New(cfg config.Config) (*Tracker, error) {
 	err := cfg.Validate()
 	if err != nil {
 		return nil, errfmt.Errorf("validation error: %v", err)
 	}
 
-	// Create Tracee
+	// Create Tracker
 
-	t := &Tracee{
+	t := &Tracker{
 		config:          cfg,
 		done:            make(chan struct{}),
 		writtenFiles:    make(map[string]string),
@@ -419,7 +419,7 @@ func New(cfg config.Config) (*Tracee, error) {
 // performing external system operations to initialize them.
 // NOTE: any initialization logic, especially one that causes side effects
 // should go here and not New().
-func (t *Tracee) Init(ctx gocontext.Context) error {
+func (t *Tracker) Init(ctx gocontext.Context) error {
 	var err error
 
 	// Initialize buckets cache
@@ -665,7 +665,7 @@ func (t *Tracee) Init(ctx gocontext.Context) error {
 }
 
 // initTailCall initializes a given tailcall.
-func (t *Tracee) initTailCall(tailCall events.TailCall) error {
+func (t *Tracker) initTailCall(tailCall events.TailCall) error {
 	tailCallMapName := tailCall.GetMapName()
 	tailCallProgName := tailCall.GetProgName()
 	tailCallIndexes := tailCall.GetIndexes()
@@ -705,7 +705,7 @@ func (t *Tracee) initTailCall(tailCall events.TailCall) error {
 // initDerivationTable initializes tracee's events.DerivationTable. For each
 // event, represented through its ID, we declare to which other events it can be
 // derived and the corresponding function to derive into that Event.
-func (t *Tracee) initDerivationTable() error {
+func (t *Tracker) initDerivationTable() error {
 	shouldSubmit := func(id events.ID) func() bool {
 		return func() bool { return t.eventsState[id].Submit > 0 }
 	}
@@ -888,7 +888,7 @@ const (
 	optForkProcTree
 )
 
-func (t *Tracee) getOptionsConfig() uint32 {
+func (t *Tracker) getOptionsConfig() uint32 {
 	var cOptVal uint32
 
 	if t.config.Output.ExecEnv {
@@ -927,11 +927,11 @@ func (t *Tracee) getOptionsConfig() uint32 {
 	return cOptVal
 }
 
-// newConfig returns a new Config instance based on the current Tracee state and
+// newConfig returns a new Config instance based on the current Tracker state and
 // the given policies config and version.
-func (t *Tracee) newConfig(cfg *policy.PoliciesConfig) *Config {
+func (t *Tracker) newConfig(cfg *policy.PoliciesConfig) *Config {
 	return &Config{
-		TraceePid:       uint32(os.Getpid()),
+		TrackerPid:       uint32(os.Getpid()),
 		Options:         t.getOptionsConfig(),
 		CgroupV1Hid:     uint32(t.cgroups.GetDefaultCgroupHierarchyID()),
 		PoliciesVersion: 1, // version will be removed soon
@@ -939,7 +939,7 @@ func (t *Tracee) newConfig(cfg *policy.PoliciesConfig) *Config {
 	}
 }
 
-func (t *Tracee) initKsymTableRequiredSyms() error {
+func (t *Tracker) initKsymTableRequiredSyms() error {
 	// Get all required symbols needed in the table
 	// 1. all event ksym dependencies
 	// 2. specific cases (hooked_seq_ops, hooked_symbols, print_mem_dump)
@@ -1061,7 +1061,7 @@ func getUnavailbaleKsymbols(ksymbols []events.KSymbol, kernelSymbols *environmen
 // validateKallsymsDependencies load all symbols required by events dependencies
 // from the kallsyms file to check for missing symbols. If some symbols are
 // missing, it will cancel their event with informative error message.
-func (t *Tracee) validateKallsymsDependencies() {
+func (t *Tracker) validateKallsymsDependencies() {
 	evtDefSymDeps := func(id events.ID) []events.KSymbol {
 		depsNode, _ := t.eventsDependencies.GetEvent(id)
 		deps := depsNode.GetDependencies()
@@ -1117,7 +1117,7 @@ func (t *Tracee) validateKallsymsDependencies() {
 	}
 }
 
-func (t *Tracee) populateBPFMaps() error {
+func (t *Tracker) populateBPFMaps() error {
 	// Prepare 32bit to 64bit syscall number mapping
 	sys32to64BPFMap, err := t.bpfModule.GetMap("sys_32_to_64_map") // u32, u32
 	if err != nil {
@@ -1249,7 +1249,7 @@ func (t *Tracee) populateBPFMaps() error {
 }
 
 // populateFilterMaps populates the eBPF maps with the given policies
-func (t *Tracee) populateFilterMaps(updateProcTree bool) error {
+func (t *Tracker) populateFilterMaps(updateProcTree bool) error {
 	polCfg, err := t.policyManager.UpdateBPF(
 		t.bpfModule,
 		t.containers,
@@ -1276,7 +1276,7 @@ func (t *Tracee) populateFilterMaps(updateProcTree bool) error {
 // Calling attachment of probes if a supported behavior, and will do nothing
 // if it has been attached already.
 // Return whether the event was successfully attached or not.
-func (t *Tracee) attachEvent(id events.ID) error {
+func (t *Tracker) attachEvent(id events.ID) error {
 	evtName := events.Core.GetDefinitionByID(id).GetName()
 	depsNode, err := t.eventsDependencies.GetEvent(id)
 	if err != nil {
@@ -1306,7 +1306,7 @@ func (t *Tracee) attachEvent(id events.ID) error {
 }
 
 // attachProbes attaches selected events probes to their respective eBPF programs.
-func (t *Tracee) attachProbes() error {
+func (t *Tracker) attachProbes() error {
 	// Subscribe to all watchers on the dependencies to attach and/or detach
 	// probes upon changes
 	t.eventsDependencies.SubscribeAdd(
@@ -1355,7 +1355,7 @@ func (t *Tracee) attachProbes() error {
 	return nil
 }
 
-func (t *Tracee) initBPFProbes() error {
+func (t *Tracker) initBPFProbes() error {
 	var err error
 	// Execute code with higher privileges: ring1 (required)
 
@@ -1382,7 +1382,7 @@ func (t *Tracee) initBPFProbes() error {
 	return nil
 }
 
-func (t *Tracee) initBPF() error {
+func (t *Tracker) initBPF() error {
 	var err error
 
 	// Load the eBPF object into kernel
@@ -1493,7 +1493,7 @@ func (t *Tracee) initBPF() error {
 const pollTimeout int = 300
 
 // Run starts the trace. it will run until ctx is cancelled
-func (t *Tracee) Run(ctx gocontext.Context) error {
+func (t *Tracker) Run(ctx gocontext.Context) error {
 	// Some events need initialization before the perf buffers are polled
 
 	go t.hookedSyscallTableRoutine(ctx)
@@ -1573,7 +1573,7 @@ func (t *Tracee) Run(ctx gocontext.Context) error {
 		}
 	}
 
-	t.Close() // close Tracee
+	t.Close() // close Tracker
 
 	return nil
 }
@@ -1609,7 +1609,7 @@ func updateCaptureMapFile(fileDir *os.File, filePath string, capturedFiles map[s
 }
 
 // Close cleans up created resources
-func (t *Tracee) Close() {
+func (t *Tracker) Close() {
 	// clean up (unsubscribe) all streams connected if tracee is done
 	if t.streamsManager != nil {
 		t.streamsManager.Close()
@@ -1645,11 +1645,11 @@ func (t *Tracee) Close() {
 }
 
 // Running returns true if the tracee is running
-func (t *Tracee) Running() bool {
+func (t *Tracker) Running() bool {
 	return t.running.Load()
 }
 
-func (t *Tracee) computeOutFileHash(fileName string) (string, error) {
+func (t *Tracker) computeOutFileHash(fileName string) (string, error) {
 	f, err := utils.OpenAt(t.OutDir, fileName, os.O_RDONLY, 0)
 	if err != nil {
 		return "", errfmt.WrapError(err)
@@ -1663,7 +1663,7 @@ func (t *Tracee) computeOutFileHash(fileName string) (string, error) {
 }
 
 // getSelfLoadedPrograms returns a map of all programs loaded by tracee.
-func (t *Tracee) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
+func (t *Tracker) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
 	selfLoadedPrograms := map[string]int{} // map k: symbol name, v: number of hooks
 
 	log := func(event string, program string) {
@@ -1744,10 +1744,10 @@ func (t *Tracee) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
 	return selfLoadedPrograms
 }
 
-// invokeInitEvents emits Tracee events, called Initialization Events, that are generated from the
+// invokeInitEvents emits Tracker events, called Initialization Events, that are generated from the
 // userland process itself, and not from the kernel. These events usually serve as informational
 // events for the signatures engine/logic.
-func (t *Tracee) invokeInitEvents(out chan *trace.Event) {
+func (t *Tracker) invokeInitEvents(out chan *trace.Event) {
 	var matchedPolicies uint64
 
 	setMatchedPolicies := func(event *trace.Event, matchedPolicies uint64, pManager *policy.PolicyManager) {
@@ -1763,9 +1763,9 @@ func (t *Tracee) invokeInitEvents(out chan *trace.Event) {
 
 	// Initial namespace events
 
-	matchedPolicies = policiesMatch(t.eventsState[events.TraceeInfo])
+	matchedPolicies = policiesMatch(t.eventsState[events.TrackerInfo])
 	if matchedPolicies > 0 {
-		traceeDataEvent := events.TraceeInfoEvent(t.bootTime, t.startTime)
+		traceeDataEvent := events.TrackerInfoEvent(t.bootTime, t.startTime)
 		setMatchedPolicies(&traceeDataEvent, matchedPolicies, t.policyManager)
 		out <- &traceeDataEvent
 		_ = t.stats.EventCount.Increment()
@@ -1813,7 +1813,7 @@ func (t *Tracee) invokeInitEvents(out chan *trace.Event) {
 }
 
 // netEnabled returns true if any base network event is to be traced
-func (t *Tracee) netEnabled() bool {
+func (t *Tracker) netEnabled() bool {
 	for k := range t.eventsState {
 		if k >= events.NetPacketBase && k <= events.MaxNetID {
 			return true
@@ -1830,7 +1830,7 @@ func (t *Tracee) netEnabled() bool {
 
 // triggerSeqOpsIntegrityCheck is used by a Uprobe to trigger an eBPF program
 // that prints the seq ops pointers
-func (t *Tracee) triggerSeqOpsIntegrityCheck(event trace.Event) {
+func (t *Tracker) triggerSeqOpsIntegrityCheck(event trace.Event) {
 	_, ok := t.eventsState[events.HookedSeqOps]
 	if !ok {
 		return
@@ -1851,7 +1851,7 @@ func (t *Tracee) triggerSeqOpsIntegrityCheck(event trace.Event) {
 }
 
 //go:noinline
-func (t *Tracee) triggerSeqOpsIntegrityCheckCall(
+func (t *Tracker) triggerSeqOpsIntegrityCheckCall(
 	eventHandle uint64,
 	seqOpsStruct [len(derive.NetSeqOps)]uint64) error {
 	return nil
@@ -1859,7 +1859,7 @@ func (t *Tracee) triggerSeqOpsIntegrityCheckCall(
 
 // triggerMemDump is used by a Uprobe to trigger an eBPF program
 // that prints the first bytes of requested symbols or addresses
-func (t *Tracee) triggerMemDump(event trace.Event) []error {
+func (t *Tracker) triggerMemDump(event trace.Event) []error {
 	if _, ok := t.eventsState[events.PrintMemDump]; !ok {
 		return nil
 	}
@@ -1977,30 +1977,30 @@ func (t *Tracee) triggerMemDump(event trace.Event) []error {
 
 // AddReadyCallback sets a callback function to be called when the tracee started all its probes
 // and is ready to receive events
-func (t *Tracee) AddReadyCallback(f func(ctx gocontext.Context)) {
+func (t *Tracker) AddReadyCallback(f func(ctx gocontext.Context)) {
 	t.readyCallback = f
 }
 
 // ready executes the ready callback if it was set.
 // doesn't block the execution of the tracee
-func (t *Tracee) ready(ctx gocontext.Context) {
+func (t *Tracker) ready(ctx gocontext.Context) {
 	if t.readyCallback != nil {
 		go t.readyCallback(ctx)
 	}
 }
 
 //go:noinline
-func (t *Tracee) triggerMemDumpCall(address uint64, length uint64, eventHandle uint64) error {
+func (t *Tracker) triggerMemDumpCall(address uint64, length uint64, eventHandle uint64) error {
 	return nil
 }
 
 // SubscribeAll returns a stream subscribed to all policies
-func (t *Tracee) SubscribeAll() *streams.Stream {
+func (t *Tracker) SubscribeAll() *streams.Stream {
 	return t.subscribe(policy.PolicyAll)
 }
 
 // Subscribe returns a stream subscribed to selected policies
-func (t *Tracee) Subscribe(policyNames []string) (*streams.Stream, error) {
+func (t *Tracker) Subscribe(policyNames []string) (*streams.Stream, error) {
 	var policyMask uint64
 
 	for _, policyName := range policyNames {
@@ -2014,18 +2014,18 @@ func (t *Tracee) Subscribe(policyNames []string) (*streams.Stream, error) {
 	return t.subscribe(policyMask), nil
 }
 
-func (t *Tracee) subscribe(policyMask uint64) *streams.Stream {
+func (t *Tracker) subscribe(policyMask uint64) *streams.Stream {
 	// TODO: the channel size matches the pipeline channel size,
 	// but we should make it configurable in the future.
 	return t.streamsManager.Subscribe(policyMask, t.config.PipelineChannelSize)
 }
 
 // Unsubscribe unsubscribes stream
-func (t *Tracee) Unsubscribe(s *streams.Stream) {
+func (t *Tracker) Unsubscribe(s *streams.Stream) {
 	t.streamsManager.Unsubscribe(s)
 }
 
-func (t *Tracee) EnableEvent(eventName string) error {
+func (t *Tracker) EnableEvent(eventName string) error {
 	id, found := events.Core.GetDefinitionIDByName(eventName)
 	if !found {
 		return errfmt.Errorf("error event not found: %s", eventName)
@@ -2036,7 +2036,7 @@ func (t *Tracee) EnableEvent(eventName string) error {
 	return nil
 }
 
-func (t *Tracee) DisableEvent(eventName string) error {
+func (t *Tracker) DisableEvent(eventName string) error {
 	id, found := events.Core.GetDefinitionIDByName(eventName)
 	if !found {
 		return errfmt.Errorf("error event not found: %s", eventName)
@@ -2048,7 +2048,7 @@ func (t *Tracee) DisableEvent(eventName string) error {
 }
 
 // EnableRule enables a rule in the specified policies
-func (t *Tracee) EnableRule(policyNames []string, ruleId string) error {
+func (t *Tracker) EnableRule(policyNames []string, ruleId string) error {
 	eventID, found := events.Core.GetDefinitionIDByName(ruleId)
 	if !found {
 		return errfmt.Errorf("error rule not found: %s", ruleId)
@@ -2070,7 +2070,7 @@ func (t *Tracee) EnableRule(policyNames []string, ruleId string) error {
 }
 
 // DisableRule disables a rule in the specified policies
-func (t *Tracee) DisableRule(policyNames []string, ruleId string) error {
+func (t *Tracker) DisableRule(policyNames []string, ruleId string) error {
 	eventID, found := events.Core.GetDefinitionIDByName(ruleId)
 	if !found {
 		return errfmt.Errorf("error rule not found: %s", ruleId)

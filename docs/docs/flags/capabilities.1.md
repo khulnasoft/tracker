@@ -1,7 +1,7 @@
 ---
 title: TRACEE-CAPABILITIES
 section: 1
-header: Tracee Capabilities Flag Manual
+header: Tracker Capabilities Flag Manual
 date: 2024/06
 ...
 

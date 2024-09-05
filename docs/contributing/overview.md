@@ -1,6 +1,6 @@
 ## Contributing
 
-Thank you for taking interest in contributing to Tracee! This document covers our working practices and conventions.
+Thank you for taking interest in contributing to Tracker! This document covers our working practices and conventions.
 
 ## Issues and Discussions
 

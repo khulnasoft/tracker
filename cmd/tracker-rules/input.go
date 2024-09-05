@@ -30,15 +30,15 @@ type traceeInputOptions struct {
 	inputFormat inputFormat
 }
 
-func setupTraceeInputSource(opts *traceeInputOptions) (chan protocol.Event, error) {
+func setupTrackerInputSource(opts *traceeInputOptions) (chan protocol.Event, error) {
 	if opts.inputFormat == jsonInputFormat {
-		return setupTraceeJSONInputSource(opts)
+		return setupTrackerJSONInputSource(opts)
 	}
 
 	return nil, errfmt.Errorf("could not set up input source")
 }
 
-func setupTraceeJSONInputSource(opts *traceeInputOptions) (chan protocol.Event, error) {
+func setupTrackerJSONInputSource(opts *traceeInputOptions) (chan protocol.Event, error) {
 	res := make(chan protocol.Event)
 	scanner := bufio.NewScanner(opts.inputFile)
 	go func() {
@@ -60,7 +60,7 @@ func setupTraceeJSONInputSource(opts *traceeInputOptions) (chan protocol.Event, 
 	return res, nil
 }
 
-func parseTraceeInputOptions(inputOptions []string) (*traceeInputOptions, error) {
+func parseTrackerInputOptions(inputOptions []string) (*traceeInputOptions, error) {
 	var (
 		inputSourceOptions traceeInputOptions
 		err                error
@@ -83,12 +83,12 @@ func parseTraceeInputOptions(inputOptions []string) (*traceeInputOptions, error)
 			return nil, errfmt.Errorf("empty key or value passed: key: >%s< value: >%s<", kv[0], kv[1])
 		}
 		if kv[0] == "file" {
-			err = parseTraceeInputFile(&inputSourceOptions, kv[1])
+			err = parseTrackerInputFile(&inputSourceOptions, kv[1])
 			if err != nil {
 				return nil, errfmt.WrapError(err)
 			}
 		} else if kv[0] == "format" {
-			err = parseTraceeInputFormat(&inputSourceOptions, kv[1])
+			err = parseTrackerInputFormat(&inputSourceOptions, kv[1])
 			if err != nil {
 				return nil, errfmt.WrapError(err)
 			}
@@ -99,7 +99,7 @@ func parseTraceeInputOptions(inputOptions []string) (*traceeInputOptions, error)
 	return &inputSourceOptions, nil
 }
 
-func parseTraceeInputFile(option *traceeInputOptions, fileOpt string) error {
+func parseTrackerInputFile(option *traceeInputOptions, fileOpt string) error {
 	var f *os.File
 
 	if fileOpt == "stdin" {
@@ -110,7 +110,7 @@ func parseTraceeInputFile(option *traceeInputOptions, fileOpt string) error {
 		func() error {
 			_, err := os.Stat(fileOpt)
 			if err != nil {
-				return errfmt.Errorf("invalid Tracee input file: %s", fileOpt)
+				return errfmt.Errorf("invalid Tracker input file: %s", fileOpt)
 			}
 			f, err = os.Open(fileOpt)
 			if err != nil {
@@ -128,7 +128,7 @@ func parseTraceeInputFile(option *traceeInputOptions, fileOpt string) error {
 	return nil
 }
 
-func parseTraceeInputFormat(option *traceeInputOptions, formatString string) error {
+func parseTrackerInputFormat(option *traceeInputOptions, formatString string) error {
 	formatString = strings.ToUpper(formatString)
 
 	switch formatString {

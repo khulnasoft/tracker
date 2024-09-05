@@ -17,7 +17,7 @@ import (
 )
 
 type Runner struct {
-	TraceeConfig config.Config
+	TrackerConfig config.Config
 	Printer      printer.EventPrinter
 	InstallPath  string
 	HTTPServer   *http.Server
@@ -25,20 +25,20 @@ type Runner struct {
 }
 
 func (r Runner) Run(ctx context.Context) error {
-	// Create Tracee Singleton
+	// Create Tracker Singleton
 
-	t, err := tracee.New(r.TraceeConfig)
+	t, err := tracee.New(r.TrackerConfig)
 	if err != nil {
-		return errfmt.Errorf("error creating Tracee: %v", err)
+		return errfmt.Errorf("error creating Tracker: %v", err)
 	}
 
-	// Readiness Callback: Tracee is ready to receive events
+	// Readiness Callback: Tracker is ready to receive events
 	t.AddReadyCallback(
 		func(ctx context.Context) {
-			logger.Debugw("Tracee is ready callback")
+			logger.Debugw("Tracker is ready callback")
 			if r.HTTPServer != nil {
 				if r.HTTPServer.MetricsEndpointEnabled() {
-					r.TraceeConfig.MetricsEnabled = true // TODO: is this needed ?
+					r.TrackerConfig.MetricsEnabled = true // TODO: is this needed ?
 					if err := t.Stats().RegisterPrometheus(); err != nil {
 						logger.Errorw("Registering prometheus metrics", "error", err)
 					}
@@ -55,13 +55,13 @@ func (r Runner) Run(ctx context.Context) error {
 
 	// Need to force nil to allow the garbage
 	// collector to free the BPF object
-	r.TraceeConfig.BPFObjBytes = nil
+	r.TrackerConfig.BPFObjBytes = nil
 
 	// Initialize tracee
 
 	err = t.Init(ctx)
 	if err != nil {
-		return errfmt.Errorf("error initializing Tracee: %v", err)
+		return errfmt.Errorf("error initializing Tracker: %v", err)
 	}
 
 	// Manage PID file
@@ -71,7 +71,7 @@ func (r Runner) Run(ctx context.Context) error {
 	}
 	installPathDir, err := utils.OpenExistingDir(r.InstallPath)
 	if err != nil {
-		return errfmt.Errorf("error initializing Tracee: error opening installation path: %v", err)
+		return errfmt.Errorf("error initializing Tracker: error opening installation path: %v", err)
 	}
 	defer func() {
 		err := installPathDir.Close()

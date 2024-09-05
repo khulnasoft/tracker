@@ -26,7 +26,7 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   "tracee",
 		Short: "Trace OS events and syscalls using eBPF",
-		Long: `Tracee uses eBPF technology to tap into your system and give you
+		Long: `Tracker uses eBPF technology to tap into your system and give you
 access to hundreds of events that help you understand how your system behaves.`,
 		DisableFlagParsing: true, // in order to have fine grained control over flags parsing
 		PreRun: func(cmd *cobra.Command, args []string) {
@@ -52,7 +52,7 @@ access to hundreds of events that help you understand how your system behaves.`,
 			logger.Init(logger.NewDefaultLoggingConfig())
 			initialize.SetLibbpfgoCallbacks()
 
-			runner, err := cmdcobra.GetTraceeRunner(cmd, version.GetVersion())
+			runner, err := cmdcobra.GetTrackerRunner(cmd, version.GetVersion())
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 				os.Exit(1)
@@ -63,7 +63,7 @@ access to hundreds of events that help you understand how your system behaves.`,
 
 			err = runner.Run(ctx)
 			if err != nil {
-				logger.Fatalw("Tracee runner failed", "error", err)
+				logger.Fatalw("Tracker runner failed", "error", err)
 				os.Exit(1)
 			}
 		},

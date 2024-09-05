@@ -1,6 +1,6 @@
 # Releasing
 
-1. Checkout a clean Tracee branch from `upstream` (instead of using your own).
+1. Checkout a clean Tracker branch from `upstream` (instead of using your own).
    This will help with wrong tags you might have locally (by not uploading them
    by accident).
 
@@ -34,7 +34,7 @@
    ```
 
 1. Verify that the `release` workflow has built and published the artifacts.
-   1. Tracee binaries (tracee, tracee-ebpf, tracee-static, tracee-ebpf-static,
+   1. Tracker binaries (tracee, tracee-ebpf, tracee-static, tracee-ebpf-static,
       tracee-rules, signatures) in the form of a tar archive `tracee.<VERSION>.tar.gz`
    1. Source code zip and tar files
    1. Docker images pushed to the aquasec/tracee repository.

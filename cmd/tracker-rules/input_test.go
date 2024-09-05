@@ -12,7 +12,7 @@ import (
 	"github.com/aquasecurity/tracee/types/trace"
 )
 
-func TestParseTraceeInputOptions(t *testing.T) {
+func TestParseTrackerInputOptions(t *testing.T) {
 	testCases := []struct {
 		testName              string
 		optionStringSlice     []string
@@ -29,13 +29,13 @@ func TestParseTraceeInputOptions(t *testing.T) {
 			testName:              "non-existent file specified",
 			optionStringSlice:     []string{"file:/iabxfdoabs22do2b"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid Tracee input file: /iabxfdoabs22do2b"),
+			expectedError:         errors.New("invalid Tracker input file: /iabxfdoabs22do2b"),
 		},
 		{
 			testName:              "non-existent file specified",
 			optionStringSlice:     []string{"file:/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
 			expectedResultOptions: nil,
-			expectedError:         errors.New("invalid Tracee input file: /AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+			expectedError:         errors.New("invalid Tracker input file: /AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
 		},
 		{
 			testName:              "non-existent file specified",
@@ -83,14 +83,14 @@ func TestParseTraceeInputOptions(t *testing.T) {
 
 	for _, testcase := range testCases {
 		t.Run(testcase.testName, func(t *testing.T) {
-			opt, err := parseTraceeInputOptions(testcase.optionStringSlice)
+			opt, err := parseTrackerInputOptions(testcase.optionStringSlice)
 			assert.ErrorContains(t, err, testcase.expectedError.Error())
 			assert.Equal(t, testcase.expectedResultOptions, opt)
 		})
 	}
 }
 
-func TestSetupTraceeJSONInputSource(t *testing.T) {
+func TestSetupTrackerJSONInputSource(t *testing.T) {
 	testCases := []struct {
 		testName      string
 		events        []trace.Event
@@ -122,7 +122,7 @@ func TestSetupTraceeJSONInputSource(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.testName, func(t *testing.T) {
 			// Setup temp file that tracee-rules reads from
-			f, err := os.CreateTemp("", "TestSetupTraceeJSONInputSource-")
+			f, err := os.CreateTemp("", "TestSetupTrackerJSONInputSource-")
 			if err != nil {
 				t.Error(err)
 			}
@@ -147,7 +147,7 @@ func TestSetupTraceeJSONInputSource(t *testing.T) {
 
 			// Set up reading from the file
 			opts := &traceeInputOptions{inputFile: f, inputFormat: jsonInputFormat}
-			eventsChan, err := setupTraceeJSONInputSource(opts)
+			eventsChan, err := setupTrackerJSONInputSource(opts)
 			assert.Equal(t, testCase.expectedError, err)
 
 			readEvents := []trace.Event{}

@@ -13,7 +13,7 @@ import (
 )
 
 type PrepareOutputResult struct {
-	TraceeConfig   *config.OutputConfig
+	TrackerConfig   *config.OutputConfig
 	PrinterConfigs []config.PrinterConfig
 }
 
@@ -88,7 +88,7 @@ func PrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, e
 		return outConfig, err
 	}
 
-	outConfig.TraceeConfig = traceeConfig
+	outConfig.TrackerConfig = traceeConfig
 	outConfig.PrinterConfigs = printerConfigs
 
 	return outConfig, nil

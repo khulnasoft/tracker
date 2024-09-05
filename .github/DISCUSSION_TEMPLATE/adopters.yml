@@ -4,13 +4,13 @@ body:
   - type: textarea
     id: info
     attributes:
-      label: "[Optional] How do you use Tracee?"
+      label: "[Optional] How do you use Tracker?"
     validations:
       required: false
   - type: textarea
     id: info
     attributes:
-      label: "[Optional] Can you provide us with a quote on your favourite part of Tracee? This may be used in marketing material."
+      label: "[Optional] Can you provide us with a quote on your favourite part of Tracker? This may be used in marketing material."
     validations:
       required: false
   - type: checkboxes
@@ -31,6 +31,6 @@ body:
         We are always looking for 
         * User feedback
         * Collaboration with other companies and organisations
-        * Or just to have a chat with you about Tracee. 
+        * Or just to have a chat with you about Tracker. 
         If any of this interests you or your marketing team, please reach out at: oss@khulnasoft.com
         We would love to hear from you!

@@ -50,9 +50,9 @@ func InitNamespacesEvent() trace.Event {
 	return initNamespacesEvent
 }
 
-// TraceeInfoEvent exports data related to Tracee's initialization
-func TraceeInfoEvent(bootTime uint64, startTime uint64) trace.Event {
-	def := Core.GetDefinitionByID(TraceeInfo)
+// TrackerInfoEvent exports data related to Tracker's initialization
+func TrackerInfoEvent(bootTime uint64, startTime uint64) trace.Event {
+	def := Core.GetDefinitionByID(TrackerInfo)
 	params := def.GetParams()
 	args := []trace.Argument{
 		{ArgMeta: params[0], Value: bootTime},

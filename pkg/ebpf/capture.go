@@ -15,7 +15,7 @@ import (
 	"github.com/aquasecurity/tracee/pkg/utils"
 )
 
-func (t *Tracee) handleFileCaptures(ctx context.Context) {
+func (t *Tracker) handleFileCaptures(ctx context.Context) {
 	logger.Debugw("Starting handleFileCaptures go routine")
 	defer logger.Debugw("Stopped handleFileCaptures go routine")
 

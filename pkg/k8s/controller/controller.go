@@ -13,22 +13,22 @@ import (
 	"github.com/aquasecurity/tracee/pkg/k8s/apis/tracee.khulnasoft.com/v1beta1"
 )
 
-// PolicyReconciler is the main controller for the Tracee Policy CRD. It is responsible
-// for updating the Tracee DaemonSet whenever a change is detected in a TraceePolicy
+// PolicyReconciler is the main controller for the Tracker Policy CRD. It is responsible
+// for updating the Tracker DaemonSet whenever a change is detected in a TrackerPolicy
 // object.
 type PolicyReconciler struct {
 	client.Client
 	Scheme          *runtime.Scheme
-	TraceeNamespace string
-	TraceeName      string
+	TrackerNamespace string
+	TrackerName      string
 }
 
 // +kubebuilder:rbac:groups=tracee.khulnasoft.com,resources=policies,verbs=get;list;watch;
 // +kubebuilder:rbac:groups=apps,resources=daemonsets,verbs=get;list;watch;patch;update;
 
 // Reconcile is where the reconciliation logic resides. Every time a change is detected in
-// a v1beta1.Policy object, this function will be called. It will update the Tracee
-// DaemonSet, so that the Tracee pods will be restarted with the new policy. It does this
+// a v1beta1.Policy object, this function will be called. It will update the Tracker
+// DaemonSet, so that the Tracker pods will be restarted with the new policy. It does this
 // by adding a timestamp annotation to the pod template, so that the daemonset controller
 // will rollout a new daemonset ("restarting" the daemonset).
 func (r *PolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -37,8 +37,8 @@ func (r *PolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	var ds appsv1.DaemonSet
 
 	key := client.ObjectKey{
-		Namespace: r.TraceeNamespace,
-		Name:      r.TraceeName,
+		Namespace: r.TrackerNamespace,
+		Name:      r.TrackerName,
 	}
 	if err := r.Get(ctx, key, &ds); err != nil {
 		logger.Error(err, "unable to fetch daemonset")

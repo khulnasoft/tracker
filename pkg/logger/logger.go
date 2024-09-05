@@ -86,7 +86,7 @@ const (
 // Users importing tracee as a library may choose to construct a tracee flavored logger with
 // NewLogger() or supply their own interface.
 //
-// Tracee offers aggregation and filtering support on top of any logger implementation complying to it's interface.
+// Tracker offers aggregation and filtering support on top of any logger implementation complying to it's interface.
 type LoggingConfig struct {
 	Logger        LoggerInterface
 	LoggerConfig  LoggerConfig

@@ -168,7 +168,7 @@ func (b *BPFLog) Decode(rawBuffer []byte) error {
 	return nil
 }
 
-func (t *Tracee) processBPFLogs(ctx context.Context) {
+func (t *Tracker) processBPFLogs(ctx context.Context) {
 	logger.Debugw("Starting processBPFLogs goroutine")
 	defer logger.Debugw("Stopped processBPFLogs goroutine")
 

@@ -46,7 +46,7 @@ func (sig *e2eVfsWritev) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "vfs_writev":
-		filePath, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		filePath, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

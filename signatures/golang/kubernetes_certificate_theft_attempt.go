@@ -67,13 +67,13 @@ func (sig *KubernetesCertificateTheftAttempt) OnEvent(event protocol.Event) erro
 			}
 		}
 
-		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
 
 		if helpers.IsFileRead(flags) {
-			pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+			pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 			if err != nil {
 				return err
 			}
@@ -81,7 +81,7 @@ func (sig *KubernetesCertificateTheftAttempt) OnEvent(event protocol.Event) erro
 			path = pathname
 		}
 	case "security_inode_rename":
-		oldPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "old_path")
+		oldPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "old_path")
 		if err != nil {
 			return err
 		}

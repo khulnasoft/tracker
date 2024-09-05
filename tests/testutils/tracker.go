@@ -16,36 +16,36 @@ import (
 const (
 	readinessPollTime           = 200 * time.Millisecond
 	httpRequestTimeout          = 1 * time.Second
-	TraceeDefaultStartupTimeout = 5 * time.Second
+	TrackerDefaultStartupTimeout = 5 * time.Second
 )
 
 var (
-	TraceeBinary   = "../../dist/tracee"
-	TraceeHostname = "localhost"
-	TraceePort     = 3366
+	TrackerBinary   = "../../dist/tracee"
+	TrackerHostname = "localhost"
+	TrackerPort     = 3366
 )
 
-type TraceeStatus int
+type TrackerStatus int
 
 const (
-	TraceeStarted TraceeStatus = iota
-	TraceeFailed
-	TraceeTimedout
-	TraceeAlreadyRunning
+	TrackerStarted TrackerStatus = iota
+	TrackerFailed
+	TrackerTimedout
+	TrackerAlreadyRunning
 )
 
-// RunningTracee is a wrapper for a running tracee process as a regular process.
-type RunningTracee struct {
+// RunningTracker is a wrapper for a running tracee process as a regular process.
+type RunningTracker struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
 	cmdStatus chan error
 	cmdLine   string
 	pid       int
-	isReady   chan TraceeStatus
+	isReady   chan TrackerStatus
 }
 
-// NewRunningTracee creates a new RunningTracee instance.
-func NewRunningTracee(givenCtx context.Context, cmdLine string) *RunningTracee {
+// NewRunningTracker creates a new RunningTracker instance.
+func NewRunningTracker(givenCtx context.Context, cmdLine string) *RunningTracker {
 	ctx, cancel := context.WithCancel(givenCtx)
 
 	// Add healthz flag if not present (required for readiness check)
@@ -53,9 +53,9 @@ func NewRunningTracee(givenCtx context.Context, cmdLine string) *RunningTracee {
 		cmdLine = fmt.Sprintf("--healthz %s", cmdLine)
 	}
 
-	cmdLine = fmt.Sprintf("%s %s", TraceeBinary, cmdLine)
+	cmdLine = fmt.Sprintf("%s %s", TrackerBinary, cmdLine)
 
-	return &RunningTracee{
+	return &RunningTracker{
 		ctx:     ctx,
 		cancel:  cancel,
 		cmdLine: cmdLine,
@@ -63,37 +63,37 @@ func NewRunningTracee(givenCtx context.Context, cmdLine string) *RunningTracee {
 }
 
 // Start starts the tracee process.
-func (r *RunningTracee) Start(timeout time.Duration) (<-chan TraceeStatus, error) {
+func (r *RunningTracker) Start(timeout time.Duration) (<-chan TrackerStatus, error) {
 	var err error
 
-	imReady := func(s TraceeStatus) {
-		go func(s TraceeStatus) {
+	imReady := func(s TrackerStatus) {
+		go func(s TrackerStatus) {
 			r.isReady <- s // blocks until someone reads
 		}(s)
 	}
 
-	r.isReady = make(chan TraceeStatus)
+	r.isReady = make(chan TrackerStatus)
 	now := time.Now()
 
-	if isTraceeAlreadyRunning() { // check if tracee is already running
-		imReady(TraceeAlreadyRunning) // ready: already running
+	if isTrackerAlreadyRunning() { // check if tracee is already running
+		imReady(TrackerAlreadyRunning) // ready: already running
 		goto exit
 	}
 
 	r.pid, r.cmdStatus, err = ExecCmdBgWithSudoAndCtx(r.ctx, r.cmdLine)
 	if err != nil {
-		imReady(TraceeFailed) // ready: failed
+		imReady(TrackerFailed) // ready: failed
 		goto exit
 	}
 
 	for {
 		time.Sleep(readinessPollTime)
 		if r.IsReady() {
-			imReady(TraceeStarted) // ready: running
+			imReady(TrackerStarted) // ready: running
 			break
 		}
 		if time.Since(now) > timeout {
-			imReady(TraceeTimedout) // ready: timedout
+			imReady(TrackerTimedout) // ready: timedout
 			break
 		}
 	}
@@ -103,7 +103,7 @@ exit:
 }
 
 // Stop stops the tracee process.
-func (r *RunningTracee) Stop() []error {
+func (r *RunningTracker) Stop() []error {
 	if r.pid == 0 {
 		return nil // cmd was never started
 	}
@@ -117,7 +117,7 @@ func (r *RunningTracee) Stop() []error {
 }
 
 // IsReady checks if the tracee process is ready.
-func (r *RunningTracee) IsReady() bool {
+func (r *RunningTracker) IsReady() bool {
 	ctx, cancel := context.WithTimeout(context.Background(), httpRequestTimeout)
 	defer cancel()
 
@@ -127,7 +127,7 @@ func (r *RunningTracee) IsReady() bool {
 
 	// Create the request
 	req, err := http.NewRequestWithContext(ctx, "GET",
-		fmt.Sprintf("http://%s:%d/healthz", TraceeHostname, TraceePort),
+		fmt.Sprintf("http://%s:%d/healthz", TrackerHostname, TrackerPort),
 		nil,
 	)
 	if err != nil {
@@ -145,8 +145,8 @@ func (r *RunningTracee) IsReady() bool {
 	return resp.StatusCode == 200
 }
 
-// isTraceeAlreadyRunning checks if tracee is already running.
-func isTraceeAlreadyRunning() bool {
+// isTrackerAlreadyRunning checks if tracee is already running.
+func isTrackerAlreadyRunning() bool {
 	cmd := exec.Command("pgrep", "tracee")
 	cmd.Stderr = nil
 	cmd.Stdout = nil

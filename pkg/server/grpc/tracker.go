@@ -587,12 +587,12 @@ var EventTranslationTable = [events.MaxBuiltinID]pb.EventId{
 	events.FtraceHook:            pb.EventId_ftrace_hook,
 }
 
-type TraceeService struct {
-	pb.UnimplementedTraceeServiceServer
-	tracee *tracee.Tracee
+type TrackerService struct {
+	pb.UnimplementedTrackerServiceServer
+	tracee *tracee.Tracker
 }
 
-func (s *TraceeService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.TraceeService_StreamEventsServer) error {
+func (s *TrackerService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.TrackerService_StreamEventsServer) error {
 	var stream *streams.Stream
 	var err error
 
@@ -611,7 +611,7 @@ func (s *TraceeService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.T
 	for e := range stream.ReceiveEvents() {
 		// TODO: this conversion is temporary, we will use the new event structure
 		// on tracee internals, so the event received by the stream will already be a proto
-		eventProto, err := convertTraceeEventToProto(e)
+		eventProto, err := convertTrackerEventToProto(e)
 		if err != nil {
 			logger.Errorw("error can't create event proto: " + err.Error())
 			continue
@@ -628,7 +628,7 @@ func (s *TraceeService) StreamEvents(in *pb.StreamEventsRequest, grpcStream pb.T
 	return nil
 }
 
-func (s *TraceeService) EnableEvent(ctx context.Context, in *pb.EnableEventRequest) (*pb.EnableEventResponse, error) {
+func (s *TrackerService) EnableEvent(ctx context.Context, in *pb.EnableEventRequest) (*pb.EnableEventResponse, error) {
 	err := s.tracee.EnableEvent(in.Name)
 	if err != nil {
 		return nil, err
@@ -637,7 +637,7 @@ func (s *TraceeService) EnableEvent(ctx context.Context, in *pb.EnableEventReque
 	return &pb.EnableEventResponse{}, nil
 }
 
-func (s *TraceeService) DisableEvent(ctx context.Context, in *pb.DisableEventRequest) (*pb.DisableEventResponse, error) {
+func (s *TrackerService) DisableEvent(ctx context.Context, in *pb.DisableEventRequest) (*pb.DisableEventResponse, error) {
 	err := s.tracee.DisableEvent(in.Name)
 	if err != nil {
 		return nil, err
@@ -646,7 +646,7 @@ func (s *TraceeService) DisableEvent(ctx context.Context, in *pb.DisableEventReq
 	return &pb.DisableEventResponse{}, nil
 }
 
-func (s *TraceeService) GetEventDefinitions(ctx context.Context, in *pb.GetEventDefinitionsRequest) (*pb.GetEventDefinitionsResponse, error) {
+func (s *TrackerService) GetEventDefinitions(ctx context.Context, in *pb.GetEventDefinitionsRequest) (*pb.GetEventDefinitionsResponse, error) {
 	definitions, err := getDefinitions(in)
 	if err != nil {
 		return nil, err
@@ -664,7 +664,7 @@ func (s *TraceeService) GetEventDefinitions(ctx context.Context, in *pb.GetEvent
 	}, nil
 }
 
-func (s *TraceeService) GetVersion(ctx context.Context, in *pb.GetVersionRequest) (*pb.GetVersionResponse, error) {
+func (s *TrackerService) GetVersion(ctx context.Context, in *pb.GetVersionRequest) (*pb.GetVersionResponse, error) {
 	return &pb.GetVersionResponse{Version: version.GetVersion()}, nil
 }
 
@@ -715,7 +715,7 @@ func getExternalID(e trace.Event) pb.EventId {
 	return pb.EventId(e.EventID)
 }
 
-func convertTraceeEventToProto(e trace.Event) (*pb.Event, error) {
+func convertTrackerEventToProto(e trace.Event) (*pb.Event, error) {
 	process := getProcess(e)
 	container := getContainer(e)
 	k8s := getK8s(e)

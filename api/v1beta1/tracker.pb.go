@@ -585,16 +585,16 @@ var file_api_v1beta1_tracee_proto_depIdxs = []int32{
 	10, // 0: tracee.v1beta1.GetEventDefinitionsResponse.definitions:type_name -> tracee.v1beta1.EventDefinition
 	11, // 1: tracee.v1beta1.StreamEventsRequest.mask:type_name -> google.protobuf.FieldMask
 	12, // 2: tracee.v1beta1.StreamEventsResponse.event:type_name -> tracee.v1beta1.Event
-	2,  // 3: tracee.v1beta1.TraceeService.GetEventDefinitions:input_type -> tracee.v1beta1.GetEventDefinitionsRequest
-	8,  // 4: tracee.v1beta1.TraceeService.StreamEvents:input_type -> tracee.v1beta1.StreamEventsRequest
-	4,  // 5: tracee.v1beta1.TraceeService.EnableEvent:input_type -> tracee.v1beta1.EnableEventRequest
-	6,  // 6: tracee.v1beta1.TraceeService.DisableEvent:input_type -> tracee.v1beta1.DisableEventRequest
-	0,  // 7: tracee.v1beta1.TraceeService.GetVersion:input_type -> tracee.v1beta1.GetVersionRequest
-	3,  // 8: tracee.v1beta1.TraceeService.GetEventDefinitions:output_type -> tracee.v1beta1.GetEventDefinitionsResponse
-	9,  // 9: tracee.v1beta1.TraceeService.StreamEvents:output_type -> tracee.v1beta1.StreamEventsResponse
-	5,  // 10: tracee.v1beta1.TraceeService.EnableEvent:output_type -> tracee.v1beta1.EnableEventResponse
-	7,  // 11: tracee.v1beta1.TraceeService.DisableEvent:output_type -> tracee.v1beta1.DisableEventResponse
-	1,  // 12: tracee.v1beta1.TraceeService.GetVersion:output_type -> tracee.v1beta1.GetVersionResponse
+	2,  // 3: tracee.v1beta1.TrackerService.GetEventDefinitions:input_type -> tracee.v1beta1.GetEventDefinitionsRequest
+	8,  // 4: tracee.v1beta1.TrackerService.StreamEvents:input_type -> tracee.v1beta1.StreamEventsRequest
+	4,  // 5: tracee.v1beta1.TrackerService.EnableEvent:input_type -> tracee.v1beta1.EnableEventRequest
+	6,  // 6: tracee.v1beta1.TrackerService.DisableEvent:input_type -> tracee.v1beta1.DisableEventRequest
+	0,  // 7: tracee.v1beta1.TrackerService.GetVersion:input_type -> tracee.v1beta1.GetVersionRequest
+	3,  // 8: tracee.v1beta1.TrackerService.GetEventDefinitions:output_type -> tracee.v1beta1.GetEventDefinitionsResponse
+	9,  // 9: tracee.v1beta1.TrackerService.StreamEvents:output_type -> tracee.v1beta1.StreamEventsResponse
+	5,  // 10: tracee.v1beta1.TrackerService.EnableEvent:output_type -> tracee.v1beta1.EnableEventResponse
+	7,  // 11: tracee.v1beta1.TrackerService.DisableEvent:output_type -> tracee.v1beta1.DisableEventResponse
+	1,  // 12: tracee.v1beta1.TrackerService.GetVersion:output_type -> tracee.v1beta1.GetVersionResponse
 	8,  // [8:13] is the sub-list for method output_type
 	3,  // [3:8] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name

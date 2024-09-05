@@ -41,11 +41,11 @@ func TestServer(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func grpcClient(protocol, addr string) pb.TraceeServiceClient {
+func grpcClient(protocol, addr string) pb.TrackerServiceClient {
 	sock := protocol + ":" + addr
 	conn, err := grpc.NewClient(sock, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	return pb.NewTraceeServiceClient(conn)
+	return pb.NewTrackerServiceClient(conn)
 }

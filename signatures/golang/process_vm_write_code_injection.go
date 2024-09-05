@@ -53,7 +53,7 @@ func (sig *ProcessVmWriteCodeInjection) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "process_vm_writev":
-		dstPid, err := helpers.GetTraceeIntArgumentByName(eventObj, "pid")
+		dstPid, err := helpers.GetTrackerIntArgumentByName(eventObj, "pid")
 		if err != nil {
 			return err
 		}

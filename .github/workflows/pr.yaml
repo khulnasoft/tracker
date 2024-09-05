@@ -1,5 +1,5 @@
 #
-# When a PR is opened or updated: Run Tracee Tests
+# When a PR is opened or updated: Run Tracker Tests
 #
 name: PR
 on:
@@ -192,11 +192,11 @@ jobs:
           submodules: true
       - name: Install Dependencies
         uses: ./.github/actions/build-dependencies
-      - name: Build Tracee Benchmark Tool
+      - name: Build Tracker Benchmark Tool
         run: |
           make clean
           make tracee-bench
-      - name: Build Tracee GPT Docs Tool
+      - name: Build Tracker GPT Docs Tool
         run: |
           make clean
           make tracee-gptdocs

@@ -14,7 +14,7 @@ import (
 
 // SetTestLogger create a logger which prints the logs to the returned channel.
 // This function is meant to be used by tests to check logs, and by that test the
-// flow of Tracee from outside.
+// flow of Tracker from outside.
 func SetTestLogger(t *testing.T, l logger.Level) (loggerOutput <-chan []byte, restoreLogger func()) {
 	t.Logf("  --- setting test logger ---")
 

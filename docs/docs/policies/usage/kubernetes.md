@@ -2,9 +2,9 @@
 
 ## Custom Resource Definition
 
-Tracee policies can be seamlessly integrated into Kubernetes using Custom Resource Definitions (CRDs). When Tracee is installed, the CRD is automatically applied, including a default policy. One can interact with Tracee policies as follows:
+Tracker policies can be seamlessly integrated into Kubernetes using Custom Resource Definitions (CRDs). When Tracker is installed, the CRD is automatically applied, including a default policy. One can interact with Tracker policies as follows:
 
-To view existing Tracee policies, use the following command:
+To view existing Tracker policies, use the following command:
 
 ```shell
 kubectl get policies.tracee.khulnasoft.com
@@ -32,10 +32,10 @@ kubectl delete policies.tracee.khulnasoft.com <policy-name>
 
 ## Operator
 
-The Tracee Kubernetes Operator is a custom controller designed to manage Tracee policies as Custom Resource Definitions (CRDs) within a Kubernetes cluster. The Tracee Kubernetes Operator continually monitors changes to Tracee policies within the cluster. When a new policy is created, modified, or deleted, the operator automatically triggers a rolling restart of the Tracee DaemonSet. This ensures that Tracee is always running with the most up-to-date policies, providing enhanced security and compliance for your applications.
+The Tracker Kubernetes Operator is a custom controller designed to manage Tracker policies as Custom Resource Definitions (CRDs) within a Kubernetes cluster. The Tracker Kubernetes Operator continually monitors changes to Tracker policies within the cluster. When a new policy is created, modified, or deleted, the operator automatically triggers a rolling restart of the Tracker DaemonSet. This ensures that Tracker is always running with the most up-to-date policies, providing enhanced security and compliance for your applications.
 
 ## Video Content 
 
- Tracking Kubernetes activity with eBPF and Tracee Policies 
+ Tracking Kubernetes activity with eBPF and Tracker Policies 
 
  [![Watch the video](../../../images/traceepolicies.png)](https://youtu.be/VneWxs9Jpu0?si=eAnRDJVZShhg_td0)

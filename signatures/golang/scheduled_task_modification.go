@@ -62,12 +62,12 @@ func (sig *ScheduledTaskModification) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "security_file_open":
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}
@@ -76,14 +76,14 @@ func (sig *ScheduledTaskModification) OnEvent(event protocol.Event) error {
 			return sig.checkFileOrDir(event, pathname)
 		}
 	case "security_inode_rename":
-		newPath, err := helpers.GetTraceeStringArgumentByName(eventObj, "new_path")
+		newPath, err := helpers.GetTrackerStringArgumentByName(eventObj, "new_path")
 		if err != nil {
 			return err
 		}
 
 		return sig.checkFileOrDir(event, newPath)
 	case "sched_process_exec":
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

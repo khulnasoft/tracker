@@ -7,14 +7,14 @@ Custom data sources are currently supported through the plugin mechanism.
     you consider all the problems that emerge from using it:
 
     1. **Can't use different go versions** (need to compile the go plugin
-        with the exact same version that was used to build Tracee).
+        with the exact same version that was used to build Tracker).
 
-    2. Both Tracee and your golang plugin data source must be built with the
+    2. Both Tracker and your golang plugin data source must be built with the
         **exact same GOPATH** or you will get a "plugin was built with a
         different version of package XXX" error.
 
     3. Any **dependency** you have in your plugin should be of the **same
-        version** with the dependencies of Tracee.
+        version** with the dependencies of Tracker.
 
     4. Compiling tracee statically is sometimes useful to have a **complete
         portable eBPF tracing/detection solution**. One good example when

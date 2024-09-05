@@ -66,7 +66,7 @@ var analyze = &cobra.Command{
 	Short:   "Analyze past events with signature events [Experimental]",
 	Long: `Analyze allow you to explore signature events with past events.
 
-Tracee can be used to collect events and store it in a file. This file can be used as input to analyze.
+Tracker can be used to collect events and store it in a file. This file can be used as input to analyze.
 
 eg:
 tracee --events ptrace --output=json:events.json
@@ -141,7 +141,7 @@ tracee analyze --events anti_debugging events.json`,
 		engineOutput := make(chan *detect.Finding)
 		engineInput := make(chan protocol.Event)
 
-		source := engine.EventSources{Tracee: engineInput}
+		source := engine.EventSources{Tracker: engineInput}
 		sigEngine, err := engine.NewEngine(engineConfig, source, engineOutput)
 		if err != nil {
 			logger.Fatalw("Failed to create engine", "err", err)

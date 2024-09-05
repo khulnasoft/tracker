@@ -54,7 +54,7 @@ func (sig *e2eContainersDataSource) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "sched_process_exec":
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}

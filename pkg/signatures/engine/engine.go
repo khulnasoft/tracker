@@ -51,7 +51,7 @@ type Engine struct {
 
 // EventSources is a bundle of input sources used to configure the Engine
 type EventSources struct {
-	Tracee chan protocol.Event
+	Tracker chan protocol.Event
 }
 
 func (engine *Engine) Stats() *metrics.Stats {
@@ -62,7 +62,7 @@ func (engine *Engine) Stats() *metrics.Stats {
 // inputs and outputs are given as channels created by the consumer
 // Signatures are not loaded at this point, Init must be called to perform config side effects.
 func NewEngine(config Config, sources EventSources, output chan *detect.Finding) (*Engine, error) {
-	if sources.Tracee == nil || output == nil {
+	if sources.Tracker == nil || output == nil {
 		return nil, fmt.Errorf("nil input received")
 	}
 	engine := Engine{}
@@ -151,7 +151,7 @@ func (engine *Engine) matchHandler(res *detect.Finding) {
 // checkCompletion is a function that runs at the end of each input source
 // closing tracee-rules if no more pending input sources exists
 func (engine *Engine) checkCompletion() bool {
-	if engine.inputs.Tracee == nil {
+	if engine.inputs.Tracker == nil {
 		engine.unloadAllSignatures()
 		engine.waitGroup.Wait()
 		return true
@@ -213,7 +213,7 @@ func (engine *Engine) processEvent(event protocol.Event) {
 func (engine *Engine) consumeSources(ctx context.Context) {
 	for {
 		select {
-		case event, ok := <-engine.inputs.Tracee:
+		case event, ok := <-engine.inputs.Tracker:
 			if !ok {
 				engine.signaturesMutex.RLock()
 				for sig := range engine.signatures {
@@ -230,7 +230,7 @@ func (engine *Engine) consumeSources(ctx context.Context) {
 					}
 				}
 				engine.signaturesMutex.RUnlock()
-				engine.inputs.Tracee = nil
+				engine.inputs.Tracker = nil
 				if engine.checkCompletion() {
 					close(engine.output)
 					return
@@ -249,7 +249,7 @@ drain:
 	// drain and process all remaining events
 	for {
 		select {
-		case event := <-engine.inputs.Tracee:
+		case event := <-engine.inputs.Tracker:
 			engine.processEvent(event)
 
 		default:

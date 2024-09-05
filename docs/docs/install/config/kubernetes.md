@@ -1,6 +1,6 @@
-# Configuring Tracee in Kubernetes
+# Configuring Tracker in Kubernetes
 
-In Kubernetes, Tracee uses a ConfigMap, called `tracee` to make Tracee configuration accessible. The ConfigMap includes a data file called `config.yaml` with the desired configuration. For example:
+In Kubernetes, Tracker uses a ConfigMap, called `tracee` to make Tracker configuration accessible. The ConfigMap includes a data file called `config.yaml` with the desired configuration. For example:
 
 ```yaml
 apiVersion: v1

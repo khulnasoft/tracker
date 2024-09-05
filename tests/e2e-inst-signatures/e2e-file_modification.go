@@ -46,7 +46,7 @@ func (sig *e2eFileModification) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "file_modification":
-		filePath, err := helpers.GetTraceeStringArgumentByName(eventObj, "file_path")
+		filePath, err := helpers.GetTrackerStringArgumentByName(eventObj, "file_path")
 		if err != nil {
 			return err
 		}

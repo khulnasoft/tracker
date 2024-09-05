@@ -20,7 +20,7 @@ var version string
 
 func main() {
 	app := &cli.App{
-		Name:    "Tracee",
+		Name:    "Tracker",
 		Usage:   "Trace OS events and syscalls using eBPF",
 		Version: version,
 		Action: func(c *cli.Context) error {
@@ -39,7 +39,7 @@ func main() {
 			}
 			initialize.SetLibbpfgoCallbacks()
 
-			runner, err := urfave.GetTraceeRunner(c, version)
+			runner, err := urfave.GetTrackerRunner(c, version)
 			if err != nil {
 				return err
 			}

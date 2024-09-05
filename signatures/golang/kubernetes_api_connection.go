@@ -59,7 +59,7 @@ func (sig *K8sApiConnection) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "sched_process_exec":
-		envVars, err := helpers.GetTraceeSliceStringArgumentByName(eventObj, "env")
+		envVars, err := helpers.GetTrackerSliceStringArgumentByName(eventObj, "env")
 		if err != nil {
 			return nil
 		}

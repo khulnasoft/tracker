@@ -96,7 +96,7 @@ RUN echo "Defaults env_keep += \"LANG LC_* HOME EDITOR PAGER GIT_PAGER MAN_PAGER
 # prepare tracee user to be $UID:$GID host equivalent
 RUN export uid=$uid gid=$gid && \
     mkdir -p /home/tracee && \
-    echo "tracee:x:${uid}:${gid}:Tracee,,,:/home/tracee:/bin/bash" >> /etc/passwd && \
+    echo "tracee:x:${uid}:${gid}:Tracker,,,:/home/tracee:/bin/bash" >> /etc/passwd && \
     echo "tracee:x:${gid}:" >> /etc/group && \
     echo "tracee::99999:0:99999:7:::" >> /etc/shadow && \
     chown ${uid}:${gid} -R /home/tracee && \

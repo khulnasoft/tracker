@@ -23,7 +23,7 @@ import (
 )
 
 // processWriteEvent processes a write event by indexing the written file.
-func (t *Tracee) processWriteEvent(event *trace.Event) error {
+func (t *Tracker) processWriteEvent(event *trace.Event) error {
 	// only capture written files
 	if !t.config.Capture.FileWrite.Capture {
 		return nil
@@ -62,7 +62,7 @@ func (t *Tracee) processWriteEvent(event *trace.Event) error {
 }
 
 // processReadEvent processes a read event by indexing the read file.
-func (t *Tracee) processReadEvent(event *trace.Event) error {
+func (t *Tracker) processReadEvent(event *trace.Event) error {
 	// only capture read files
 	if !t.config.Capture.FileRead.Capture {
 		return nil
@@ -116,7 +116,7 @@ func processKernelReadFile(event *trace.Event) error {
 }
 
 // processSchedProcessExec processes a sched_process_exec event by capturing the executed file.
-func (t *Tracee) processSchedProcessExec(event *trace.Event) error {
+func (t *Tracker) processSchedProcessExec(event *trace.Event) error {
 	// cache this pid by it's mnt ns
 	if event.ProcessID == 1 {
 		t.pidsInMntns.ForceAddBucketItem(uint32(event.MountNS), uint32(event.HostProcessID))
@@ -212,7 +212,7 @@ func (t *Tracee) processSchedProcessExec(event *trace.Event) error {
 }
 
 // processDoFinitModule handles a do_finit_module event and triggers other hooking detection logic.
-func (t *Tracee) processDoInitModule(event *trace.Event) error {
+func (t *Tracker) processDoInitModule(event *trace.Event) error {
 	// Check if related events are being traced.
 	_, okSyscalls := t.eventsState[events.HookedSyscall]
 	_, okSeqOps := t.eventsState[events.HookedSeqOps]
@@ -263,7 +263,7 @@ const (
 )
 
 // processHookedProcFops processes a hooked_proc_fops event.
-func (t *Tracee) processHookedProcFops(event *trace.Event) error {
+func (t *Tracker) processHookedProcFops(event *trace.Event) error {
 	const hookedFopsPointersArgName = "hooked_fops_pointers"
 	fopsAddresses, err := parse.ArgVal[[]uint64](event.Args, hookedFopsPointersArgName)
 	if err != nil || fopsAddresses == nil {
@@ -295,7 +295,7 @@ func (t *Tracee) processHookedProcFops(event *trace.Event) error {
 }
 
 // processTriggeredEvent processes a triggered event (e.g. print_syscall_table, print_net_seq_ops).
-func (t *Tracee) processTriggeredEvent(event *trace.Event) error {
+func (t *Tracker) processTriggeredEvent(event *trace.Event) error {
 	// Initial event - no need to process
 	if event.Timestamp == 0 {
 		return nil
@@ -312,7 +312,7 @@ func (t *Tracee) processTriggeredEvent(event *trace.Event) error {
 }
 
 // processPrintSyscallTable processes a print_syscall_table event.
-func (t *Tracee) processPrintMemDump(event *trace.Event) error {
+func (t *Tracker) processPrintMemDump(event *trace.Event) error {
 	address, err := parse.ArgVal[uintptr](event.Args, "address")
 	if err != nil || address == 0 {
 		return errfmt.Errorf("error parsing print_mem_dump args: %v", err)
@@ -347,7 +347,7 @@ func (t *Tracee) processPrintMemDump(event *trace.Event) error {
 
 // normalizeEventCtxTimes normalizes the event context timings to be relative to tracee start time
 // or current time in nanoseconds.
-func (t *Tracee) normalizeEventCtxTimes(event *trace.Event) error {
+func (t *Tracker) normalizeEventCtxTimes(event *trace.Event) error {
 	eventId := events.ID(event.EventID)
 	if eventId > events.MaxCommonID && eventId < events.MaxUserSpace {
 		// derived events are normalized from their base event, skip the processing
@@ -360,13 +360,13 @@ func (t *Tracee) normalizeEventCtxTimes(event *trace.Event) error {
 }
 
 // processSchedProcessFork processes a sched_process_fork event by normalizing the start time.
-func (t *Tracee) processSchedProcessFork(event *trace.Event) error {
+func (t *Tracker) processSchedProcessFork(event *trace.Event) error {
 	return t.normalizeEventArgTime(event, "start_time")
 }
 
 // normalizeEventArgTime normalizes the event arg time to be relative to tracee start time or
 // current time.
-func (t *Tracee) normalizeEventArgTime(event *trace.Event, argName string) error {
+func (t *Tracker) normalizeEventArgTime(event *trace.Event, argName string) error {
 	arg := events.GetArg(event, argName)
 	if arg == nil {
 		return errfmt.Errorf("couldn't find argument %s of event %s", argName, event.EventName)
@@ -380,8 +380,8 @@ func (t *Tracee) normalizeEventArgTime(event *trace.Event, argName string) error
 }
 
 // addHashArg calculate file hash (in a best-effort efficiency manner) and add it as an argument
-func (t *Tracee) addHashArg(event *trace.Event, fileKey *filehash.Key) error {
-	// Currently Tracee does not support hash calculation of memfd files
+func (t *Tracker) addHashArg(event *trace.Event, fileKey *filehash.Key) error {
+	// Currently Tracker does not support hash calculation of memfd files
 	if strings.HasPrefix(fileKey.Pathname(), "memfd") {
 		return nil
 	}
@@ -410,7 +410,7 @@ func (t *Tracee) addHashArg(event *trace.Event, fileKey *filehash.Key) error {
 	return err
 }
 
-func (t *Tracee) processSharedObjectLoaded(event *trace.Event) error {
+func (t *Tracker) processSharedObjectLoaded(event *trace.Event) error {
 	filePath, err := parse.ArgVal[string](event.Args, "pathname")
 	if err != nil {
 		logger.Debugw("Error parsing argument", "error", err)

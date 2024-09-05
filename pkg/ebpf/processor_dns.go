@@ -8,7 +8,7 @@ import (
 	"github.com/aquasecurity/tracee/types/trace"
 )
 
-func (t *Tracee) populateDnsCache(event *trace.Event) error {
+func (t *Tracker) populateDnsCache(event *trace.Event) error {
 	if event.EventID != int(events.NetPacketDNS) {
 		// Sanity check.
 		return fmt.Errorf("received event %s: event is not net_packet_dns_response", event.EventName)

@@ -59,7 +59,7 @@ func (sig *IllegitimateShell) OnEvent(event protocol.Event) error {
 	case "security_bprm_check":
 		for _, webServersProcessName := range sig.webServersProcessNames {
 			if webServersProcessName == eventObj.ProcessName {
-				pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+				pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 				if err != nil {
 					return err
 				}

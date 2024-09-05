@@ -65,12 +65,12 @@ func (sig *performanceStatic) OnEvent(event protocol.Event) error {
 	}
 	switch ee.EventName {
 	case "open", "openat":
-		flags, err := helpers.GetTraceeArgumentByName(ee, "flags", helpers.GetArgOps{DefaultArgs: false})
+		flags, err := helpers.GetTrackerArgumentByName(ee, "flags", helpers.GetArgOps{DefaultArgs: false})
 		if err != nil {
 			return fmt.Errorf("%v %#v", err, ee)
 		}
 		if helpers.IsFileWrite(flags.Value.(string)) {
-			pathname, err := helpers.GetTraceeArgumentByName(ee, "pathname", helpers.GetArgOps{DefaultArgs: false})
+			pathname, err := helpers.GetTrackerArgumentByName(ee, "pathname", helpers.GetArgOps{DefaultArgs: false})
 			if err != nil {
 				return err
 			}
@@ -90,7 +90,7 @@ func (sig *performanceStatic) OnEvent(event protocol.Event) error {
 			}
 		}
 	case "ptrace":
-		request, err := helpers.GetTraceeArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
+		request, err := helpers.GetTrackerArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
 		if err != nil {
 			return err
 		}

@@ -1,8 +1,8 @@
 # Rules
 
-Rules are part of the Tracee Policy, which defines which events to trace. The events that are part of a specific policy are recorded in the `rules` section of the Tracee Policy. It is possible to define multiple events within each policy. The [events](../events/index.md) section provides further information on the type of events that Tracee can track.
+Rules are part of the Tracker Policy, which defines which events to trace. The events that are part of a specific policy are recorded in the `rules` section of the Tracker Policy. It is possible to define multiple events within each policy. The [events](../events/index.md) section provides further information on the type of events that Tracker can track.
 
-Below are several examples on configuring events in the Tracee Policy.
+Below are several examples on configuring events in the Tracker Policy.
 
 ## Events
 
@@ -52,7 +52,7 @@ spec:
 
 **[Any of our extra events](../events/builtin/extra/bpf_attach.md)**
 
-Any of the extra events listed in the Tracee documentation can be listed in the Tracee Policy.
+Any of the extra events listed in the Tracker documentation can be listed in the Tracker Policy.
 
 For instance, to specify the [do_sigaction](../events/builtin/extra/do_sigaction.md) event, provide the name in the YAML manifest:
 

@@ -59,7 +59,7 @@ func (sig *DiskMount) OnEvent(event protocol.Event) error {
 			return nil
 		}
 
-		deviceName, err := helpers.GetTraceeStringArgumentByName(eventObj, "dev_name")
+		deviceName, err := helpers.GetTrackerStringArgumentByName(eventObj, "dev_name")
 		if err != nil {
 			return nil
 		}

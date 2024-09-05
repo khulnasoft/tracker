@@ -5,7 +5,7 @@ Integrating with [Prometheus](https://prometheus.io)
     production, consumption and detection. It does not target the detections
     themselves.
 
-Tracee is enabled for prometheus scraping by default. Scraping can be done
+Tracker is enabled for prometheus scraping by default. Scraping can be done
 through the following URLs:
 
 **tracee** can be scraped through `:3366/metrics`

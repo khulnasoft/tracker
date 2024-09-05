@@ -24,7 +24,7 @@ import (
 //
 // Several techniques are used to find hidden modules - each of them is triggered by
 // using a tailcall.
-func (t *Tracee) lkmSeekerRoutine(ctx gocontext.Context) {
+func (t *Tracker) lkmSeekerRoutine(ctx gocontext.Context) {
 	logger.Debugw("Starting lkmSeekerRoutine goroutine")
 	defer logger.Debugw("Stopped lkmSeekerRoutine goroutine")
 
@@ -102,9 +102,9 @@ func (t *Tracee) lkmSeekerRoutine(ctx gocontext.Context) {
 }
 
 //go:noinline
-func (t *Tracee) triggerKernelModuleSeeker() {
+func (t *Tracker) triggerKernelModuleSeeker() {
 }
 
 //go:noinline
-func (t *Tracee) triggerKernelModuleSubmitter(address uint64, flags uint64) {
+func (t *Tracker) triggerKernelModuleSubmitter(address uint64, flags uint64) {
 }

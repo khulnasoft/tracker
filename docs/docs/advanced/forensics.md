@@ -1,6 +1,6 @@
 # Getting Started with Forensics
 
-Tracee has a unique feature that lets you capture interesting artifacts from
+Tracker has a unique feature that lets you capture interesting artifacts from
 running applications, using the `--capture` flag.
 
 ```console
@@ -12,14 +12,14 @@ sudo ./dist/tracee --capture xxx
 ```
 
 !!! Tip
-    All captured artifacts are saved in Tracee's "output directory", which can
+    All captured artifacts are saved in Tracker's "output directory", which can
     be configured using `--capture dir:/path/to/dir`. You may also use
     `--capture clear-dir` if you want contents of the destination directory
     to be cleared every time you execute tracee.
 
 ## Artifacts Types
 
-Tracee can capture the following types of artifacts:
+Tracker can capture the following types of artifacts:
 
 1. **I/O Files**
 

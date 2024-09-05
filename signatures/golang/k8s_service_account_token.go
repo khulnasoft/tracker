@@ -67,12 +67,12 @@ func (sig *K8SServiceAccountToken) OnEvent(event protocol.Event) error {
 			}
 		}
 
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil {
 			return err
 		}
 
-		flags, err := helpers.GetTraceeStringArgumentByName(eventObj, "flags")
+		flags, err := helpers.GetTrackerStringArgumentByName(eventObj, "flags")
 		if err != nil {
 			return err
 		}

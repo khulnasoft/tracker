@@ -67,7 +67,7 @@ func (b *eventBuffer) getCopy() []trace.Event {
 }
 
 // load tracee into memory with args
-func startTracee(ctx context.Context, t *testing.T, cfg config.Config, output *config.OutputConfig, capture *config.CaptureConfig) (*tracee.Tracee, error) {
+func startTracker(ctx context.Context, t *testing.T, cfg config.Config, output *config.OutputConfig, capture *config.CaptureConfig) (*tracee.Tracker, error) {
 	initialize.SetLibbpfgoCallbacks()
 
 	kernelConfig, err := initialize.KernelConfig()
@@ -159,7 +159,7 @@ func prepareCapture() *config.CaptureConfig {
 
 // wait for tracee to start (or timeout)
 // in case of timeout, the test will fail
-func waitForTraceeStart(trc *tracee.Tracee) error {
+func waitForTrackerStart(trc *tracee.Tracker) error {
 	const timeout = 10 * time.Second
 
 	statusCheckTicker := time.NewTicker(1 * time.Second)
@@ -181,7 +181,7 @@ func waitForTraceeStart(trc *tracee.Tracee) error {
 
 // wait for tracee to stop (or timeout)
 // in case of timeout, the test will continue since all tests already passed
-func waitForTraceeStop(trc *tracee.Tracee) error {
+func waitForTrackerStop(trc *tracee.Tracker) error {
 	const timeout = 10 * time.Second
 
 	statusCheckTicker := time.NewTicker(1 * time.Second)
@@ -203,7 +203,7 @@ func waitForTraceeStop(trc *tracee.Tracee) error {
 
 // wait for tracee buffer to fill up with expected number of events (or timeout)
 // in case of timeout, the test will fail
-func waitForTraceeOutputEvents(t *testing.T, waitFor time.Duration, actual *eventBuffer, expectedEvts int, failOnTimeout bool) error {
+func waitForTrackerOutputEvents(t *testing.T, waitFor time.Duration, actual *eventBuffer, expectedEvts int, failOnTimeout bool) error {
 	if waitFor > 0 {
 		t.Logf("  . waiting events collection for %s", waitFor.String())
 		time.Sleep(waitFor)

@@ -35,7 +35,7 @@ Use this flag multiple times to choose multiple output options
 `
 }
 
-func TraceeEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, error) {
+func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, error) {
 	outConfig := PrepareOutputResult{}
 	traceeConfig := &config.OutputConfig{}
 
@@ -103,7 +103,7 @@ func TraceeEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutpu
 		printerConfigs = append(printerConfigs, printerConfig)
 	}
 
-	outConfig.TraceeConfig = traceeConfig
+	outConfig.TrackerConfig = traceeConfig
 	outConfig.PrinterConfigs = printerConfigs
 
 	return outConfig, nil

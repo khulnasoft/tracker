@@ -1,4 +1,4 @@
-site_name: Tracee
+site_name: Tracker
 site_url: https://aquasecurity.github.io/tracee/
 site_description: Runtime security and forensics using eBPF.
 docs_dir: docs/
@@ -10,11 +10,11 @@ nav:
     - Home: index.md
     - Tutorials:
           - Overview: tutorials/overview.md
-          - Cosign - verify Tracee signature: tutorials/verify-tracee-signature.md
-          - Access Tracee Metrics in Grafana and Prometheus: tutorials/deploy-grafana-dashboard.md
-          - Using Tracee Container Image with Vagrant on Mac: tutorials/tracee-vagrant.md
-          - Working with Tracee's Policies on Kubernetes: tutorials/k8s-policies.md
-          - Accessing Tracee Logs through Promtail and Loki: tutorials/promtail.md
+          - Cosign - verify Tracker signature: tutorials/verify-tracee-signature.md
+          - Access Tracker Metrics in Grafana and Prometheus: tutorials/deploy-grafana-dashboard.md
+          - Using Tracker Container Image with Vagrant on Mac: tutorials/tracee-vagrant.md
+          - Working with Tracker's Policies on Kubernetes: tutorials/k8s-policies.md
+          - Accessing Tracker Logs through Promtail and Loki: tutorials/promtail.md
           - Additional Resources: tutorials/additional-resources.md
     - Docs:
           - Overview: docs/overview.md
@@ -26,7 +26,7 @@ nav:
                 - Container Engines: docs/install/container-engines.md
                 - Prometheus: docs/install/prometheus.md
                 - Healthz: docs/install/healthz.md
-                - Configure Tracee:
+                - Configure Tracker:
                       - Overview: docs/install/config/index.md
                       - CLI: docs/install/config/cli.md
                       - Kubernetes: docs/install/config/kubernetes.md
@@ -613,7 +613,7 @@ nav:
           - Source Code Guidelines: contributing/guidelines.md
           - Setup Development Machine with Vagrant: contributing/setup-development-machine-with-vagrant.md
           - Building:
-                - Building Tracee: contributing/building/building.md
+                - Building Tracker: contributing/building/building.md
                 - Building Environment: contributing/building/environment.md
                 - Building Containers: contributing/building/containers.md
 theme:

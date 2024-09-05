@@ -49,7 +49,7 @@ message StreamEventsResponse {
     Event event = 1;
 }
 
-service TraceeService {
+service TrackerService {
     rpc GetEventDefinitions(GetEventDefinitionsRequest) returns (GetEventDefinitionsResponse);
     rpc StreamEvents(StreamEventsRequest) returns (stream StreamEventsResponse);
 

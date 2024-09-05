@@ -22,7 +22,7 @@ const (
 // Manager is a management tree for the current dependencies of events.
 // As events can depend on multiple things (e.g events, probes), it manages their connections in the form of a tree.
 // The tree supports watcher functions for adding and removing nodes.
-// The watchers should be used as the way to handle changes in events, probes or any other node type in Tracee.
+// The watchers should be used as the way to handle changes in events, probes or any other node type in Tracker.
 type Manager struct {
 	mu                 sync.RWMutex
 	events             map[events.ID]*EventNode

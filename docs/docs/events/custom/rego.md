@@ -2,7 +2,7 @@
 
 !!! Tip
     Differently than [golang built-in signatures](./golang.md), with Rego
-    signatures you are able to add and/or remove signatures to Tracee without
+    signatures you are able to add and/or remove signatures to Tracker without
     the need of recompiling it (or re-distributing the binary) BUT it may come
     with a performance price to pay.
 

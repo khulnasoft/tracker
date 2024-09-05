@@ -15,14 +15,14 @@ import (
 )
 
 // engineEvents stage in the pipeline allows signatures detection to be executed in the pipeline
-func (t *Tracee) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-chan *trace.Event, <-chan error) {
+func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-chan *trace.Event, <-chan error) {
 	out := make(chan *trace.Event, t.config.PipelineChannelSize)
 	errc := make(chan error, 1)
 
 	engineOutput := make(chan *detect.Finding, 10000)
 	engineInput := make(chan protocol.Event, 10000)
 	engineOutputEvents := make(chan *trace.Event, t.config.PipelineChannelSize)
-	source := engine.EventSources{Tracee: engineInput}
+	source := engine.EventSources{Tracker: engineInput}
 
 	// Prepare built in data sources
 	t.config.EngineConfig.DataSources = append(t.config.EngineConfig.DataSources, t.PrepareBuiltinDataSources()...)
@@ -137,7 +137,7 @@ func (t *Tracee) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-ch
 }
 
 // PrepareBuiltinDataSources returns a list of all data sources tracee makes available built-in
-func (t *Tracee) PrepareBuiltinDataSources() []detect.DataSource {
+func (t *Tracker) PrepareBuiltinDataSources() []detect.DataSource {
 	datasources := []detect.DataSource{}
 
 	// Containers Data Source

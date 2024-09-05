@@ -54,7 +54,7 @@ func (sig *DynamicCodeLoading) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "mem_prot_alert":
-		alert, err := helpers.GetTraceeStringArgumentByName(eventObj, "alert")
+		alert, err := helpers.GetTrackerStringArgumentByName(eventObj, "alert")
 		if err != nil {
 			return err
 		}

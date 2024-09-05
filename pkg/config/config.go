@@ -13,9 +13,9 @@ import (
 	"github.com/aquasecurity/tracee/pkg/utils/environment"
 )
 
-// Config is a struct containing user defined configuration to initialize Tracee
+// Config is a struct containing user defined configuration to initialize Tracker
 //
-// NOTE: In the future, Tracee config will be changed at run time and will require
+// NOTE: In the future, Tracker config will be changed at run time and will require
 // proper management.
 type Config struct {
 	InitialPolicies     []*policy.Policy
@@ -27,7 +27,7 @@ type Config struct {
 	PerfBufferSize      int
 	BlobPerfBufferSize  int
 	PipelineChannelSize int
-	MaxPidsCache        int // maximum number of pids to cache per mnt ns (in Tracee.pidsInMntns)
+	MaxPidsCache        int // maximum number of pids to cache per mnt ns (in Tracker.pidsInMntns)
 	BTFObjPath          string
 	BPFObjBytes         []byte
 	KernelConfig        *environment.KernelConfig

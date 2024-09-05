@@ -50,12 +50,12 @@ func (sig *e2eIPv4) OnEvent(event protocol.Event) error {
 			return nil
 		}
 
-		src, err := helpers.GetTraceeStringArgumentByName(eventObj, "src")
+		src, err := helpers.GetTrackerStringArgumentByName(eventObj, "src")
 		if err != nil {
 			return err
 		}
 
-		dst, err := helpers.GetTraceeStringArgumentByName(eventObj, "dst")
+		dst, err := helpers.GetTrackerStringArgumentByName(eventObj, "dst")
 		if err != nil {
 			return err
 		}

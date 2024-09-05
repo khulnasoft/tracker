@@ -89,7 +89,7 @@ func (sig *e2eProcessTreeDataSource) OnEvent(event protocol.Event) error {
 		})
 
 		// Check that the event is from the tester
-		pathname, err := helpers.GetTraceeStringArgumentByName(eventObj, "pathname")
+		pathname, err := helpers.GetTrackerStringArgumentByName(eventObj, "pathname")
 		if err != nil || !strings.HasSuffix(pathname, testerName) {
 			return err
 		}
@@ -216,7 +216,7 @@ func (sig *e2eProcessTreeDataSource) checkProcess(eventObj *trace.Event) error {
 	// procfs enrichment, but that requires raising privileges and, since our procfs enrichment is
 	// async, that might not be an option (due to cost of raising capabilities).
 	//
-	// pathname, err := helpers.GetTraceeStringArgumentByName(*eventObj, "pathname")
+	// pathname, err := helpers.GetTrackerStringArgumentByName(*eventObj, "pathname")
 	// if err != nil {
 	// 	return err
 	// }

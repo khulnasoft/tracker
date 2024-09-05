@@ -18,7 +18,7 @@ const (
 // Order of fields is important, as it is used as a value for
 // the ConfigMap BPF map.
 type Config struct {
-	TraceePid       uint32
+	TrackerPid       uint32
 	Options         uint32
 	CgroupV1Hid     uint32
 	_               uint16 // padding free for further use

@@ -161,12 +161,12 @@ func checkFtraceHooks(eventsCounter counter.Counter, out chan *trace.Event, base
 			directArg = true // To be used in the next line (next iteration)
 		}
 
-		causedByTracee, newCount, err := isCausedBySelfLoadedProg(selfLoadedProgs, args[symbolIndex].Value.(string), args[countIndex].Value.(int))
+		causedByTracker, newCount, err := isCausedBySelfLoadedProg(selfLoadedProgs, args[symbolIndex].Value.(string), args[countIndex].Value.(int))
 		if err != nil {
 			return err
 		}
 
-		if causedByTracee {
+		if causedByTracker {
 			continue
 		}
 
@@ -205,8 +205,8 @@ func checkFtraceHooks(eventsCounter counter.Counter, out chan *trace.Event, base
 func isCausedBySelfLoadedProg(selfLoadedProgs map[string]int, symbol string, oldCount int) (bool, int, error) {
 	newCount := oldCount
 
-	numHooksFromTracee, found := selfLoadedProgs[symbol]
-	if found { // Tracee uses this hook
+	numHooksFromTracker, found := selfLoadedProgs[symbol]
+	if found { // Tracker uses this hook
 		// In case of k[ret]probe, there might be multiple hooks on same symbol and the ftrace count will still be 1. Check kprobe list directly.
 		numKprobes, err := numKprobesOnSymbol(symbol)
 		if err != nil {
@@ -214,12 +214,12 @@ func isCausedBySelfLoadedProg(selfLoadedProgs map[string]int, symbol string, old
 		}
 
 		if oldCount != 1 { // Someone else must be hooking using ftrace since tracee only causes 1 ftrace hook
-			newCount = oldCount - 1 + (numKprobes - numHooksFromTracee) // Reduce count caused by tracee and add the number of k[ret]probes (other than tracee's)
+			newCount = oldCount - 1 + (numKprobes - numHooksFromTracker) // Reduce count caused by tracee and add the number of k[ret]probes (other than tracee's)
 		} else {
-			if numKprobes == numHooksFromTracee { // count is 1 and all k[ret]probes are caused by us... there's nothing to report
+			if numKprobes == numHooksFromTracker { // count is 1 and all k[ret]probes are caused by us... there's nothing to report
 				return true, -1, nil
 			}
-			newCount = numKprobes - numHooksFromTracee // The amount of k[ret]probes other than tracee's
+			newCount = numKprobes - numHooksFromTracker // The amount of k[ret]probes other than tracee's
 		}
 	}
 

@@ -171,7 +171,7 @@ func ProduceEventsInMemoryRandom(n int, seed ...trace.Event) engine.EventSources
 
 	close(eventsCh)
 	return engine.EventSources{
-		Tracee: eventsCh,
+		Tracker: eventsCh,
 	}
 }
 
