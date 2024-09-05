@@ -21,7 +21,7 @@ CleanupOnError() {
 
 # arguments
 
-TRACKER_IMAGE=${1:-"docker.io/aquasec/tracker:0.20.0"}
+TRACKER_IMAGE=${1:-"docker.io/khulnasoft/tracker:0.20.0"}
 BENCH_OUTPUT=${2:-"bench_output.json"}
 BENCH_TIME=${3:-900}
 BENCHMARK_NAME="tracker_network_benchmark"

@@ -10,12 +10,12 @@ This guide will help you get started with running Tracker as a container.
 
 ## Tracker container image
 
- Tracker container image is available in Docker Hub as [aquasec/tracker](https://hub.docker.com/r/aquasec/tracker).
+ Tracker container image is available in Docker Hub as [khulnasoft/tracker](https://hub.docker.com/r/khulnasoft/tracker).
 
-- You can use the `latest` tag or a named version version e.g `aquasec/tracker:{{ git.tag }}`.
+- You can use the `latest` tag or a named version version e.g `khulnasoft/tracker:{{ git.tag }}`.
 - If you are trying the most cutting edge features, there is also a `dev` tag which is built nightly from source.
 - The Tracker image is a [Multi-platform](https://docs.docker.com/build/building/multi-platform/) image that includes a x86 and arm64 flavors. You can also access the platform-specific images directly with the `aarch64` and `x86_64` tags for the latest version or `aarch64-<version>` and `x86_64-<version>` for a specific version.  
-- For most first time users, just use `aquasec/tracker`!
+- For most first time users, just use `khulnasoft/tracker`!
 
 ## Running Tracker container
 
@@ -26,7 +26,7 @@ docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
-  aquasec/tracker:latest
+  khulnasoft/tracker:latest
 ```
 
  1. Docker general flags:

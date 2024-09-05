@@ -36,7 +36,7 @@ docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
-  aquasec/tracker:latest
+  khulnasoft/tracker:latest
 ```
 
 To learn how to install Tracker in a production environment, [check out the Kubernetes guide](./kubernetes-quickstart).

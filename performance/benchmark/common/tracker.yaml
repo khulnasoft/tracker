@@ -143,7 +143,7 @@ spec:
         {}
       containers:
         - name: tracker
-          image: "docker.io/aquasec/tracker:0.20.0"
+          image: "docker.io/khulnasoft/tracker:0.20.0"
           imagePullPolicy: Always
           command:
             - /tracker/tracker
@@ -245,7 +245,7 @@ spec:
         {}
       containers:
       - name: tracker-operator
-        image: "docker.io/aquasec/tracker:0.20.0"
+        image: "docker.io/khulnasoft/tracker:0.20.0"
         imagePullPolicy: Always
         command:
           - /tracker/tracker-operator

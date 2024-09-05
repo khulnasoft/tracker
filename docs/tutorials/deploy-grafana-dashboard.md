@@ -52,7 +52,7 @@ docker run --name tracker -it --rm \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
   -p 3366:3366 \
-  aquasec/tracker:latest \
+  khulnasoft/tracker:latest \
   --metrics 
 ```
 

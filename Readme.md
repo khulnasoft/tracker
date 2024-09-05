@@ -29,7 +29,7 @@ docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run:/var/run:ro \
-  aquasec/tracker:latest
+  khulnasoft/tracker:latest
 ```
 
 For a complete walkthrough please see the [Docker getting started guide][docker-guide].

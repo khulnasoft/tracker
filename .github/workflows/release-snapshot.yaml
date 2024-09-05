@@ -3,7 +3,7 @@
 #
 # This workflow ensures that the main branch is ready for release and that all
 # build configuration files are valid. Also scans tracker container images for
-# vulnerabilities, and publishes to DockerHub as aquasec/tracker:dev.
+# vulnerabilities, and publishes to DockerHub as khulnasoft/tracker:dev.
 #
 name: Release Snapshot
 on:
@@ -40,20 +40,20 @@ jobs:
         run: |
           make -f builder/Makefile.release SNAPSHOT=1
       - name: Scan Docker Image for Vulnerabilities
-        uses: aquasecurity/trivy-action@master
+        uses: khulnasoft/trivy-action@master
         with:
           image-ref: "tracker:dev"
           severity: "CRITICAL"
           exit-code: "1"
       - name: Publish to docker.io registry
         run: |
-          docker image tag tracker:dev aquasec/tracker:x86_64-dev
-          docker image push aquasec/tracker:x86_64-dev
+          docker image tag tracker:dev khulnasoft/tracker:x86_64-dev
+          docker image push khulnasoft/tracker:x86_64-dev
         shell: bash
       # Disabled to avoid generating too many sigstore cosign signatures
       # - name: Sign Docker image
       #   run: |
-      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracker:x86_64-dev)
+      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:x86_64-dev)
       #   shell: bash
   release-snapshot-aarch64:
     name: Release Snapshot (aarch64)
@@ -83,20 +83,20 @@ jobs:
         run: |
           make -f builder/Makefile.release SNAPSHOT=1
       - name: Scan Docker Image for Vulnerabilities
-        uses: aquasecurity/trivy-action@master
+        uses: khulnasoft/trivy-action@master
         with:
           image-ref: "tracker:dev"
           severity: "CRITICAL"
           exit-code: "1"
       - name: Publish to docker.io registry
         run: |
-          docker image tag tracker:dev aquasec/tracker:aarch64-dev
-          docker image push aquasec/tracker:aarch64-dev
+          docker image tag tracker:dev khulnasoft/tracker:aarch64-dev
+          docker image push khulnasoft/tracker:aarch64-dev
         shell: bash
       # Disabled to avoid generating too many sigstore cosign signatures
       # - name: Sign Docker image
       #   run: |
-      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracker:aarch64-dev)
+      #     cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:aarch64-dev)
       #   shell: bash
   release-snapshot:
     name: Release Snapshot
@@ -124,19 +124,19 @@ jobs:
       - name: Publish to docker.io registry
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          docker manifest create aquasec/tracker:dev \
-            aquasec/tracker:x86_64-dev \
-            aquasec/tracker:aarch64-dev
-          docker manifest push aquasec/tracker:dev
+          docker manifest create khulnasoft/tracker:dev \
+            khulnasoft/tracker:x86_64-dev \
+            khulnasoft/tracker:aarch64-dev
+          docker manifest push khulnasoft/tracker:dev
 
           timestamp=$(date +%Y%m%d-%H%M%S%Z)
-          docker manifest create aquasec/tracker:dev-$timestamp \
-            aquasec/tracker:x86_64-dev \
-            aquasec/tracker:aarch64-dev
-          docker manifest push aquasec/tracker:dev-$timestamp
+          docker manifest create khulnasoft/tracker:dev-$timestamp \
+            khulnasoft/tracker:x86_64-dev \
+            khulnasoft/tracker:aarch64-dev
+          docker manifest push khulnasoft/tracker:dev-$timestamp
         shell: bash
       # Disabled to avoid generating too many sigstore cosign signatures
       # - name: Sign Docker image
       #   run: |
-      #     cosign sign -y aquasec/tracker:dev
+      #     cosign sign -y khulnasoft/tracker:dev
       #   shell: bash

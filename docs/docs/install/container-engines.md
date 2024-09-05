@@ -16,7 +16,7 @@ docker run --name tracker -it --rm \
   --pid=host --cgroupns=host --privileged \
   -v /etc/os-release:/etc/os-release-host:ro \
   -v /var/run/containerd:/var/run/containerd:ro \
-  aquasec/tracker:latest
+  khulnasoft/tracker:latest
 ```
 
 Most container runtimes have their sockets installed by default in `/var/run`, so mounting this path can also be a good option.

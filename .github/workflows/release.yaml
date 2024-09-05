@@ -44,14 +44,14 @@ jobs:
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          docker image tag tracker:latest aquasec/tracker:${ARCH}-${TAG}
-          docker image push aquasec/tracker:${ARCH}-${TAG}
+          docker image tag tracker:latest khulnasoft/tracker:${ARCH}-${TAG}
+          docker image push khulnasoft/tracker:${ARCH}-${TAG}
         shell: bash
       - name: Sign Docker image
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracker:${ARCH}-${TAG})
+          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:${ARCH}-${TAG})
         shell: bash
   release-aarch64:
     name: Release (aarch64)
@@ -88,14 +88,14 @@ jobs:
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          docker image tag tracker:latest aquasec/tracker:${ARCH}-${TAG}
-          docker image push aquasec/tracker:${ARCH}-${TAG}
+          docker image tag tracker:latest khulnasoft/tracker:${ARCH}-${TAG}
+          docker image push khulnasoft/tracker:${ARCH}-${TAG}
         shell: bash
       - name: Sign Docker image
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           ARCH=$(uname -m)
-          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' aquasec/tracker:${ARCH}-${TAG})
+          cosign sign -y $(docker inspect --format='{{index .RepoDigests 0}}' khulnasoft/tracker:${ARCH}-${TAG})
         shell: bash
   release:
     name: Release
@@ -125,18 +125,18 @@ jobs:
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          docker manifest create aquasec/tracker:latest \
-            aquasec/tracker:x86_64-${TAG} \
-            aquasec/tracker:aarch64-${TAG}
-          docker manifest create aquasec/tracker:${TAG} \
-            aquasec/tracker:x86_64-${TAG} \
-            aquasec/tracker:aarch64-${TAG}
-          docker manifest push aquasec/tracker:latest
-          docker manifest push aquasec/tracker:${TAG}
+          docker manifest create khulnasoft/tracker:latest \
+            khulnasoft/tracker:x86_64-${TAG} \
+            khulnasoft/tracker:aarch64-${TAG}
+          docker manifest create khulnasoft/tracker:${TAG} \
+            khulnasoft/tracker:x86_64-${TAG} \
+            khulnasoft/tracker:aarch64-${TAG}
+          docker manifest push khulnasoft/tracker:latest
+          docker manifest push khulnasoft/tracker:${TAG}
         shell: bash
       - name: Sign the latest manifest with Cosign
         run: |
           TAG=$(echo ${{ github.event.inputs.ref }} | sed -e "s/v//gI")
-          cosign sign -y aquasec/tracker:latest
-          cosign sign -y aquasec/tracker:${TAG}
+          cosign sign -y khulnasoft/tracker:latest
+          cosign sign -y khulnasoft/tracker:${TAG}
         shell: bash
