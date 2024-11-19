@@ -1,6 +1,8 @@
-package ebpf
+package findings
 
 import (
+	"maps"
+
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/types/detect"
@@ -172,7 +174,7 @@ func getMetadataFromSignatureMetadata(sigMetadata detect.SignatureMetadata) *tra
 	metadata.Description = sigMetadata.Description
 	metadata.Tags = sigMetadata.Tags
 
-	properties := sigMetadata.Properties
+	properties := maps.Clone(sigMetadata.Properties)
 	if sigMetadata.Properties == nil {
 		properties = make(map[string]interface{})
 	}

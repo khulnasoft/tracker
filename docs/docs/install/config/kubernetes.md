@@ -39,7 +39,7 @@ kubectl edit cm tracker-config -n tracker
 You can customize specific options with the helm installation:
 
 ```
-helm install tracker khulnasoft/tracker \
+helm install tracker aqua/tracker \
         --namespace tracker --create-namespace \
         --set config.blobPerfBufferSize=1024
 ```
@@ -47,7 +47,7 @@ helm install tracker khulnasoft/tracker \
 or after installation:
 
 ```
-helm install tracker khulnasoft/tracker \
+helm install tracker aqua/tracker \
         --namespace tracker --create-namespace \
         --set config.output.format=table
 ```
@@ -55,7 +55,7 @@ helm install tracker khulnasoft/tracker \
 or to provide a complete config file:
 
 ```
- helm install tracker khulnasoft/tracker \
+ helm install tracker aqua/tracker \
         --namespace tracker --create-namespace \
         --set-file configFile=myconfig.yaml
 ```

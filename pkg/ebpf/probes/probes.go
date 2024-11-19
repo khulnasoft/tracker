@@ -126,7 +126,6 @@ const (
 	InotifyFindInodeRet
 	BpfCheck
 	ExecBinprm
-	ExecBinprmRet
 	SecurityPathNotify
 	SecurityBprmCredsForExec
 	SetFsPwd
@@ -162,6 +161,7 @@ const (
 	Dup2Ret
 	Dup3
 	Dup3Ret
+	ChmodCommon
 )
 
 // Test probe handles

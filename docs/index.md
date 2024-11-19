@@ -49,9 +49,9 @@ For a complete walkthrough please see the [Docker getting started guide][docker-
 ### On Kubernetes
 
 ```shell
-helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
+helm repo add aqua https://khulnasoft.github.io/helm-charts/
 helm repo update
-helm install tracker khulnasoft/tracker --namespace tracker --create-namespace
+helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```
 
 ```shell
@@ -67,7 +67,7 @@ If you run into any trouble using Tracker or you would like to give use user fee
 
 Find more information on [contribution documentation](./contributing/overview/).
 
-## More about Aqua Security
+## More about KhulnaSoft Security
 
-Tracker is an [Aqua Security](https://khulnasoft.com) open source project.  
+Tracker is an [KhulnaSoft Security](https://khulnasoft.com) open source project.  
 Learn about our open source work and portfolio [here](https://www.khulnasoft.com/products/open-source-projects/).

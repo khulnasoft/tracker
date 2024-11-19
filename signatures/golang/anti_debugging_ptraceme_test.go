@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
 	"github.com/khulnasoft/tracker/signatures/signaturestest"
 	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/trace"
@@ -29,7 +30,7 @@ func TestAntiDebuggingPtraceme(t *testing.T) {
 							ArgMeta: trace.ArgMeta{
 								Name: "request",
 							},
-							Value: interface{}("PTRACE_TRACEME"),
+							Value: interface{}(int64(parsers.PTRACE_TRACEME.Value())),
 						},
 					},
 				},
@@ -44,7 +45,7 @@ func TestAntiDebuggingPtraceme(t *testing.T) {
 								ArgMeta: trace.ArgMeta{
 									Name: "request",
 								},
-								Value: interface{}("PTRACE_TRACEME"),
+								Value: interface{}(int64(parsers.PTRACE_TRACEME.Value())),
 							},
 						},
 					}.ToProtocol(),
@@ -76,7 +77,7 @@ func TestAntiDebuggingPtraceme(t *testing.T) {
 							ArgMeta: trace.ArgMeta{
 								Name: "request",
 							},
-							Value: interface{}("PTRACE_PEEKTEXT"),
+							Value: interface{}(int64(parsers.PTRACE_PEEKTEXT.Value())),
 						},
 					},
 				},

@@ -110,9 +110,10 @@ const (
 	ModuleLoad
 	ModuleFree
 	ExecuteFinished
-	SecurityBprmCredsForExec
+	ProcessExecuteFailedInternal
 	SecurityTaskSetrlimit
 	SecuritySettime64
+	ChmodCommon
 	MaxCommonID
 )
 
@@ -262,7 +263,7 @@ var CoreEvents = map[ID]Definition{
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "pathname"},
 			{Type: "int", Name: "flags"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -2241,7 +2242,7 @@ var CoreEvents = map[ID]Definition{
 		sets:    []string{"syscalls", "fs", "fs_dir_ops"},
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -2288,7 +2289,7 @@ var CoreEvents = map[ID]Definition{
 		sets:    []string{"default", "syscalls", "fs", "fs_file_ops"},
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -2408,7 +2409,7 @@ var CoreEvents = map[ID]Definition{
 		sets:    []string{"default", "syscalls", "fs", "fs_file_attr"},
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -2432,7 +2433,7 @@ var CoreEvents = map[ID]Definition{
 		sets:    []string{"default", "syscalls", "fs", "fs_file_attr"},
 		params: []trace.ArgMeta{
 			{Type: "int", Name: "fd"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -3417,7 +3418,7 @@ var CoreEvents = map[ID]Definition{
 		sets:    []string{"syscalls", "fs", "fs_file_ops"},
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 			{Type: "dev_t", Name: "dev"},
 		},
 		dependencies: Dependencies{
@@ -5150,7 +5151,7 @@ var CoreEvents = map[ID]Definition{
 		sets:    []string{"syscalls", "fs", "fs_async_io"},
 		params: []trace.ArgMeta{
 			{Type: "unsigned int", Name: "nr_events"},
-			{Type: "io_context_t*", Name: "ctx_idp"},
+			{Type: "aio_context_t*", Name: "ctx_idp"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -5173,7 +5174,7 @@ var CoreEvents = map[ID]Definition{
 		syscall: true,
 		sets:    []string{"syscalls", "fs", "fs_async_io"},
 		params: []trace.ArgMeta{
-			{Type: "io_context_t", Name: "ctx_id"},
+			{Type: "aio_context_t", Name: "ctx_id"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -5196,7 +5197,7 @@ var CoreEvents = map[ID]Definition{
 		syscall: true,
 		sets:    []string{"syscalls", "fs", "fs_async_io"},
 		params: []trace.ArgMeta{
-			{Type: "io_context_t", Name: "ctx_id"},
+			{Type: "aio_context_t", Name: "ctx_id"},
 			{Type: "long", Name: "min_nr"},
 			{Type: "long", Name: "nr"},
 			{Type: "struct io_event*", Name: "events"},
@@ -5223,7 +5224,7 @@ var CoreEvents = map[ID]Definition{
 		syscall: true,
 		sets:    []string{"syscalls", "fs", "fs_async_io"},
 		params: []trace.ArgMeta{
-			{Type: "io_context_t", Name: "ctx_id"},
+			{Type: "aio_context_t", Name: "ctx_id"},
 			{Type: "long", Name: "nr"},
 			{Type: "struct iocb**", Name: "iocbpp"},
 		},
@@ -5248,7 +5249,7 @@ var CoreEvents = map[ID]Definition{
 		syscall: true,
 		sets:    []string{"syscalls", "fs", "fs_async_io"},
 		params: []trace.ArgMeta{
-			{Type: "io_context_t", Name: "ctx_id"},
+			{Type: "aio_context_t", Name: "ctx_id"},
 			{Type: "struct iocb*", Name: "iocb"},
 			{Type: "struct io_event*", Name: "result"},
 		},
@@ -5980,7 +5981,7 @@ var CoreEvents = map[ID]Definition{
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "name"},
 			{Type: "int", Name: "oflag"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 			{Type: "struct mq_attr*", Name: "attr"},
 		},
 		dependencies: Dependencies{
@@ -6411,7 +6412,7 @@ var CoreEvents = map[ID]Definition{
 			{Type: "int", Name: "dirfd"},
 			{Type: "const char*", Name: "pathname"},
 			{Type: "int", Name: "flags"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -6436,7 +6437,7 @@ var CoreEvents = map[ID]Definition{
 		params: []trace.ArgMeta{
 			{Type: "int", Name: "dirfd"},
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -6461,7 +6462,7 @@ var CoreEvents = map[ID]Definition{
 		params: []trace.ArgMeta{
 			{Type: "int", Name: "dirfd"},
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 			{Type: "dev_t", Name: "dev"},
 		},
 		dependencies: Dependencies{
@@ -6694,7 +6695,7 @@ var CoreEvents = map[ID]Definition{
 		params: []trace.ArgMeta{
 			{Type: "int", Name: "dirfd"},
 			{Type: "const char*", Name: "pathname"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 			{Type: "int", Name: "flags"},
 		},
 		dependencies: Dependencies{
@@ -10388,7 +10389,7 @@ var CoreEvents = map[ID]Definition{
 		syscall: true,
 		sets:    []string{"syscalls", "32bit_unique"},
 		params: []trace.ArgMeta{
-			{Type: "old_old_uid_t", Name: "uid"},
+			{Type: "old_uid_t", Name: "uid"},
 		},
 		dependencies: Dependencies{
 			probes: []Probe{
@@ -12065,7 +12066,7 @@ var CoreEvents = map[ID]Definition{
 		params: []trace.ArgMeta{
 			{Type: "const char*", Name: "file_name"},
 			{Type: "const char*", Name: "path"},
-			{Type: "mode_t", Name: "mode"},
+			{Type: "umode_t", Name: "mode"},
 			{Type: "void*", Name: "proc_ops_addr"},
 		},
 	},
@@ -12877,25 +12878,10 @@ var CoreEvents = map[ID]Definition{
 				{handle: probes.ExecuteAtFinishedCompatARM, required: false},
 			},
 		},
-	},
-	SecurityBprmCredsForExec: {
-		id:       SecurityBprmCredsForExec,
-		id32Bit:  Sys32Undefined,
-		name:     "security_bprm_creds_for_exec",
-		version:  NewVersion(1, 0, 0),
-		sets:     []string{"proc"},
-		internal: true,
-		dependencies: Dependencies{
-			probes: []Probe{
-				{handle: probes.SecurityBprmCredsForExec, required: false}, // TODO: Change to required once fallbacks are supported
-			},
-			tailCalls: []TailCall{
-				{"prog_array", "trace_execute_failed1", []uint32{TailProcessExecuteFailed1}},
-				{"prog_array", "trace_execute_failed2", []uint32{TailProcessExecuteFailed2}},
-			},
-		},
 		params: []trace.ArgMeta{
-			{Type: "const char*", Name: "path"},
+			{Type: "int", Name: "dirfd"},
+			{Type: "int", Name: "flags"},
+			{Type: "const char*", Name: "pathname"},
 			{Type: "const char*", Name: "binary.path"},
 			{Type: "dev_t", Name: "binary.device_id"},
 			{Type: "unsigned long", Name: "binary.inode_number"},
@@ -12905,8 +12891,42 @@ var CoreEvents = map[ID]Definition{
 			{Type: "umode_t", Name: "stdin_type"},
 			{Type: "char*", Name: "stdin_path"},
 			{Type: "int", Name: "kernel_invoked"},
-			{Type: "const char*const*", Name: "binary.arguments"},
-			{Type: "const char*const*", Name: "environment"},
+			{Type: "const char*const*", Name: "argv"},
+			{Type: "const char*const*", Name: "envp"},
+		},
+	},
+	ProcessExecuteFailedInternal: {
+		id:       ProcessExecuteFailedInternal,
+		id32Bit:  Sys32Undefined,
+		name:     "process_execute_failed_internal",
+		version:  NewVersion(1, 0, 0),
+		sets:     []string{"proc"},
+		internal: true,
+		dependencies: Dependencies{
+			ids: []ID{ExecuteFinished},
+			probes: []Probe{
+				{handle: probes.ExecBinprm, required: false},
+				{handle: probes.SecurityBprmCredsForExec, required: false}, // TODO: Change to required once fallbacks are supported
+			},
+			tailCalls: []TailCall{
+				{"prog_array", "process_execute_failed_tail", []uint32{TailProcessExecuteFailed}},
+			},
+		},
+		params: []trace.ArgMeta{
+			{Type: "int", Name: "dirfd"},
+			{Type: "int", Name: "flags"},
+			{Type: "const char*", Name: "pathname"},
+			{Type: "const char*", Name: "binary.path"},
+			{Type: "dev_t", Name: "binary.device_id"},
+			{Type: "unsigned long", Name: "binary.inode_number"},
+			{Type: "unsigned long", Name: "binary.ctime"},
+			{Type: "umode_t", Name: "binary.inode_mode"},
+			{Type: "const char*", Name: "interpreter_path"},
+			{Type: "umode_t", Name: "stdin_type"},
+			{Type: "char*", Name: "stdin_path"},
+			{Type: "int", Name: "kernel_invoked"},
+			{Type: "const char*const*", Name: "argv"},
+			{Type: "const char*const*", Name: "envp"},
 		},
 	},
 	ProcessExecuteFailed: {
@@ -12916,18 +12936,12 @@ var CoreEvents = map[ID]Definition{
 		version: NewVersion(1, 0, 0),
 		sets:    []string{"proc"},
 		dependencies: Dependencies{
-			ids: []ID{ExecuteFinished, SecurityBprmCredsForExec}, // For kernel version >= 5.8
-			probes: []Probe{
-				{handle: probes.ExecBinprm, required: false},
-				{handle: probes.ExecBinprmRet, required: false},
-			},
-			tailCalls: []TailCall{
-				{"prog_array", "trace_execute_failed1", []uint32{TailProcessExecuteFailed1}},
-				{"prog_array", "trace_execute_failed2", []uint32{TailProcessExecuteFailed2}},
-			},
+			ids: []ID{ProcessExecuteFailedInternal},
 		},
 		params: []trace.ArgMeta{
-			{Type: "const char*", Name: "path"},
+			{Type: "int", Name: "dirfd"},
+			{Type: "int", Name: "flags"},
+			{Type: "const char*", Name: "pathname"},
 			{Type: "const char*", Name: "binary.path"},
 			{Type: "dev_t", Name: "binary.device_id"},
 			{Type: "unsigned long", Name: "binary.inode_number"},
@@ -12937,8 +12951,8 @@ var CoreEvents = map[ID]Definition{
 			{Type: "umode_t", Name: "stdin_type"},
 			{Type: "char*", Name: "stdin_path"},
 			{Type: "int", Name: "kernel_invoked"},
-			{Type: "const char*const*", Name: "binary.arguments"},
-			{Type: "const char*const*", Name: "environment"},
+			{Type: "const char*const*", Name: "argv"},
+			{Type: "const char*const*", Name: "envp"},
 		},
 	},
 	FtraceHook: {
@@ -13027,6 +13041,23 @@ var CoreEvents = map[ID]Definition{
 			{Type: "u64", Name: "tv_nsec"},
 			{Type: "int", Name: "tz_minuteswest"},
 			{Type: "int", Name: "tz_dsttime"},
+		},
+	},
+	ChmodCommon: {
+		id:      ChmodCommon,
+		id32Bit: Sys32Undefined,
+		name:    "chmod_common",
+		version: NewVersion(1, 0, 0),
+		syscall: true,
+		sets:    []string{},
+		params: []trace.ArgMeta{
+			{Type: "const char*", Name: "pathname"},
+			{Type: "umode_t", Name: "mode"},
+		},
+		dependencies: Dependencies{
+			probes: []Probe{
+				{handle: probes.ChmodCommon, required: true},
+			},
 		},
 	},
 	//

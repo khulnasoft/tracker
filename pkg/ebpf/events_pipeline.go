@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"slices"
 	"strconv"
 	"sync"
 	"unsafe"
@@ -13,6 +14,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/types/trace"
 )
@@ -227,8 +229,14 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 
 			// populate all the fields of the event used in this stage, and reset the rest
 
-			evt.Timestamp = int(eCtx.Ts)
-			evt.ThreadStartTime = int(eCtx.StartTime)
+			// normalize timestamp context fields for later use
+			normalizedTs := time.BootToEpochNS(eCtx.Ts)
+			normalizedThreadStartTime := time.BootToEpochNS(eCtx.StartTime)
+			normalizedLeaderStartTime := time.BootToEpochNS(eCtx.LeaderStartTime)
+			normalizedParentStartTime := time.BootToEpochNS(eCtx.ParentStartTime)
+
+			evt.Timestamp = int(normalizedTs)
+			evt.ThreadStartTime = int(normalizedThreadStartTime)
 			evt.ProcessorID = int(eCtx.ProcessorId)
 			evt.ProcessID = int(eCtx.Pid)
 			evt.ThreadID = int(eCtx.Tid)
@@ -239,8 +247,8 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 			evt.UserID = int(eCtx.Uid)
 			evt.MountNS = int(eCtx.MntID)
 			evt.PIDNS = int(eCtx.PidID)
-			evt.ProcessName = string(bytes.TrimRight(eCtx.Comm[:], "\x00"))
-			evt.HostName = string(bytes.TrimRight(eCtx.UtsName[:], "\x00"))
+			evt.ProcessName = string(bytes.TrimRight(eCtx.Comm[:], "\x00")) // set and clean potential trailing null
+			evt.HostName = string(bytes.TrimRight(eCtx.UtsName[:], "\x00")) // set and clean potential trailing null
 			evt.CgroupID = uint(eCtx.CgroupID)
 			evt.ContainerID = containerData.ID
 			evt.Container = containerData
@@ -258,9 +266,9 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 			evt.ContextFlags = flags
 			evt.Syscall = syscall
 			evt.Metadata = nil
-			evt.ThreadEntityId = utils.HashTaskID(eCtx.HostTid, eCtx.StartTime)
-			evt.ProcessEntityId = utils.HashTaskID(eCtx.HostPid, eCtx.LeaderStartTime)
-			evt.ParentEntityId = utils.HashTaskID(eCtx.HostPpid, eCtx.ParentStartTime)
+			evt.ThreadEntityId = utils.HashTaskID(eCtx.HostTid, normalizedThreadStartTime)
+			evt.ProcessEntityId = utils.HashTaskID(eCtx.HostPid, normalizedLeaderStartTime)
+			evt.ParentEntityId = utils.HashTaskID(eCtx.HostPpid, normalizedParentStartTime)
 
 			// If there aren't any policies that need filtering in userland, tracker **may** skip
 			// this event, as long as there aren't any derivatives or signatures that depend on it.
@@ -268,9 +276,9 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 			// thus the need to continue with those within the pipeline.
 			if t.matchPolicies(evt) == 0 {
 				_, hasDerivation := t.eventDerivations[eventId]
-				_, hasSignature := t.eventSignatures[eventId]
+				reqBySig := t.policyManager.IsRequiredBySignature(eventId)
 
-				if !hasDerivation && !hasSignature {
+				if !hasDerivation && !reqBySig {
 					_ = t.stats.EventsFiltered.Increment()
 					t.eventsPool.Put(evt)
 					continue
@@ -529,10 +537,13 @@ func (t *Tracker) deriveEvents(ctx context.Context, in <-chan *trace.Event) (
 				// acting on the derived event.
 
 				eventCopy := *event
+				// shallow clone the event arguments (new slice is created) before deriving the copy,
+				// to ensure the original event arguments are not modified by the derivation stage.
+				argsCopy := slices.Clone(event.Args)
 				out <- event
 
 				// Note: event is being derived before any of its args are parsed.
-				derivatives, errors := t.eventDerivations.DeriveEvent(eventCopy)
+				derivatives, errors := t.eventDerivations.DeriveEvent(eventCopy, argsCopy)
 
 				for _, err := range errors {
 					t.handleError(err)
@@ -598,7 +609,7 @@ func (t *Tracker) sinkEvents(ctx context.Context, in <-chan *trace.Event) <-chan
 
 			// Only emit events requested by the user and matched by at least one policy.
 			id := events.ID(event.EventID)
-			event.MatchedPoliciesUser &= t.eventsState[id].Emit
+			event.MatchedPoliciesUser = t.policyManager.MatchEvent(id, event.MatchedPoliciesUser)
 			if event.MatchedPoliciesUser == 0 {
 				t.eventsPool.Put(event)
 				continue
@@ -607,8 +618,8 @@ func (t *Tracker) sinkEvents(ctx context.Context, in <-chan *trace.Event) <-chan
 			// Populate the event with the names of the matched policies.
 			event.MatchedPolicies = t.policyManager.MatchedNames(event.MatchedPoliciesUser)
 
-			// Parse args here if the rule engine is not enabled (parsed there if it is).
-			if !t.config.EngineConfig.Enabled {
+			// Parse args here if the rule engine is NOT enabled (parsed there if it is).
+			if t.config.Output.ParseArguments && !t.config.EngineConfig.Enabled {
 				err := t.parseArguments(event)
 				if err != nil {
 					t.handleError(err)
@@ -720,15 +731,13 @@ func (t *Tracker) handleError(err error) {
 // cmd/tracker-rules), it happens on the "sink" stage of the pipeline (close to the
 // printers).
 func (t *Tracker) parseArguments(e *trace.Event) error {
-	if t.config.Output.ParseArguments {
-		err := events.ParseArgs(e)
-		if err != nil {
-			return errfmt.WrapError(err)
-		}
+	err := events.ParseArgs(e)
+	if err != nil {
+		return errfmt.WrapError(err)
+	}
 
-		if t.config.Output.ParseArgumentsFDs {
-			return events.ParseArgsFDs(e, uint64(t.timeNormalizer.GetOriginalTime(e.Timestamp)), t.FDArgPathMap)
-		}
+	if t.config.Output.ParseArgumentsFDs {
+		return events.ParseArgsFDs(e, uint64(e.Timestamp), t.FDArgPathMap)
 	}
 
 	return nil

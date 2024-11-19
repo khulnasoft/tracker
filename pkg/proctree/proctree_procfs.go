@@ -46,9 +46,6 @@ func (pt *ProcessTree) FeedFromProcFSAsync(givenPid int) {
 		pt.procfsChan = make(chan int, 1000)
 		pt.feedFromProcFSLoop()
 	}
-	if pt.procfsOnce == nil {
-		pt.procfsOnce = new(sync.Once)
-	}
 
 	// feed the loop without blocking (if the loop is busy, given pid won't be processed)
 	select {
@@ -109,8 +106,15 @@ func getProcessByPID(pt *ProcessTree, givenPid int) (*Process, error) {
 		return nil, errfmt.Errorf("%v", err)
 	}
 
-	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(stat.StartTime)
-	hash := utils.HashTaskID(uint32(status.GetPid()), startTimeNs) // status pid == tid
+	statusPid := status.GetPid()
+	statStartTime := stat.GetStartTime()
+
+	// hint for GC
+	status = nil
+	stat = nil
+
+	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(statStartTime)
+	hash := utils.HashTaskID(uint32(statusPid), startTimeNs) // status pid == tid
 
 	return pt.GetOrCreateProcessByHash(hash), nil
 }
@@ -139,7 +143,11 @@ func dealWithProc(pt *ProcessTree, givenPid int) error {
 	nspid := status.GetNsPid()
 	nstgid := status.GetNsTgid()
 	nsppid := status.GetNsPPid()
-	start := stat.StartTime
+	start := stat.GetStartTime()
+
+	// hint for GC
+	status = nil
+	stat = nil
 
 	// sanity checks
 	switch givenPid {
@@ -150,8 +158,9 @@ func dealWithProc(pt *ProcessTree, givenPid int) error {
 		}
 	}
 
-	// process hash
+	// thread start time (monotonic boot)
 	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(start)
+	// process hash
 	hash := utils.HashTaskID(uint32(pid), startTimeNs)
 
 	// update tree for the given process
@@ -167,7 +176,7 @@ func dealWithProc(pt *ProcessTree, givenPid int) error {
 		}
 	}
 
-	procfsTimeStamp := uint64(pt.timeNormalizer.NormalizeTime(int(startTimeNs)))
+	procfsTimeStamp := trackertime.BootToEpochNS(startTimeNs)
 
 	procInfo.SetFeedAt(
 		TaskInfoFeed{
@@ -188,7 +197,7 @@ func dealWithProc(pt *ProcessTree, givenPid int) error {
 	// TODO: Update executable with information from /proc/<pid>/exe
 
 	// update given process parent (if exists)
-	parent, err := getProcessByPID(pt, status.GetPPid())
+	parent, err := getProcessByPID(pt, ppid)
 	if err == nil {
 		parent.AddChild(hash)
 		process.SetParentHash(parent.GetHash())
@@ -218,15 +227,20 @@ func dealWithThread(pt *ProcessTree, givenPid int, givenTid int) error {
 	nspid := status.GetNsTgid()
 	nstgid := status.GetNsTgid()
 	nsppid := status.GetNsPPid()
-	start := stat.StartTime
+	start := stat.GetStartTime()
+
+	// hint for GC
+	status = nil
+	stat = nil
 
 	// sanity checks
 	if name == "" || pid == 0 || tgid == 0 || ppid == 0 {
 		return errfmt.Errorf("invalid thread")
 	}
 
-	// thread hash
+	// thread start time (monotonic boot)
 	startTimeNs := trackertime.ClockTicksToNsSinceBootTime(start)
+	// thread hash
 	hash := utils.HashTaskID(uint32(pid), startTimeNs)
 
 	// update tree for the given thread
@@ -238,7 +252,7 @@ func dealWithThread(pt *ProcessTree, givenPid int, givenTid int) error {
 		return nil
 	}
 
-	procfsTimeStamp := uint64(pt.timeNormalizer.NormalizeTime(int(startTimeNs)))
+	procfsTimeStamp := trackertime.BootToEpochNS(startTimeNs)
 
 	threadInfo.SetFeedAt(
 		TaskInfoFeed{

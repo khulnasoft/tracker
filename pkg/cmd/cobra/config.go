@@ -173,17 +173,11 @@ func (c *RegoConfig) flags() []string {
 //
 
 type ProcTreeConfig struct {
-	Source   string                 `mapstructure:"source"`
-	Cache    ProcTreeCacheConfig    `mapstructure:"cache"`
-	CacheTTL ProcTreeCacheTTLConfig `mapstructure:"cache-ttl"`
+	Source string              `mapstructure:"source"`
+	Cache  ProcTreeCacheConfig `mapstructure:"cache"`
 }
 
 type ProcTreeCacheConfig struct {
-	Process int `mapstructure:"process"`
-	Thread  int `mapstructure:"thread"`
-}
-
-type ProcTreeCacheTTLConfig struct {
 	Process int `mapstructure:"process"`
 	Thread  int `mapstructure:"thread"`
 }
@@ -203,12 +197,6 @@ func (c *ProcTreeConfig) flags() []string {
 	}
 	if c.Cache.Thread != 0 {
 		flags = append(flags, fmt.Sprintf("thread-cache=%d", c.Cache.Thread))
-	}
-	if c.CacheTTL.Process != 0 {
-		flags = append(flags, fmt.Sprintf("process-cache-ttl=%d", c.CacheTTL.Process))
-	}
-	if c.CacheTTL.Thread != 0 {
-		flags = append(flags, fmt.Sprintf("thread-cache-ttl=%d", c.CacheTTL.Thread))
 	}
 
 	return flags
@@ -407,9 +395,6 @@ func (c *OutputConfig) flags() []string {
 	if c.Options.ExecEnv {
 		flags = append(flags, "option:exec-env")
 	}
-	if c.Options.RelativeTime {
-		flags = append(flags, "option:relative-time")
-	}
 	if c.Options.ExecHash != "" {
 		flags = append(flags, fmt.Sprintf("option:exec-hash=%s", c.Options.ExecHash))
 	}
@@ -490,7 +475,6 @@ type OutputOptsConfig struct {
 	None              bool   `mapstructure:"none"`
 	StackAddresses    bool   `mapstructure:"stack-addresses"`
 	ExecEnv           bool   `mapstructure:"exec-env"`
-	RelativeTime      bool   `mapstructure:"relative-time"`
 	ExecHash          string `mapstructure:"exec-hash"`
 	ParseArguments    bool   `mapstructure:"parse-arguments"`
 	ParseArgumentsFDs bool   `mapstructure:"parse-arguments-fds"`

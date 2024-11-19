@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
 	"github.com/khulnasoft/tracker/signatures/signaturestest"
 	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/trace"
@@ -30,7 +31,7 @@ func TestK8SServiceAccountToken(t *testing.T) {
 							ArgMeta: trace.ArgMeta{
 								Name: "flags",
 							},
-							Value: interface{}("O_RDONLY"),
+							Value: buildFlagArgValue(parsers.O_RDONLY),
 						},
 						{
 							ArgMeta: trace.ArgMeta{
@@ -52,7 +53,7 @@ func TestK8SServiceAccountToken(t *testing.T) {
 								ArgMeta: trace.ArgMeta{
 									Name: "flags",
 								},
-								Value: interface{}("O_RDONLY"),
+								Value: buildFlagArgValue(parsers.O_RDONLY),
 							},
 							{
 								ArgMeta: trace.ArgMeta{
@@ -91,7 +92,7 @@ func TestK8SServiceAccountToken(t *testing.T) {
 							ArgMeta: trace.ArgMeta{
 								Name: "flags",
 							},
-							Value: interface{}("O_WRONLY"),
+							Value: buildFlagArgValue(parsers.O_WRONLY),
 						},
 						{
 							ArgMeta: trace.ArgMeta{
@@ -115,7 +116,7 @@ func TestK8SServiceAccountToken(t *testing.T) {
 							ArgMeta: trace.ArgMeta{
 								Name: "flags",
 							},
-							Value: interface{}("O_RDONLY"),
+							Value: buildFlagArgValue(parsers.O_RDONLY),
 						},
 						{
 							ArgMeta: trace.ArgMeta{
@@ -139,7 +140,7 @@ func TestK8SServiceAccountToken(t *testing.T) {
 							ArgMeta: trace.ArgMeta{
 								Name: "flags",
 							},
-							Value: interface{}("O_RDONLY"),
+							Value: buildFlagArgValue(parsers.O_RDONLY),
 						},
 						{
 							ArgMeta: trace.ArgMeta{

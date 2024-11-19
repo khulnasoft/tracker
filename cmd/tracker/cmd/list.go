@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/khulnasoft/tracker/pkg/cmd"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
+	"github.com/khulnasoft/tracker/pkg/cmd/initialize/sigs"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/signatures/signature"
@@ -41,7 +41,7 @@ var listCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		sigs, _, err := signature.Find(
+		signatures, _, err := signature.Find(
 			compile.TargetRego,
 			false,
 			sigsDir,
@@ -53,7 +53,7 @@ var listCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		initialize.CreateEventsFromSignatures(events.StartSignatureID, sigs)
+		sigs.CreateEventsFromSignatures(events.StartSignatureID, signatures)
 
 		includeSigs := true
 		wideOutput := c.Flags().Lookup("wide").Value.String() == "true"

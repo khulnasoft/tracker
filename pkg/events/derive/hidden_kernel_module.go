@@ -29,6 +29,7 @@ var (
 	newModuleOnlyMap         *bpf.BPFMap
 	recentDeletedModulesMap  *bpf.BPFMap
 	wakeupChannel            = make(chan ScanRequest)
+	isInitialized            = false
 )
 
 const (
@@ -53,6 +54,11 @@ func HiddenKernelModule() DeriveFunction {
 
 func deriveHiddenKernelModulesArgs() multiDeriveArgsFunction {
 	return func(event trace.Event) ([][]interface{}, []error) {
+		if !isInitialized {
+			logger.Debugw("hidden kernel module derive logic: not initialized yet... skipping")
+			return nil, nil
+		}
+
 		address, err := parse.ArgVal[uint64](event.Args, "address")
 		if err != nil {
 			return nil, []error{err}
@@ -115,7 +121,12 @@ func InitHiddenKernelModules(modsMap *bpf.BPFMap, newModMap *bpf.BPFMap, deleted
 	}
 
 	eventsFromHistoryScan, err = lru.New[*trace.Event, struct{}](50) // If there are more hidden modules found in history scan, it'll report only the size of the LRU
-	return err
+	if err != nil {
+		return err
+	}
+
+	isInitialized = true
+	return nil
 }
 
 // handleHistoryScanFinished handles the case where the history scan finished
@@ -166,15 +177,17 @@ func extractFromEvent(args []trace.Argument, address uint64) []interface{} {
 	}
 
 	// Parse module srcversion if possible
-	var srcversion string
+	srcversion := ""
 	srcversionBytes, err := parse.ArgVal[[]byte](args, "srcversion")
 	if err != nil {
-		srcversion = ""
 		// Don't fail hard, submit it without a srcversion!
 		logger.Debugw("Failed extracting hidden module srcversion")
 	} else {
 		// Remove the trailing terminating characters
-		srcversion = string(srcversionBytes[:bytes.IndexByte(srcversionBytes[:], 0)])
+		index := bytes.IndexByte(srcversionBytes[:], 0)
+		if index > 0 {
+			srcversion = string(srcversionBytes[:index])
+		}
 	}
 
 	addrHex := fmt.Sprintf("0x%x", address)

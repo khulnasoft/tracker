@@ -4,7 +4,7 @@ By default, Tracker is emitting events to stdout. Users can then configure loggi
 
 This tutorial will showcase how to install and configure Promtail, Loki, Grafana and Prometheus to then access Tracker logs from the cluster in Grafana.
 
-If you prefer the video tutorial, check out the tutorial below on the Aqua Open Source YouTube channel:
+If you prefer the video tutorial, check out the tutorial below on the KhulnaSoft Open Source YouTube channel:
 
  Grafana Loki to access Tracker logs 
   [![Watch the video](../images/lokitut.png)](https://youtu.be/mMC9-yzbgpE?si=6C0emOEJJ5K4ACqB)
@@ -33,7 +33,7 @@ Thus, we will install Tracker inside our cluster through the Tracker Helm Chart.
 Add the Tracker Helm Chart:
 
 ```console
-helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
+helm repo add aqua https://khulnasoft.github.io/helm-charts/
 ```
 
 Update the repository list on Helm:
@@ -45,7 +45,7 @@ helm repo update
 Install the Tracker Helm Chart inside your Kubernetes cluster:
 
 ```console
-helm install tracker khulnasoft/tracker \
+helm install tracker aqua/tracker \
         --namespace tracker-system --create-namespace \
         --set hostPID=true
 ```

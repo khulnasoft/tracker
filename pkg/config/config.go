@@ -7,7 +7,6 @@ import (
 	"github.com/khulnasoft/tracker/pkg/dnscache"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/events/queue"
-	"github.com/khulnasoft/tracker/pkg/policy"
 	"github.com/khulnasoft/tracker/pkg/proctree"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
 	"github.com/khulnasoft/tracker/pkg/utils/environment"
@@ -18,7 +17,7 @@ import (
 // NOTE: In the future, Tracker config will be changed at run time and will require
 // proper management.
 type Config struct {
-	InitialPolicies     []*policy.Policy
+	InitialPolicies     []interface{} // due to circular dependency, policy.Policy cannot be used here
 	Capture             *CaptureConfig
 	Capabilities        *CapabilitiesConfig
 	Output              *OutputConfig
@@ -166,7 +165,6 @@ func (c CalcHashesOption) String() string {
 type OutputConfig struct {
 	StackAddresses bool
 	ExecEnv        bool
-	RelativeTime   bool
 	CalcHashes     CalcHashesOption
 
 	ParseArguments    bool
@@ -187,5 +185,4 @@ type PrinterConfig struct {
 	OutPath       string
 	OutFile       io.WriteCloser
 	ContainerMode ContainerMode
-	RelativeTS    bool
 }

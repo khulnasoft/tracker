@@ -4,4 +4,4 @@ In this section you can find step-by-step guides that help you accomplish specif
 
 👈 Please use the side-navigation on the left in order to browse the different topics.
 
-If there are any specific tutorials that you would like to see please let us know on the [Aqua Open Source Slack](https://slack.khulnasoft.com/).
+If there are any specific tutorials that you would like to see please let us know on the [KhulnaSoft Open Source Slack](https://slack.khulnasoft.com/).

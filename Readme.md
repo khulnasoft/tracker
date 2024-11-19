@@ -37,9 +37,9 @@ For a complete walkthrough please see the [Docker getting started guide][docker-
 ### On Kubernetes
 
 ```shell
-helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
+helm repo add aqua https://khulnasoft.github.io/helm-charts/
 helm repo update
-helm install tracker khulnasoft/tracker --namespace tracker --create-namespace
+helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```
 
 ```shell

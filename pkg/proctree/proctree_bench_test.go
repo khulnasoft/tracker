@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"sync"
 	"testing"
-
-	trackertime "github.com/khulnasoft/tracker/pkg/time"
 )
 
 func BenchmarkProcessTree(b *testing.B) {
@@ -21,8 +19,7 @@ func BenchmarkProcessTree(b *testing.B) {
 		ProcfsQuerying:       false,
 	}
 
-	timeNormalizer := trackertime.NewRelativeTimeNormalizer(0)
-	pt, err := NewProcessTree(ctx, config, timeNormalizer)
+	pt, err := NewProcessTree(ctx, config)
 	if err != nil {
 		b.Fatalf("failed to create ProcessTree: %v", err)
 	}

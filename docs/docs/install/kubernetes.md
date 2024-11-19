@@ -32,9 +32,9 @@ kube-system   storage-provisioner                1/1     Running   0          15
 The provided Helm chart will install Tracker as a DaemonSet so that it's tracing all the nodes in the cluster.
 
 ```console
-helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
+helm repo add aqua https://khulnasoft.github.io/helm-charts/
 helm repo update
-helm install tracker khulnasoft/tracker --namespace tracker --create-namespace
+helm install tracker aqua/tracker --namespace tracker --create-namespace
 ```
 
 <details>

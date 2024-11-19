@@ -12,6 +12,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
@@ -109,7 +110,7 @@ func (t *Tracker) handleFileCaptures(ctx context.Context) {
 					continue
 				}
 				// note: size of buffer will determine maximum extracted file size! (as writes from kernel are immediate)
-				mprotectMeta.Ts = uint64(t.timeNormalizer.NormalizeTime(int(mprotectMeta.Ts)))
+				mprotectMeta.Ts = time.BootToEpochNS(uint64(mprotectMeta.Ts))
 				filename = fmt.Sprintf("bin.pid-%d.ts-%d", mprotectMeta.Pid, mprotectMeta.Ts)
 			} else if meta.BinType == bufferdecoder.SendKernelModule {
 				err = metaBuffDecoder.DecodeKernelModuleMeta(&kernelModuleMeta)

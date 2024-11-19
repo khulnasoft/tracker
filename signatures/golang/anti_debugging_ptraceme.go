@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
 	"github.com/khulnasoft/tracker/signatures/helpers"
 	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/protocol"
@@ -11,33 +12,31 @@ import (
 
 type AntiDebuggingPtraceme struct {
 	cb            detect.SignatureHandler
-	ptraceTraceMe string
-}
-
-var antiDebuggingPtracemeMetada = detect.SignatureMetadata{
-	ID:          "TRC-102",
-	Version:     "1",
-	Name:        "Anti-Debugging detected",
-	EventName:   "anti_debugging",
-	Description: "A process used anti-debugging techniques to block a debugger. Malware use anti-debugging to stay invisible and inhibit analysis of their behavior.",
-	Properties: map[string]interface{}{
-		"Severity":             1,
-		"Category":             "defense-evasion",
-		"Technique":            "Debugger Evasion",
-		"Kubernetes_Technique": "",
-		"id":                   "attack-pattern--e4dc8c01-417f-458d-9ee0-bb0617c1b391",
-		"external_id":          "T1622",
-	},
+	ptraceTraceMe int
 }
 
 func (sig *AntiDebuggingPtraceme) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	sig.ptraceTraceMe = "PTRACE_TRACEME"
+	sig.ptraceTraceMe = int(parsers.PTRACE_TRACEME.Value())
 	return nil
 }
 
 func (sig *AntiDebuggingPtraceme) GetMetadata() (detect.SignatureMetadata, error) {
-	return antiDebuggingPtracemeMetada, nil
+	return detect.SignatureMetadata{
+		ID:          "TRC-102",
+		Version:     "1",
+		Name:        "Anti-Debugging detected",
+		EventName:   "anti_debugging",
+		Description: "A process used anti-debugging techniques to block a debugger. Malware use anti-debugging to stay invisible and inhibit analysis of their behavior.",
+		Properties: map[string]interface{}{
+			"Severity":             1,
+			"Category":             "defense-evasion",
+			"Technique":            "Debugger Evasion",
+			"Kubernetes_Technique": "",
+			"id":                   "attack-pattern--e4dc8c01-417f-458d-9ee0-bb0617c1b391",
+			"external_id":          "T1622",
+		},
+	}, nil
 }
 
 func (sig *AntiDebuggingPtraceme) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
@@ -54,7 +53,7 @@ func (sig *AntiDebuggingPtraceme) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "ptrace":
-		requestArg, err := helpers.GetTrackerStringArgumentByName(eventObj, "request")
+		requestArg, err := helpers.GetTrackerIntArgumentByName(eventObj, "request")
 		if err != nil {
 			return err
 		}

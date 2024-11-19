@@ -10,6 +10,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/cmd/flags"
 	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
 	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
+	"github.com/khulnasoft/tracker/pkg/cmd/initialize/sigs"
 	"github.com/khulnasoft/tracker/pkg/cmd/printer"
 	"github.com/khulnasoft/tracker/pkg/config"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
@@ -56,7 +57,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 
 	// Signature directory command line flags
 
-	sigs, dataSources, err := signature.Find(
+	signatures, dataSources, err := signature.Find(
 		rego.RuntimeTarget,
 		rego.PartialEval,
 		viper.GetStringSlice("signatures-dir"),
@@ -67,7 +68,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 		return runner, err
 	}
 
-	sigNameToEventId := initialize.CreateEventsFromSignatures(events.StartSignatureID, sigs)
+	sigNameToEventId := sigs.CreateEventsFromSignatures(events.StartSignatureID, signatures)
 
 	// Initialize a tracker config structure
 
@@ -208,7 +209,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	// Try to get policies from kubernetes CRD, policy files and CLI in that order
 
 	var k8sPolicies []v1beta1.PolicyInterface
-	var policies []*policy.Policy
+	var initialPolicies []*policy.Policy
 
 	k8sClient, err := k8s.New()
 	if err == nil {
@@ -219,19 +220,23 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	}
 	if len(k8sPolicies) > 0 {
 		logger.Debugw("using policies from kubernetes crd")
-		policies, err = createPoliciesFromK8SPolicy(k8sPolicies)
+		initialPolicies, err = createPoliciesFromK8SPolicy(k8sPolicies)
 	} else if len(policyFlags) > 0 {
 		logger.Debugw("using policies from --policy flag")
-		policies, err = createPoliciesFromPolicyFiles(policyFlags)
+		initialPolicies, err = createPoliciesFromPolicyFiles(policyFlags)
 	} else {
 		logger.Debugw("using policies from --scope and --events flag")
-		policies, err = createPoliciesFromCLIFlags(scopeFlags, eventFlags)
+		initialPolicies, err = createPoliciesFromCLIFlags(scopeFlags, eventFlags)
 	}
 	if err != nil {
 		return runner, err
 	}
 
-	cfg.InitialPolicies = policies
+	ps := make([]interface{}, 0, len(initialPolicies))
+	for _, p := range initialPolicies {
+		ps = append(ps, p)
+	}
+	cfg.InitialPolicies = ps
 
 	// Output command line flags
 
@@ -249,7 +254,7 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	// Create printer
 
 	containerFilterEnabled := func() bool {
-		for _, p := range cfg.InitialPolicies {
+		for _, p := range initialPolicies {
 			if p.ContainerFilterEnabled() {
 				return true
 			}
@@ -327,13 +332,10 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	runner.Printer = p
 	runner.InstallPath = trackerInstallPath
 
-	// parse arguments must be enabled if the rule engine is part of the pipeline
-	runner.TrackerConfig.Output.ParseArguments = true
-
 	runner.TrackerConfig.EngineConfig = engine.Config{
 		Enabled:          true,
 		SigNameToEventID: sigNameToEventId,
-		Signatures:       sigs,
+		Signatures:       signatures,
 		// This used to be a flag, we have removed the flag from this binary to test
 		// if users do use it or not.
 		SignatureBufferSize: 1000,

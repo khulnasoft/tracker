@@ -101,8 +101,6 @@ func setOption(cfg *config.OutputConfig, option string, newBinary bool) error {
 		cfg.StackAddresses = true
 	case "exec-env":
 		cfg.ExecEnv = true
-	case "relative-time":
-		cfg.RelativeTime = true
 	case "parse-arguments":
 		cfg.ParseArguments = true
 	case "parse-arguments-fds":
@@ -175,10 +173,9 @@ func getPrinterConfigs(printerMap map[string]string, trackerConfig *config.Outpu
 		}
 
 		printerConfigs = append(printerConfigs, config.PrinterConfig{
-			Kind:       printerKind,
-			OutPath:    outPath,
-			OutFile:    outFile,
-			RelativeTS: trackerConfig.RelativeTime,
+			Kind:    printerKind,
+			OutPath: outPath,
+			OutFile: outFile,
 		})
 	}
 

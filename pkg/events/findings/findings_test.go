@@ -1,4 +1,4 @@
-package ebpf
+package findings_test
 
 import (
 	"sort"
@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/findings"
 	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/protocol"
 	"github.com/khulnasoft/tracker/types/trace"
@@ -100,7 +101,7 @@ func TestFindingToEvent(t *testing.T) {
 	}
 
 	finding := createFakeEventAndFinding()
-	got, err := FindingToEvent(&finding)
+	got, err := findings.FindingToEvent(&finding)
 
 	assert.NoError(t, err)
 

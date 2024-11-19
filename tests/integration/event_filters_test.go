@@ -1603,7 +1603,7 @@ func Test_EventFilters(t *testing.T) {
 						expectEvent(anyHost, "fakeprog1", testutils.CPUForTests, anyPID, 0, events.Openat, orPolNames("comm-event-data-64"), orPolIDs(64),
 							expectArg("dirfd", int32(0)),
 							expectArg("flags", int32(0)),
-							expectArg("mode", uint32(0)),
+							expectArg("mode", uint16(0)),
 						),
 					},
 					[]string{},
@@ -1615,7 +1615,7 @@ func Test_EventFilters(t *testing.T) {
 					[]trace.Event{
 						expectEvent(anyHost, "fakeprog2", testutils.CPUForTests, anyPID, 0, events.Open, orPolNames("comm-event-data-42"), orPolIDs(42),
 							expectArg("flags", int32(0)),
-							expectArg("mode", uint32(0)),
+							expectArg("mode", uint16(0)),
 						),
 					},
 					[]string{},
@@ -1683,7 +1683,7 @@ func Test_EventFilters(t *testing.T) {
 						expectEvent(anyHost, "fakeprog1", testutils.CPUForTests, anyPID, 0, events.Openat, orPolNames("comm-event-retval-64"), orPolIDs(64),
 							expectArg("dirfd", int32(0)),
 							expectArg("flags", int32(0)),
-							expectArg("mode", uint32(0)),
+							expectArg("mode", uint16(0)),
 						),
 					},
 					[]string{},
@@ -1714,7 +1714,12 @@ func Test_EventFilters(t *testing.T) {
 					BypassCaps: true,
 				},
 			}
-			config.InitialPolicies = testutils.NewPolicies(tc.policyFiles)
+			ps := testutils.NewPolicies(tc.policyFiles)
+			initialPolicies := make([]interface{}, 0, len(ps))
+			for _, p := range ps {
+				initialPolicies = append(initialPolicies, p)
+			}
+			config.InitialPolicies = initialPolicies
 
 			ctx, cancel := context.WithCancel(context.Background())
 
