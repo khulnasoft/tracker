@@ -16,13 +16,13 @@ To install Tracker using Helm, follow these steps:
 Add the KhulnaSoft Security Helm repository:
 
 ```console
-helm repo add aqua https://khulnasoft.github.io/helm-charts/
+helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/
 ```
 
 Install Tracker with the default settings:
 
 ```console
-helm install tracker aqua/tracker \
+helm install tracker khulnasoft/tracker \
     --namespace tracker-system --create-namespace \
     --set hostPID=true
 ```

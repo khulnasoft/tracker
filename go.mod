@@ -12,7 +12,7 @@ require (
 	github.com/grafana/pyroscope-go v1.1.1
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hashicorp/golang-lru/v2 v2.0.7
-	github.com/khulnasoft-lab/libbpfgo v1.0.0
+	github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.0
 	github.com/khulnasoft/tracker/api v0.0.0-20240905143127-425c00369790
 	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240905143127-425c00369790
 	github.com/khulnasoft/tracker/types v0.0.0-20240905143127-425c00369790
@@ -70,6 +70,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
+	github.com/khulnasoft-lab/libbpfgo/helpers v0.0.0-20240611152355-f6b0954e7163 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

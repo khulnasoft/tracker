@@ -34,9 +34,9 @@ jobs:
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
         with:
           python-version: 3.12.3
-      - name: Set up aqua charts
+      - name: Set up khulnasoft charts
         run: |
-          helm repo add aqua https://khulnasoft.github.io/helm-charts
+          helm repo add khulnasoft https://khulnasoft.github.io/helm-charts
       - name: Setup Chart Linting
         id: lint
         uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # v2.6.1
@@ -78,5 +78,5 @@ jobs:
           destination_repo: "${{ env.GH_OWNER }}/${{ env.HELM_REP }}"
           destination_folder: "."
           destination_branch: "gh-pages"
-          user_email: aqua-bot@users.noreply.github.com
-          user_name: "aqua-bot"
+          user_email: khulnasoft-bot@users.noreply.github.com
+          user_name: "khulnasoft-bot"
