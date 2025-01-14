@@ -8,14 +8,14 @@ import (
 	"time"
 	"unsafe"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/derive"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/pkg/capabilities"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/derive"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
 )
 
 var expectedSyscallTableInit = false

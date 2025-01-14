@@ -6,22 +6,22 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/khulnasoft/tracker/pkg/cmd"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/cmd/flags/server"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize/sigs"
-	"github.com/khulnasoft/tracker/pkg/cmd/printer"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/k8s"
-	"github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/pkg/cmd"
+	"github.com/khulnasof/tracker/pkg/cmd/flags"
+	"github.com/khulnasof/tracker/pkg/cmd/flags/server"
+	"github.com/khulnasof/tracker/pkg/cmd/initialize"
+	"github.com/khulnasof/tracker/pkg/cmd/initialize/sigs"
+	"github.com/khulnasof/tracker/pkg/cmd/printer"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/k8s"
+	"github.com/khulnasof/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/policy"
+	"github.com/khulnasof/tracker/pkg/signatures/engine"
+	"github.com/khulnasof/tracker/pkg/signatures/signature"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
 )
 
 func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
@@ -43,27 +43,9 @@ func GetTrackerRunner(c *cobra.Command, version string) (cmd.Runner, error) {
 	}
 	logger.Init(logCfg)
 
-	// Rego command line flags
-
-	regoFlags, err := GetFlagsFromViper("rego")
-	if err != nil {
-		return runner, err
-	}
-
-	rego, err := flags.PrepareRego(regoFlags)
-	if err != nil {
-		return runner, err
-	}
-
 	// Signature directory command line flags
 
-	signatures, dataSources, err := signature.Find(
-		rego.RuntimeTarget,
-		rego.PartialEval,
-		viper.GetStringSlice("signatures-dir"),
-		nil,
-		rego.AIO,
-	)
+	signatures, dataSources, err := signature.Find(viper.GetStringSlice("signatures-dir"), nil)
 	if err != nil {
 		return runner, err
 	}

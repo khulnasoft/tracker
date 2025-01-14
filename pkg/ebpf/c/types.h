@@ -124,6 +124,7 @@ enum event_id_e
     PROCESS_EXECUTE_FAILED,
     SECURITY_PATH_NOTIFY,
     SET_FS_PWD,
+    SUSPICIOUS_SYSCALL_SOURCE,
     HIDDEN_KERNEL_MODULE_SEEKER,
     MODULE_LOAD,
     MODULE_FREE,
@@ -285,6 +286,15 @@ typedef struct path_filter {
     char path[MAX_PATH_PREF_SIZE];
 } path_filter_t;
 
+typedef struct data_filter_key {
+    char str[MAX_DATA_FILTER_STR_SIZE];
+} data_filter_key_t;
+
+typedef struct data_filter_lpm_key {
+    u32 prefix_len;
+    char str[MAX_DATA_FILTER_STR_SIZE];
+} data_filter_lpm_key_t;
+
 typedef struct string_filter {
     char str[MAX_STR_FILTER_SIZE];
 } string_filter_t;
@@ -292,6 +302,12 @@ typedef struct string_filter {
 typedef struct ksym_name {
     char str[MAX_KSYM_NAME_SIZE];
 } ksym_name_t;
+
+typedef struct policy_key {
+    u16 version;
+    u16 __pad;
+    u32 event_id;
+} policy_key_t;
 
 typedef struct equality {
     // bitmap indicating which policies have a filter that uses the '=' operator (0 means '!=')
@@ -330,6 +346,7 @@ typedef struct policies_config {
     u64 bin_path_filter_match_if_key_missing;
     // bitmap with policies that have at least one filter enabled
     u64 enabled_policies;
+
     // global min max
     u64 uid_max;
     u64 uid_min;
@@ -346,9 +363,24 @@ typedef struct config_entry {
     policies_config_t policies_config;
 } config_entry_t;
 
+typedef struct string_filter_config {
+    u64 prefix_enabled;
+    u64 suffix_enabled;
+    u64 exact_enabled;
+    u64 prefix_match_if_key_missing;
+    u64 suffix_match_if_key_missing;
+    u64 exact_match_if_key_missing;
+} string_filter_config_t;
+
+typedef struct data_filter_config {
+    string_filter_config_t string;
+    // other types of filters
+} data_filter_config_t;
+
 typedef struct event_config {
     u64 submit_for_policies;
-    u64 param_types;
+    u64 field_types;
+    data_filter_config_t data_filter;
 } event_config_t;
 
 enum capture_options_e
@@ -368,7 +400,8 @@ typedef struct syscall_table_entry {
 typedef struct args_buffer {
     u8 argnum;
     char args[ARGS_BUF_SIZE];
-    u32 offset;
+    u16 offset;
+    u16 args_offset[MAX_ARGS];
 } args_buffer_t;
 
 typedef struct event_data {
@@ -421,6 +454,9 @@ enum bpf_log_id
 
     // hidden kernel module functions
     BPF_LOG_ID_HID_KER_MOD,
+
+    // find vma not supported
+    BPF_LOG_FIND_VMA_UNSUPPORTED,
 };
 
 typedef struct bpf_log {
@@ -564,5 +600,13 @@ struct sys_exit_tracepoint_args {
     int __syscall_nr;
     long ret;
 };
+
+// key for the syscall source map
+typedef struct {
+    u32 syscall;
+    u32 tgid;
+    u64 tgid_start_time;
+    u64 vma_addr;
+} syscall_source_key_t;
 
 #endif

@@ -105,10 +105,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 // The minimum time of delay before sending events forward.

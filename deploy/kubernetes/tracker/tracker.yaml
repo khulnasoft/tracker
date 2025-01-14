@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   name: tracker
   labels:
-    helm.sh/chart: tracker-0.22.4
+    helm.sh/chart: tracker-0.22.5
     app.kubernetes.io/name: tracker
     app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.22.4"
+    app.kubernetes.io/version: "0.22.5"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: tracker/templates/serviceaccount.yaml
@@ -17,10 +17,10 @@ kind: ServiceAccount
 metadata:
   name: tracker-operator
   labels:
-    helm.sh/chart: tracker-0.22.4
+    helm.sh/chart: tracker-0.22.5
     app.kubernetes.io/name: tracker
     app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.22.4"
+    app.kubernetes.io/version: "0.22.5"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: tracker/templates/tracker-config.yaml
@@ -29,10 +29,10 @@ kind: ConfigMap
 metadata:
   name: tracker-config
   labels:
-    helm.sh/chart: tracker-0.22.4
+    helm.sh/chart: tracker-0.22.5
     app.kubernetes.io/name: tracker
     app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.22.4"
+    app.kubernetes.io/version: "0.22.5"
     app.kubernetes.io/managed-by: Helm
 data:
   config.yaml: |-
@@ -117,10 +117,10 @@ kind: DaemonSet
 metadata:
   name: tracker
   labels:
-    helm.sh/chart: tracker-0.22.4
+    helm.sh/chart: tracker-0.22.5
     app.kubernetes.io/name: tracker
     app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.22.4"
+    app.kubernetes.io/version: "0.22.5"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -139,7 +139,7 @@ spec:
         {}
       containers:
         - name: tracker
-          image: "docker.io/khulnasoft/tracker:0.22.4"
+          image: "docker.io/khulnasoft/tracker:0.22.5"
           imagePullPolicy: IfNotPresent
           command:
             - /tracker/tracker
@@ -217,10 +217,10 @@ kind: Deployment
 metadata:
   name: tracker-operator
   labels:
-    helm.sh/chart: tracker-0.22.4
+    helm.sh/chart: tracker-0.22.5
     app.kubernetes.io/name: tracker
     app.kubernetes.io/instance: tracker
-    app.kubernetes.io/version: "0.22.4"
+    app.kubernetes.io/version: "0.22.5"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -237,7 +237,7 @@ spec:
         {}
       containers:
       - name: tracker-operator
-        image: "docker.io/khulnasoft/tracker:0.22.4"
+        image: "docker.io/khulnasoft/tracker:0.22.5"
         imagePullPolicy: IfNotPresent
         command:
           - /tracker/tracker-operator

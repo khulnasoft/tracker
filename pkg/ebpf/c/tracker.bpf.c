@@ -89,28 +89,24 @@ int sys_enter_init(struct bpf_raw_tracepoint_args *ctx)
     syscall_data_t *sys = &(task_info->syscall_data);
     sys->id = ctx->args[1];
 
-    if (get_kconfig(ARCH_HAS_SYSCALL_WRAPPER)) {
-        struct pt_regs *regs = (struct pt_regs *) ctx->args[0];
+    struct pt_regs *regs = (struct pt_regs *) ctx->args[0];
 
-        if (is_x86_compat(task)) {
+    if (is_x86_compat(task)) {
 #if defined(bpf_target_x86)
-            sys->args.args[0] = BPF_CORE_READ(regs, bx);
-            sys->args.args[1] = BPF_CORE_READ(regs, cx);
-            sys->args.args[2] = BPF_CORE_READ(regs, dx);
-            sys->args.args[3] = BPF_CORE_READ(regs, si);
-            sys->args.args[4] = BPF_CORE_READ(regs, di);
-            sys->args.args[5] = BPF_CORE_READ(regs, bp);
+        sys->args.args[0] = BPF_CORE_READ(regs, bx);
+        sys->args.args[1] = BPF_CORE_READ(regs, cx);
+        sys->args.args[2] = BPF_CORE_READ(regs, dx);
+        sys->args.args[3] = BPF_CORE_READ(regs, si);
+        sys->args.args[4] = BPF_CORE_READ(regs, di);
+        sys->args.args[5] = BPF_CORE_READ(regs, bp);
 #endif // bpf_target_x86
-        } else {
-            sys->args.args[0] = PT_REGS_PARM1_CORE_SYSCALL(regs);
-            sys->args.args[1] = PT_REGS_PARM2_CORE_SYSCALL(regs);
-            sys->args.args[2] = PT_REGS_PARM3_CORE_SYSCALL(regs);
-            sys->args.args[3] = PT_REGS_PARM4_CORE_SYSCALL(regs);
-            sys->args.args[4] = PT_REGS_PARM5_CORE_SYSCALL(regs);
-            sys->args.args[5] = PT_REGS_PARM6_CORE_SYSCALL(regs);
-        }
     } else {
-        bpf_probe_read(sys->args.args, sizeof(6 * sizeof(u64)), (void *) ctx->args);
+        sys->args.args[0] = PT_REGS_PARM1_CORE_SYSCALL(regs);
+        sys->args.args[1] = PT_REGS_PARM2_CORE_SYSCALL(regs);
+        sys->args.args[2] = PT_REGS_PARM3_CORE_SYSCALL(regs);
+        sys->args.args[3] = PT_REGS_PARM4_CORE_SYSCALL(regs);
+        sys->args.args[4] = PT_REGS_PARM5_CORE_SYSCALL(regs);
+        sys->args.args[5] = PT_REGS_PARM6_CORE_SYSCALL(regs);
     }
 
     if (is_compat(task)) {
@@ -726,10 +722,12 @@ int tracepoint__sched__sched_process_fork(struct bpf_raw_tracepoint_args *ctx)
     return 0;
 }
 
-// number of iterations - value that the verifier was seen to cope with - the higher, the better
-#define MAX_NUM_MODULES         440
-#define HISTORY_SCAN_FAILURE    0
-#define HISTORY_SCAN_SUCCESSFUL 1
+#define MAX_NUM_MODULES          440
+#define MAX_MODULES_MAP_ENTRIES  2 * MAX_NUM_MODULES
+#define MOD_TREE_LOOP_ITERATIONS 240
+#define MOD_TREE_LOOP_DEPTH      14
+#define HISTORY_SCAN_FAILURE     0
+#define HISTORY_SCAN_SUCCESSFUL  1
 
 enum
 {
@@ -747,7 +745,7 @@ enum
 
 struct modules_map {
     __uint(type, BPF_MAP_TYPE_HASH);
-    __uint(max_entries, MAX_NUM_MODULES);
+    __uint(max_entries, MAX_MODULES_MAP_ENTRIES);
     __type(key, u64);
     __type(value, kernel_module_t);
 } modules_map SEC(".maps");
@@ -762,6 +760,21 @@ struct new_module_map {
 } new_module_map SEC(".maps");
 
 typedef struct new_module_map new_module_map_t;
+
+typedef struct module_context_args {
+    struct rb_node *curr;
+    int iteration_num;
+    int idx;
+} module_context_args_t;
+
+struct module_context_map {
+    __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+    __uint(max_entries, 1);
+    __type(key, u32);
+    __type(value, module_context_args_t);
+} module_context_map SEC(".maps");
+
+typedef struct module_context_map module_context_map_t;
 
 // We only care for modules that got deleted or inserted between our scan and if
 // we detected something suspicious. Since it's a very small time frame, it's
@@ -784,11 +797,13 @@ typedef struct recent_deleted_module_map recent_deleted_module_map_t;
 u64 start_scan_time_init_shown_mods = 0;
 u64 last_module_insert_time = 0;
 bool hidden_old_mod_scan_done = false;
-static const int HID_MOD_RACE_CONDITION = -1;
-static const int HID_MOD_UNCOMPLETED_ITERATIONS = -2;
-static const int HID_MOD_MEM_ZEROED = -3;
-static const int MOD_HIDDEN = 1;
-static const int MOD_NOT_HIDDEN = 0;
+
+#define HID_MOD_RACE_CONDITION         -1
+#define HID_MOD_UNCOMPLETED_ITERATIONS -2
+#define HID_MOD_COMPLETED_ITERATIONS   0
+#define HID_MOD_MEM_ZEROED             -3
+#define MOD_HIDDEN                     1
+#define MOD_NOT_HIDDEN                 0
 
 void __always_inline lkm_seeker_send_to_userspace(struct module *mod, u32 *flags, program_data_t *p)
 {
@@ -841,7 +856,6 @@ statfunc int init_shown_modules()
         if (&pos->list == head) {
             return 0;
         }
-
         bpf_map_update_elem(&modules_map, &pos, &ker_mod, BPF_ANY);
     }
 
@@ -933,15 +947,34 @@ statfunc struct latch_tree_node *__lt_from_rb(struct rb_node *node, int idx)
     return container_of(node, struct latch_tree_node, node[idx]);
 }
 
-statfunc int walk_mod_tree(program_data_t *p, struct rb_node *root, int idx)
+struct mod_tree_root {
+    struct latch_tree_root root;
+};
+
+SEC("uprobe/lkm_seeker_modtree_loop_tail")
+int lkm_seeker_modtree_loop(struct pt_regs *ctx)
 {
+    program_data_t p = {};
+    if (!init_tailcall_program_data(&p, ctx))
+        return -1;
+
     struct latch_tree_node *ltn;
     struct module *mod;
-    struct rb_node *curr = root;
     u32 flags = MOD_TREE;
 
+    int key = 0;
+    module_context_args_t *module_ctx_args = bpf_map_lookup_elem(&module_context_map, &key);
+    if (module_ctx_args == NULL)
+        return -1;
+
+    struct rb_node *curr = module_ctx_args->curr;
+    int idx = module_ctx_args->idx;
+    int iteration_num = module_ctx_args->iteration_num;
+
+    int loop_result = HID_MOD_UNCOMPLETED_ITERATIONS;
+
 #pragma unroll
-    for (int i = 0; i < MAX_NUM_MODULES; i++) {
+    for (int i = 0; i < MOD_TREE_LOOP_ITERATIONS; i++) {
         if (curr != NULL) {
             rb_node_t rb_nod = {.node = curr};
             bpf_map_push_elem(&walk_mod_tree_queue, &rb_nod, BPF_EXIST);
@@ -950,7 +983,8 @@ statfunc int walk_mod_tree(program_data_t *p, struct rb_node *root, int idx)
         } else {
             rb_node_t rb_nod;
             if (bpf_map_pop_elem(&walk_mod_tree_queue, &rb_nod) != 0) {
-                return 0; // Finished iterating
+                loop_result = HID_MOD_COMPLETED_ITERATIONS;
+                break;
             } else {
                 curr = rb_nod.node;
                 ltn = __lt_from_rb(curr, idx);
@@ -958,9 +992,10 @@ statfunc int walk_mod_tree(program_data_t *p, struct rb_node *root, int idx)
 
                 int ret = is_hidden((u64) mod);
                 if (ret == MOD_HIDDEN) {
-                    lkm_seeker_send_to_userspace(mod, &flags, p);
+                    lkm_seeker_send_to_userspace(mod, &flags, &p);
                 } else if (ret == HID_MOD_RACE_CONDITION) {
-                    return ret;
+                    loop_result = HID_MOD_RACE_CONDITION;
+                    break;
                 }
 
                 /* We have visited the node and its left subtree.
@@ -970,12 +1005,27 @@ statfunc int walk_mod_tree(program_data_t *p, struct rb_node *root, int idx)
         }
     }
 
-    return HID_MOD_UNCOMPLETED_ITERATIONS;
-}
+    iteration_num++;
 
-struct mod_tree_root {
-    struct latch_tree_root root;
-};
+    if (loop_result == HID_MOD_COMPLETED_ITERATIONS) {
+        flags = HISTORY_SCAN_FINISHED;
+        lkm_seeker_send_to_userspace((struct module *) HISTORY_SCAN_SUCCESSFUL, &flags, &p);
+        bpf_tail_call(ctx, &prog_array, TAIL_HIDDEN_KERNEL_MODULE_PROC);
+    } else if (loop_result == HID_MOD_RACE_CONDITION || iteration_num == MOD_TREE_LOOP_DEPTH) {
+        flags = HISTORY_SCAN_FINISHED;
+        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, loop_result ^ iteration_num);
+        lkm_seeker_send_to_userspace((struct module *) HISTORY_SCAN_FAILURE, &flags, &p);
+        bpf_tail_call(ctx, &prog_array, TAIL_HIDDEN_KERNEL_MODULE_PROC);
+    }
+
+    // Update context args for the next recursive call
+    module_ctx_args->iteration_num = iteration_num;
+    module_ctx_args->curr = curr;
+
+    bpf_tail_call(ctx, &prog_array, TAIL_HIDDEN_KERNEL_MODULE_MODTREE_LOOP);
+
+    return -1;
+}
 
 statfunc int find_modules_from_mod_tree(program_data_t *p)
 {
@@ -989,9 +1039,16 @@ statfunc int find_modules_from_mod_tree(program_data_t *p)
         seq = BPF_CORE_READ(m_tree, root.seq.seqcount.sequence); // version >= v5.10
     }
 
-    struct rb_node *node = BPF_CORE_READ(m_tree, root.tree[seq & 1].rb_node);
+    int idx = seq & 1;
+    struct rb_node *root = BPF_CORE_READ(m_tree, root.tree[idx].rb_node);
+    module_context_args_t module_ctx_args = {.idx = idx, .iteration_num = 0, .curr = root};
 
-    return walk_mod_tree(p, node, seq & 1);
+    int key = 0;
+    bpf_map_update_elem(&module_context_map, &key, &module_ctx_args, BPF_ANY);
+
+    bpf_tail_call(p->ctx, &prog_array, TAIL_HIDDEN_KERNEL_MODULE_MODTREE_LOOP);
+
+    return -1;
 }
 
 static __always_inline u64 check_new_mods_only(program_data_t *p)
@@ -1221,19 +1278,9 @@ int lkm_seeker_mod_tree_tail(struct pt_regs *ctx)
 
     // This method is efficient only when the kernel is compiled with
     // CONFIG_MODULES_TREE_LOOKUP=y
-    int ret = find_modules_from_mod_tree(&p);
-    if (ret < 0) {
-        tracker_log(ctx, BPF_LOG_LVL_WARN, BPF_LOG_ID_HID_KER_MOD, ret);
-        lkm_seeker_send_to_userspace(
-            (struct module *) HISTORY_SCAN_FAILURE, &flags, &p); // Report failure of history scan
-        return -1;
-    }
-
-    // Report to userspace that the history scan finished successfully
-    lkm_seeker_send_to_userspace((struct module *) HISTORY_SCAN_SUCCESSFUL, &flags, &p);
+    find_modules_from_mod_tree(&p);
 
     bpf_tail_call(ctx, &prog_array, TAIL_HIDDEN_KERNEL_MODULE_PROC);
-
     return -1;
 }
 
@@ -1925,7 +1972,7 @@ send_bpf_perf_attach(program_data_t *p, struct file *bpf_prog_file, struct file 
     bpf_probe_read_kernel_str(
         &class_system, REQUIRED_SYSTEM_LENGTH, BPF_CORE_READ(tp_class, system));
     class_system[REQUIRED_SYSTEM_LENGTH - 1] = '\0';
-    if (has_prefix("syscalls", class_system, REQUIRED_SYSTEM_LENGTH)) {
+    if (strncmp("syscalls", class_system, REQUIRED_SYSTEM_LENGTH - 1) == 0) {
         is_syscall_tracepoint = true;
     }
 
@@ -2208,6 +2255,9 @@ int BPF_KPROBE(trace_security_file_open)
     save_to_submit_buf(&p.event->args_buf, &inode_nr, sizeof(unsigned long), 3);
     save_to_submit_buf(&p.event->args_buf, &ctime, sizeof(u64), 4);
     save_str_to_buf(&p.event->args_buf, syscall_pathname, 5);
+
+    if (!evaluate_data_filters(&p, 0))
+        return 0;
 
     return events_perf_submit(&p, 0);
 }
@@ -3140,7 +3190,7 @@ statfunc int capture_file_write(struct pt_regs *ctx, u32 event_id, bool is_buf)
     // otherwise the capture will overwrite itself.
     int pid = 0;
     void *path_buf = get_path_str_cached(file);
-    if (path_buf != NULL && has_prefix("/dev/null", (char *) path_buf, 10)) {
+    if (path_buf != NULL && strncmp("/dev/null", (char *) path_buf, 10) == 0) {
         pid = p.event->context.task.pid;
     }
 
@@ -3353,6 +3403,9 @@ statfunc int do_vfs_write_magic_return(struct pt_regs *ctx, bool is_buf)
     save_to_submit_buf(&(p.event->args_buf), &file_info.id.device, sizeof(dev_t), 2);
     save_to_submit_buf(&(p.event->args_buf), &file_info.id.inode, sizeof(unsigned long), 3);
 
+    if (!evaluate_data_filters(&p, 0))
+        return 0;
+
     // Submit magic_write event
     return events_perf_submit(&p, bytes_written);
 }
@@ -3549,6 +3602,9 @@ int BPF_KPROBE(trace_security_mmap_file)
     save_to_submit_buf(&p.event->args_buf, &ctime, sizeof(u64), 4);
     save_to_submit_buf(&p.event->args_buf, &prot, sizeof(unsigned long), 5);
     save_to_submit_buf(&p.event->args_buf, &mmap_flags, sizeof(unsigned long), 6);
+
+    if (!evaluate_data_filters(&p, 0))
+        return 0;
 
     return events_perf_submit(&p, 0);
 }
@@ -5184,6 +5240,84 @@ int BPF_KPROBE(trace_chmod_common)
     return events_perf_submit(&p, 0);
 }
 
+SEC("kprobe/suspicious_syscall_source")
+int BPF_KPROBE(suspicious_syscall_source)
+{
+    program_data_t p = {};
+    if (!init_program_data(&p, ctx, SUSPICIOUS_SYSCALL_SOURCE))
+        return 0;
+
+    if (!evaluate_scope_filters(&p))
+        return 0;
+
+    // Get instruction pointer
+    struct pt_regs *regs = ctx;
+    if (get_kconfig(ARCH_HAS_SYSCALL_WRAPPER))
+        regs = (struct pt_regs *) PT_REGS_PARM1(ctx);
+    u64 ip = PT_REGS_IP_CORE(regs);
+
+    // Find VMA which contains the instruction pointer
+    struct task_struct *task = (struct task_struct *) bpf_get_current_task();
+    if (unlikely(task == NULL))
+        return 0;
+    struct vm_area_struct *vma = find_vma(ctx, task, ip);
+    if (vma == NULL)
+        return 0;
+
+    // Get VMA type and make sure it's abnormal (stack/heap/anonymous VMA)
+    enum vma_type vma_type = get_vma_type(vma);
+    if (vma_type == VMA_OTHER)
+        return 0;
+
+    // Get syscall ID
+    u32 syscall = get_syscall_id_from_regs(regs);
+
+    // Build a key that identifies the combination of syscall,
+    // source VMA and process so we don't submit it multiple times
+    syscall_source_key_t key = {.syscall = syscall,
+                                .tgid = get_task_host_tgid(task),
+                                .tgid_start_time = get_task_start_time(get_leader_task(task)),
+                                .vma_addr = BPF_CORE_READ(vma, vm_start)};
+    bool val = true;
+
+    // Try updating the map with the requirement that this key does not exist yet
+    if ((int) bpf_map_update_elem(&syscall_source_map, &key, &val, BPF_NOEXIST) == -EEXIST)
+        // This key already exists, no need to submit the same syscall-vma-process combination again
+        return 0;
+
+    char *vma_type_str;
+
+    switch (vma_type) {
+        case VMA_STACK:
+            vma_type_str = "stack";
+            break;
+        case VMA_HEAP:
+            vma_type_str = "heap";
+            break;
+        case VMA_ANON:
+            vma_type_str = "anonymous";
+            break;
+        // shouldn't happen
+        default:
+            return 0;
+    }
+
+    unsigned long vma_start = BPF_CORE_READ(vma, vm_start);
+    unsigned long vma_size = BPF_CORE_READ(vma, vm_end) - vma_start;
+    unsigned long vma_flags = BPF_CORE_READ(vma, vm_flags);
+
+    save_to_submit_buf(&p.event->args_buf, &syscall, sizeof(syscall), 0);
+    save_to_submit_buf(&p.event->args_buf, &ip, sizeof(ip), 1);
+    save_str_to_buf(&p.event->args_buf, vma_type_str, 2);
+    save_to_submit_buf(&p.event->args_buf, &vma_start, sizeof(vma_start), 3);
+    save_to_submit_buf(&p.event->args_buf, &vma_size, sizeof(vma_size), 4);
+    save_to_submit_buf(&p.event->args_buf, &vma_flags, sizeof(vma_flags), 5);
+
+    events_perf_submit(&p, 0);
+
+    return 0;
+}
+
 // clang-format off
 
 // Network Packets (works from ~5.2 and beyond)
@@ -5435,7 +5569,23 @@ statfunc u32 cgroup_skb_submit(void *map, struct __sk_buff *ctx,
     neteventctx->eventctx.eventid = event_type;
 
     // Submit the event.
-    return bpf_perf_event_output(ctx, map, flags, neteventctx, sizeof_net_event_context_t());
+    long perf_ret = bpf_perf_event_output(ctx, map, flags, neteventctx, sizeof_net_event_context_t());
+
+#ifdef METRICS
+    if (map != &events)
+        return perf_ret;
+
+    // update event stats
+    event_stats_values_t *evt_stat = bpf_map_lookup_elem(&events_stats, &neteventctx->eventctx.eventid);
+    if (unlikely(evt_stat == NULL))
+        return perf_ret;
+
+    __sync_fetch_and_add(&evt_stat->attempts, 1);
+    if (perf_ret < 0)
+        __sync_fetch_and_add(&evt_stat->failures, 1);
+#endif
+
+    return perf_ret;
 }
 
 // Submit a network event.
@@ -6329,16 +6479,16 @@ statfunc int net_l7_is_http(struct __sk_buff *skb, u32 l7_off)
     }
 
     // check if HTTP response
-    if (has_prefix("HTTP/", http_min_str, 6)) {
+    if (strncmp("HTTP/", http_min_str, 5) == 0) {
         return proto_http_resp;
     }
 
     // check if HTTP request
-    if (has_prefix("GET ", http_min_str, 5) ||
-        has_prefix("POST ", http_min_str, 6) ||
-        has_prefix("PUT ", http_min_str, 5) ||
-        has_prefix("DELETE ", http_min_str, 8) ||
-        has_prefix("HEAD ", http_min_str, 6)) {
+    if (strncmp("GET ", http_min_str, 4) == 0 ||
+        strncmp("POST ", http_min_str, 5) == 0 ||
+        strncmp("PUT ", http_min_str, 4) == 0 ||
+        strncmp("DELETE ", http_min_str, 7) == 0 ||
+        strncmp("HEAD ", http_min_str, 5) == 0) {
         return proto_http_req;
     }
 
@@ -6901,7 +7051,7 @@ int tracepoint__exec_test(struct bpf_raw_tracepoint_args *ctx)
         return -1;
     struct file *file = get_file_ptr_from_bprm(bprm);
     void *file_path = get_path_str(__builtin_preserve_access_index(&file->f_path));
-    if (file_path == NULL || !has_prefix("/tmp/test", file_path, 9))
+    if (file_path == NULL || strncmp("/tmp/test", file_path, 9) != 0)
         return 0;
 
     // Submit all test events

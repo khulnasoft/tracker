@@ -11,17 +11,17 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/filehash"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/time"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/capabilities"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/containers"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/filehash"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/time"
+	"github.com/khulnasof/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 // processWriteEvent processes a write event by indexing the written file.

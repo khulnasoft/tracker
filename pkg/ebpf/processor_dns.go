@@ -3,9 +3,9 @@ package ebpf
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func (t *Tracker) populateDnsCache(event *trace.Event) error {

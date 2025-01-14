@@ -1,22 +1,24 @@
 package filters
 
 import (
+	"errors"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/filters/sets"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/filters/sets"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func TestDataFilterClone(t *testing.T) {
 	t.Parallel()
 
 	filter := NewDataFilter()
-	err := filter.Parse("read.data.fd", "=dataval", events.Core.NamesToIDs())
+	err := filter.Parse(events.Read, "fd", "=dataval")
 	require.NoError(t, err)
 
 	copy := filter.Clone()
@@ -26,6 +28,7 @@ func TestDataFilterClone(t *testing.T) {
 		StringFilter{},
 		sets.PrefixSet{},
 		sets.SuffixSet{},
+		KernelDataFilter{},
 	)
 	opt2 := cmp.FilterPath(
 		func(p cmp.Path) bool {
@@ -42,7 +45,7 @@ func TestDataFilterClone(t *testing.T) {
 	}
 
 	// ensure that changes to the copy do not affect the original
-	err = copy.Parse("read.data.buf", "=dataval", events.Core.NamesToIDs())
+	err = copy.Parse(events.Read, "buf", "=dataval")
 	require.NoError(t, err)
 	if cmp.Equal(filter, copy, opt1, opt2) {
 		t.Errorf("Changes to copied filter affected the original %+v", filter)
@@ -64,20 +67,18 @@ func TestDatasFilter_Filter(t *testing.T) {
 
 	tt := []struct {
 		name                   string
-		parseFilterName        string
-		parseOperatorAndValues string
-		parseEventNamesToID    map[string]events.ID
 		eventID                events.ID
+		fieldName              string
+		parseOperatorAndValues string
 		args                   []trace.Argument
 		expected               bool
+		expectedError          error
 	}{
-		// keep a single args (deprecated) filter test that shall break on future removal
 		{
 			name:                   "Matching args value as int",
-			parseFilterName:        "write.args.fd",
-			parseOperatorAndValues: "=3",
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.Write,
+			fieldName:              "fd",
+			parseOperatorAndValues: "=3",
 			args: []trace.Argument{
 				newArgument("fd", "int", 3),
 			},
@@ -85,10 +86,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Matching data value as int",
-			parseFilterName:        "read.data.fd",
-			parseOperatorAndValues: "=3",
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.Read,
+			fieldName:              "fd",
+			parseOperatorAndValues: "=3",
 			args: []trace.Argument{
 				newArgument("fd", "int", 3),
 			},
@@ -96,10 +96,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Non-matching data value as int",
-			parseFilterName:        "read.data.fd",
-			parseOperatorAndValues: "=3",
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.Read,
+			fieldName:              "fd",
+			parseOperatorAndValues: "=3",
 			args: []trace.Argument{
 				newArgument("fd", "int", 4),
 			},
@@ -107,10 +106,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Matching data value as string",
-			parseFilterName:        "open.data.pathname",
-			parseOperatorAndValues: "=/etc/passwd",
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.Open,
+			fieldName:              "pathname",
+			parseOperatorAndValues: "=/etc/passwd",
 			args: []trace.Argument{
 				newArgument("pathname", "string", "/etc/passwd"),
 			},
@@ -118,23 +116,19 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Non-matching data value as string",
-			parseFilterName:        "open.data.pathname",
-			parseOperatorAndValues: "=/etc/passwd",
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.Open,
+			fieldName:              "pathname",
+			parseOperatorAndValues: "=/etc/passwd",
 			args: []trace.Argument{
 				newArgument("pathname", "string", "/etc/shadow"),
 			},
 			expected: false,
 		},
-
-		// Test cases for syscall data value of sys_enter and sys_exit events
 		{
 			name:                   "Matching 'syscall' data value of sys_enter as string",
-			parseFilterName:        "sys_enter.data.syscall",
-			parseOperatorAndValues: "=open", // string value (syscall name)
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.SysEnter,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=open",
 			args: []trace.Argument{
 				newArgument("syscall", "int", 2),
 			},
@@ -142,10 +136,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Matching 'syscall' data value of sys_exit as string",
-			parseFilterName:        "sys_exit.data.syscall",
-			parseOperatorAndValues: "=2", // int value (syscall id)
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.SysExit,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=2",
 			args: []trace.Argument{
 				newArgument("syscall", "int", 2),
 			},
@@ -153,10 +146,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Non-matching 'syscall' data value of sys_enter as int",
-			parseFilterName:        "sys_exit.data.syscall",
-			parseOperatorAndValues: "=2", // int value (syscall number), fails to match
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.SysExit,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=2",
 			args: []trace.Argument{
 				newArgument("syscall", "int", 1),
 			},
@@ -164,23 +156,19 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Non-matching 'syscall' data value of sys_enter as string",
-			parseFilterName:        "sys_exit.data.syscall",
-			parseOperatorAndValues: "=open", // string value (syscall name), fails to match
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.SysExit,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=open",
 			args: []trace.Argument{
 				newArgument("syscall", "int", 1),
 			},
 			expected: false,
 		},
-
-		// Test cases for syscall data value of hooked_syscall event
 		{
 			name:                   "Matching 'syscall' data value of hooked_syscall as string",
-			parseFilterName:        "hooked_syscall.data.syscall",
-			parseOperatorAndValues: "=open", // string value (syscall name)
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.HookedSyscall,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=open",
 			args: []trace.Argument{
 				newArgument("syscall", "string", "open"),
 			},
@@ -188,10 +176,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Matching 'syscall' data value of hooked_syscall as int",
-			parseFilterName:        "hooked_syscall.data.syscall",
-			parseOperatorAndValues: "=2", // int value (syscall id)
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.HookedSyscall,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=2",
 			args: []trace.Argument{
 				newArgument("syscall", "string", "open"),
 			},
@@ -199,10 +186,9 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Non-matching 'syscall' data value of hooked_syscall as string",
-			parseFilterName:        "hooked_syscall.data.syscall",
-			parseOperatorAndValues: "=open", // string value (syscall name), fails to match
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.HookedSyscall,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=open",
 			args: []trace.Argument{
 				newArgument("syscall", "string", "close"),
 			},
@@ -210,14 +196,58 @@ func TestDatasFilter_Filter(t *testing.T) {
 		},
 		{
 			name:                   "Non-matching 'syscall' data value of hooked_syscall as int",
-			parseFilterName:        "hooked_syscall.data.syscall",
-			parseOperatorAndValues: "=2", // int value (syscall id), fails to match
-			parseEventNamesToID:    events.Core.NamesToIDs(),
 			eventID:                events.HookedSyscall,
+			fieldName:              "syscall",
+			parseOperatorAndValues: "=2",
 			args: []trace.Argument{
 				newArgument("syscall", "string", "close"),
 			},
 			expected: false,
+		},
+		// Tests restrictions when a kernel data filter is available for an event.
+		{
+			name:                   "Invalid max length allowed for security file open event (restriction for pathname)",
+			eventID:                events.SecurityFileOpen,
+			fieldName:              "pathname",
+			parseOperatorAndValues: "=/etc/passwd" + strings.Repeat("A", 245), // Total length 256
+			args: []trace.Argument{
+				newArgument("pathname", "string", "/etc/passwd"+strings.Repeat("A", 245)),
+			},
+			expected: false,
+			expectedError: errors.New("/etc/passwdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+				"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+				"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA exceeds max length 255"),
+		},
+		{
+			name:                   "Valid max length allowed for event open",
+			eventID:                events.Openat,
+			fieldName:              "pathname",
+			parseOperatorAndValues: "=/etc/passwd" + strings.Repeat("A", 245), // Total length 256
+			args: []trace.Argument{
+				newArgument("pathname", "string", "/etc/passwd"+strings.Repeat("A", 245)),
+			},
+			expected: true,
+		},
+		{
+			name:                   "Invalid operator contains for security file open (restriction for pathname)",
+			eventID:                events.SecurityFileOpen,
+			fieldName:              "pathname",
+			parseOperatorAndValues: "=*passwd*",
+			args: []trace.Argument{
+				newArgument("pathname", "string", "/etc/passwd"),
+			},
+			expected:      false,
+			expectedError: errors.New("operator not supported for the event and data arg"),
+		},
+		{
+			name:                   "Valid operator contains for open",
+			eventID:                events.Open,
+			fieldName:              "pathname",
+			parseOperatorAndValues: "=*passwd*",
+			args: []trace.Argument{
+				newArgument("pathname", "string", "/etc/passwd"),
+			},
+			expected: true,
 		},
 	}
 
@@ -226,13 +256,22 @@ func TestDatasFilter_Filter(t *testing.T) {
 
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-
 			filter := NewDataFilter()
-			err := filter.Parse(tc.parseFilterName, tc.parseOperatorAndValues, tc.parseEventNamesToID)
-			require.NoError(t, err)
 
-			result := filter.Filter(tc.eventID, tc.args)
-			require.Equal(t, tc.expected, result)
+			err := filter.Parse(tc.eventID, tc.fieldName, tc.parseOperatorAndValues)
+
+			// Validate error
+			if tc.expectedError != nil {
+				require.Contains(t, err.Error(), tc.expectedError.Error())
+			} else {
+				require.NoError(t, err)
+			}
+
+			// Validate Filter
+			if err == nil {
+				result := filter.Filter(tc.args)
+				require.Equal(t, tc.expected, result)
+			}
 		})
 	}
 }

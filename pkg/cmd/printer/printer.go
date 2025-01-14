@@ -16,11 +16,11 @@ import (
 	forward "github.com/IBM/fluent-forward-go/fluent/client"
 	"github.com/Masterminds/sprig/v3"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/metrics"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/metrics"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 type EventPrinter interface {

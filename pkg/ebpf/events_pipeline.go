@@ -9,14 +9,14 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/time"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/bufferdecoder"
+	"github.com/khulnasof/tracker/pkg/capabilities"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/time"
+	"github.com/khulnasof/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 // Max depth of each stack trace to track (MAX_STACK_DETPH in eBPF code)
@@ -160,7 +160,6 @@ func (t *Tracker) queueEvents(ctx context.Context, in <-chan *trace.Event) (chan
 func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-chan *trace.Event, <-chan error) {
 	out := make(chan *trace.Event, t.config.PipelineChannelSize)
 	errc := make(chan error, 1)
-	sysCompatTranslation := events.Core.IDs32ToIDs()
 	go func() {
 		defer close(out)
 		defer close(errc)
@@ -182,10 +181,10 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 				continue
 			}
 			eventDefinition := events.Core.GetDefinitionByID(eventId)
-			evtParams := eventDefinition.GetParams()
+			evtFields := eventDefinition.GetFields()
 			evtName := eventDefinition.GetName()
-			args := make([]trace.Argument, len(evtParams))
-			err := ebpfMsgDecoder.DecodeArguments(args, int(argnum), evtParams, evtName, eventId)
+			args := make([]trace.Argument, len(evtFields))
+			err := ebpfMsgDecoder.DecodeArguments(args, int(argnum), evtFields, evtName, eventId)
 			if err != nil {
 				t.handleError(err)
 				continue
@@ -213,10 +212,16 @@ func (t *Tracker) decodeEvents(ctx context.Context, sourceChan chan []byte) (<-c
 			flags := parseContextFlags(containerData.ID, eCtx.Flags)
 			syscall := ""
 			if eCtx.Syscall != noSyscall {
-				var err error
-				syscall, err = parseSyscallID(int(eCtx.Syscall), flags.IsCompat, sysCompatTranslation)
-				if err != nil {
-					logger.Debugw("Originated syscall parsing", "error", err)
+				// The syscall ID returned from eBPF is actually the event ID representing that syscall.
+				// For 64-bit processes, the event ID is the same as the syscall ID.
+				// For 32-bit (compat) processes, the syscall ID gets translated in eBPF to the event ID of its
+				// 64-bit counterpart, or if it's a 32-bit exclusive syscall, to the event ID corresponding to it.
+				id := events.ID(eCtx.Syscall)
+				if events.Core.IsDefined(id) {
+					syscall = events.Core.GetDefinitionByID(id).GetName()
+				} else {
+					// This should never fail, as the translation used in eBPF relies on the same event definitions
+					logger.Errorw("No syscall event with id %d", id)
 				}
 			}
 
@@ -305,7 +310,7 @@ func (t *Tracker) matchPolicies(event *trace.Event) uint64 {
 	bitmap := event.MatchedPoliciesKernel
 
 	// Short circuit if there are no policies in userland that need filtering.
-	if !t.policyManager.FilterableInUserland(bitmap) {
+	if !t.policyManager.FilterableInUserland() {
 		event.MatchedPoliciesUser = bitmap // store untouched bitmap to be used in sink stage
 		return bitmap
 	}
@@ -324,7 +329,7 @@ func (t *Tracker) matchPolicies(event *trace.Event) uint64 {
 		// event ID. This happens whenever the event submitted by the kernel is going to
 		// derive an event that this policy is interested in. In this case, don't do
 		// anything and let the derivation stage handle this event.
-		_, ok := p.EventsToTrace[eventID]
+		_, ok := p.Rules[eventID]
 		if !ok {
 			continue
 		}
@@ -334,19 +339,24 @@ func (t *Tracker) matchPolicies(event *trace.Event) uint64 {
 		//
 
 		// 1. event scope filters
-		if !p.ScopeFilter.Filter(*event) {
+		if !p.Rules[eventID].ScopeFilter.Filter(*event) {
 			utils.ClearBit(&bitmap, bitOffset)
 			continue
 		}
 
 		// 2. event return value filters
-		if !p.RetFilter.Filter(eventID, int64(event.ReturnValue)) {
+		if !p.Rules[eventID].RetFilter.Filter(int64(event.ReturnValue)) {
 			utils.ClearBit(&bitmap, bitOffset)
 			continue
 		}
 
 		// 3. event data filters
-		if !p.DataFilter.Filter(eventID, event.Args) {
+		// TODO: remove PrintMemDump check once events params are introduced
+		//       i.e. print_mem_dump.params.symbol_name=system:security_file_open
+		// events.PrintMemDump bypass was added due to issue #2546
+		// because it uses usermode applied filters as parameters for the event,
+		// which occurs after filtering
+		if eventID != events.PrintMemDump && !p.Rules[eventID].DataFilter.Filter(event.Args) {
 			utils.ClearBit(&bitmap, bitOffset)
 			continue
 		}
@@ -409,29 +419,6 @@ func parseContextFlags(containerId string, flags uint32) trace.ContextFlags {
 	cflags.IsCompat = (flags & IsCompatFlag) != 0
 
 	return cflags
-}
-
-// parseSyscallID returns the syscall name from its ID, taking into account architecture
-// and 32bit/64bit modes. It also returns an error if the syscall ID is not found in the
-// events definition.
-func parseSyscallID(syscallID int, isCompat bool, compatTranslationMap map[events.ID]events.ID) (string, error) {
-	id := events.ID(syscallID)
-	if !isCompat {
-		if !events.Core.IsDefined(id) {
-			return "", errfmt.Errorf("no syscall event with syscall id %d", syscallID)
-		}
-		return events.Core.GetDefinitionByID(id).GetName(), nil
-	}
-	if id, ok := compatTranslationMap[events.ID(syscallID)]; ok {
-		// should never happen (map should be initialized from events definition)
-		if !events.Core.IsDefined(id) {
-			return "", errfmt.Errorf(
-				"no syscall event with compat syscall id %d, translated to ID %d", syscallID, id,
-			)
-		}
-		return events.Core.GetDefinitionByID(id).GetName(), nil
-	}
-	return "", errfmt.Errorf("no syscall event with compat syscall id %d", syscallID)
 }
 
 // processEvents is the event processing pipeline stage. For each received event, it goes
@@ -560,7 +547,7 @@ func (t *Tracker) deriveEvents(ctx context.Context, in <-chan *trace.Event) (
 					event := &derivatives[i]
 
 					// Skip events that dont work with filtering due to missing types
-					// being handled (https://github.com/khulnasoft/tracker/issues/2486)
+					// being handled (https://github.com/khulnasof/tracker/issues/2486)
 					switch events.ID(derivatives[i].EventID) {
 					case events.SymbolsLoaded:
 					case events.SharedObjectLoaded:

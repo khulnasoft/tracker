@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"gotest.tools/assert"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/trigger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/trigger"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func NewFakeTriggerEvent() trace.Event {

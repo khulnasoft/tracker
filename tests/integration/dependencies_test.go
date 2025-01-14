@@ -11,11 +11,11 @@ import (
 
 	"go.uber.org/goleak"
 
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/tests/testutils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/tests/testutils"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func Test_EventsDependencies(t *testing.T) {

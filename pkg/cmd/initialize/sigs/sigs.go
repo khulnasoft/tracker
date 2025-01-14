@@ -3,11 +3,11 @@ package sigs
 import (
 	"strconv"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/set"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils/set"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func CreateEventsFromSignatures(startId events.ID, sigs []detect.Signature) map[string]int32 {

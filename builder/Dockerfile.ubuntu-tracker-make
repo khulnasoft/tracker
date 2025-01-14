@@ -12,7 +12,6 @@ ARG gid=1000
 #
 
 ARG GO_VERSION=1.22.0
-ARG OPA_VERSION=v0.63.0
 
 # install needed environment
 
@@ -35,11 +34,6 @@ RUN cd /tmp && \
     git clone https://github.com/khulnasoft/btfhub.git && \
     cd ./btfhub && \
     ./3rdparty/bpftool.sh
-
-# install OPA
-RUN altarch=$(uname -m | sed 's:x86_64:amd64:g' | sed 's:aarch64:arm64:g') && \
-    curl -L -o /usr/bin/opa https://github.com/open-policy-agent/opa/releases/download/${OPA_VERSION}/opa_linux_${altarch}_static && \
-    chmod 755 /usr/bin/opa
 
 # extra tools for testing things
 
@@ -89,7 +83,7 @@ RUN GOROOT=/usr/local/go GOPATH=$HOME/go \
 # install goimports-reviser
 
 RUN GOROOT=/usr/local/go GOPATH=$HOME/go \
-    go install github.com/incu6us/goimports-reviser/v3@v3.6.5 && \
+    go install github.com/incu6us/goimports-reviser/v3@v3.8.2 && \
     cp $HOME/go/bin/goimports-reviser /usr/bin/
 
 # install revive

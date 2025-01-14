@@ -9,12 +9,12 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/trace"
+	pb "github.ckhulnasof/trackeracker/api/v1beta1"
 )
 
 func getEventData(e trace.Event) ([]*pb.EventValue, error) {
@@ -22,18 +22,9 @@ func getEventData(e trace.Event) ([]*pb.EventValue, error) {
 
 	for _, arg := range e.Args {
 		if arg.ArgMeta.Name == "triggeredBy" {
-			triggerEvent, err := getTriggerBy(arg)
-			if err != nil {
-				return nil, err
-			}
-
-			data = append(data, &pb.EventValue{
-				Name: "triggeredBy",
-				Value: &pb.EventValue_TriggeredBy{
-					TriggeredBy: triggerEvent,
-				},
-			})
-
+			// Do NOT parse triggeredBy argument as pb.EventValue here since
+			// it is parsed as pb.TriggeredBy (a proper pb.Event level field)
+			// by getTriggerBy helper.
 			continue
 		}
 
@@ -424,59 +415,6 @@ func getSockaddr(v map[string]string) (*pb.EventValue, error) {
 			Sockaddr: sockaddr,
 		},
 	}, nil
-}
-
-func getTriggerBy(triggeredByArg trace.Argument) (*pb.TriggeredBy, error) {
-	var triggerEvent *pb.TriggeredBy
-
-	m, ok := triggeredByArg.Value.(map[string]interface{})
-	if !ok {
-		return nil, errfmt.Errorf("error getting triggering event: %v", triggeredByArg.Value)
-	}
-
-	triggerEvent = &pb.TriggeredBy{}
-
-	id, ok := m["id"].(int)
-	if !ok {
-		return nil, errfmt.Errorf("error getting id of triggering event: %v", m)
-	}
-	triggerEvent.Id = uint32(id)
-
-	name, ok := m["name"].(string)
-	if !ok {
-		return nil, errfmt.Errorf("error getting name of triggering event: %v", m)
-	}
-	triggerEvent.Name = name
-
-	triggerEventArgs, ok := m["args"].([]trace.Argument)
-	if !ok {
-		return nil, errfmt.Errorf("error getting args of triggering event: %v", m)
-	}
-
-	data := make([]*pb.EventValue, 0)
-
-	for _, arg := range triggerEventArgs {
-		eventValue, err := getEventValue(arg)
-		if err != nil {
-			return nil, err
-		}
-
-		eventValue.Name = arg.ArgMeta.Name
-		data = append(data, eventValue)
-	}
-
-	if events.Core.GetDefinitionByID(events.ID(id)).IsSyscall() {
-		data = append(data, &pb.EventValue{
-			Name: "returnValue",
-			Value: &pb.EventValue_Int64{
-				Int64: int64(m["returnValue"].(int)),
-			},
-		})
-	}
-
-	triggerEvent.Data = data
-
-	return triggerEvent, nil
 }
 
 func getDNSResourceRecord(source trace.ProtoDNSResourceRecord) *pb.DNSResourceRecord {

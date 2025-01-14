@@ -8,10 +8,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 
-	pb "github.com/khulnasoft/tracker/api/v1beta1"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
+	tracker "github.com/khulnasof/tracker/pkg/ebpf"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/signatures/engine"
+	pb "github.ckhulnasof/trackeracker/api/v1beta1"
 )
 
 type Server struct {

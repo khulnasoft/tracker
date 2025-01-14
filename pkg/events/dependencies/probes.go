@@ -3,8 +3,8 @@ package dependencies
 import (
 	"golang.org/x/exp/slices"
 
+	"github.com/khulnasof/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/ebpf/probes"
-	"github.com/khulnasoft/tracker/pkg/events"
 )
 
 type ProbeNode struct {

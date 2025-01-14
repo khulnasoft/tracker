@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/khulnasof/tracker/types/detect"
 	"github.com/khulnasoft/tracker/tests/e2e-inst-signatures/datasourcetest"
-	"github.com/khulnasoft/tracker/types/detect"
 )
 
 var ExportedSignatures = []detect.Signature{
@@ -22,6 +22,7 @@ var ExportedSignatures = []detect.Signature{
 	&e2eSecurityPathNotify{},
 	&e2eSetFsPwd{},
 	&e2eFtraceHook{},
+	&e2eSuspiciousSyscallSource{},
 }
 
 var ExportedDataSources = []detect.DataSource{

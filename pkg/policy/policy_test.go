@@ -7,8 +7,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
+	"github.com/khulnasof/tracker/pkg/filters/sets"
 	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/filters/sets"
 )
 
 func TestPolicyClone(t *testing.T) {
@@ -23,13 +23,14 @@ func TestPolicyClone(t *testing.T) {
 		filters.UIntFilter[uint32]{},
 		filters.UIntFilter[uint64]{},
 		filters.BoolFilter{},
-		filters.RetFilter{},
+		filters.IntFilter[int64]{},
 		filters.DataFilter{},
 		filters.ScopeFilter{},
 		filters.ProcessTreeFilter{},
 		filters.BinaryFilter{},
 		sets.PrefixSet{},
 		sets.SuffixSet{},
+		filters.KernelDataFilter{},
 	)
 	opt2 := cmp.FilterPath(
 		func(p cmp.Path) bool {

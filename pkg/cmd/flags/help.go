@@ -19,7 +19,6 @@ func PrintAndExitIfHelp(ctx *cli.Context) {
 		"events",
 		"output",
 		"capabilities",
-		"rego",
 		"log",
 	}
 
@@ -56,14 +55,14 @@ func GetHelpString(key string) string {
 		return procTreeHelp()
 	case "capture":
 		return captureHelp()
-	case "scope", "events":
-		return filterHelp()
+	case "scope":
+		return scopeHelp()
+	case "events":
+		return eventsHelp()
 	case "output":
 		return outputHelp()
 	case "capabilities":
 		return capabilitiesHelp()
-	case "rego":
-		return regoHelp()
 	case "log":
 		return logHelp()
 	}

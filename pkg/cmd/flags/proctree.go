@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/khulnasof/tracker/pkg/proctree"
 	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
 )
 
 func procTreeHelp() string {

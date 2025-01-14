@@ -9,11 +9,11 @@ import (
 	"path"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/time"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/bufferdecoder"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/time"
+	"github.com/khulnasof/tracker/pkg/utils"
 )
 
 func (t *Tracker) handleFileCaptures(ctx context.Context) {

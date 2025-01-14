@@ -8,12 +8,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/khulnasof/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 type PrepareOutputResult struct {
-	TrackerConfig   *config.OutputConfig
+	TrackerConfig  *config.OutputConfig
 	PrinterConfigs []config.PrinterConfig
 }
 
@@ -94,6 +94,24 @@ func PrepareOutput(outputSlice []string, newBinary bool) (PrepareOutputResult, e
 	return outConfig, nil
 }
 
+func PreparePrinterConfig(printerKind string, outputPath string) (config.PrinterConfig, error) {
+	outFile := os.Stdout
+	var err error
+
+	if outputPath != "stdout" && outputPath != "" && printerKind != "forward" && printerKind != "webhook" {
+		outFile, err = CreateOutputFile(outputPath)
+		if err != nil {
+			return config.PrinterConfig{}, err
+		}
+	}
+
+	return config.PrinterConfig{
+		Kind:    printerKind,
+		OutPath: outputPath,
+		OutFile: outFile,
+	}, nil
+}
+
 // setOption sets the given option in the given config
 func setOption(cfg *config.OutputConfig, option string, newBinary bool) error {
 	switch option {
@@ -161,22 +179,11 @@ func getPrinterConfigs(printerMap map[string]string, trackerConfig *config.Outpu
 				return nil, err
 			}
 		}
-
-		outFile := os.Stdout
-		var err error
-
-		if outPath != "stdout" && printerKind != "forward" && printerKind != "webhook" {
-			outFile, err = createFile(outPath)
-			if err != nil {
-				return nil, err
-			}
+		printerCfg, err := PreparePrinterConfig(printerKind, outPath)
+		if err != nil {
+			return nil, err
 		}
-
-		printerConfigs = append(printerConfigs, config.PrinterConfig{
-			Kind:    printerKind,
-			OutPath: outPath,
-			OutFile: outFile,
-		})
+		printerConfigs = append(printerConfigs, printerCfg)
 	}
 
 	return printerConfigs, nil
@@ -232,7 +239,7 @@ func parseOption(outputParts []string, trackerConfig *config.OutputConfig, newBi
 }
 
 // creates *os.File for the given path
-func createFile(path string) (*os.File, error) {
+func CreateOutputFile(path string) (*os.File, error) {
 	fileInfo, err := os.Stat(path)
 	if err == nil && fileInfo.IsDir() {
 		return nil, errfmt.Errorf("cannot use a path of existing directory %s", path)

@@ -5,9 +5,9 @@ import (
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 // ExecFailedGenerator is the object which implement the ProcessExecuteFailed event derivation
@@ -22,12 +22,12 @@ func InitProcessExecuteFailedGenerator() (*ExecFailedGenerator, error) {
 	// For now, we assume that the current value is sufficient
 	const executionEventsCacheSize = 16
 
-	executeParamsCache, err := lru.New[int, *trace.Event](executionEventsCacheSize)
+	executeFieldsCache, err := lru.New[int, *trace.Event](executionEventsCacheSize)
 	if err != nil {
 		return nil, err
 	}
 	return &ExecFailedGenerator{
-		baseEvents: executeParamsCache,
+		baseEvents: executeFieldsCache,
 		deriveBase: makeDeriveBase(events.ProcessExecuteFailed),
 	}, nil
 }

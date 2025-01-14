@@ -9,8 +9,8 @@ import (
 
 	miniosha "github.com/minio/sha256-simd"
 
+	"github.com/khulnasof/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 // ComputeFileHashAtPath attempts to open a file at a path and calculate its

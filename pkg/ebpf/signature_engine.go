@@ -4,16 +4,16 @@ import (
 	"context"
 	"slices"
 
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/findings"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/containers"
+	"github.com/khulnasof/tracker/pkg/dnscache"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/findings"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/proctree"
+	"github.com/khulnasof/tracker/pkg/signatures/engine"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 // engineEvents stage in the pipeline allows signatures detection to be executed in the pipeline
@@ -82,16 +82,28 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 			// arguments parsing) can affect engine stage.
 			eventCopy := *event
 
-			if t.config.Output.ParseArguments {
-				// shallow clone the event arguments before parsing them (new slice is created),
-				// to keep the eventCopy with raw arguments.
-				eventCopy.Args = slices.Clone(event.Args)
+			// if t.config.Output.ParseArguments {
+			// 	// shallow clone the event arguments before parsing them (new slice is created),
+			// 	// to keep the eventCopy with raw arguments.
+			// 	eventCopy.Args = slices.Clone(event.Args)
 
-				err := t.parseArguments(event)
-				if err != nil {
-					t.handleError(err)
-					return
-				}
+			// 	err := t.parseArguments(event)
+			// 	if err != nil {
+			// 		t.handleError(err)
+			// 		return
+			// 	}
+			// }
+
+			// This is a workaround to keep working with parsed arguments in the engine stage.
+			// Once fully migrated, this should be reverted to the commented code above
+			eventCopy.Args = slices.Clone(event.Args)
+			err := t.parseArguments(&eventCopy)
+			if err != nil {
+				t.handleError(err)
+				return
+			}
+			if t.config.Output.ParseArguments {
+				event.Args = slices.Clone(eventCopy.Args)
 			}
 
 			// pass the event to the sink stage, if the event is also marked as emit

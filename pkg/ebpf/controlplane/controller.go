@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/khulnasoft-lab/libbpfgo"
+	"github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
+	"github.com/khulnasof/tracker/pkg/containers"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/proctree"
 )
 
 // TODO: With the introduction of signal events, the control plane can now have a generic argument

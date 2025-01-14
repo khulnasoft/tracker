@@ -11,11 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/signatures/signature"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func TestEngine_ConsumeSources(t *testing.T) {

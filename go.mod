@@ -13,9 +13,6 @@ require (
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.4
-	github.com/khulnasoft/tracker/api v0.0.0-20240905143127-425c00369790
-	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20240905143127-425c00369790
-	github.com/khulnasoft/tracker/types v0.0.0-20240905143127-425c00369790
 	github.com/mennanov/fmutils v0.3.0
 	github.com/minio/sha256-simd v1.0.1
 	github.com/mitchellh/mapstructure v1.5.0

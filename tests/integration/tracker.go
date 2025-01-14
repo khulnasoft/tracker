@@ -10,13 +10,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize"
-	"github.com/khulnasoft/tracker/pkg/config"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
+	uproc "githukhulnasof/trackertracker/pkg/utils/proc"
+
+	"github.com/khulnakhulnasof/trackers/trace"
+	"github.com/khulnasof/tracker/pkg/cmd/initialize"
+	"github.com/khulnasof/tracker/pkg/config"
+	tracker "github.com/khulnasof/tracker/pkg/ebpf"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
 	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	uproc "github.com/khulnasoft/tracker/pkg/utils/proc"
-	"github.com/khulnasoft/tracker/types/trace"
 )
 
 // eventBuffer is a thread-safe buffer for tracker events

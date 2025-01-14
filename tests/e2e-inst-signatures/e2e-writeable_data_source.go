@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 type e2eWritableDatasourceSig struct {

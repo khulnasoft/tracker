@@ -9,8 +9,8 @@ import (
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
+	"github.com/khulnasof/tracker/types/trace"
 	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/types/trace"
 )
 
 const (

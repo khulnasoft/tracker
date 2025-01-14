@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/events/findings"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/metrics"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
+	"github.com/khulnasof/tracker/pkg/events/findings"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/signatures/metrics"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
 )
 
 const ALL_EVENT_ORIGINS = "*"

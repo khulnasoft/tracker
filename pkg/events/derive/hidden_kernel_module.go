@@ -13,13 +13,13 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/capabilities"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 var (
@@ -165,15 +165,17 @@ func handleHistoryScanFinished(scanStatus uint64) ([][]interface{}, []error) {
 // extractFromEvent extract arguments from the trace.Argument
 func extractFromEvent(args []trace.Argument, address uint64) []interface{} {
 	// Parse module name if possible
-	var name string
+	name := ""
 	nameBytes, err := parse.ArgVal[[]byte](args, "name")
 	if err != nil {
-		name = ""
 		// Don't fail hard, submit it without a name!
 		logger.Debugw("Failed extracting hidden module name")
 	} else {
 		// Remove the trailing terminating characters.
-		name = string(nameBytes[:bytes.IndexByte(nameBytes[:], 0)])
+		index := bytes.IndexByte(nameBytes[:], 0)
+		if index > 0 {
+			name = string(nameBytes[:index])
+		}
 	}
 
 	// Parse module srcversion if possible

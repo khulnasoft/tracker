@@ -6,13 +6,13 @@ import (
 	"github.com/hashicorp/golang-lru/simplelru"
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/filters"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/policy"
+	"github.com/khulnasof/tracker/pkg/utils/sharedobjs"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 //
@@ -35,8 +35,10 @@ func SymbolsCollision(
 	// pick white and black lists from the filters (TODO: change this)
 	for it := pManager.CreateAllIterator(); it.HasNext(); {
 		p := it.Next()
-		f := p.DataFilter.GetEventFilters(events.SymbolsCollision)
-		maps.Copy(symbolsCollisionFilters, f)
+		if rule, ok := p.Rules[events.SymbolsCollision]; ok {
+			f := rule.DataFilter.GetFieldFilters()
+			maps.Copy(symbolsCollisionFilters, f)
+		}
 	}
 
 	symbolsWhitelist := []string{}

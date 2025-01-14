@@ -6,9 +6,9 @@ import (
 
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/pkg/utils/proc"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/utils/proc"
 )
 
 type NSBinary struct {

@@ -23,11 +23,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	trackerversion "github.com/khulnasoft/tracker/pkg/version"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/containers/runtime"
+	"github.com/khulnasof/tracker/pkg/logger"
+	trackerversikhulnasof/trackerhulnasof/tracker/pkg/version"
+	"github.com/khulnasof/trackkhulnasof/tracker
+	"github.com/khulnasof/tracker/pkg/containers"
 )
 
 const InitProcNsDir = "/proc/1/ns"
@@ -53,11 +53,11 @@ func InitNamespacesEvent() trace.Event {
 // TrackerInfoEvent exports data related to Tracker's initialization
 func TrackerInfoEvent(bootTime uint64, startTime uint64) trace.Event {
 	def := Core.GetDefinitionByID(TrackerInfo)
-	params := def.GetParams()
+	fields := def.GetFields()
 	args := []trace.Argument{
-		{ArgMeta: params[0], Value: bootTime},
-		{ArgMeta: params[1], Value: startTime},
-		{ArgMeta: params[2], Value: trackerversion.GetVersion()},
+		{ArgMeta: fields[0], Value: bootTime},
+		{ArgMeta: fields[1], Value: startTime},
+		{ArgMeta: fields[2], Value: trackerversion.GetVersion()},
 	}
 
 	trackerInfoEvent := trace.Event{
@@ -77,12 +77,12 @@ func TrackerInfoEvent(bootTime uint64, startTime uint64) trace.Event {
 func getInitNamespaceArguments() []trace.Argument {
 	initNamespaces := fetchInitNamespaces()
 	eventDefinition := Core.GetDefinitionByID(InitNamespaces)
-	initNamespacesArgs := make([]trace.Argument, len(eventDefinition.GetParams()))
+	initNamespacesArgs := make([]trace.Argument, len(eventDefinition.GetFields()))
 
-	params := eventDefinition.GetParams()
+	fields := eventDefinition.GetFields()
 
 	for i, arg := range initNamespacesArgs {
-		arg.ArgMeta = params[i]
+		arg.ArgMeta = fields[i]
 		arg.Value = initNamespaces[arg.Name]
 		initNamespacesArgs[i] = arg
 	}
@@ -128,18 +128,18 @@ func ExistingContainersEvents(cts *containers.Containers, enrichDisabled bool) [
 		if !enrichDisabled {
 			container, _ = cts.EnrichCgroupInfo(cgroupId)
 		}
-		params := def.GetParams()
+		fields := def.GetFields()
 		args := []trace.Argument{
-			{ArgMeta: params[0], Value: cRuntime},
-			{ArgMeta: params[1], Value: containerId},
-			{ArgMeta: params[2], Value: ctime},
-			{ArgMeta: params[3], Value: container.Image},
-			{ArgMeta: params[4], Value: container.ImageDigest},
-			{ArgMeta: params[5], Value: container.Name},
-			{ArgMeta: params[6], Value: container.Pod.Name},
-			{ArgMeta: params[7], Value: container.Pod.Namespace},
-			{ArgMeta: params[8], Value: container.Pod.UID},
-			{ArgMeta: params[9], Value: container.Pod.Sandbox},
+			{ArgMeta: fields[0], Value: cRuntime},
+			{ArgMeta: fields[1], Value: containerId},
+			{ArgMeta: fields[2], Value: ctime},
+			{ArgMeta: fields[3], Value: container.Image},
+			{ArgMeta: fields[4], Value: container.ImageDigest},
+			{ArgMeta: fields[5], Value: container.Name},
+			{ArgMeta: fields[6], Value: container.Pod.Name},
+			{ArgMeta: fields[7], Value: container.Pod.Namespace},
+			{ArgMeta: fields[8], Value: container.Pod.UID},
+			{ArgMeta: fields[9], Value: container.Pod.Sandbox},
 		}
 		existingContainerEvent := trace.Event{
 			Timestamp:   int(time.Now().UnixNano()),

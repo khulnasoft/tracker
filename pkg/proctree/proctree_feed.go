@@ -3,9 +3,9 @@ package proctree
 import (
 	"path/filepath"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	trackertime "github.com/khulnasoft/tracker/pkg/time"
+	"github.com/khulnasof/tracker/pkg/logger"
+	trackertime "github.com/khulnasof/tracker/pkg/time"
+	"github.com/khulnasoft/tkhulnasof/trackert"
 )
 
 //
@@ -129,10 +129,6 @@ func (pt *ProcessTree) FeedFromFork(feed ForkFeed) error {
 	if feed.ChildHash == feed.LeaderHash {
 		leader.GetExecutable().SetFeedAt(
 			parent.GetExecutable().GetFeed(),
-			feedTimeStamp,
-		)
-		leader.GetInterpreter().SetFeedAt(
-			parent.GetInterpreter().GetFeed(),
 			feedTimeStamp,
 		)
 	}

@@ -15,39 +15,40 @@ import (
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/bucketscache"
-	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/ebpf/controlplane"
-	"github.com/khulnasoft/tracker/pkg/ebpf/initialization"
-	"github.com/khulnasoft/tracker/pkg/ebpf/probes"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
-	"github.com/khulnasoft/tracker/pkg/events/derive"
-	"github.com/khulnasoft/tracker/pkg/events/sorting"
-	"github.com/khulnasoft/tracker/pkg/events/trigger"
-	"github.com/khulnasoft/tracker/pkg/filehash"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/metrics"
-	"github.com/khulnasoft/tracker/pkg/pcaps"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/streams"
-	trackertime "github.com/khulnasoft/tracker/pkg/time"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/pkg/utils/proc"
-	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/bucketscache"
+	"github.com/khulnasof/tracker/pkg/bufferdecoder"
+	"github.com/khulnasof/tracker/pkg/capabilities"
+	"github.com/khulnasof/tracker/pkg/cgroup"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/containers"
+	"github.com/khulnasof/tracker/pkg/dnscache"
+	"github.com/khulnasof/tracker/pkg/ebpf/controlplane"
+	"github.com/khulnasof/tracker/pkg/ebpf/initialization"
+	"github.com/khulnasof/tracker/pkg/ebpf/probes"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/dependencies"
+	"github.com/khulnasof/tracker/pkg/events/derive"
+	"github.com/khulnasof/tracker/pkg/events/sorting"
+	"github.com/khulnasof/tracker/pkg/events/trigger"
+	"github.com/khulnasof/tracker/pkg/filehash"
+	"github.com/khulnasof/tracker/pkg/filters"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/metrics"
+	"github.com/khulnasof/tracker/pkg/pcaps"
+	"github.com/khulnasof/tracker/pkg/policy"
+	"github.com/khulnasof/tracker/pkg/proctree"
+	"github.com/khulnasof/tracker/pkg/signatures/engine"
+	"github.com/khulnasof/tracker/pkg/streams"
+	trackertime "github.com/khulnasof/tracker/pkg/time"
+	"github.com/khulnasof/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/pkg/utils/proc"
+	"github.com/khulnasof/tracker/pkg/utils/sharedobjs"
+	"github.com/khulnasof/tracker/pkg/version"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 const (
@@ -63,12 +64,12 @@ type Tracker struct {
 	running   atomic.Bool
 	done      chan struct{} // signal to safely stop end-stage processing
 	OutDir    *os.File      // use utils.XXX functions to create or write to this file
-	stats     metrics.Stats
+	stats     *metrics.Stats
 	sigEngine *engine.Engine
 	// Events
 	eventsSorter     *sorting.EventsChronologicalSorter
 	eventsPool       *sync.Pool
-	eventsParamTypes map[events.ID][]bufferdecoder.ArgType
+	eventsFieldTypes map[events.ID][]bufferdecoder.ArgType
 	eventProcessor   map[events.ID][]func(evt *trace.Event) error
 	eventDerivations derive.Table
 	// Artifacts
@@ -81,8 +82,9 @@ type Tracker struct {
 	pidsInMntns   bucketscache.BucketsCache // first n PIDs in each mountns
 	kernelSymbols *environment.KernelSymbolTable
 	// eBPF
-	bpfModule *bpf.Module
-	probes    *probes.ProbeGroup
+	bpfModule     *bpf.Module
+	defaultProbes *probes.ProbeGroup
+	extraProbes   map[string]*probes.ProbeGroup
 	// BPF Maps
 	StackAddressesMap *bpf.BPFMap
 	FDArgPathMap      *bpf.BPFMap
@@ -128,7 +130,7 @@ type Tracker struct {
 }
 
 func (t *Tracker) Stats() *metrics.Stats {
-	return &t.stats
+	return t.stats
 }
 
 func (t *Tracker) Engine() *engine.Engine {
@@ -224,6 +226,7 @@ func New(cfg config.Config) (*Tracker, error) {
 	t := &Tracker{
 		config:             cfg,
 		done:               make(chan struct{}),
+		stats:              metrics.NewStats(),
 		writtenFiles:       make(map[string]string),
 		readFiles:          make(map[string]string),
 		capturedFiles:      make(map[string]int64),
@@ -231,6 +234,7 @@ func New(cfg config.Config) (*Tracker, error) {
 		policyManager:      pm,
 		eventsDependencies: depsManager,
 		requiredKsyms:      []string{},
+		extraProbes:        make(map[string]*probes.ProbeGroup),
 	}
 
 	// clear initial policies to avoid wrong references
@@ -415,14 +419,14 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		return errfmt.Errorf("error initializing event derivation map: %v", err)
 	}
 
-	// Initialize events parameter types map
+	// Initialize events field types map
 
-	t.eventsParamTypes = make(map[events.ID][]bufferdecoder.ArgType)
+	t.eventsFieldTypes = make(map[events.ID][]bufferdecoder.ArgType)
 	for _, eventDefinition := range events.Core.GetDefinitions() {
 		id := eventDefinition.GetID()
-		params := eventDefinition.GetParams()
-		for _, param := range params {
-			t.eventsParamTypes[id] = append(t.eventsParamTypes[id], bufferdecoder.GetParamType(param.Type))
+		fields := eventDefinition.GetFields()
+		for _, field := range fields {
+			t.eventsFieldTypes[id] = append(t.eventsFieldTypes[id], bufferdecoder.GetFieldType(field.Type))
 		}
 	}
 
@@ -516,6 +520,16 @@ func (t *Tracker) Init(ctx gocontext.Context) error {
 		New: func() interface{} {
 			return &trace.Event{}
 		},
+	}
+
+	// Perform extra initializtion steps required by specific events according to their arguments
+	err = capabilities.GetInstance().EBPF(
+		func() error {
+			return t.handleEventParameters()
+		},
+	)
+	if err != nil {
+		return errfmt.WrapError(err)
 	}
 
 	return nil
@@ -788,7 +802,7 @@ func (t *Tracker) getOptionsConfig() uint32 {
 // the given policies config and version.
 func (t *Tracker) newConfig(cfg *policy.PoliciesConfig) *Config {
 	return &Config{
-		TrackerPid:       uint32(os.Getpid()),
+		TrackerPid:      uint32(os.Getpid()),
 		Options:         t.getOptionsConfig(),
 		CgroupV1Hid:     uint32(t.cgroups.GetDefaultCgroupHierarchyID()),
 		PoliciesVersion: 1, // version will be removed soon
@@ -822,7 +836,7 @@ func (t *Tracker) initKsymTableRequiredSyms() error {
 		// If kprobe/kretprobe, the event name itself is a required symbol
 		depsProbes := deps.GetProbes()
 		for _, probeDep := range depsProbes {
-			probe := t.probes.GetProbeByHandle(probeDep.GetHandle())
+			probe := t.defaultProbes.GetProbeByHandle(probeDep.GetHandle())
 			traceProbe, ok := probe.(*probes.TraceProbe)
 			if !ok {
 				continue
@@ -857,11 +871,11 @@ func (t *Tracker) initKsymTableRequiredSyms() error {
 		for it := t.policyManager.CreateAllIterator(); it.HasNext(); {
 			p := it.Next()
 			// This might break in the future if PrintMemDump will become a dependency of another event.
-			_, isChosen := p.EventsToTrace[events.PrintMemDump]
-			if !isChosen {
+			_, isSelected := p.Rules[events.PrintMemDump]
+			if !isSelected {
 				continue
 			}
-			printMemDumpFilters := p.DataFilter.GetEventFilters(events.PrintMemDump)
+			printMemDumpFilters := p.Rules[events.PrintMemDump].DataFilter.GetFieldFilters()
 			if len(printMemDumpFilters) == 0 {
 				continue
 			}
@@ -1115,7 +1129,7 @@ func (t *Tracker) populateFilterMaps(updateProcTree bool) error {
 	polCfg, err := t.policyManager.UpdateBPF(
 		t.bpfModule,
 		t.containers,
-		t.eventsParamTypes,
+		t.eventsFieldTypes,
 		true,
 		updateProcTree,
 	)
@@ -1145,7 +1159,7 @@ func (t *Tracker) attachEvent(id events.ID) error {
 		return err
 	}
 	for _, probe := range depsNode.GetDependencies().GetProbes() {
-		err := t.probes.Attach(probe.GetHandle(), t.cgroups, t.kernelSymbols)
+		err := t.defaultProbes.Attach(probe.GetHandle(), t.cgroups, t.kernelSymbols)
 		if err == nil {
 			continue
 		}
@@ -1178,7 +1192,7 @@ func (t *Tracker) attachProbes() error {
 				logger.Errorw("Got node from type not requested")
 				return nil
 			}
-			err := t.probes.Attach(probeNode.GetHandle(), t.cgroups, t.kernelSymbols)
+			err := t.defaultProbes.Attach(probeNode.GetHandle(), t.cgroups, t.kernelSymbols)
 			if err != nil {
 				return []dependencies.Action{dependencies.NewCancelNodeAddAction(err)}
 			}
@@ -1193,7 +1207,7 @@ func (t *Tracker) attachProbes() error {
 				logger.Errorw("Got node from type not requested")
 				return nil
 			}
-			err := t.probes.Detach(probeNode.GetHandle())
+			err := t.defaultProbes.Detach(probeNode.GetHandle())
 			if err != nil {
 				logger.Debugw("Failed to detach probe",
 					"probe", probeNode.GetHandle(),
@@ -1235,7 +1249,7 @@ func (t *Tracker) initBPFProbes() error {
 
 	// Initialize probes
 
-	t.probes, err = probes.NewDefaultProbeGroup(t.bpfModule, t.netEnabled())
+	t.defaultProbes, err = probes.NewDefaultProbeGroup(t.bpfModule, t.netEnabled())
 	if err != nil {
 		return errfmt.WrapError(err)
 	}
@@ -1277,7 +1291,7 @@ func (t *Tracker) initBPF() error {
 	}
 
 	// returned PoliciesConfig is not used here, therefore it's discarded
-	_, err = t.policyManager.UpdateBPF(t.bpfModule, t.containers, t.eventsParamTypes, false, true)
+	_, err = t.policyManager.UpdateBPF(t.bpfModule, t.containers, t.eventsFieldTypes, false, true)
 	if err != nil {
 		return errfmt.WrapError(err)
 	}
@@ -1369,6 +1383,12 @@ func (t *Tracker) Run(ctx gocontext.Context) error {
 	// Start control plane
 	t.controlPlane.Start()
 	go t.controlPlane.Run(ctx)
+
+	// Measure event perf buffer write attempts (METRICS build only)
+
+	if version.MetricsBuild() {
+		go t.countPerfEventSubmissions(ctx)
+	}
 
 	// Main event loop (polling events perf buffer)
 
@@ -1480,10 +1500,16 @@ func (t *Tracker) Close() {
 			logger.Errorw("failed to stop control plane when closing tracker", "err", err)
 		}
 	}
-	if t.probes != nil {
-		err := t.probes.DetachAll()
+	if t.defaultProbes != nil {
+		err := t.defaultProbes.DetachAll()
 		if err != nil {
-			logger.Errorw("failed to detach probes when closing tracker", "err", err)
+			logger.Errorw("failed to detach default probes when closing tracker", "err", err)
+		}
+	}
+	for name, probeGroup := range t.extraProbes {
+		err := probeGroup.DetachAll()
+		if err != nil {
+			logger.Errorw("failed to detach probes when closing tracker", "probe group", name, "err", err)
 		}
 	}
 	if t.bpfModule != nil {
@@ -1556,7 +1582,7 @@ func (t *Tracker) getSelfLoadedPrograms(kprobesOnly bool) map[string]int {
 		definition := events.Core.GetDefinitionByID(tr)
 
 		for _, depProbes := range definition.GetDependencies().GetProbes() {
-			currProbe := t.probes.GetProbeByHandle(depProbes.GetHandle())
+			currProbe := t.defaultProbes.GetProbeByHandle(depProbes.GetHandle())
 			name := ""
 			switch p := currProbe.(type) {
 			case *probes.TraceProbe:
@@ -1728,11 +1754,11 @@ func (t *Tracker) triggerMemDump(event trace.Event) []error {
 	for it := t.policyManager.CreateAllIterator(); it.HasNext(); {
 		p := it.Next()
 		// This might break in the future if PrintMemDump will become a dependency of another event.
-		_, isChosen := p.EventsToTrace[events.PrintMemDump]
-		if !isChosen {
+		_, isSelected := p.Rules[events.PrintMemDump]
+		if !isSelected {
 			continue
 		}
-		printMemDumpFilters := p.DataFilter.GetEventFilters(events.PrintMemDump)
+		printMemDumpFilters := p.Rules[events.PrintMemDump].DataFilter.GetFieldFilters()
 		if len(printMemDumpFilters) == 0 {
 			errs = append(errs, errfmt.Errorf("policy %d: no address or symbols were provided to print_mem_dump event. "+
 				"please provide it via -e print_mem_dump.data.address=<hex address>"+

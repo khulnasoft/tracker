@@ -4,14 +4,14 @@ import (
 	gocontext "context"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/cgroup"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/cgroup"
+	"github.com/khulnasof/tracker/pkg/containers"
+	"github.com/khulnasof/tracker/pkg/containers/runtime"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 //

@@ -1,9 +1,9 @@
 package events
 
 import (
-	"github.com/khulnasoft/tracker/pkg/events/parsers"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events/parsers"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func parseMMapProt(arg *trace.Argument, prot uint64) {

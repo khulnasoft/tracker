@@ -5,11 +5,11 @@ import (
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 const (

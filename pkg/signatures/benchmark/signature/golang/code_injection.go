@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/signatures/helpers"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 type codeInjection struct {
@@ -65,11 +65,11 @@ func (sig *codeInjection) OnEvent(event protocol.Event) error {
 	}
 	switch ee.EventName {
 	case "open", "openat":
-		flags, err := helpers.GetTrackerIntArgumentByName(ee, "flags")
+		flags, err := helpers.GetTrackerArgumentByName(ee, "flags", helpers.GetArgOps{DefaultArgs: false})
 		if err != nil {
 			return fmt.Errorf("%v %#v", err, ee)
 		}
-		if helpers.IsFileWrite(flags) {
+		if helpers.IsFileWrite(flags.Value.(string)) {
 			pathname, err := helpers.GetTrackerArgumentByName(ee, "pathname", helpers.GetArgOps{DefaultArgs: false})
 			if err != nil {
 				return err

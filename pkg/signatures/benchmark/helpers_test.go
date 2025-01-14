@@ -4,9 +4,9 @@ import (
 	_ "embed"
 	"math/rand"
 
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/signatures/engine"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 var (

@@ -5,11 +5,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/signatures/helpers"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 type e2eProcessExecuteFailed struct {

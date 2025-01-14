@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"gotest.tools/assert"
 
+	"github.com/khulnasof/tracker/pkg/filehash"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/filehash"
 )
 
 func computeFileHashOld(file *os.File) (string, error) {

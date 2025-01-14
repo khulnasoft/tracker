@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/khulnasof/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 func outputHelp() string {
@@ -86,7 +86,7 @@ func TrackerEbpfPrepareOutput(outputSlice []string, newBinary bool) (PrepareOutp
 
 		printerConfigs = append(printerConfigs, stdoutConfig)
 	} else {
-		file, err := createFile(outPath)
+		file, err := CreateOutputFile(outPath)
 		if err != nil {
 			return outConfig, err
 		}

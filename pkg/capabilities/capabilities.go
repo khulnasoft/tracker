@@ -9,8 +9,8 @@ import (
 
 	"kernel.org/pub/linux/libs/security/libcap/cap"
 
+	"github.com/khulnasof/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 var caps *Capabilities   // singleton for all packages

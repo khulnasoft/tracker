@@ -3,12 +3,12 @@ package ebpf
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	trackertime "github.com/khulnasoft/tracker/pkg/time"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/proctree"
+	trackertime khulnasof/trackernasof/tracker/pkg/time"
+	"github.com/khulnasof/trkhulnasof/tracker
+	"github.com/khulnasof/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events/parse"
 )
 
 //

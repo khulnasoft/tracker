@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/khulnasof/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 const (

@@ -6,22 +6,22 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/khulnasoft/tracker/pkg/cmd/printer"
-	"github.com/khulnasoft/tracker/pkg/config"
-	tracker "github.com/khulnasoft/tracker/pkg/ebpf"
+	"github.com/khulnasof/tracker/pkg/cmd/printer"
+	"github.com/khulnasof/tracker/pkg/config"
+	tracker "github.com/khulnasof/tracker/pkg/ebpf"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/server/grpc"
+	"github.com/khulnasof/tracker/pkg/server/http"
+	"github.com/khulnasof/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/server/grpc"
-	"github.com/khulnasoft/tracker/pkg/server/http"
-	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 type Runner struct {
 	TrackerConfig config.Config
-	Printer      printer.EventPrinter
-	InstallPath  string
-	HTTPServer   *http.Server
-	GRPCServer   *grpc.Server
+	Printer       printer.EventPrinter
+	InstallPath   string
+	HTTPServer    *http.Server
+	GRPCServer    *grpc.Server
 }
 
 func (r Runner) Run(ctx context.Context) error {

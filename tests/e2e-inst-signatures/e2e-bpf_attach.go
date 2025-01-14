@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/events/parsers"
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/signatures/helpers"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 type e2eBpfAttach struct {
@@ -49,14 +48,14 @@ func (sig *e2eBpfAttach) OnEvent(event protocol.Event) error {
 			return err
 		}
 
-		attachType, err := helpers.GetTrackerIntArgumentByName(eventObj, "attach_type")
+		attachType, err := helpers.GetTrackerStringArgumentByName(eventObj, "attach_type")
 		if err != nil {
 			return err
 		}
 
 		// check expected values from test for detection
 
-		if symbolName != "security_file_open" || attachType != int(parsers.BPFProgTypeKprobe) {
+		if symbolName != "security_file_open" || attachType != "kprobe" {
 			return nil
 		}
 

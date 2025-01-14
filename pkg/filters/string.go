@@ -5,9 +5,9 @@ import (
 
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/filters/sets"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/filters/sets"
+	"github.com/khulnasof/tracker/pkg/utils"
 )
 
 // ValueHandler is a function that can be passed to StringFilter to handle values when they are parsed
@@ -238,21 +238,33 @@ func (f *StringFilter) MatchIfKeyMissing() bool {
 }
 
 type StringFilterEqualities struct {
-	Equal    map[string]struct{}
-	NotEqual map[string]struct{}
+	ExactEqual     map[string]struct{}
+	ExactNotEqual  map[string]struct{}
+	PrefixEqual    map[string]struct{}
+	PrefixNotEqual map[string]struct{}
+	SuffixEqual    map[string]struct{}
+	SuffixNotEqual map[string]struct{}
 }
 
 func (f *StringFilter) Equalities() StringFilterEqualities {
 	if !f.Enabled() {
 		return StringFilterEqualities{
-			Equal:    map[string]struct{}{},
-			NotEqual: map[string]struct{}{},
+			ExactEqual:     map[string]struct{}{},
+			ExactNotEqual:  map[string]struct{}{},
+			PrefixEqual:    map[string]struct{}{},
+			PrefixNotEqual: map[string]struct{}{},
+			SuffixEqual:    map[string]struct{}{},
+			SuffixNotEqual: map[string]struct{}{},
 		}
 	}
 
 	return StringFilterEqualities{
-		Equal:    maps.Clone(f.equal),
-		NotEqual: maps.Clone(f.notEqual),
+		ExactEqual:     maps.Clone(f.equal),
+		ExactNotEqual:  maps.Clone(f.notEqual),
+		PrefixEqual:    maps.Clone(f.prefixes.Set),
+		PrefixNotEqual: maps.Clone(f.notPrefixes.Set),
+		SuffixEqual:    maps.Clone(f.suffixes.Set),
+		SuffixNotEqual: maps.Clone(f.notSuffixes.Set),
 	}
 }
 

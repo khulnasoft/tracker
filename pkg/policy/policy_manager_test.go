@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/khulnasof/tracker/pkg/events/dependencies"
 	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
 )
 
 func TestPolicyManagerEnableRule(t *testing.T) {

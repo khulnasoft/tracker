@@ -3,20 +3,20 @@ package policy
 import (
 	"sync"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft/tracker/pkg/capabilities"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/dnscache"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/pcaps"
-	"github.com/khulnasoft/tracker/pkg/proctree"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/bufferdecoder"
+	"github.com/khulnasof/tracker/pkg/capabilities"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/containers"
+	"github.com/khulnasof/tracker/pkg/dnscache"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/dependencies"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/pcaps"
+	"github.com/khulnasof/tracker/pkg/proctree"
+	"github.com/khulnasof/tracker/pkg/utils"
 )
 
 type ManagerConfig struct {
@@ -254,7 +254,7 @@ func (m *Manager) selectUserEvents() {
 
 	for _, p := range m.ps.policiesList {
 		pId := p.ID
-		for eId := range p.EventsToTrace {
+		for eId := range p.Rules {
 			ef, ok := userEvents[eId]
 			if !ok {
 				ef = newEventFlags(eventFlagsWithEnabled(true))
@@ -562,11 +562,11 @@ func (m *Manager) CreateAllIterator() utils.Iterator[*Policy] {
 	return m.ps.createAllIterator()
 }
 
-func (m *Manager) FilterableInUserland(bitmap uint64) bool {
+func (m *Manager) FilterableInUserland() bool {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	return (bitmap & m.ps.filterInUserland()) != 0
+	return m.ps.filterableInUserland
 }
 
 func (m *Manager) WithContainerFilterEnabled() uint64 {
@@ -593,12 +593,12 @@ func (m *Manager) LookupByName(name string) (*Policy, error) {
 func (m *Manager) UpdateBPF(
 	bpfModule *bpf.Module,
 	cts *containers.Containers,
-	eventsParams map[events.ID][]bufferdecoder.ArgType,
+	eventsFields map[events.ID][]bufferdecoder.ArgType,
 	createNewMaps bool,
 	updateProcTree bool,
 ) (*PoliciesConfig, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	return m.ps.updateBPF(bpfModule, cts, m.rules, eventsParams, createNewMaps, updateProcTree)
+	return m.ps.updateBPF(bpfModule, cts, m.rules, eventsFields, createNewMaps, updateProcTree)
 }

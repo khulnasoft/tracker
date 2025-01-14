@@ -3,9 +3,9 @@ package flags
 import (
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/containers/runtime"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/containers/runtime"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
 )
 
 func containersHelp() string {

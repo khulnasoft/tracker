@@ -7,8 +7,8 @@ import (
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
+	"github.com/khulnasof/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 //
@@ -35,7 +35,7 @@ import (
 //
 
 const (
-	DefaultProcessCacheSize = 32768
+	DefaultProcessCacheSize = 16384
 	DefaultThreadCacheSize  = 32768
 	DefaultProcessCacheTTL  = time.Second * 120
 	DefaultThreadCacheTTL   = time.Second * 120

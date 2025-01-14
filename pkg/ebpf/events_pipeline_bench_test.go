@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/bufferdecoder"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/bufferdecoder"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 const (

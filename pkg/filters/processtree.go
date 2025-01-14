@@ -6,8 +6,8 @@ import (
 
 	"golang.org/x/exp/maps"
 
+	"github.com/khulnasof/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 type ProcessTreeFilter struct {

@@ -1,8 +1,8 @@
 package policy
 
 import (
+	"github.com/khulnasof/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/utils"
 )
 
 // compute recalculates values, updates flags, fills the reduced userland map,
@@ -119,21 +119,32 @@ func (ps *policies) updateContainerFilterEnabled() {
 // updateUserlandPolicies sets the userlandPolicies list and the filterableInUserland bitmap.
 func (ps *policies) updateUserlandPolicies() {
 	userlandList := []*Policy{}
-	ps.filterableInUserland = 0
+	ps.filterableInUserland = false
 
 	for _, p := range ps.allFromArray() {
 		if p == nil {
 			continue
 		}
 
-		if p.DataFilter.Enabled() ||
-			p.RetFilter.Enabled() ||
-			p.ScopeFilter.Enabled() ||
+		hasUserlandFilters := false
+
+		// Check filters under Rules
+		for _, rule := range p.Rules {
+			if rule.DataFilter.Enabled() ||
+				rule.RetFilter.Enabled() ||
+				rule.ScopeFilter.Enabled() {
+				hasUserlandFilters = true
+				break
+			}
+		}
+
+		// Check other filters
+		if hasUserlandFilters ||
 			(p.UIDFilter.Enabled() && ps.uidFilterableInUserland) ||
 			(p.PIDFilter.Enabled() && ps.pidFilterableInUserland) {
-			// add policy to userland list and set the respective bit
+			// add policy to userland list and set the flag
 			userlandList = append(userlandList, p)
-			utils.SetBit(&ps.filterableInUserland, uint(p.ID))
+			ps.filterableInUserland = true
 		}
 	}
 

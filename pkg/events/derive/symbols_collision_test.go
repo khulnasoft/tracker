@@ -8,12 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/dependencies"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/dependencies"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/filters"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/policy"
+	"github.com/khulnasof/tracker/pkg/utils/sharedobjs"
 )
 
 type testSO struct {
@@ -479,20 +480,23 @@ func TestSymbolsCollision(t *testing.T) {
 
 			// Prepare mocked filters for the existing test cases
 
-			filterName := "symbols_collision.data.symbols"
-			eventsNameToID := map[string]events.ID{"symbols_collision": events.SymbolsCollision}
-
 			p := policy.NewPolicy()
-			p.EventsToTrace = map[events.ID]string{events.SymbolsCollision: "symbols_collision"}
+
+			// Initialize all filters for SymbolsCollision event
+			p.Rules[events.SymbolsCollision] = policy.RuleData{
+				DataFilter:  filters.NewDataFilter(),
+				RetFilter:   filters.NewIntFilter(),
+				ScopeFilter: filters.NewScopeFilter(),
+			}
 
 			if len(testCase.blackList) > 0 {
 				operAndValsBlack := fmt.Sprintf("!=%s", strings.Join(testCase.blackList, ","))
-				err := p.DataFilter.Parse(filterName, operAndValsBlack, eventsNameToID)
+				err := p.Rules[events.SymbolsCollision].DataFilter.Parse(events.SymbolsCollision, "symbols", operAndValsBlack)
 				require.NoError(t, err)
 			}
 			if len(testCase.whiteList) > 0 {
 				operAndValsWhite := fmt.Sprintf("=%s", strings.Join(testCase.whiteList, ","))
-				err := p.DataFilter.Parse(filterName, operAndValsWhite, eventsNameToID)
+				err := p.Rules[events.SymbolsCollision].DataFilter.Parse(events.SymbolsCollision, "symbols", operAndValsWhite)
 				require.NoError(t, err)
 			}
 

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft/tracker/pkg/policy"
+	"github.com/khulkhulnasof/tracker/policy"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/filters"
+	k8s "github.khulnasof/trackeracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
 )
 
 // PrepareFilterMapsForPolicies prepares the scope and events PolicyFilterMap for the policies
@@ -103,220 +103,246 @@ func PrepareFilterMapsFromPolicies(policies []k8s.PolicyInterface) (PolicyScopeM
 
 // CreatePolicies creates a Policies object from the scope and events maps.
 func CreatePolicies(policyScopeMap PolicyScopeMap, policyEventsMap PolicyEventMap, newBinary bool) ([]*policy.Policy, error) {
-	eventsNameToID := events.Core.NamesToIDs()
-	// remove internal events since they shouldn't be accessible by users
-	for event, id := range eventsNameToID {
-		if events.Core.GetDefinitionByID(id).IsInternal() {
-			delete(eventsNameToID, event)
-		}
-	}
-
 	policies := make([]*policy.Policy, 0, len(policyScopeMap))
-	for policyIdx, policyScopeFilters := range policyScopeMap {
-		p := policy.NewPolicy()
-		p.ID = policyIdx
-		p.Name = policyScopeFilters.policyName
 
-		for _, scopeFlag := range policyScopeFilters.scopeFlags {
-			// The filters which are more common (container, event, pid, set, uid) can be given using a prefix of them.
-			// Other filters should be given using their full name.
-			// To avoid collisions between filters that share the same prefix, put the filters which should have an exact match first!
-			if scopeFlag.scopeName == "comm" {
-				err := p.CommFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "exec" || scopeFlag.scopeName == "executable" ||
-				scopeFlag.scopeName == "bin" || scopeFlag.scopeName == "binary" {
-				// TODO: Rename BinaryFilter to ExecutableFilter
-				err := p.BinaryFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "container" {
-				if scopeFlag.operator == "not" {
-					err := p.ContFilter.Parse(scopeFlag.full)
-					if err != nil {
-						return nil, err
-					}
-					continue
-				}
-				if scopeFlag.operatorAndValues == "=new" {
-					err := p.NewContFilter.Parse("new")
-					if err != nil {
-						return nil, err
-					}
-					continue
-				}
-				if scopeFlag.operatorAndValues == "!=new" {
-					err := p.ContFilter.Parse(scopeFlag.scopeName)
-					if err != nil {
-						return nil, err
-					}
-					err = p.NewContFilter.Parse("!new")
-					if err != nil {
-						return nil, err
-					}
-					continue
-				}
-				if scopeFlag.operator == "=" {
-					err := p.ContIDFilter.Parse(scopeFlag.operatorAndValues)
-					if err != nil {
-						return nil, err
-					}
-					continue
-				}
-
-				err := p.ContFilter.Parse(scopeFlag.scopeName)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "mntns" {
-				if strings.ContainsAny(scopeFlag.operator, "<>") {
-					return nil, filters.InvalidExpression(scopeFlag.operatorAndValues)
-				}
-				err := p.MntNSFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "pidns" {
-				if strings.ContainsAny(scopeFlag.operator, "<>") {
-					return nil, filters.InvalidExpression(scopeFlag.operatorAndValues)
-				}
-				err := p.PidNSFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "tree" {
-				err := p.ProcessTreeFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "pid" {
-				if scopeFlag.operatorAndValues == "=new" {
-					if err := p.NewPidFilter.Parse("new"); err != nil {
-						return nil, err
-					}
-					continue
-				}
-				if scopeFlag.operatorAndValues == "!=new" {
-					if err := p.NewPidFilter.Parse("!new"); err != nil {
-						return nil, err
-					}
-					continue
-				}
-				err := p.PIDFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "uts" {
-				err := p.UTSFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "uid" {
-				err := p.UIDFilter.Parse(scopeFlag.operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if scopeFlag.scopeName == "follow" {
-				p.Follow = true
-				continue
-			}
-
-			return nil, InvalidScopeOptionError(scopeFlag.full, newBinary)
-		}
-
-		eventFilter := eventFilter{
-			Equal:    []string{},
-			NotEqual: []string{},
-		}
-
+	for policyIdx, policyScope := range policyScopeMap {
 		policyEvents, ok := policyEventsMap[policyIdx]
 		if !ok {
 			return nil, InvalidFlagEmpty()
 		}
 
-		for _, evtFlag := range policyEvents.eventFlags {
-			if evtFlag.eventOptionType == "" {
-				// no event option type means that the flag contains only event names
-				if evtFlag.operator == "-" {
-					eventFilter.NotEqual = append(eventFilter.NotEqual, evtFlag.eventName)
-				} else {
-					eventFilter.Equal = append(eventFilter.Equal, evtFlag.eventName)
-				}
-				continue
-			}
-
-			// at this point, we can assume that event flag is an event option filter (args, retval, scope),
-			// so, as a sugar, we can add the event name to be filtered
-			eventFilter.Equal = append(eventFilter.Equal, evtFlag.eventName)
-
-			evtFilter := evtFlag.eventFilter
-			operatorAndValues := evtFlag.operatorAndValues
-
-			if evtFlag.eventOptionType == "retval" {
-				err := p.RetFilter.Parse(evtFilter, operatorAndValues, eventsNameToID)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if evtFlag.eventOptionType == "scope" {
-				err := p.ScopeFilter.Parse(evtFilter, operatorAndValues)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			if evtFlag.eventOptionType == "data" || evtFlag.eventOptionType == "args" {
-				err := p.DataFilter.Parse(evtFilter, operatorAndValues, eventsNameToID)
-				if err != nil {
-					return nil, err
-				}
-				continue
-			}
-
-			return nil, InvalidFilterFlagFormat(evtFlag.full)
-		}
-
-		var err error
-		p.EventsToTrace, err = prepareEventsToTrace(eventFilter, eventsNameToID)
+		pol, err := createSinglePolicy(policyIdx, policyScope, policyEvents, newBinary)
 		if err != nil {
 			return nil, err
 		}
-
-		policies = append(policies, p)
+		policies = append(policies, pol)
 	}
 
 	return policies, nil
+}
+
+func createSinglePolicy(policyIdx int, policyScope policyScopes, policyEvents policyEvents, newBinary bool) (*policy.Policy, error) {
+	p := policy.NewPolicy()
+	p.ID = policyIdx
+	p.Name = policyScope.policyName
+
+	if err := parseScopeFilters(p, policyScope.scopeFlags, newBinary); err != nil {
+		return nil, err
+	}
+
+	if err := parseEventFilters(p, policyEvents.eventFlags); err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func parseScopeFilters(p *policy.Policy, scopeFlags []scopeFlag, newBinary bool) error {
+	for _, scopeFlag := range scopeFlags {
+		switch scopeFlag.scopeName {
+		case "comm":
+			if err := p.CommFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "exec", "executable", "bin", "binary":
+			if err := p.BinaryFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "container":
+			switch {
+			case scopeFlag.operator == "not":
+				if err := p.ContFilter.Parse(scopeFlag.full); err != nil {
+					return err
+				}
+			case scopeFlag.operatorAndValues == "=new":
+				if err := p.NewContFilter.Parse("new"); err != nil {
+					return err
+				}
+			case scopeFlag.operatorAndValues == "!=new":
+				if err := p.ContFilter.Parse(scopeFlag.scopeName); err != nil {
+					return err
+				}
+				if err := p.NewContFilter.Parse("!new"); err != nil {
+					return err
+				}
+			case scopeFlag.operator == "=":
+				if err := p.ContIDFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+					return err
+				}
+			default:
+				if err := p.ContFilter.Parse(scopeFlag.scopeName); err != nil {
+					return err
+				}
+			}
+
+		case "mntns":
+			if strings.ContainsAny(scopeFlag.operator, "<>") {
+				return filters.InvalidExpression(scopeFlag.operatorAndValues)
+			}
+			if err := p.MntNSFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "pidns":
+			if strings.ContainsAny(scopeFlag.operator, "<>") {
+				return filters.InvalidExpression(scopeFlag.operatorAndValues)
+			}
+			if err := p.PidNSFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "tree":
+			if err := p.ProcessTreeFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "pid":
+			switch scopeFlag.operatorAndValues {
+			case "=new":
+				if err := p.NewPidFilter.Parse("new"); err != nil {
+					return err
+				}
+			case "!=new":
+				if err := p.NewPidFilter.Parse("!new"); err != nil {
+					return err
+				}
+			default:
+				if err := p.PIDFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+					return err
+				}
+			}
+
+		case "uts":
+			if err := p.UTSFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "uid":
+			if err := p.UIDFilter.Parse(scopeFlag.operatorAndValues); err != nil {
+				return err
+			}
+
+		case "follow":
+			p.Follow = true
+
+		default:
+			return InvalidScopeOptionError(scopeFlag.full, newBinary)
+		}
+	}
+	return nil
+}
+
+func parseEventFilters(p *policy.Policy, eventFlags []eventFlag) error {
+	eventNamesToID := events.Core.NamesToIDs()
+	// remove internal events since they shouldn't be accessible by users
+	for event, id := range eventNamesToID {
+		if events.Core.GetDefinitionByID(id).IsInternal() {
+			delete(eventNamesToID, event)
+		}
+	}
+
+	// map sets to events
+	setsToEvents := make(map[string][]events.ID)
+	for _, eventDefinition := range events.Core.GetDefinitions() {
+		for _, set := range eventDefinition.GetSets() {
+			setsToEvents[set] = append(setsToEvents[set], eventDefinition.GetID())
+		}
+	}
+
+	excludedEvents := make([]string, 0)
+
+	// Process event flags
+	for _, evtFlag := range eventFlags {
+		if evtFlag.eventOptionType == "" && evtFlag.operator == "-" {
+			excludedEvents = append(excludedEvents, evtFlag.eventName)
+			continue
+		}
+
+		eventIdToName := make(map[events.ID]string)
+		if strings.HasSuffix(evtFlag.eventName, "*") {
+			found := false
+			prefix := evtFlag.eventName[:len(evtFlag.eventName)-1]
+			for event, id := range eventNamesToID {
+				if strings.HasPrefix(event, prefix) {
+					eventIdToName[id] = event
+					found = true
+				}
+			}
+			if !found {
+				return InvalidEventError(evtFlag.eventName)
+			}
+		} else {
+			id, ok := eventNamesToID[evtFlag.eventName]
+			if !ok {
+				// no matching event - maybe it is actually a set?
+				setEvents, ok := setsToEvents[evtFlag.eventName]
+				if !ok {
+					return InvalidEventError(evtFlag.eventName)
+				}
+				for _, id := range setEvents {
+					eventIdToName[id] = events.Core.GetDefinitionByID(id).GetName()
+				}
+			} else {
+				eventIdToName[id] = evtFlag.eventName
+			}
+		}
+
+		for eventId := range eventIdToName {
+			if _, ok := p.Rules[eventId]; !ok {
+				p.Rules[eventId] = policy.RuleData{
+					EventID:     eventId,
+					ScopeFilter: filters.NewScopeFilter(),
+					DataFilter:  filters.NewDataFilter(),
+					RetFilter:   filters.NewIntFilter(),
+				}
+			}
+
+			if evtFlag.eventOptionType == "" {
+				continue
+			}
+
+			switch evtFlag.eventOptionType {
+			case "retval":
+				if err := p.Rules[eventId].RetFilter.Parse(evtFlag.operatorAndValues); err != nil {
+					return err
+				}
+			case "scope":
+				if err := p.Rules[eventId].ScopeFilter.Parse(evtFlag.eventOptionName, evtFlag.operatorAndValues); err != nil {
+					return err
+				}
+			case "data", "args":
+				if err := p.Rules[eventId].DataFilter.Parse(eventId, evtFlag.eventOptionName, evtFlag.operatorAndValues); err != nil {
+					return err
+				}
+			default:
+				return InvalidFilterFlagFormat(evtFlag.full)
+			}
+		}
+	}
+
+	// if no events were specified, add all events from the default set
+	if len(p.Rules) == 0 {
+		for _, eventId := range setsToEvents["default"] {
+			if _, ok := p.Rules[eventId]; !ok {
+				p.Rules[eventId] = policy.RuleData{
+					EventID:     eventId,
+					ScopeFilter: filters.NewScopeFilter(),
+					DataFilter:  filters.NewDataFilter(),
+					RetFilter:   filters.NewIntFilter(),
+				}
+			}
+		}
+	}
+
+	// remove excluded events from the policy
+	for _, eventName := range excludedEvents {
+		if _, ok := eventNamesToID[eventName]; !ok {
+			return InvalidEventExcludeError(eventName)
+		}
+		delete(p.Rules, eventNamesToID[eventName])
+	}
+
+	return nil
 }

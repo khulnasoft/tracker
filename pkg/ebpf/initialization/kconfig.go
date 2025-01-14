@@ -1,9 +1,9 @@
 package initialization
 
 import (
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
 )
 
 // Custom KernelConfigOption's to extend kernel_config helper support

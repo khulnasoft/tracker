@@ -3,8 +3,8 @@ package filehash
 import (
 	"fmt"
 
+	"github.com/khulnasof/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 const hostDigest = "host"

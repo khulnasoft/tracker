@@ -9,9 +9,9 @@ import (
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/util/validation"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
+	"github.com/khulnasof/tracker/pkg/events"
+	k8s "github.com/khulnasof/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
+	"github.com/khulkhulnasof/trackerkg/errfmt"
 )
 
 // PolicyFile is the structure of the policy file
@@ -281,7 +281,7 @@ func validateEventData(policyName, eventName, dataName string) error {
 			return nil
 		}
 	}
-	for _, p := range eventDefinition.GetParams() {
+	for _, p := range eventDefinition.GetFields() {
 		if p.Name == dataName {
 			return nil
 		}

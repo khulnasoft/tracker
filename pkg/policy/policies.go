@@ -1,14 +1,12 @@
 package policy
 
 import (
-	"sync/atomic"
+	bpf "github.com/khulnasoft/libbpfgo"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
-
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/filters"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils"
 )
 
 const (
@@ -37,7 +35,7 @@ type policies struct {
 	pidFilterMax            uint64
 	uidFilterableInUserland bool
 	pidFilterableInUserland bool
-	filterableInUserland    uint64 // bitmap of policies that must be filtered in userland
+	filterableInUserland    bool
 	containerFiltersEnabled uint64 // bitmap of policies that have at least one container filter type enabled
 }
 
@@ -55,7 +53,7 @@ func NewPolicies() *policies {
 		pidFilterMax:            filters.MaxNotSetUInt,
 		uidFilterableInUserland: false,
 		pidFilterableInUserland: false,
-		filterableInUserland:    0,
+		filterableInUserland:    false,
 		containerFiltersEnabled: 0,
 	}
 }
@@ -81,12 +79,6 @@ func (ps *policies) withContainerFilterEnabled() uint64 {
 // containerFilterEnabled returns true if at least one policy has a container filter type enabled.
 func (ps *policies) containerFilterEnabled() bool {
 	return ps.withContainerFilterEnabled() > 0
-}
-
-// filterInUserland returns a bitmap of policies that must be filtered in userland
-// (ArgFilter, RetFilter, ScopeFilter, UIDFilter and PIDFilter).
-func (ps *policies) filterInUserland() uint64 {
-	return atomic.LoadUint64(&ps.filterableInUserland)
 }
 
 // set sets a policy in the policies, given an ID.

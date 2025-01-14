@@ -3,9 +3,9 @@ package pcaps
 import (
 	lru "github.com/hashicorp/golang-lru/v2"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 // PcapCache is an intermediate LRU cache in between Pcap and Pcaps

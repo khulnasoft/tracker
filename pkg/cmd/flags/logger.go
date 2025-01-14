@@ -7,8 +7,8 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/khulnasof/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
 func logHelp() string {
@@ -129,7 +129,7 @@ func PrepareLogger(logOptions []string, newBinary bool) (logger.LoggingConfig, e
 				return logger.LoggingConfig{}, invalidLogOptionValue(nil, opt, newBinary)
 			}
 
-			w, err = createFile(vals[1])
+			w, err = CreateOutputFile(vals[1])
 			if err != nil {
 				return logger.LoggingConfig{}, err
 			}

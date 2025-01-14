@@ -1,8 +1,8 @@
 package sharedobjs
 
 import (
+	"github.com/khulnasof/tracker/pkg/errfmt"
 	"github.com/khulnasoft/tracker/pkg/containers"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
 )
 
 // ContainersSymbolsLoader is a decorator for SO loaders that resolves containers-relative paths to

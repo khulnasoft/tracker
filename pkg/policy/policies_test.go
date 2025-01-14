@@ -9,9 +9,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/filters/sets"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/filters"
+	"github.com/khulnasof/tracker/pkg/filters/sets"
 )
 
 func TestPoliciesClone(t *testing.T) {
@@ -29,7 +29,14 @@ func TestPoliciesClone(t *testing.T) {
 	err = p2.UIDFilter.Parse("=2")
 	require.NoError(t, err)
 
-	err = p2.DataFilter.Parse("read.data.fd", "=dataval", events.Core.NamesToIDs())
+	// Initialize the rule first
+	p2.Rules[events.Read] = RuleData{
+		EventID:     events.Read,
+		DataFilter:  filters.NewDataFilter(),
+		RetFilter:   filters.NewIntFilter(),
+		ScopeFilter: filters.NewScopeFilter(),
+	}
+	err = p2.Rules[events.Read].DataFilter.Parse(events.Read, "fd", "=dataval")
 	require.NoError(t, err)
 
 	err = ps.add(p1)
@@ -48,13 +55,14 @@ func TestPoliciesClone(t *testing.T) {
 		filters.UIntFilter[uint32]{},
 		filters.UIntFilter[uint64]{},
 		filters.BoolFilter{},
-		filters.RetFilter{},
+		filters.IntFilter[int64]{},
 		filters.DataFilter{},
 		filters.ScopeFilter{},
 		filters.ProcessTreeFilter{},
 		filters.BinaryFilter{},
 		sets.PrefixSet{},
 		sets.SuffixSet{},
+		filters.KernelDataFilter{},
 	)
 	opt2 := cmp.FilterPath(
 		func(p cmp.Path) bool {

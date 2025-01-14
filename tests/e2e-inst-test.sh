@@ -122,6 +122,18 @@ for TEST in $TESTS; do
         fi
         "${TESTS_DIR}"/ftrace_hook.sh
         ;;
+    SECURITY_PATH_NOTIFY)
+        if ! grep -qw "security_path_notify" /proc/kallsyms; then
+            info "skip security_path_notify test on kernel $(uname -r) (security hook doesn't exist)"
+            continue
+        fi
+        ;;
+    SUSPICIOUS_SYSCALL_SOURCE)
+        if cat /proc/kallsyms | grep -qP "trace.*vma_store"; then
+            info "skip suspicious_syscall_source test on kernel $(uname -r) (VMAs stored in maple tree)"
+            continue
+        fi
+        ;;
     esac
 
     # Run tracker
@@ -129,20 +141,27 @@ for TEST in $TESTS; do
     rm -f $SCRIPT_TMP_DIR/build-$$
     rm -f $SCRIPT_TMP_DIR/tracker-log-$$
 
-    ./dist/tracker \
-        --install-path $TRACKER_TMP_DIR \
-        --cache cache-type=mem \
-        --cache mem-cache-size=512 \
-        --proctree source=both \
-        --output option:sort-events \
-        --output json:$SCRIPT_TMP_DIR/build-$$ \
-        --output option:parse-arguments \
-        --log file:$SCRIPT_TMP_DIR/tracker-log-$$ \
-        --signatures-dir "$SIG_DIR" \
-        --scope comm=echo,mv,ls,tracker,proctreetester,ping,ds_writer,fsnotify_tester,process_execute,tracker-ebpf,writev,set_fs_pwd.sh \
-        --dnscache enable \
-        --grpc-listen-addr unix:/tmp/tracker.sock \
-        --events "$TEST" &
+    tracker_command="./dist/tracker \
+                        --install-path $TRACKER_TMP_DIR \
+                        --cache cache-type=mem \
+                        --cache mem-cache-size=512 \
+                        --proctree source=both \
+                        --output option:sort-events \
+                        --output json:$SCRIPT_TMP_DIR/build-$$ \
+                        --output option:parse-arguments \
+                        --log file:$SCRIPT_TMP_DIR/tracker-log-$$ \
+                        --signatures-dir "$SIG_DIR" \
+                        --scope comm=echo,mv,ls,tracker,proctreetester,ping,ds_writer,fsnotify_tester,process_execute,tracker-ebpf,writev,set_fs_pwd.sh,sys_src_tester \
+                        --dnscache enable \
+                        --grpc-listen-addr unix:/tmp/tracker.sock \
+                        --events "$TEST""
+    
+    # Some tests might need event parameters
+    if [ "$TEST" = "SUSPICIOUS_SYSCALL_SOURCE" ]; then
+        tracker_command="$tracker_command --events suspicious_syscall_source.args.syscall=exit"
+    fi
+
+    $tracker_command &
 
     # Wait tracker to start
 

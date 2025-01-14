@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/khulnasof/tracker/pkg/capabilities"
 	"github.com/khulnasoft/tracker/pkg/bucketscache"
-	"github.com/khulnasoft/tracker/pkg/capabilities"
 )
 
 func TestPathResolver_ResolveAbsolutePath(t *testing.T) {

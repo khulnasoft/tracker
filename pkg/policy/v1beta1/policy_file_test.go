@@ -6,9 +6,9 @@ import (
 
 	"gotest.tools/assert"
 
-	"github.com/khulnasoft/tracker/pkg/events"
-	k8s "github.com/khulnasoft/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/events"
+	k8s "github.com/khulnasof/tracker/pkg/k8s/apis/tracker.khulnasoft.com/v1beta1"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func TestPolicyValidate(t *testing.T) {

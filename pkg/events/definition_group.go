@@ -4,9 +4,9 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/logger"
 )
 
 // TODO: add states to the EventGroup struct (to keep states of events from that group)
@@ -124,10 +124,10 @@ func (d *DefinitionGroup) AddBatch(givenDefs map[ID]Definition) error {
 	defer d.mutex.Unlock()
 
 	for id, def := range givenDefs {
-		for i := range def.params {
+		for i := range def.fields {
 			// set zero value in the argument definition once,
 			// so it can be reused without recalculation later.
-			def.params[i].Zero = parse.ArgZeroValueFromType(def.params[i].Type)
+			def.fields[i].Zero = parse.ArgZeroValueFromType(def.fields[i].Type)
 		}
 		err := d.add(id, def)
 		if err != nil {

@@ -8,14 +8,14 @@ import (
 	lru "github.com/hashicorp/golang-lru/v2"
 	"golang.org/x/exp/maps"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/parse"
-	"github.com/khulnasoft/tracker/pkg/filters"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/policy"
-	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/events"
+	"github.com/khulnasof/tracker/pkg/events/parse"
+	"github.com/khulnasof/tracker/pkg/filters"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/policy"
+	"github.com/khulnasof/tracker/pkg/utils/sharedobjs"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 func SymbolsLoaded(
@@ -26,8 +26,10 @@ func SymbolsLoaded(
 
 	for it := pManager.CreateAllIterator(); it.HasNext(); {
 		p := it.Next()
-		f := p.DataFilter.GetEventFilters(events.SymbolsLoaded)
-		maps.Copy(symbolsLoadedFilters, f)
+		if rule, ok := p.Rules[events.SymbolsLoaded]; ok {
+			f := rule.DataFilter.GetFieldFilters()
+			maps.Copy(symbolsLoadedFilters, f)
+		}
 	}
 
 	loadWatchedSymbols := []string{}

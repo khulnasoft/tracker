@@ -3,11 +3,11 @@ package probes
 import (
 	"strings"
 
-	bpf "github.com/khulnasoft-lab/libbpfgo"
+	bpf "github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
 )
 
 // NOTE: thread-safety guaranteed by the ProbeGroup big lock.
@@ -112,7 +112,7 @@ func (p *TraceProbe) attach(module *bpf.Module, args ...interface{}) error {
 		var link *bpf.BPFLink
 		var attachFunc func(uint64) (*bpf.BPFLink, error)
 		var syms []environment.KernelSymbol
-		// https://github.com/khulnasoft/tracker/issues/3653#issuecomment-1832642225
+		// https://github.com/khulnasof/tracker/issues/3653#issuecomment-1832642225
 		//
 		// After commit b022f0c7e404 ('tracing/kprobes: Return EADDRNOTAVAIL
 		// when func matches several symbols') it is better to attach kprobes

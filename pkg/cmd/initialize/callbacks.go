@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/khulnasoft-lab/libbpfgo"
+	"github.com/khulnasoft/libbpfgo"
 
-	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/logger"
 )
 
 var (
@@ -79,13 +79,13 @@ func SetLibbpfgoCallbacks() {
 					return true
 				}
 
-				// BUG: https:/github.com/khulnasoft/tracker/issues/1676
+				// BUG: https:/github.com/khulnasof/tracker/issues/1676
 				if libbpfgoKernelExclusivityFlagOnRegexp.MatchString(msg) {
 					return true
 				}
 
-				// BUGS: https://github.com/khulnasoft/tracker/issues/2446
-				//       https://github.com/khulnasoft/tracker/issues/2754
+				// BUGS: https://github.com/khulnasof/tracker/issues/2446
+				//       https://github.com/khulnasof/tracker/issues/2754
 				if libbpfgoKprobePerfEventRegexp.MatchString(msg) {
 					return true
 				}
@@ -97,7 +97,7 @@ func SetLibbpfgoCallbacks() {
 					return true
 				}
 
-				// BUG: https://github.com/khulnasoft/tracker/issues/1602
+				// BUG: https://github.com/khulnasof/tracker/issues/1602
 				if libbpfgoBpfCreateMapXattrRegexp.MatchString(msg) {
 					return true
 				}

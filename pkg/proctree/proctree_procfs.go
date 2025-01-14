@@ -7,14 +7,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	trackertime "github.com/khulnasoft/tracker/pkg/time"
-	"github.com/khulnasoft/tracker/pkg/utils"
-	"github.com/khulnasoft/tracker/pkg/utils/proc"
+	"github.com/khulnasof/tracker/pkg/logger"
+	trackertime "github.com/khulnasof/tracker/pkg/time"
+	"github.com/khulnasof/trkhulnasof/tracker
+	"github.com/khulnasof/tracker/pkg/utils/proc"
+	"github.com/khulnasof/tracker/pkg/errfmt"
 )
 
-const debugMsgs = false                         // debug messages can be too verbose, so they are disabled by default
+const debugMsgs = false                          // debug messages can be too verbose, so they are disabled by default
 const ProcfsClockId = trackertime.CLOCK_BOOTTIME // Procfs uses jiffies, which are based on boottime
 
 const (

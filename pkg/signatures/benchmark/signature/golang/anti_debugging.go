@@ -3,17 +3,15 @@ package golang
 import (
 	"fmt"
 
-	"github.com/khulnasoft/tracker/pkg/events/parsers"
-	"github.com/khulnasoft/tracker/signatures/helpers"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
+	"github.com/khulnasof/tracker/signatures/helpers"
+	"github.com/khulnasof/tracker/types/detect"
+	"github.com/khulnasof/tracker/types/protocol"
+	"github.com/khulnasof/tracker/types/trace"
 )
 
 type antiDebugging struct {
 	cb       detect.SignatureHandler
 	metadata detect.SignatureMetadata
-	logger   detect.Logger
 }
 
 func NewAntiDebuggingSignature() (detect.Signature, error) {
@@ -32,7 +30,6 @@ func NewAntiDebuggingSignature() (detect.Signature, error) {
 
 func (sig *antiDebugging) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	sig.logger = ctx.Logger
 	return nil
 }
 
@@ -55,30 +52,22 @@ func (sig *antiDebugging) OnEvent(event protocol.Event) error {
 	if ee.EventName != "ptrace" {
 		return nil
 	}
-	requestArg, err := helpers.GetTrackerIntArgumentByName(ee, "request")
+	request, err := helpers.GetTrackerArgumentByName(ee, "request", helpers.GetArgOps{DefaultArgs: false})
 	if err != nil {
 		return err
 	}
-
-	if uint64(requestArg) != parsers.PTRACE_TRACEME.Value() {
+	requestString, ok := request.Value.(string)
+	if !ok {
+		return fmt.Errorf("failed to cast request's value")
+	}
+	if requestString != "PTRACE_TRACEME" {
 		return nil
 	}
-
-	var ptraceRequestData string
-	requestString, err := parsers.ParsePtraceRequestArgument(uint64(requestArg))
-
-	if err != nil {
-		ptraceRequestData = fmt.Sprint(requestArg)
-		sig.logger.Debugw("anti_debugging sig: failed to parse ptrace request argument: %v", err)
-	} else {
-		ptraceRequestData = requestString.String()
-	}
-
 	sig.cb(&detect.Finding{
 		SigMetadata: sig.metadata,
 		Event:       event,
 		Data: map[string]interface{}{
-			"ptrace request": ptraceRequestData,
+			"ptrace request": requestString,
 		},
 	})
 	return nil

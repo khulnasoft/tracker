@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/khulnasof/tracker/pkg/events/queue"
 	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/events/queue"
 )
 
 func cacheHelp() string {

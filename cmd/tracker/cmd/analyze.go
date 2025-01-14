@@ -1,36 +1,40 @@
 package cmd
 
 import (
-	"bufio"
-	"context"
-	"encoding/json"
-	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/khulnasoft/tracker/pkg/analyze"
 	"github.com/khulnasoft/tracker/pkg/cmd/flags"
-	"github.com/khulnasoft/tracker/pkg/cmd/initialize/sigs"
-	"github.com/khulnasoft/tracker/pkg/events"
-	"github.com/khulnasoft/tracker/pkg/events/findings"
+	"github.com/khulnasoft/tracker/pkg/cmd/printer"
+	"github.com/khulnasoft/tracker/pkg/config"
 	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/signatures/engine"
-	"github.com/khulnasoft/tracker/pkg/signatures/signature"
-	"github.com/khulnasoft/tracker/types/detect"
-	"github.com/khulnasoft/tracker/types/protocol"
-	"github.com/khulnasoft/tracker/types/trace"
 )
 
 func init() {
-	rootCmd.AddCommand(analyze)
+	rootCmd.AddCommand(analyzeCmd)
 
 	// flags
 
+	// source
+	analyzeCmd.Flags().String(
+		"source",
+		"",
+		"Source file to analyze (required). Currently only JSON is supported.",
+	)
+
+	// output
+	analyzeCmd.Flags().String(
+		"output",
+		"json:stdout",
+		"Output destination (file, webhook, fluentbit) and format (json, gotemplate=, table) set as <output_path>:<format>",
+	)
+
 	// events
-	analyze.Flags().StringArrayP(
+	analyzeCmd.Flags().StringArrayP(
 		"events",
 		"e",
 		[]string{},
@@ -38,20 +42,13 @@ func init() {
 	)
 
 	// signatures-dir
-	analyze.Flags().StringArray(
+	analyzeCmd.Flags().StringArray(
 		"signatures-dir",
 		[]string{},
-		"Directory where to search for signatures in OPA (.rego) and Go plugin (.so) formats",
+		"Directory where to search for signatures in Go plugin (.so) format",
 	)
 
-	// rego
-	analyze.Flags().StringArray(
-		"rego",
-		[]string{},
-		"Control event rego settings",
-	)
-
-	analyze.Flags().StringArrayP(
+	analyzeCmd.Flags().StringArrayP(
 		"log",
 		"l",
 		[]string{"info"},
@@ -59,10 +56,9 @@ func init() {
 	)
 }
 
-var analyze = &cobra.Command{
-	Use:     "analyze input.json",
+var analyzeCmd = &cobra.Command{
+	Use:     "analyze [--source file]",
 	Aliases: []string{},
-	Args:    cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 	Short:   "Analyze past events with signature events [Experimental]",
 	Long: `Analyze allow you to explore signature events with past events.
 
@@ -70,11 +66,12 @@ Tracker can be used to collect events and store it in a file. This file can be u
 
 eg:
 tracker --events ptrace --output=json:events.json
-tracker analyze --events anti_debugging events.json`,
+tracker analyze --events anti_debugging --source events.json`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		bindViperFlag(cmd, "events")
+		bindViperFlag(cmd, "source")
+		bindViperFlag(cmd, "output")
 		bindViperFlag(cmd, "log")
-		bindViperFlag(cmd, "rego")
 		bindViperFlag(cmd, "signatures-dir")
 	},
 	Run:                   command,
@@ -90,16 +87,59 @@ func command(cmd *cobra.Command, args []string) {
 	}
 	logger.Init(logCfg)
 
-	inputFile, err := os.Open(args[0])
+	// Set up input
+	sourcePath := viper.GetString("source")
+	if sourcePath == "" {
+		logger.Fatalw("source path cannot be empty")
+	}
+	sourceFile, err := os.Open(sourcePath)
 	if err != nil {
 		logger.Fatalw("Failed to get signatures-dir flag", "err", err)
 	}
 
-	// Rego command line flags
+	// Set up printer output (outpath:format)
+	outputArg := viper.GetString("output")
 
-	rego, err := flags.PrepareRego(viper.GetStringSlice("rego"))
+	// placeholder printer for legacy mode
+	p, err := printer.New(config.PrinterConfig{
+		OutFile: os.Stdout,
+		Kind:    "ignore",
+	})
+
 	if err != nil {
-		logger.Fatalw("Failed to parse rego flags", "err", err)
+		logger.Fatalw("Failed to initialize initial printer")
+	}
+
+	isLegacy := false
+	legacyOutFile := os.Stdout
+	outputParts := strings.SplitN(outputArg, ":", 2)
+	if len(outputParts) > 2 || len(outputParts) == 0 {
+		logger.Fatalw("Failed to prepare output format (must be of format <format>:<optional_output_path>)")
+	}
+
+	outFormat := outputParts[0]
+	outPath := ""
+	if len(outputParts) > 1 {
+		outPath = outputParts[1]
+	}
+
+	if outFormat == "legacy" {
+		if outPath != "stdout" && outPath != "" {
+			legacyOutFile, err = flags.CreateOutputFile(outPath)
+			if err != nil {
+				logger.Fatalw("Failed to create output file for legacy output")
+			}
+		}
+		isLegacy = true
+	} else {
+		printerCfg, err := flags.PreparePrinterConfig(outFormat, outPath)
+		if err != nil {
+			logger.Fatalw("Failed to prepare output configuration", "error", err)
+		}
+		p, err = printer.New(printerCfg)
+		if err != nil {
+			logger.Fatalw("Failed to create printer", "error", err)
+		}
 	}
 
 	// Signature directory command line flags
@@ -110,139 +150,16 @@ func command(cmd *cobra.Command, args []string) {
 		signatureEvents = nil
 	}
 
-	signatures, _, err := signature.Find(
-		rego.RuntimeTarget,
-		rego.PartialEval,
-		viper.GetStringSlice("signatures-dir"),
-		signatureEvents,
-		rego.AIO,
-	)
+	signatureDirs := viper.GetStringSlice("signatures-dir")
 
-	if err != nil {
-		logger.Fatalw("Failed to find signature event", "err", err)
-	}
-
-	if len(signatures) == 0 {
-		logger.Fatalw("No signature event loaded")
-	}
-
-	logger.Infow(
-		"Signatures loaded",
-		"total", len(signatures),
-		"signatures", getSigsNames(signatures),
-	)
-
-	sigNamesToIds := sigs.CreateEventsFromSignatures(events.StartSignatureID, signatures)
-
-	engineConfig := engine.Config{
-		Signatures:          signatures,
-		SignatureBufferSize: 1000,
-		Enabled:             true, // simulate tracker single binary mode
-		SigNameToEventID:    sigNamesToIds,
-		ShouldDispatchEvent: func(eventIdInt32 int32) bool {
-			// in analyze mode we don't need to filter by policy
-			return true
-		},
-	}
-
-	// two seperate contexts.
-	// 1. signal notifiable context that can terminate both analyze and engine work
-	// 2. signal solely to notify internally inside analyze once file input is over
-	signalCtx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	fileReadCtx, stop := context.WithCancel(signalCtx)
-
-	engineOutput := make(chan *detect.Finding)
-	engineInput := make(chan protocol.Event)
-
-	source := engine.EventSources{Tracker: engineInput}
-	sigEngine, err := engine.NewEngine(engineConfig, source, engineOutput)
-	if err != nil {
-		logger.Fatalw("Failed to create engine", "err", err)
-	}
-
-	err = sigEngine.Init()
-	if err != nil {
-		logger.Fatalw("failed to initialize signature engine", "err", err)
-	}
-
-	go sigEngine.Start(signalCtx)
-
-	// producer
-	go produce(fileReadCtx, stop, inputFile, engineInput)
-
-	// consumer
-	for {
-		select {
-		case finding, ok := <-engineOutput:
-			if !ok {
-				return
-			}
-			process(finding)
-		case <-fileReadCtx.Done():
-			// ensure the engineInput channel will be closed
-			goto drain
-		case <-signalCtx.Done():
-			// ensure the engineInput channel will be closed
-			goto drain
-		}
-	}
-drain:
-	// drain
-	defer close(engineInput)
-	for {
-		select {
-		case finding, ok := <-engineOutput:
-			if !ok {
-				return
-			}
-
-			process(finding)
-		default:
-			return
-		}
-	}
-}
-
-func produce(ctx context.Context, cancel context.CancelFunc, inputFile *os.File, engineInput chan<- protocol.Event) {
-	scanner := bufio.NewScanner(inputFile)
-	scanner.Split(bufio.ScanLines)
-	for {
-		select {
-		case <-ctx.Done():
-			// if terminated from above
-			return
-		default:
-			if !scanner.Scan() { // if EOF or error close the done channel and return
-				if err := scanner.Err(); err != nil {
-					logger.Errorw("Error while scanning input file", "error", err)
-				}
-				// terminate analysis here and proceed to draining
-				cancel()
-				return
-			}
-
-			var e trace.Event
-			err := json.Unmarshal(scanner.Bytes(), &e)
-			if err != nil {
-				logger.Fatalw("Failed to unmarshal event", "err", err)
-			}
-			engineInput <- e.ToProtocol()
-		}
-	}
-}
-
-func process(finding *detect.Finding) {
-	event, err := findings.FindingToEvent(finding)
-	if err != nil {
-		logger.Fatalw("Failed to convert finding to event", "err", err)
-	}
-
-	jsonEvent, err := json.Marshal(event)
-	if err != nil {
-		logger.Fatalw("Failed to json marshal event", "err", err)
-	}
-
-	fmt.Println(string(jsonEvent))
+	analyze.Analyze(analyze.Config{
+		Source:          sourceFile,
+		Printer:         p,
+		Legacy:          isLegacy,
+		LegacyOut:       legacyOutFile,
+		SignatureDirs:   signatureDirs,
+		SignatureEvents: signatureEvents,
+	})
 }
 
 func bindViperFlag(cmd *cobra.Command, flag string) {
@@ -250,17 +167,4 @@ func bindViperFlag(cmd *cobra.Command, flag string) {
 	if err != nil {
 		logger.Fatalw("Error binding viper flag", "flag", flag, "error", err)
 	}
-}
-
-func getSigsNames(signatures []detect.Signature) []string {
-	var sigNames []string
-	for _, sig := range signatures {
-		sigMeta, err := sig.GetMetadata()
-		if err != nil {
-			logger.Warnw("Failed to get signature metadata", "err", err)
-			continue
-		}
-		sigNames = append(sigNames, sigMeta.Name)
-	}
-	return sigNames
 }

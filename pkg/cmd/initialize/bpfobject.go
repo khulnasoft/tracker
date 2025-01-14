@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	embed "github.com/khulnasoft/tracker"
-	"github.com/khulnasoft/tracker/pkg/config"
-	"github.com/khulnasoft/tracker/pkg/errfmt"
-	"github.com/khulnasoft/tracker/pkg/logger"
-	"github.com/khulnasoft/tracker/pkg/utils/environment"
+	"github.com/khulnasof/tracker/pkg/config"
+	"github.com/khulnasof/tracker/pkg/errfmt"
+	"github.com/khulnasof/tracker/pkg/logger"
+	"github.com/khulnasof/tracker/pkg/utils/environment"
+	embed "githukhulnasof/tracker/tracker"
 )
 
 // BpfObject sets up and configures a BPF object for tracing and monitoring
