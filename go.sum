@@ -640,8 +640,8 @@ github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnr
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
-github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.4 h1:S3rPrmQNMm4g1UROzjSk+gbGRwmExNcOK3Str7CsD7U=
-github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.4/go.mod h1:F3lHE4gKSnsbZRall+dU6MgiYmqmlZlbVWqdDliFZFk=
+github.com/khulnasoft-lab/libbpfgo v1.0.0 h1:McXno6OZbm4xBRT8mWCasZmfeAfmP1vILYlfJJLruNs=
+github.com/khulnasoft-lab/libbpfgo v1.0.0/go.mod h1:fuLBO2/PqDPKPbKihvqYZE0BegTEq4MtC3W7qAWtZSQ=
 github.com/khulnasoft/tracker/api v0.0.0-20250114043519-424fe14945f1 h1:WrWYria5iQ79D8E5hGqPUMYM2vzP4/8PHKtE9SlmQDs=
 github.com/khulnasoft/tracker/api v0.0.0-20250114043519-424fe14945f1/go.mod h1:fJOjSX8IH4MJ86oWrQz6HG7w8xoJf6k9F1PR3kRCjS8=
 github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20250114043519-424fe14945f1 h1:rU5+95jIMn1LF/ugBicx8/x6goKHI2JV1qPP5lFl+2Y=
