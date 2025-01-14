@@ -9,3 +9,4 @@ To use the `--config` flag, you need to provide the path to the configuration fi
 ```console
 tracker --config /path/to/tracker-config.yaml
 ```
+__NOTE:__ you can find an example config file in [here](/examples/config/).

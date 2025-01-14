@@ -202,7 +202,6 @@ func NewDefaultProbeGroup(module *bpf.Module, netEnabled bool) (*ProbeGroup, err
 		InotifyFindInodeRet:        NewTraceProbe(KretProbe, "inotify_find_inode", "trace_ret_inotify_find_inode"),
 		BpfCheck:                   NewTraceProbe(KProbe, "bpf_check", "trace_bpf_check"),
 		ExecBinprm:                 NewTraceProbe(KProbe, "exec_binprm", "trace_exec_binprm"),
-		ExecBinprmRet:              NewTraceProbe(KretProbe, "exec_binprm", "trace_ret_exec_binprm"),
 		SecurityPathNotify:         NewTraceProbe(KProbe, "security_path_notify", "trace_security_path_notify"),
 		SecurityBprmCredsForExec:   NewTraceProbe(KProbe, "security_bprm_creds_for_exec", "trace_security_bprm_creds_for_exec"),
 		SetFsPwd:                   NewTraceProbe(KProbe, "set_fs_pwd", "trace_set_fs_pwd"),
@@ -236,6 +235,7 @@ func NewDefaultProbeGroup(module *bpf.Module, netEnabled bool) (*ProbeGroup, err
 		Dup2Ret:                    NewTraceProbe(SyscallExit, "dup2", "trace_ret_dup2"),
 		Dup3:                       NewTraceProbe(SyscallEnter, "dup3", "trace_dup3"),
 		Dup3Ret:                    NewTraceProbe(SyscallExit, "dup3", "trace_ret_dup3"),
+		ChmodCommon:                NewTraceProbe(KProbe, "chmod_common", "trace_chmod_common"),
 
 		TestUnavailableHook: NewTraceProbe(KProbe, "non_existing_func", "empty_kprobe"),
 		ExecTest:            NewTraceProbe(RawTracepoint, "raw_syscalls:sched_process_exec", "tracepoint__exec_test"),

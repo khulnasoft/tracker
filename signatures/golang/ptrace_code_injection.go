@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
 	"github.com/khulnasoft/tracker/signatures/helpers"
 	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/protocol"
@@ -11,35 +12,33 @@ import (
 
 type PtraceCodeInjection struct {
 	cb             detect.SignatureHandler
-	ptracePokeText string
-	ptracePokeData string
-}
-
-var ptraceCodeInjectionMetadata = detect.SignatureMetadata{
-	ID:          "TRC-103",
-	Version:     "1",
-	Name:        "Code injection detected using ptrace",
-	EventName:   "ptrace_code_injection",
-	Description: "Possible code injection into another process was detected. Code injection is an exploitation technique used to run malicious code, adversaries may use it in order to execute their malware.",
-	Properties: map[string]interface{}{
-		"Severity":             3,
-		"Category":             "defense-evasion",
-		"Technique":            "Ptrace System Calls",
-		"Kubernetes_Technique": "",
-		"id":                   "attack-pattern--ea016b56-ae0e-47fe-967a-cc0ad51af67f",
-		"external_id":          "T1055.008",
-	},
+	ptracePokeText int
+	ptracePokeData int
 }
 
 func (sig *PtraceCodeInjection) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
-	sig.ptracePokeText = "PTRACE_POKETEXT"
-	sig.ptracePokeData = "PTRACE_POKEDATA"
+	sig.ptracePokeText = int(parsers.PTRACE_POKETEXT.Value())
+	sig.ptracePokeData = int(parsers.PTRACE_POKEDATA.Value())
 	return nil
 }
 
 func (sig *PtraceCodeInjection) GetMetadata() (detect.SignatureMetadata, error) {
-	return ptraceCodeInjectionMetadata, nil
+	return detect.SignatureMetadata{
+		ID:          "TRC-103",
+		Version:     "1",
+		Name:        "Code injection detected using ptrace",
+		EventName:   "ptrace_code_injection",
+		Description: "Possible code injection into another process was detected. Code injection is an exploitation technique used to run malicious code, adversaries may use it in order to execute their malware.",
+		Properties: map[string]interface{}{
+			"Severity":             3,
+			"Category":             "defense-evasion",
+			"Technique":            "Ptrace System Calls",
+			"Kubernetes_Technique": "",
+			"id":                   "attack-pattern--ea016b56-ae0e-47fe-967a-cc0ad51af67f",
+			"external_id":          "T1055.008",
+		},
+	}, nil
 }
 
 func (sig *PtraceCodeInjection) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
@@ -56,7 +55,7 @@ func (sig *PtraceCodeInjection) OnEvent(event protocol.Event) error {
 
 	switch eventObj.EventName {
 	case "ptrace":
-		requestArg, err := helpers.GetTrackerStringArgumentByName(eventObj, "request")
+		requestArg, err := helpers.GetTrackerIntArgumentByName(eventObj, "request")
 		if err != nil {
 			return err
 		}

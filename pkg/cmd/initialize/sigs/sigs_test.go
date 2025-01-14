@@ -1,10 +1,11 @@
-package initialize
+package sigs_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/khulnasoft/tracker/pkg/cmd/initialize/sigs"
 	"github.com/khulnasoft/tracker/pkg/events"
 	"github.com/khulnasoft/tracker/pkg/signatures/signature"
 	"github.com/khulnasoft/tracker/types/detect"
@@ -159,7 +160,7 @@ func Test_CreateEventsFromSigs(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			CreateEventsFromSignatures(test.startId, test.signatures)
+			sigs.CreateEventsFromSignatures(test.startId, test.signatures)
 
 			for _, expected := range test.expected {
 				eventDefID, ok := events.Core.GetDefinitionIDByName(expected.GetName())

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -18,6 +19,7 @@ import (
 	"github.com/khulnasoft/tracker/pkg/events/parse"
 	"github.com/khulnasoft/tracker/pkg/filehash"
 	"github.com/khulnasoft/tracker/pkg/logger"
+	"github.com/khulnasoft/tracker/pkg/time"
 	"github.com/khulnasoft/tracker/pkg/utils"
 	"github.com/khulnasoft/tracker/types/trace"
 )
@@ -160,7 +162,11 @@ func (t *Tracker) processSchedProcessExec(event *trace.Event) error {
 				}
 				destinationFilePath := filepath.Join(
 					destinationDirPath,
-					fmt.Sprintf("exec.%d.%s", event.Timestamp, filepath.Base(filePath)),
+					fmt.Sprintf(
+						"exec.%d.%s",
+						event.Timestamp,
+						filepath.Base(filePath),
+					),
 				)
 				// don't capture same file twice unless it was modified
 				lastCtime, ok := t.capturedFiles[capturedFileID]
@@ -174,7 +180,8 @@ func (t *Tracker) processSchedProcessExec(event *trace.Event) error {
 						destinationFilePath,
 					)
 					if err != nil {
-						return errfmt.WrapError(err)
+						logger.Debugw("capture exec: failed copying file", "error", err)
+						continue
 					}
 					// mark this file as captured
 					t.capturedFiles[capturedFileID] = castedSourceFileCtime
@@ -214,11 +221,11 @@ func (t *Tracker) processSchedProcessExec(event *trace.Event) error {
 // processDoFinitModule handles a do_finit_module event and triggers other hooking detection logic.
 func (t *Tracker) processDoInitModule(event *trace.Event) error {
 	// Check if related events are being traced.
-	_, okSyscalls := t.eventsState[events.HookedSyscall]
-	_, okSeqOps := t.eventsState[events.HookedSeqOps]
-	_, okProcFops := t.eventsState[events.HookedProcFops]
-	_, okMemDump := t.eventsState[events.PrintMemDump]
-	_, okFtrace := t.eventsState[events.FtraceHook]
+	okSyscalls := t.policyManager.IsEventSelected(events.HookedSyscall)
+	okSeqOps := t.policyManager.IsEventSelected(events.HookedSeqOps)
+	okProcFops := t.policyManager.IsEventSelected(events.HookedProcFops)
+	okMemDump := t.policyManager.IsEventSelected(events.PrintMemDump)
+	okFtrace := t.policyManager.IsEventSelected(events.FtraceHook)
 
 	if !okSyscalls && !okSeqOps && !okProcFops && !okMemDump && !okFtrace {
 		return nil
@@ -345,38 +352,27 @@ func (t *Tracker) processPrintMemDump(event *trace.Event) error {
 // Timing related functions
 //
 
-// normalizeEventCtxTimes normalizes the event context timings to be relative to tracker start time
-// or current time in nanoseconds.
-func (t *Tracker) normalizeEventCtxTimes(event *trace.Event) error {
-	eventId := events.ID(event.EventID)
-	if eventId > events.MaxCommonID && eventId < events.MaxUserSpace {
-		// derived events are normalized from their base event, skip the processing
+// normalizeTimeArg returns a processor function for some argument name
+// which normalizes said event arg time from boot monotonic to epoch
+func (t *Tracker) normalizeTimeArg(argNames ...string) func(event *trace.Event) error {
+	return func(event *trace.Event) error {
+		for _, argName := range argNames {
+			arg := events.GetArg(event, argName)
+			if arg == nil {
+				return errfmt.Errorf("couldn't find argument %s of event %s", argName, event.EventName)
+			}
+			if arg.Value == nil {
+				continue
+			}
+
+			argTime, ok := arg.Value.(uint64)
+			if !ok {
+				return errfmt.Errorf("argument %s of event %s is not uint64, it is %T", argName, event.EventName, arg.Value)
+			}
+			arg.Value = time.BootToEpochNS(argTime)
+		}
 		return nil
 	}
-	event.Timestamp = t.timeNormalizer.NormalizeTime(event.Timestamp)
-	event.ThreadStartTime = t.timeNormalizer.NormalizeTime(event.ThreadStartTime)
-
-	return nil
-}
-
-// processSchedProcessFork processes a sched_process_fork event by normalizing the start time.
-func (t *Tracker) processSchedProcessFork(event *trace.Event) error {
-	return t.normalizeEventArgTime(event, "start_time")
-}
-
-// normalizeEventArgTime normalizes the event arg time to be relative to tracker start time or
-// current time.
-func (t *Tracker) normalizeEventArgTime(event *trace.Event, argName string) error {
-	arg := events.GetArg(event, argName)
-	if arg == nil {
-		return errfmt.Errorf("couldn't find argument %s of event %s", argName, event.EventName)
-	}
-	argTime, ok := arg.Value.(uint64)
-	if !ok {
-		return errfmt.Errorf("argument %s of event %s is not of type uint64", argName, event.EventName)
-	}
-	arg.Value = t.timeNormalizer.NormalizeTime(int(argTime))
-	return nil
 }
 
 // addHashArg calculate file hash (in a best-effort efficiency manner) and add it as an argument
@@ -442,6 +438,49 @@ func (t *Tracker) processSharedObjectLoaded(event *trace.Event) error {
 		)
 
 		return t.addHashArg(event, &fileKey)
+	}
+
+	return nil
+}
+
+//
+// Context related functions
+//
+
+func (t *Tracker) removeContext(event *trace.Event) error {
+	event.ThreadStartTime = 0
+	event.ProcessorID = 0
+	event.ProcessID = 0
+	event.CgroupID = 0
+	event.ThreadID = 0
+	event.ParentProcessID = 0
+	event.HostProcessID = 0
+	event.HostThreadID = 0
+	event.HostParentProcessID = 0
+	event.UserID = 0
+	event.MountNS = 0
+	event.PIDNS = 0
+	event.ProcessName = ""
+	event.Executable = trace.File{}
+	event.HostName = ""
+	event.ContainerID = ""
+	event.Container = trace.Container{}
+	event.Kubernetes = trace.Kubernetes{}
+	event.Syscall = ""
+	event.StackAddresses = []uint64{}
+	event.ContextFlags = trace.ContextFlags{}
+	event.ThreadEntityId = 0
+	event.ProcessEntityId = 0
+	event.ParentEntityId = 0
+
+	return nil
+}
+
+func (t *Tracker) removeIrrelevantContext(event *trace.Event) error {
+	// Uprobe events are created in the context of tracker's process,
+	// but that context is meaningless. Remove it.
+	if event.ProcessID == os.Getpid() {
+		return t.removeContext(event)
 	}
 
 	return nil

@@ -67,9 +67,6 @@ proctree:
     cache:
         process: 8192
         thread: 8192
-    cache-ttl:
-        process: 120
-        thread: 120
 # cri:
 #     - runtime:
 #         name: docker
@@ -94,7 +91,6 @@ output:
         none: false
         stack-addresses: false
         exec-env: true
-        relative-time: true
         exec-hash: dev-inode
         parse-arguments: true
         parse-arguments-fds: true

@@ -13,7 +13,7 @@ Before you begin, ensure that you have the following:
 
 To install Tracker using Helm, follow these steps:
 
-Add the Aqua Security Helm repository:
+Add the KhulnaSoft Security Helm repository:
 
 ```console
 helm repo add khulnasoft https://khulnasoft.github.io/helm-charts/

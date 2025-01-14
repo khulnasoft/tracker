@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/khulnasoft/tracker/pkg/errfmt"
+	"github.com/khulnasoft/tracker/pkg/events/parse"
 	"github.com/khulnasoft/tracker/pkg/logger"
 )
 
@@ -123,6 +124,11 @@ func (d *DefinitionGroup) AddBatch(givenDefs map[ID]Definition) error {
 	defer d.mutex.Unlock()
 
 	for id, def := range givenDefs {
+		for i := range def.params {
+			// set zero value in the argument definition once,
+			// so it can be reused without recalculation later.
+			def.params[i].Zero = parse.ArgZeroValueFromType(def.params[i].Type)
+		}
 		err := d.add(id, def)
 		if err != nil {
 			return err
@@ -181,16 +187,20 @@ func (d *DefinitionGroup) IDs32ToIDs() map[ID]ID {
 }
 
 // GetTailCalls returns a list of tailcalls of all definitions in the group (for initialization).
-func (d *DefinitionGroup) GetTailCalls(state map[ID]EventState) []TailCall {
+func (d *DefinitionGroup) GetTailCalls(evtsToSubmit []ID) []TailCall {
 	d.mutex.RLock()
 	defer d.mutex.RUnlock()
 
 	var tailCalls []TailCall
 
-	for evtDefID, evtDef := range d.definitions {
-		if state[evtDefID].Submit > 0 { // only traced events to provide their tailcalls
-			tailCalls = append(tailCalls, evtDef.GetDependencies().GetTailCalls()...)
+	for _, id := range evtsToSubmit {
+		def, ok := d.definitions[id]
+		if !ok {
+			logger.Errorw("definition not found", "id", id)
+			continue
 		}
+
+		tailCalls = append(tailCalls, def.GetDependencies().GetTailCalls()...)
 	}
 
 	return tailCalls

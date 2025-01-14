@@ -85,6 +85,18 @@ func (t *Tracker) registerEventProcessors() {
 	// Processors registered when proctree source "events" is enabled.
 	switch t.config.ProcTree.Source {
 	case proctree.SourceEvents, proctree.SourceBoth:
+		// Event Timestamps Normalization
+		//
+		// Convert all time relate args to nanoseconds since epoch.
+		// NOTE: Make sure to convert time related args (of your event) in here, so that
+		// any later code has access to normalized time arguments.
+		t.RegisterEventProcessor(events.SchedProcessFork, t.normalizeTimeArg(
+			"start_time",
+			"parent_start_time",
+			"parent_process_start_time",
+			"leader_start_time",
+		))
+
 		t.RegisterEventProcessor(events.SchedProcessFork, t.procTreeForkProcessor)
 		t.RegisterEventProcessor(events.SchedProcessExec, t.procTreeExecProcessor)
 		t.RegisterEventProcessor(events.SchedProcessExit, t.procTreeExitProcessor)
@@ -121,13 +133,15 @@ func (t *Tracker) registerEventProcessors() {
 	t.RegisterEventProcessor(events.SharedObjectLoaded, t.processSharedObjectLoaded)
 
 	//
-	// Event Timestamps Normalization Processors
+	// Uprobe based events processors
 	//
 
-	// Convert all time relate args to nanoseconds since epoch.
-	// NOTE: Make sure to convert time related args (of your event) in here.
-	t.RegisterEventProcessor(events.SchedProcessFork, t.processSchedProcessFork)
-	t.RegisterEventProcessor(events.All, t.normalizeEventCtxTimes)
+	// Remove task context
+	t.RegisterEventProcessor(events.HiddenKernelModule, t.removeIrrelevantContext)
+	t.RegisterEventProcessor(events.HookedSyscall, t.removeIrrelevantContext)
+	t.RegisterEventProcessor(events.HookedSeqOps, t.removeIrrelevantContext)
+	t.RegisterEventProcessor(events.PrintNetSeqOps, t.removeIrrelevantContext)
+	t.RegisterEventProcessor(events.PrintMemDump, t.removeIrrelevantContext)
 }
 
 func initKernelReadFileTypes() {

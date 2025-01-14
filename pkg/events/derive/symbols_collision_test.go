@@ -9,7 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/dependencies"
 	"github.com/khulnasoft/tracker/pkg/events/parse"
+	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/policy"
 	"github.com/khulnasoft/tracker/pkg/utils/sharedobjs"
 )
@@ -465,6 +467,8 @@ func TestSymbolsCollision(t *testing.T) {
 	testCases := getSymbolsCollisionTestCases()
 	pid := 1
 
+	logger.Init(logger.NewDefaultLoggingConfig())
+
 	for _, testCase := range testCases {
 		testCase := testCase
 
@@ -492,7 +496,12 @@ func TestSymbolsCollision(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			pManager := policy.NewPolicyManager(p)
+			depsManager := dependencies.NewDependenciesManager(
+				func(id events.ID) events.Dependencies {
+					return events.Core.GetDefinitionByID(id).GetDependencies()
+				})
+			pManager, err := policy.NewManager(policy.ManagerConfig{}, depsManager, p)
+			require.NoError(t, err)
 
 			// Pick derive function from mocked tests
 			deriveFunc := SymbolsCollision(mockLoader, pManager)

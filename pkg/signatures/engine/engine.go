@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/khulnasoft/tracker/pkg/events/findings"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/signatures/metrics"
 	"github.com/khulnasoft/tracker/types/detect"
@@ -146,6 +147,17 @@ func (engine *Engine) unloadAllSignatures() {
 func (engine *Engine) matchHandler(res *detect.Finding) {
 	_ = engine.stats.Detections.Increment()
 	engine.output <- res
+	if !engine.config.Enabled {
+		return
+		// next section is relevant only for engine-in-pipeline and analyze
+	}
+	e, err := findings.FindingToEvent(res)
+	if err != nil {
+		logger.Errorw("Failed to convert finding to event, will not feedback", "err", err)
+		return
+	}
+	prot := e.ToProtocol()
+	engine.inputs.Tracker <- prot
 }
 
 // checkCompletion is a function that runs at the end of each input source

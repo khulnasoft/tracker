@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/khulnasoft/tracker/pkg/events/parsers"
 	"github.com/khulnasoft/tracker/signatures/helpers"
 	"github.com/khulnasoft/tracker/types/detect"
 	"github.com/khulnasoft/tracker/types/protocol"
@@ -13,22 +14,20 @@ type e2eBpfAttach struct {
 	cb detect.SignatureHandler
 }
 
-var e2eBpfAttachMetadata = detect.SignatureMetadata{
-	ID:          "BPF_ATTACH",
-	EventName:   "BPF_ATTACH",
-	Version:     "0.1.0",
-	Name:        "Bpf Attach Test",
-	Description: "Instrumentation events E2E Tests: Bpf Attach",
-	Tags:        []string{"e2e", "instrumentation"},
-}
-
 func (sig *e2eBpfAttach) Init(ctx detect.SignatureContext) error {
 	sig.cb = ctx.Callback
 	return nil
 }
 
 func (sig *e2eBpfAttach) GetMetadata() (detect.SignatureMetadata, error) {
-	return e2eBpfAttachMetadata, nil
+	return detect.SignatureMetadata{
+		ID:          "BPF_ATTACH",
+		EventName:   "BPF_ATTACH",
+		Version:     "0.1.0",
+		Name:        "Bpf Attach Test",
+		Description: "Instrumentation events E2E Tests: Bpf Attach",
+		Tags:        []string{"e2e", "instrumentation"},
+	}, nil
 }
 
 func (sig *e2eBpfAttach) GetSelectedEvents() ([]detect.SignatureEventSelector, error) {
@@ -50,14 +49,14 @@ func (sig *e2eBpfAttach) OnEvent(event protocol.Event) error {
 			return err
 		}
 
-		attachType, err := helpers.GetTrackerStringArgumentByName(eventObj, "attach_type")
+		attachType, err := helpers.GetTrackerIntArgumentByName(eventObj, "attach_type")
 		if err != nil {
 			return err
 		}
 
 		// check expected values from test for detection
 
-		if symbolName != "security_file_open" || attachType != "kprobe" {
+		if symbolName != "security_file_open" || attachType != int(parsers.BPFProgTypeKprobe) {
 			return nil
 		}
 

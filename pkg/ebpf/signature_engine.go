@@ -2,10 +2,12 @@ package ebpf
 
 import (
 	"context"
+	"slices"
 
 	"github.com/khulnasoft/tracker/pkg/containers"
 	"github.com/khulnasoft/tracker/pkg/dnscache"
 	"github.com/khulnasoft/tracker/pkg/events"
+	"github.com/khulnasoft/tracker/pkg/events/findings"
 	"github.com/khulnasoft/tracker/pkg/logger"
 	"github.com/khulnasoft/tracker/pkg/proctree"
 	"github.com/khulnasoft/tracker/pkg/signatures/engine"
@@ -19,8 +21,8 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 	out := make(chan *trace.Event, t.config.PipelineChannelSize)
 	errc := make(chan error, 1)
 
-	engineOutput := make(chan *detect.Finding, 10000)
-	engineInput := make(chan protocol.Event, 10000)
+	engineOutput := make(chan *detect.Finding, t.config.PipelineChannelSize)
+	engineInput := make(chan protocol.Event, t.config.PipelineChannelSize)
 	engineOutputEvents := make(chan *trace.Event, t.config.PipelineChannelSize)
 	source := engine.EventSources{Tracker: engineInput}
 
@@ -29,8 +31,7 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 
 	// Share event states (by reference)
 	t.config.EngineConfig.ShouldDispatchEvent = func(eventIdInt32 int32) bool {
-		_, ok := t.eventsState[events.ID(eventIdInt32)]
-		return ok
+		return t.policyManager.IsEventSelected(events.ID(eventIdInt32))
 	}
 
 	sigEngine, err := engine.NewEngine(t.config.EngineConfig, source, engineOutput)
@@ -53,35 +54,6 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 
 	go t.sigEngine.Start(ctx)
 
-	// Create a function for feeding the engine with an event
-	feedFunc := func(event *trace.Event) {
-		if event == nil {
-			return // might happen during initialization (ctrl+c seg faults)
-		}
-
-		id := events.ID(event.EventID)
-
-		// if the event is marked as submit, we pass it to the engine
-		if t.eventsState[id].Submit > 0 {
-			err := t.parseArguments(event)
-			if err != nil {
-				t.handleError(err)
-				return
-			}
-
-			// Get a copy of our event before sending it down the pipeline.
-			// This is needed because a later modification of the event (in
-			// particular of the matched policies) can affect engine stage.
-			eventCopy := *event
-			// pass the event to the sink stage, if the event is also marked as emit
-			// it will be sent to print by the sink stage
-			out <- event
-
-			// send the event to the rule event
-			engineInput <- eventCopy.ToProtocol()
-		}
-	}
-
 	// TODO: in the upcoming releases, the rule engine should be changed to receive trace.Event,
 	// and return a trace.Event, which should remove the necessity of converting trace.Event to protocol.Event,
 	// and converting detect.Finding into trace.Event
@@ -92,12 +64,50 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 		defer close(engineInput)
 		defer close(engineOutput)
 
+		// feedEngine feeds an event to the rules engine
+		feedEngine := func(event *trace.Event) {
+			if event == nil {
+				return // might happen during initialization (ctrl+c seg faults)
+			}
+
+			id := events.ID(event.EventID)
+
+			// if the event is NOT marked as submit, it is not sent to the rules engine
+			if !t.policyManager.IsEventToSubmit(id) {
+				return
+			}
+
+			// Get a copy of event before parsing it or sending it down the pipeline.
+			// This is needed because a later modification of the event (matched policies or
+			// arguments parsing) can affect engine stage.
+			eventCopy := *event
+
+			if t.config.Output.ParseArguments {
+				// shallow clone the event arguments before parsing them (new slice is created),
+				// to keep the eventCopy with raw arguments.
+				eventCopy.Args = slices.Clone(event.Args)
+
+				err := t.parseArguments(event)
+				if err != nil {
+					t.handleError(err)
+					return
+				}
+			}
+
+			// pass the event to the sink stage, if the event is also marked as emit
+			// it will be sent to print by the sink stage
+			out <- event
+
+			// send the copied event to the rules engine
+			engineInput <- eventCopy.ToProtocol()
+		}
+
 		for {
 			select {
 			case event := <-in:
-				feedFunc(event)
+				feedEngine(event)
 			case event := <-engineOutputEvents:
-				feedFunc(event)
+				feedEngine(event)
 			case <-ctx.Done():
 				return
 			}
@@ -115,7 +125,7 @@ func (t *Tracker) engineEvents(ctx context.Context, in <-chan *trace.Event) (<-c
 					continue // might happen during initialization (ctrl+c seg faults)
 				}
 
-				event, err := FindingToEvent(finding)
+				event, err := findings.FindingToEvent(finding)
 				if err != nil {
 					t.handleError(err)
 					continue
