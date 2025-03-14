@@ -14,9 +14,7 @@ on:
 jobs:
   release-snapshot-x86_64:
     name: Release Snapshot (x86_64)
-    runs-on: 
-      - graas_ami-0cdf7ad6d9627da45_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
-      - EXECUTION_TYPE=LONG
+    runs-on: ubuntu-latest  # Replace with GitHub-hosted runner
     permissions:
       contents: read
       packages: write
@@ -57,9 +55,7 @@ jobs:
       #   shell: bash
   release-snapshot-aarch64:
     name: Release Snapshot (aarch64)
-    runs-on: 
-      - graas_ami-07740487fa433aa54_${{ github.event.number }}${{ github.run_attempt }}-${{ github.run_id }}
-      - EXECUTION_TYPE=LONG
+    runs-on: ubuntu-latest  # Replace with GitHub-hosted runner
     permissions:
       contents: read
       packages: write
