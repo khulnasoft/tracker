@@ -16,7 +16,7 @@ ARG GO_VERSION=1.22.0
 # tracker-base
 #
 
-FROM alpine:3.19 AS tracker-base
+FROM alpine:3.21 AS tracker-base
 LABEL AS=tracker-base
 USER root
 
