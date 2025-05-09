@@ -14,7 +14,7 @@ require (
 	github.com/grafana/pyroscope-go v1.1.1
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/hashicorp/golang-lru/v2 v2.0.7
-	github.com/khulnasoft-lab/libbpfgo v0.7.0-libbpf-1.4
+	github.com/khulnasoft-lab/libbpfgo v1.0.0
 	github.com/khulnasoft/tracker/api v0.0.0-20250114043519-424fe14945f1
 	github.com/khulnasoft/tracker/signatures/helpers v0.0.0-20250114043519-424fe14945f1
 	github.com/khulnasoft/tracker/types v0.0.0-20250114043519-424fe14945f1
